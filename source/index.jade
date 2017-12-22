@@ -25,7 +25,7 @@ html(lang=page.language)
                             li.menu-group.mt-4
                                 a(href='#')
                                     h5.mb-1
-                                        i.fas.fa-angle-down
+                                        i.fas.fa-angle-right
                                         span Quisque sit
                                 ul.list-unstyled
                                     li
@@ -41,7 +41,7 @@ html(lang=page.language)
                             li.menu-group.mt-4
                                 a(href='#')
                                     h5.mb-1
-                                        i.fas.fa-angle-down
+                                        i.fas.fa-angle-right
                                         span Aenean
                                 ul.list-unstyled
                                     li
@@ -194,6 +194,16 @@ html(lang=page.language)
         script(src='/assets/js/fontawesome-all.min.js')
         script.
             $(function() {
+                $('.menu-group a').click(function () {
+                    if($(this).find('svg').hasClass('fa-angle-right')) {
+                        $(this).next('ul').show()
+                        $(this).find('svg').replaceWith('<i class="fas fa-angle-down"></i>')
+                    } else {
+                        $(this).next('ul').hide()
+                        $(this).find('svg').replaceWith('<i class="fas fa-angle-right"></i>')
+                    }
+                })
+
                 $('#toggle-menu').click(function () {
                     if($('#menu').hasClass('col-lg-2')) {
                         $('#menu-content').fadeOut(300, function() {
