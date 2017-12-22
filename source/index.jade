@@ -9,52 +9,56 @@ html(lang=page.language)
         link(rel='icon', href='/assets/img/favicon.png')
         link(rel='stylesheet', href='/assets/css/bootstrap.min.css')
         link(rel='stylesheet', href='/' + page.language + '/style.css')
-
-        script(defer, src='/assets/js/fontawesome-all.min.js')
     body
         .container-fluid.h-100
             .row.h-100
                 #menu.h-100.col-lg-2.d-none.d-lg-block.p-0
-                    img.mt-5.mb-2.rounded-circle.mx-auto.d-block(src='https://lorempixel.com/100/100/cats/', alt='')
                     .p-3
-                        h5.pb-3.text-center Donec Vitae Pellentesque
-                        ul.list-unstyled
-                            li.menu-group.mt-4
-                                a(href='#')
-                                    h5.mb-1
-                                        i.fas.fa-angle-down
-                                        span Quisque sit
-                                ul.list-unstyled
-                                    li
-                                        a(href='#') Aliquam
-                                    li
-                                        a(href='#') Maecenas
-                                    li
-                                        a(href='#') Fusce fermentum
-                                    li
-                                        a(href='#') Nam
-                                    li
-                                        a(href='#') Morbi
-                            li.menu-group.mt-4
-                                a(href='#')
-                                    h5.mb-1
-                                        i.fas.fa-angle-down
-                                        span Aenean
-                                ul.list-unstyled
-                                    li
-                                        a(href='#') Quisque
-                                    li
-                                        a(href='#') Nullam
-                            li.menu-group.mt-4
-                                a(href='#')
-                                    h5.mb-1
-                                        i.fas.fa-angle-right
-                                        span Donec
-                                ul.list-unstyled
+                        a#toggle-menu(href='#')
+                            i.fas.fa-bars.float-right
+
+                    #menu-content
+                        img.mt-2.mb-2.rounded-circle.mx-auto.d-block(src='https://lorempixel.com/100/100/cats/', alt='')
+
+                        .p-3
+                            h4.pb-3.text-center Donec Vitae Pellentesque
+                            ul.list-unstyled
+                                li.menu-group.mt-4
+                                    a(href='#')
+                                        h5.mb-1
+                                            i.fas.fa-angle-down
+                                            span Quisque sit
+                                    ul.list-unstyled
+                                        li
+                                            a(href='#') Aliquam
+                                        li
+                                            a(href='#') Maecenas
+                                        li
+                                            a(href='#') Fusce fermentum
+                                        li
+                                            a(href='#') Nam
+                                        li
+                                            a(href='#') Morbi
+                                li.menu-group.mt-4
+                                    a(href='#')
+                                        h5.mb-1
+                                            i.fas.fa-angle-down
+                                            span Aenean
+                                    ul.list-unstyled
+                                        li
+                                            a(href='#') Quisque
+                                        li
+                                            a(href='#') Nullam
+                                li.menu-group.mt-4
+                                    a(href='#')
+                                        h5.mb-1
+                                            i.fas.fa-angle-right
+                                            span Donec
+                                    ul.list-unstyled
 
                 .h-100.col-12.col-sm-4.col-lg-3
                     .row.h-100(style='padding-bottom:56px')
-                        form#search.col-12.p-0(action='.')
+                        form#search.col-12.p-0.pl-2(action='.')
                             .input-group.p-3
                                 label.input-group-addon(for='search-field')
                                     i.fas.fa-lg.fa-search
@@ -133,7 +137,9 @@ html(lang=page.language)
 
                 .h-100.col.d-none.d-sm-block
                     .row.h-100(style='padding-bottom:56px')
-                        #tools.col-12.text-right.p-0
+                        #tools.col-12.text-right.p-0.pr-2
+                            a.p-3.float-right(href='#')
+                                i.fas.fa-lg.fa-sign-in-alt
                             a.p-3.float-right(href='#')
                                 i.fas.fa-lg.fa-print
                             a.p-3.float-right(href='#')
@@ -155,3 +161,19 @@ html(lang=page.language)
                                 p Donec eleifend pharetra congue. Aliquam ut risus cursus, feugiat mauris quis, eleifend massa. Maecenas pharetra scelerisque leo, non mollis metus imperdiet quis. Fusce viverra libero ante, ac consequat neque volutpat at. Aenean vestibulum pretium magna nec ultricies. Quisque sollicitudin lacinia libero, at semper justo ullamcorper et. Nullam ac rhoncus dolor, vitae pulvinar risus. Donec venenatis quam id nisi pharetra, nec vestibulum purus ornare. Nam elementum mi ex. Morbi bibendum molestie orci, ut tempus nunc auctor eu. Pellentesque molestie a ipsum quis aliquam. Aliquam eu nisi ipsum. Vivamus tempus, metus quis tristique ultrices, nunc eros rutrum sem, id luctus tellus mauris vitae neque. Praesent et consequat tortor.
 
                                 p Curabitur sit amet elementum ipsum. Vivamus ultrices augue ipsum, vitae pellentesque elit imperdiet vitae. Duis luctus arcu ut tortor tempor, nec lacinia tortor efficitur. Nullam in neque tortor. Praesent posuere placerat augue, vel porta turpis tincidunt quis. Vestibulum eu metus sit amet elit molestie feugiat eget vitae massa. Fusce sagittis tincidunt metus, vel porta ipsum porttitor non. Cras tempor dui lacus, vel elementum leo facilisis a. Nunc mauris est, mattis quis mi eget, pellentesque vestibulum dolor. Vestibulum nunc nibh, posuere vel posuere quis, blandit ac nunc. Sed ullamcorper tortor mi, quis accumsan nisi ultrices id. Mauris eget condimentum elit, et mattis quam. Vivamus dignissim risus in lectus eleifend posuere. Etiam euismod mauris in maximus varius. Quisque sit amet purus sed elit porta accumsan.
+
+        script(src='/assets/js/jquery-3.2.1.min.js')
+        script(src='/assets/js/fontawesome-all.min.js')
+        script.
+            $(function() {
+                $('#toggle-menu').click(function () {
+                    if($('#menu').hasClass('col-lg-2')) {
+                        $('#menu-content').fadeOut(300, function() {
+                            $('#menu').removeClass('col-lg-2').addClass('col-auto')
+                        })
+                    } else {
+                        $('#menu').addClass('col-lg-2').removeClass('col-auto')
+                        $('#menu-content').fadeIn(300)
+                    }
+                })
+            })
