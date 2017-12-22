@@ -1,0 +1,29 @@
+doctype html
+html(lang=page.language)
+    head
+        title entu
+
+        meta(charset='utf-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+
+        link(rel='stylesheet', href='/assets/css/bootstrap.min.css')
+        link(rel='stylesheet', href='/' + page.language + '/style.css')
+    body
+        .container-fluid.h-100
+            .row.h-100
+                #menu.hidden-xs-down.col-sm-2
+                    p menu
+                .col-xs-12.col-sm-3
+                    .row.h-100
+                        #search.col
+                            | search
+                        .w-100
+                        #list.col.h-100
+                            | list
+                .col
+                    .row.h-100
+                        #tools.col.text-right
+                            | tools
+                        .w-100
+                        #content.col.h-100
+                            | content
