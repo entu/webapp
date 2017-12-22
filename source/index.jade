@@ -13,8 +13,8 @@ html(lang=page.language)
     body
         .container-fluid.h-100
             .row.h-100
-                #menu.col-lg-2.d-none.d-lg-block.p-0
                     img.mt-5.mb-2.rounded-circle.mx-auto.d-block(src='http://lorempixel.com/100/100/cats', alt='')
+                #menu.h-100.col-lg-2.d-none.d-lg-block.p-0
                     .p-3
                         h5.pb-3.text-center Donec Vitae Pellentesque
                         ul.list-unstyled
@@ -51,14 +51,14 @@ html(lang=page.language)
                                         span Donec
                                 ul.list-unstyled
 
-                .col-12.col-sm-4.col-lg-3
+                .h-100.col-12.col-sm-4.col-lg-3
                     .row.h-100(style='padding-bottom:56px')
                         form#search.col-12.p-0(action='.')
                             .input-group.p-3
                                 label.input-group-addon(for='search-field')
                                     i.fas.fa-lg.fa-search
                                 input#search-field.form-control(type='search')
-                        #list.col-12.h-100.p-0
+                        #list.h-100.col-12.p-0
                             a.media.p-3(href='#')
                                 img.rounded-circle.align-self-start.col-2.mr-3(src='http://lorempixel.com/100/100/abstract', alt='')
                                 .media-body.align-self-center
@@ -129,7 +129,8 @@ html(lang=page.language)
                                 .media-body
                                     h5.mt-0 Cras tempor dui lacus
                                     p.mb-0.mt-2 Etiam euismod mauris in maximus varius. Quisque sit amet purus sed elit porta accumsan.
-                .col.d-none.d-sm-block
+
+                .h-100.col.d-none.d-sm-block
                     .row.h-100(style='padding-bottom:56px')
                         #tools.col-12.text-right.p-0
                             a.p-3.float-right(href='#')
