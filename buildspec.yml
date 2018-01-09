@@ -12,7 +12,7 @@ phases:
             - ./node_modules/entu-cms/build.js ./entu-ssg.yaml
     post_build:
         commands:
-            - cp -r ./assets/ ./build/assets
+            - cp -r ./assets/ ./build/assets/
             - cp ./assets/robots.txt ./build/robots.txt
             - cp ./assets/img/favicon.ico ./build/favicon.ico
 
