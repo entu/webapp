@@ -31,8 +31,9 @@
                 white-space nowrap
                 overflow hidden
 
-                span
-                    padding-left 10px
+                i
+                    width 20px
+                    height 20px
 
             ul
                 display none
@@ -51,12 +52,12 @@
 
 
 <template lang="pug">
-    #menu.h-100
+    #menu.h-100.d-none.d-lg-block.p-0(v-bind:class='{ "col-lg-2": !closed, "col-auto": closed }')
         .p-3
-            a#toggle-menu(href='#')
+            a(href='', v-on:click.prevent='closed = !closed')
                 i.fas.fa-bars.float-right
 
-        #menu-content.p-3
+        #menu-content.p-3(v-if='!closed')
             img.mb-3.rounded-circle.mx-auto.d-block(src='https://lorempixel.com/100/100/cats/', alt='')
 
             h4.pb-3.text-center Donec Vitae Pellentesque
@@ -77,6 +78,7 @@
     export default {
         data () {
             return {
+                closed: false,
                 menu: [
                     {
                         active: false,

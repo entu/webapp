@@ -1,4 +1,7 @@
 <style lang="stylus" scoped>
+    .row
+        padding-bottom 56px
+
     #search
         height 56px
         padding-left env(safe-area-inset-left) !important
@@ -53,18 +56,19 @@
 
 
 <template lang="pug">
-    .row.h-100(style='padding-bottom:56px')
-        form#search.col-12.p-0.pl-2(action='.')
-            .input-group.p-3
-                label.input-group-addon(for='search-field')
-                    i.fas.fa-lg.fa-search
-                input#search-field.form-control(type='search')
-        #list.h-100.col-12.p-0
-            router-link.media.p-3(v-for='e in entities' v-bind:key='e.id' v-bind:to='"/entity/"+e.id', exact)
-                img.rounded-circle.align-self-start.col-2.mr-3(v-bind:src='e.img', v-bind:alt='e.title')
-                .media-body.align-self-center
-                    h5.t-0 {{ e.title }}
-                    p.mb-0.mt-2 {{ e.description }}
+    .h-100.col-12.col-sm-4.col-lg-3
+        .row.h-100
+            form#search.col-12.p-0.pl-2(action='.')
+                .input-group.p-3
+                    label.input-group-addon(for='search-field')
+                        i.fas.fa-lg.fa-search
+                    input#search-field.form-control(type='search')
+            #list.h-100.col-12.p-0
+                router-link.media.p-3(v-for='e in entities' v-bind:key='e.id' v-bind:to='"/entity/"+e.id', exact)
+                    img.rounded-circle.align-self-start.col-2.mr-3(v-bind:src='e.img', v-bind:alt='e.title')
+                    .media-body.align-self-center
+                        h5.t-0 {{ e.title }}
+                        p.mb-0.mt-2 {{ e.description }}
 </template>
 
 

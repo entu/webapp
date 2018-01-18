@@ -1,13 +1,8 @@
 <template lang="pug">
     .row.h-100
-        .h-100.col-lg-2.d-none.d-lg-block.p-0
-            entity-menu
-
-        .h-100.col-12.col-sm-4.col-lg-3
-            entity-list
-
-        .h-100.col.d-none.d-sm-block
-            entity-content
+        entity-menu
+        entity-list
+        entity-content
 </template>
 
 
