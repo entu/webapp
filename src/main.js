@@ -1,6 +1,6 @@
 import Vue from 'vue'
+import VueResource from 'vue-resource'
 import VueRouter from 'vue-router'
-
 
 // Import bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -14,6 +14,7 @@ import entity from './components/entity/entity.vue'
 
 
 // Use packages
+Vue.use(VueResource)
 Vue.use(VueRouter)
 
 
@@ -22,7 +23,7 @@ const router = new VueRouter({
     mode: 'history',
     routes: [
         { path: '/', component: info },
-        { path: '/auth', component: auth },
+        { path: '/auth/:id', component: auth },
         { path: '/entity', component: entity }
     ]
 })

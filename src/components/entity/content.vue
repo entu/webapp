@@ -80,13 +80,13 @@
                             a.nav-link.dropdown-toggle.p-3(href='#', role='button', data-toggle='dropdown')
                                 i.fas.fa-lg.fa-sign-in-alt
                             .dropdown-menu.dropdown-menu-right
-                                a.dropdown-item(href='https://api.entu.ee/auth/google?next=https://app.entu.ee/auth/')
+                                a.dropdown-item(v-bind:href='"https://api.entu.ee/auth/google?next=" + host + "/auth/"')
                                     i.fab.fa-google
                                     span Google
-                                a.dropdown-item(href='https://api.entu.ee/auth/facebook?next=https://app.entu.ee/auth/')
+                                a.dropdown-item(v-bind:href='"https://api.entu.ee/auth/facebook?next=" + host + "/auth/"')
                                     i.fab.fa-facebook
                                     span Facebook
-                                a.dropdown-item(href='https://api.entu.ee/auth/microsoft?next=https://app.entu.ee/auth/')
+                                a.dropdown-item(v-bind:href='"https://api.entu.ee/auth/microsoft?next=" + host + "/auth/"')
                                     i.fab.fa-microsoft
                                     span Microsoft
                                 .dropdown-divider
@@ -115,7 +115,7 @@
     export default {
         data () {
             return {
-
+                host: window.location.origin
             }
         }
     }
