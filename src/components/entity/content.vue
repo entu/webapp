@@ -24,7 +24,7 @@
                 outline none
 
         .dropdown-menu-right
-            border-radius 0px
+            border-radius 0
             border 1px solid #d1d1d1
             border-top none
             top 54px

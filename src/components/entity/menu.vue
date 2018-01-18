@@ -61,38 +61,14 @@
 
             h4.pb-3.text-center Donec Vitae Pellentesque
             ul.list-unstyled
-                li.menu-group.mt-4
-                    a(href='#')
+                li.menu-group.mt-4(v-for='mg in menu')
+                    a(href='', v-on:click.prevent='mg.active = !mg.active')
                         h5.mb-1
-                            i.fas.fa-angle-down
-                            span Quisque sit
-                    ul.list-unstyled(style='display:block')
-                        li
-                            a(href='#') Aliquam
-                        li
-                            a(href='#') Maecenas
-                        li
-                            a(href='#') Fusce fermentum
-                li.menu-group.mt-4
-                    a(href='#')
-                        h5.mb-1
-                            i.fas.fa-angle-right
-                            span Aenean
-                    ul.list-unstyled
-                        li
-                            a(href='#') Quisque
-                        li
-                            a(href='#') Nullam
-                li.menu-group.mt-4
-                    a(href='#')
-                        h5.mb-1
-                            i.fas.fa-angle-right
-                            span Donec
-                    ul.list-unstyled
-                        li
-                            a(href='#') Nam
-                        li
-                            a(href='#') Morbi
+                            i.fas(v-bind:class='{ "fa-angle-down": mg.active, "fa-angle-right": !mg.active }')
+                            span {{ mg.title }}
+                    ul.list-unstyled(v-show='mg.active', style='display:block')
+                        li(v-for='l in mg.links')
+                            a(href='') {{ l.title }}
 </template>
 
 
@@ -101,7 +77,33 @@
     export default {
         data () {
             return {
-
+                menu: [
+                    {
+                        active: false,
+                        title: 'Quisque sit',
+                        links: [
+                            { title: 'Aliquam', url: '' },
+                            { title: 'Maecenas', url: '' },
+                            { title: 'Fusce fermentum', url: '' }
+                        ]
+                    },
+                    {
+                        active: false,
+                        title: 'Aenean',
+                        links: [
+                            { title: 'Quisque', url: '' },
+                            { title: 'Nullam', url: '' }
+                        ]
+                    },
+                    {
+                        active: false,
+                        title: 'Donec',
+                        links: [
+                            { title: 'Nam', url: '' },
+                            { title: 'Morbi', url: '' }
+                        ]
+                    },
+                ]
             }
         }
     }
