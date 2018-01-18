@@ -1,7 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
 
-const CleanWebpackPlugin = require('clean-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -48,7 +47,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new CleanWebpackPlugin(['dist']),
         new ExtractTextPlugin(`style-${isProduction ? '[chunkhash:8]' : ''}.css`),
         new FaviconsWebpackPlugin({
             logo: './src/assets/logo.png',
