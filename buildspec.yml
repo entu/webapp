@@ -9,8 +9,8 @@ phases:
             - npm run build
     post_build:
         commands:
-            - cp ./assets/robots.txt ./build/robots.txt
-            - cp ./assets/img/favicon.ico ./build/favicon.ico
+            - cp ./src/assets/robots.txt ./dist/robots.txt
+            - cp ./src/assets/favicon.ico ./dist/favicon.ico
 
 artifacts:
     files:
