@@ -38,6 +38,9 @@
 
 <script>
     export default {
+        created() {
+            this.$router.push('/entity')
+        },
         data () {
             return {
                 msg: 'Welcome to Your Vue.js App'
