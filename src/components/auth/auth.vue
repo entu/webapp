@@ -156,9 +156,9 @@
                         h1.text-center.mb-5 Vali konto
                         ul.list-unstyled
                             li(v-for='a in accounts')
-                                router-link(v-bind:to="{ name: 'menu', params: { account: a.id } }")
+                                router-link(v-bind:to="{ name: 'menu', params: { account: a.account } }")
                                     i.fas.fa-database
-                                    span {{ a.title }}
+                                    span {{ a.account }}
                     .col-12.align-self-end
                         ul.list-unstyled
                             li
@@ -185,19 +185,10 @@
                 this.$http.get('https://api.entu.ee/auth', options).then(function (data) {
                     return data.json()
                 }).then(function (data) {
-                    this.accounts = []
-
-                    for(var a in data) {
-                       if (!data.hasOwnProperty(a)) { continue }
-                       this.accounts.push({
-                           id: a,
-                           title: a,
-                           token: data[a].token
-                       })
-                    }
+                    this.accounts = Object.values(data)
 
                     if (this.accounts.length > 0) {
-                        sessionStorage.setItem('accounts', JSON.stringify(this.accounts))
+                        sessionStorage.setItem('accounts', JSON.stringify(data))
                     } else {
                         this.accounts = null
                     }
@@ -211,7 +202,7 @@
 
             const accounts = JSON.parse(sessionStorage.getItem('accounts'))
             if (!this.accounts && accounts) {
-                this.accounts = accounts
+                this.accounts = Object.values(accounts)
             }
         },
         data () {
