@@ -24,29 +24,29 @@
         transform scale(1.02)
 
         &.bg-1
-            background-image url('../../assets/backgrounds/bg-1.png')
+            background-image url('../assets/backgrounds/bg-1.png')
         &.bg-2
-            background-image url('../../assets/backgrounds/bg-2.png')
+            background-image url('../assets/backgrounds/bg-2.png')
         &.bg-3
-            background-image url('../../assets/backgrounds/bg-3.png')
+            background-image url('../assets/backgrounds/bg-3.png')
         &.bg-4
-            background-image url('../../assets/backgrounds/bg-4.png')
+            background-image url('../assets/backgrounds/bg-4.png')
         &.bg-5
-            background-image url('../../assets/backgrounds/bg-5.png')
+            background-image url('../assets/backgrounds/bg-5.png')
         &.bg-6
-            background-image url('../../assets/backgrounds/bg-6.png')
+            background-image url('../assets/backgrounds/bg-6.png')
         &.bg-7
-            background-image url('../../assets/backgrounds/bg-7.png')
+            background-image url('../assets/backgrounds/bg-7.png')
         &.bg-8
-            background-image url('../../assets/backgrounds/bg-8.png')
+            background-image url('../assets/backgrounds/bg-8.png')
         &.bg-9
-            background-image url('../../assets/backgrounds/bg-9.png')
+            background-image url('../assets/backgrounds/bg-9.png')
         &.bg-10
-            background-image url('../../assets/backgrounds/bg-10.png')
+            background-image url('../assets/backgrounds/bg-10.png')
         &.bg-11
-            background-image url('../../assets/backgrounds/bg-11.png')
+            background-image url('../assets/backgrounds/bg-11.png')
         &.bg-12
-            background-image url('../../assets/backgrounds/bg-12.png')
+            background-image url('../assets/backgrounds/bg-12.png')
 
     .content
         position fixed
