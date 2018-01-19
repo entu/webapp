@@ -1,7 +1,5 @@
 <template lang="pug">
-    .row.h-100
-        entity-menu
-        router-view
+    p info
 </template>
 
 
@@ -12,10 +10,14 @@
 
 <script>
     import menu from './menu.vue'
+    import list from './list.vue'
+    import content from './content.vue'
 
     export default {
         components: {
-            'entity-menu': menu
+            'entity-menu': menu,
+            'entity-list': list,
+            'entity-content': content
         },
         data () {
             return {

@@ -37,7 +37,7 @@
 
             ul
                 display none
-                margin-left 25px
+                margin-left 22px
 
                 li
                     display block
@@ -47,6 +47,14 @@
                     text-overflow ellipsis
                     white-space nowrap
                     overflow hidden
+
+    .fade-enter-active
+    .fade-leave-active
+        transition opacity .2s
+
+    .fade-enter
+    .fade-leave-to
+        opacity 0
 </style>
 
 
@@ -56,8 +64,7 @@
         .p-3
             a(href='', v-on:click.prevent='closed = !closed')
                 i.fas.fa-bars.float-right
-
-        #menu-content.p-3(v-if='!closed')
+        #menu-content.p-3(v-show='!closed')
             img.mb-3.rounded-circle.mx-auto.d-block(src='https://lorempixel.com/100/100/cats/', alt='')
 
             h4.pb-3.text-center Donec Vitae Pellentesque
@@ -75,37 +82,78 @@
 
 
 <script>
+    const getValue = function (valueList) {
+        const language = 'et'
+        let values = []
+
+        valueList.forEach(function (v) {
+            if (!v.language || v.language === language) {
+                values.push(v.string)
+            }
+        })
+
+        return values[0]
+    }
+
     export default {
+        created() {
+            let options = {
+                params: {
+                    '_type.string': 'menu',
+                    'props': [
+                        'group.string',
+                        'group.language',
+                        'title.string',
+                        'title.language',
+                        'query.string'
+                    ].join(',')
+                }
+            }
+
+            const accounts = JSON.parse(sessionStorage.getItem('accounts'))
+            const account = this.$route.params.account
+            const token = accounts[account]
+
+            if (!token) {
+                options.headers = {
+                    Authorization: `Bearer ${token}`
+                }
+            } else {
+                options.params.account = account
+            }
+
+            this.$http.get('https://api.entu.ee/entity', options).then(function (data) {
+                return data.json()
+            }).then(function (data) {
+                if (!data.entities) { return }
+
+                let menu = {}
+
+                data.entities.forEach(function (entity) {
+                    let group = getValue(entity.group)
+                    if (!menu[group]) {
+                        menu[group] = {
+                            title: getValue(entity.group),
+                            links: [],
+                            active: false
+                        }
+                    }
+                    menu[group].links.push({
+                        title: getValue(entity.title),
+                        url: getValue(entity.query)
+                    })
+                })
+
+                this.menu = Object.values(menu)
+
+                this.menu[0].active = true
+            })
+        },
         data () {
             return {
+                token: null,
                 closed: false,
-                menu: [
-                    {
-                        active: false,
-                        title: 'Quisque sit',
-                        links: [
-                            { title: 'Aliquam', url: '' },
-                            { title: 'Maecenas', url: '' },
-                            { title: 'Fusce fermentum', url: '' }
-                        ]
-                    },
-                    {
-                        active: false,
-                        title: 'Aenean',
-                        links: [
-                            { title: 'Quisque', url: '' },
-                            { title: 'Nullam', url: '' }
-                        ]
-                    },
-                    {
-                        active: false,
-                        title: 'Donec',
-                        links: [
-                            { title: 'Nam', url: '' },
-                            { title: 'Morbi', url: '' }
-                        ]
-                    },
-                ]
+                menu: []
             }
         }
     }

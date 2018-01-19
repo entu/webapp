@@ -58,7 +58,7 @@
 <template lang="pug">
     .h-100.col-12.col-sm-4.col-lg-3
         .row.h-100
-            form#search.col-12.p-0.pl-2(action='.')
+            form#search.col-12.p-0(action='.')
                 .input-group.p-3
                     label.input-group-addon(for='search-field')
                         i.fas.fa-lg.fa-search

@@ -56,7 +56,7 @@
     .col.d-none.d-sm-block
         .row.h-100
             nav.navbar.navbar-expand-sm.col.p-0
-                .collapse.navbar-collapse
+                .collapse.navbar-collapse.pr-2
                     ul.navbar-nav.ml-sm-auto
                         li.nav-item
                             a.nav-link.p-3(href='#')
@@ -76,30 +76,9 @@
                         li.nav-item
                             a.nav-link.p-3(href='#')
                                 i.fas.fa-lg.fa-share-square
-                        li.nav-item.dropdown
-                            a.nav-link.dropdown-toggle.p-3(href='#', role='button', data-toggle='dropdown')
+                        li.nav-item
+                            router-link.nav-link.p-3(v-bind:to="{ name: 'auth' }")
                                 i.fas.fa-lg.fa-sign-in-alt
-                            .dropdown-menu.dropdown-menu-right
-                                a.dropdown-item(v-bind:href='"https://api.entu.ee/auth/google?next=" + host + "/auth/"')
-                                    i.fab.fa-google
-                                    span Google
-                                a.dropdown-item(v-bind:href='"https://api.entu.ee/auth/facebook?next=" + host + "/auth/"')
-                                    i.fab.fa-facebook
-                                    span Facebook
-                                a.dropdown-item(v-bind:href='"https://api.entu.ee/auth/microsoft?next=" + host + "/auth/"')
-                                    i.fab.fa-microsoft
-                                    span Microsoft
-                                .dropdown-divider
-                                a.dropdown-item(href='#')
-                                    i.fas.fa-mobile-alt
-                                    span Mobiil-ID
-                                a.dropdown-item(href='#')
-                                    i.fas.fa-id-card
-                                    span ID-kaart
-                                //- .dropdown-divider
-                                //- a.dropdown-item(href='#')
-                                //-     i.fas.fa-university
-                                //-     span TAAT
             #content.col-12.h-100.p-0
                 .p-3
                     p Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed lobortis, elit sit amet posuere ullamcorper, arcu neque commodo augue, fermentum faucibus turpis tellus eu tortor. Cras ultricies nisi a lorem finibus, ac tincidunt lorem eleifend. In vitae velit posuere, elementum erat vel, semper lacus. Nam dictum, orci at consequat volutpat, magna libero dapibus velit, eu consequat nisl sapien et erat. Donec quis nulla urna. Integer purus magna, accumsan vel mollis sit amet, porta tempor quam. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam erat volutpat. Etiam fringilla risus sapien, eget hendrerit nisi pulvinar vitae. Morbi magna dui, ultrices quis risus id, tincidunt fringilla lacus. Fusce nisl ante, efficitur tristique ipsum ornare, mollis sagittis turpis. Duis augue dolor, scelerisque a enim eu, vehicula vestibulum ante. Fusce aliquam tellus est, id mattis elit varius ut. Quisque elit elit, pretium vel maximus in, gravida vitae felis.
@@ -115,7 +94,7 @@
     export default {
         data () {
             return {
-                host: window.location.origin
+
             }
         }
     }

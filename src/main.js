@@ -11,6 +11,8 @@ import app from './components/app.vue'
 import info from './components/info/info.vue'
 import auth from './components/auth/auth.vue'
 import entity from './components/entity/entity.vue'
+import entityInfo from './components/entity/entity-info.vue'
+import entityList from './components/entity/entity-list.vue'
 
 
 // Use packages
@@ -23,8 +25,12 @@ const router = new VueRouter({
     mode: 'history',
     routes: [
         { path: '/', component: info },
+        { name: 'auth', path: '/auth', component: auth },
         { path: '/auth/:id', component: auth },
-        { path: '/entity', component: entity }
+        { path: '/:account', component: entity, children: [
+            { name: 'menu', path: '', component: entityInfo },
+            { name: 'list', path: ':menu', component: entityList }
+        ] }
     ]
 })
 
