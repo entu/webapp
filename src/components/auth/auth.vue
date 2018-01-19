@@ -96,16 +96,16 @@
             .fa-university
                 color: #369a21
 
+            i
+                text-align center
+                height 16px
+                width 16px
+
             span
                 font-weight bold
 
         &:last-child
             border-bottom none
-
-    i
-        text-align center
-        height 16px
-        width 16px
 
     span
         padding-left 10px
@@ -122,7 +122,7 @@
         .content.row.h-100.justify-content-center
             .h-100.col-xs-12.col-sm-6.col-md-4.col-lg-3.col-xl-2.borderbox
                 .row.h-100(v-show='!this.authenticating && !accounts')
-                    .col-12.mt-5.align-self-top
+                    .col-12.mt-5.align-self-start
                         h1.text-center.mb-5 Logi sisse
                         ul.list-unstyled
                             li
@@ -152,7 +152,7 @@
                     .col-12.align-self-end.text-center
                         p Entu.ee kasutab autentimiseks ülaltoodud teenusepakkujaid. Teie kasutajanime ega parooli meile ei edastata.
                 .row.h-100(v-show='accounts && accounts.length > 0')
-                    .col-12.mt-5.align-self-top
+                    .col-12.mt-5.align-self-start
                         h1.text-center.mb-5 Vali konto
                         ul.list-unstyled
                             li(v-for='a in accounts')
@@ -166,6 +166,9 @@
                                 a(href='', v-on:click.prevent='logOut')
                                     i.fas.fa-sign-out-alt
                                     span Välju
+                .row.h-100(v-show='authenticating')
+                    .col-12.mt-5.align-self-center.text-center
+                        i.fas.fa-spinner.fa-pulse
 </template>
 
 
