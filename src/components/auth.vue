@@ -1,15 +1,14 @@
 <style lang="stylus" scoped>
-    .background-image
+    .background
+    .content
         position fixed
         top 0
         right 0
         bottom 0
         left 0
-        z-index 1
 
-        background-repeat no-repeat
-        background-position center
-        background-size cover
+    .background
+        z-index 1
 
         -webkit-filter blur(7px)
         -moz-filter blur(7px)
@@ -22,6 +21,10 @@
         -o-transform scale(1.02)
         -ms-transform scale(1.02)
         transform scale(1.02)
+
+        background-repeat no-repeat
+        background-position center
+        background-size cover
 
         &.bg-1
             background-image url('../assets/backgrounds/bg-1.png')
@@ -49,130 +52,116 @@
             background-image url('../assets/backgrounds/bg-12.png')
 
     .content
-        position fixed
-        top 0
-        right 0
-        bottom 0
-        left 0
-        margin-left 20px
-        margin-right 20px
-        z-index 9999
+        z-index 9
 
-    .borderbox
-        overflow-y auto
-        background rgba(255, 255, 255, 0.95)
-        border-right 1px solid #d1d1d1
-        border-left 1px solid #d1d1d1
+        .borderbox
+            overflow-y auto
+            background rgba(255, 255, 255, 0.95)
+            border-right 1px solid #d1d1d1
+            border-left 1px solid #d1d1d1
 
-    h1
-        font-size 34px
-    ul
-        margin-bottom 0
-    li
-        border-bottom 1px solid #e4e4e4
+            h1
+                font-size 34px
 
-        &:last-child
-            border-bottom none
+            li
+                border-top 1px solid #e4e4e4
 
-    a
-        display block
-        padding 10px
-        padding-left 40px
-        color inherit
+                &:first-child
+                    border-top none
 
-        &:hover
-            color inherit
-            text-decoration none
+                a
+                    display block
+                    padding 10px
+                    padding-left 40px
+                    color inherit
 
-            .fa-google
-                color: #e22c29
-            .fa-facebook
-                color: #39579a
-            .fa-microsoft
-                color: #0070c9
-            .fa-mobile-alt
-                color: #f04822
-            .fa-id-card
-                color: #3d89f7
-            .fa-university
-                color: #369a21
-            .fa-database
-                color: #3399ff
-            .fa-sign-out-alt
-                color: #cc0033
+                    &:hover
+                        color inherit
+                        text-decoration none
 
-            span
-                font-weight bold
+                        .fa-google
+                            color: #e22c29
+                        .fa-facebook
+                            color: #39579a
+                        .fa-microsoft
+                            color: #0070c9
+                        .fa-mobile-alt
+                            color: #f04822
+                        .fa-id-card
+                            color: #3d89f7
+                        .fa-university
+                            color: #369a21
+                        .fa-database
+                            color: #3399ff
+                        .fa-sign-out-alt
+                            color: #cc0033
 
-        &:last-child
-            border-bottom none
+                        span
+                            font-weight bold
 
-        i
-            text-align center
-            height 16px
-            width 16px
+                    i
+                        text-align center
+                        height 16px
+                        width 16px
 
-    span
-        padding-left 10px
+                    span
+                        padding-left 10px
 
-    p
-        font-size 14px
+            p
+                font-size 14px
 </style>
 
 
 
 <template lang="pug">
     div
-        .background-image(v-bind:class='background')
-        .content.row.h-100.justify-content-center
-            .h-100.col-xs-12.col-sm-6.col-md-4.col-lg-3.col-xl-2.borderbox
+        .background(:class='background')
+        .content.row.justify-content-center
+            .borderbox.h-100.col-xs-12.col-sm-6.col-md-4.col-lg-3.col-xl-2
                 .row.h-100(v-show='!this.authenticating && !accounts')
-                    .col-12.mt-5.align-self-start
-                        h1.text-center.mb-5 Logi sisse
+                    .col-12
+                        h1.text-center.mt-5.mb-5 Logi sisse
                         ul.list-unstyled
                             li
-                                a(v-bind:href='"https://api.entu.ee/auth/google?next=" + host + "/auth/"')
+                                a(:href='"https://api.entu.ee/auth/google?next=" + host + "/auth/"')
                                     i.fab.fa-google
                                     span Google
                             li
-                                a(v-bind:href='"https://api.entu.ee/auth/facebook?next=" + host + "/auth/"')
+                                a(:href='"https://api.entu.ee/auth/facebook?next=" + host + "/auth/"')
                                     i.fab.fa-facebook
                                     span Facebook
-                            li(style='border-color:#bebebe')
-                                a(v-bind:href='"https://api.entu.ee/auth/microsoft?next=" + host + "/auth/"')
+                            li
+                                a(:href='"https://api.entu.ee/auth/microsoft?next=" + host + "/auth/"')
                                     i.fab.fa-microsoft
                                     span Microsoft
-                            li
+                            li(style='border-color:#bebebe')
                                 a(href='')
                                     i.fas.fa-mobile-alt
                                     span Mobiil-ID
-                            li(style='border-color:#bebebe')
+                            li
                                 a(href='')
                                     i.fas.fa-id-card
                                     span ID-kaart
-                            li
+                            li(style='border-color:#bebebe')
                                 a(href='')
                                     i.fas.fa-university
                                     span TAAT
-                    .col-12.align-self-end.text-center
-                        p Entu.ee kasutab autentimiseks ülaltoodud teenusepakkujaid. Teie kasutajanime ega parooli meile ei edastata.
+                    .col-12.align-self-end
+                        p.text-center Entu.ee kasutab autentimiseks ülaltoodud teenusepakkujaid. Teie kasutajanime ega parooli meile ei edastata.
                 .row.h-100(v-show='accounts && accounts.length > 0')
-                    .col-12.mt-5.align-self-start
-                        h1.text-center.mb-5 Vali konto
+                    .col-12
+                        h1.text-center.mt-5.mb-5 Vali konto
                         ul.list-unstyled
                             li(v-for='a in accounts')
-                                router-link(v-bind:to="{ name: 'menu', params: { account: a.account } }")
+                                router-link(:to="{ name: 'menu', params: { account: a.account } }")
                                     i.fas.fa-database
                                     span {{ a.account }}
-                    .col-12.align-self-end
-                        ul.list-unstyled
-                            li
-                            li
-                                a(href='', v-on:click.prevent='logOut')
+                            li(style='border-color:#bebebe')
+                                a(href='', @click.prevent='logOut')
                                     i.fas.fa-sign-out-alt
                                     span Välju
                 .row.h-100(v-show='authenticating')
-                    .col-12.mt-5.align-self-center.text-center
+                    .col-12.align-self-center.text-center
                         i.fas.fa-spinner.fa-pulse
 </template>
 

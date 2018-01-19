@@ -60,9 +60,9 @@
 
 
 <template lang="pug">
-    #menu.h-100.d-none.d-lg-block.p-0(v-bind:class='{ "col-lg-2": !closed, "col-auto": closed }')
+    #menu.h-100.d-none.d-lg-block.p-0(:class='{ "col-lg-2": !closed, "col-auto": closed }')
         .p-3
-            a(href='', v-on:click.prevent='closed = !closed')
+            a(href='', @click.prevent='closed = !closed')
                 i.fas.fa-bars.float-right
         #menu-content.p-3(v-show='!closed')
             img.mb-3.rounded-circle.mx-auto.d-block(src='https://lorempixel.com/100/100/cats/', alt='')
@@ -70,9 +70,9 @@
             h4.pb-3.text-center Donec Vitae Pellentesque
             ul.list-unstyled
                 li.menu-group.mt-4(v-for='mg in menu')
-                    a(href='', v-on:click.prevent='mg.active = !mg.active')
+                    a(href='', @click.prevent='mg.active = !mg.active')
                         h5.mb-1
-                            i.fas(v-bind:class='{ "fa-angle-down": mg.active, "fa-angle-right": !mg.active }')
+                            i.fas(:class='{ "fa-angle-down": mg.active, "fa-angle-right": !mg.active }')
                             span {{ mg.title }}
                     ul.list-unstyled(v-show='mg.active', style='display:block')
                         li(v-for='l in mg.links')

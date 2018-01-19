@@ -77,7 +77,7 @@
                             a.nav-link.p-3(href='#')
                                 i.fas.fa-lg.fa-share-square
                         li.nav-item
-                            router-link.nav-link.p-3(v-bind:to="{ name: 'auth' }")
+                            router-link.nav-link.p-3(:to="{ name: 'auth' }")
                                 i.fas.fa-lg.fa-sign-in-alt
             #content.col-12.h-100.p-0
                 .p-3
