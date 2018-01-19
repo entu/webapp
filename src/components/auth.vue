@@ -150,7 +150,7 @@
                         p.text-center Entu.ee kasutab autentimiseks ülaltoodud teenusepakkujaid. Teie kasutajanime ega parooli meile ei edastata.
                 .row.h-100(v-show='accounts && accounts.length > 0')
                     .col-12
-                        h1.text-center.mt-5.mb-5 Vali konto
+                        h1.text-center.mt-5.mb-5 Vali andmebaas
                         ul.list-unstyled
                             li(v-for='a in accounts')
                                 router-link(:to="{ name: 'menu', params: { account: a.account } }")
@@ -186,17 +186,15 @@
                 }).then(function (data) {
                     this.accounts = Object.values(data)
 
-                    if (this.accounts.length > 0) {
+                    this.authenticating = false
+
+                    if (this.accounts.length === 1) {
+                        this.$router.push({ name: 'menu', params: { account: this.accounts[0].account } })
+                    } else if (this.accounts.length > 0) {
                         sessionStorage.setItem('accounts', JSON.stringify(data))
                     } else {
                         this.accounts = null
                     }
-
-                    if (this.accounts.length === 1) {
-                        this.$router.push({ name: 'menu', params: { account: this.accounts[0].account } })
-                    }
-
-                    this.authenticating = false
                 }).catch(function (data) {
                     console.log(data)
                     this.$router.push({ name: 'auth' })
