@@ -8,6 +8,9 @@
         -webkit-font-smoothing antialiased
         -moz-osx-font-smoothing grayscale
 
+    a
+        outline 0
+
     .fade-enter-active
     .fade-leave-active
         transition opacity .6s

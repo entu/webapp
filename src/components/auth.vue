@@ -96,6 +96,10 @@
                 color: #3d89f7
             .fa-university
                 color: #369a21
+            .fa-database
+                color: #3399ff
+            .fa-sign-out-alt
+                color: #cc0033
 
             span
                 font-weight bold
