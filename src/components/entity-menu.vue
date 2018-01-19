@@ -70,9 +70,9 @@
             a(href='', @click.prevent='closed = !closed')
                 i.fas.fa-bars.float-right
         #menu-content.p-3(v-show='!closed')
-            img.mb-3.rounded-circle.mx-auto.d-block(src='https://lorempixel.com/100/100/cats/', alt='')
+            img.col-5.mb-3.rounded-circle.mx-auto.d-block(:src='user.photo', :alt='user.name')
 
-            h4.pb-3.text-center Donec Vitae Pellentesque
+            //- h4.pb-3.text-center {{ user.name }}
             ul.list-unstyled
                 li.menu-group.mt-4(v-for='mg in menu')
                     a(href='', @click.prevent='mg.active = !mg.active')
@@ -87,11 +87,11 @@
 
 
 <script>
-    const getValue = function (valueList) {
+    const getValue = (valueList) => {
         const language = 'et'
         let values = []
 
-        valueList.forEach(function (v) {
+        valueList.forEach((v) => {
             if (!v.language || v.language === language) {
                 values.push(v.string)
             }
@@ -100,68 +100,148 @@
         return values[0]
     }
 
+    const getUser = (route, http, callback) => {
+        let options = {
+            params: {
+                'props': [
+                    'forename.string',
+                    'forename.language',
+                    'surname.string',
+                    'surname.language',
+                    'photo._id'
+                ].join(',')
+            }
+        }
+
+        const account = route.params.account
+        const accounts = JSON.parse(sessionStorage.getItem('accounts'))
+
+        if (accounts && accounts[account] && accounts[account]._id && accounts[account].token) {
+            options.headers = {
+                Authorization: `Bearer ${accounts[account].token}`
+            }
+        } else {
+            callback(null, null)
+        }
+
+        http.get(`https://api.entu.ee/entity/${accounts[account]._id}`, options).then(data => {
+            return data.json()
+        }).then(data => {
+            callback(null, {
+                name: [getValue(data.forename), getValue(data.forename)].join(' '),
+                photo: data.photo[0]._id
+            })
+        }).catch(data => {
+            callback(data)
+        })
+    }
+
+
+    const getPhoto = (_id, route, http, callback) => {
+        let options = {}
+
+        const account = route.params.account
+        const accounts = JSON.parse(sessionStorage.getItem('accounts'))
+
+        if (accounts && accounts[account] && accounts[account]._id && accounts[account].token) {
+            options.headers = {
+                Authorization: `Bearer ${accounts[account].token}`
+            }
+        } else {
+            callback(null, null)
+        }
+
+        http.get(`https://api.entu.ee/property/${_id}`, options).then(data => {
+            return data.json()
+        }).then(data => {
+            callback(null, data.url)
+        }).catch(data => {
+            callback(data)
+        })
+    }
+
+
+    const getMenu = (route, http, callback) => {
+        let options = {
+            params: {
+                '_type.string': 'menu',
+                'props': [
+                    'group.string',
+                    'group.language',
+                    'title.string',
+                    'title.language',
+                    'query.string'
+                ].join(',')
+            }
+        }
+
+        const account = route.params.account
+        const accounts = JSON.parse(sessionStorage.getItem('accounts'))
+
+        if (accounts && accounts[account] && accounts[account].token) {
+            options.headers = {
+                Authorization: `Bearer ${accounts[account].token}`
+            }
+        } else {
+            options.params.account = account
+        }
+
+        http.get('https://api.entu.ee/entity', options).then(data => {
+            return data.json()
+        }).then(data => {
+            if (!data.entities) { return }
+
+            let menu = {}
+
+            data.entities.forEach((entity) => {
+                let group = getValue(entity.group)
+                if (!menu[group]) {
+                    menu[group] = {
+                        title: getValue(entity.group),
+                        links: [],
+                        active: false
+                    }
+                }
+                menu[group].links.push({
+                    title: getValue(entity.title),
+                    url: getValue(entity.query)
+                })
+            })
+
+            callback(null, Object.values(menu))
+        }).catch(data => {
+            callback(data)
+        })
+    }
+
     export default {
         created() {
-            let options = {
-                params: {
-                    '_type.string': 'menu',
-                    'props': [
-                        'group.string',
-                        'group.language',
-                        'title.string',
-                        'title.language',
-                        'query.string'
-                    ].join(',')
-                }
-            }
+            getUser(this.$route, this.$http, (err, person) => {
+                if (err) { return console.log(err) }
 
-            const account = this.$route.params.account
-            const accounts = JSON.parse(sessionStorage.getItem('accounts'))
-
-            if (accounts && accounts[account] && accounts[account].token) {
-                options.headers = {
-                    Authorization: `Bearer ${accounts[account].token}`
-                }
-            } else {
-                options.params.account = account
-            }
-            console.log(options);
-
-            this.$http.get('https://api.entu.ee/entity', options).then(function (data) {
-                return data.json()
-            }).then(function (data) {
-                if (!data.entities) { return }
-
-                let menu = {}
-
-                data.entities.forEach(function (entity) {
-                    let group = getValue(entity.group)
-                    if (!menu[group]) {
-                        menu[group] = {
-                            title: getValue(entity.group),
-                            links: [],
-                            active: false
-                        }
-                    }
-                    menu[group].links.push({
-                        title: getValue(entity.title),
-                        url: getValue(entity.query)
-                    })
+                getPhoto(person.photo, this.$route, this.$http, (err, url) => {
+                    this.user = person
+                    this.user.photo = url
                 })
+            })
 
-                this.menu = Object.values(menu)
+            getMenu(this.$route, this.$http, (err, menu) => {
+                if (err) { return console.log(err) }
 
+                this.menu = menu
                 this.menu[0].active = true
-            }).catch(function (data) {
-                console.log(data);
             })
         },
         data () {
             return {
                 token: null,
                 closed: false,
+                user: null,
                 menu: []
             }
+        },
+        methods: {
+
         }
     }
 </script>
