@@ -59,6 +59,7 @@
         z-index 9999
 
     .borderbox
+        overflow-y auto
         background rgba(255, 255, 255, 0.95)
         border-right 1px solid #d1d1d1
         border-left 1px solid #d1d1d1
