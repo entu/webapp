@@ -170,7 +170,9 @@
 <script>
     export default {
         created() {
-            if (this.$route.params.id) {
+            if (this.$route.params.id === 'out') {
+                this.logOut()
+            } else if (this.$route.params.id) {
                 this.authenticating = true
 
                 const options = {
@@ -188,6 +190,10 @@
                         sessionStorage.setItem('accounts', JSON.stringify(data))
                     } else {
                         this.accounts = null
+                    }
+
+                    if (this.accounts.length === 1) {
+                        this.$router.push({ name: 'menu', params: { account: this.accounts[0].account } })
                     }
 
                     this.authenticating = false
