@@ -63,9 +63,6 @@
                 li.nav-item
                     a.nav-link.p-3(href='#')
                         i.fas.fa-lg.fa-share-square
-                li.nav-item
-                    router-link.nav-link.p-3(:to="{ name: 'auth' }")
-                        i.fas.fa-lg.fa-sign-in-alt
 </template>
 
 
