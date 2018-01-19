@@ -1,5 +1,8 @@
 <template lang="pug">
-    p info
+    .h-100.col
+        .row.h-100
+            .h-100.col.mt-2
+                p
 </template>
 
 

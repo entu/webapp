@@ -20,7 +20,7 @@
 
 
 <style lang="stylus" scoped>
-    .row.h-100
+    .h-100.col
         padding-bottom 56px
 
     #search
