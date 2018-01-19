@@ -55,7 +55,7 @@ module.exports = {
         new webpack.HashedModuleIdsPlugin({
             hashFunction: 'md5',
             hashDigest: 'hex',
-            hashDigestLength: 32
+            hashDigestLength: 16
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor'
@@ -108,7 +108,7 @@ module.exports = {
         overlay: true
     },
     output: {
-        hashDigestLength: 32,
+        hashDigestLength: 16,
         filename: `[name].${process.env.NODE_ENV === 'production' ? '[chunkhash]' : '[hash]'}.js`,
         path: path.resolve(__dirname, 'dist'),
         publicPath: '/',
