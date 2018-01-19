@@ -8,16 +8,17 @@
         -webkit-font-smoothing antialiased
         -moz-osx-font-smoothing grayscale
 
-    a
-        outline 0
+        a
+        input
+            outline 0
 
-    .fade-enter-active
-    .fade-leave-active
-        transition opacity .6s
+        .fade-enter-active
+        .fade-leave-active
+            transition opacity .6s
 
-    .fade-enter
-    .fade-leave-to
-        opacity 0
+        .fade-enter
+        .fade-leave-to
+            opacity 0
 </style>
 
 
@@ -30,25 +31,4 @@
 
 
 
-<script>
-    import info from './info.vue'
-    import auth from './auth.vue'
-    import entity from './entity.vue'
-
-    export default {
-        name: 'app',
-        components: {
-            'show-info': info,
-            'show-auth': auth,
-            'show-entity': entity
-        },
-        data () {
-            return {
-
-            }
-        },
-        methods: {
-
-        }
-    }
-</script>
+<script></script>

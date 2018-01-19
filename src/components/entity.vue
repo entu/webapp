@@ -11,16 +11,11 @@
 
 
 <script>
-    import menu from './menu.vue'
+    import menu from './entity-menu.vue'
 
     export default {
         components: {
             'entity-menu': menu
-        },
-        data () {
-            return {
-
-            }
         }
     }
 </script>
