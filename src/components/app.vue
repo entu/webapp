@@ -28,9 +28,9 @@
 
 
 <script>
-    import info from './info/info.vue'
-    import auth from './auth/auth.vue'
-    import entity from './entity/entity.vue'
+    import info from './info.vue'
+    import auth from './auth.vue'
+    import entity from './entity.vue'
 
     export default {
         name: 'app',
