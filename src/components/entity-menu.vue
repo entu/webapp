@@ -6,7 +6,7 @@
         overflow-x hidden
         -webkit-overflow-scrolling touch
 
-        img
+        img.border
             padding 2px !important
             border 1px solid #d5d5d5
 
@@ -72,7 +72,8 @@
             router-link(v-show='!closed', :to="{ name: 'auth', params: { id: 'out' } }")
                 i.fas.fa-sign-out-alt.float-right
         #menu-content.p-3(v-show='!closed')
-            img.col-5.mb-3.rounded-circle.mx-auto.d-block(:src='user.photo', :alt='user.name')
+            img.border.col-5.mb-3.rounded-circle.mx-auto.d-block(v-if='user.photo', :src='user.photo', :alt='user.name')
+            img.col-6.mb-3.mx-auto.d-block(v-if='!user.photo', src='../assets/logo.png', :alt='user.name')
 
             //- h4.pb-3.text-center {{ user.name }}
             ul.list-unstyled
@@ -123,7 +124,7 @@
                 Authorization: `Bearer ${accounts[account].token}`
             }
         } else {
-            callback(null, null)
+            return callback(null, null)
         }
 
         http.get(`https://api.entu.ee/entity/${accounts[account]._id}`, options).then(data => {
@@ -150,7 +151,7 @@
                 Authorization: `Bearer ${accounts[account].token}`
             }
         } else {
-            callback(null, null)
+            return callback(null, null)
         }
 
         http.get(`https://api.entu.ee/property/${_id}`, options).then(data => {
@@ -221,10 +222,12 @@
             getUser(this.$route, this.$http, (err, person) => {
                 if (err) { return console.log(err) }
 
-                getPhoto(person.photo, this.$route, this.$http, (err, url) => {
-                    this.user = person
-                    this.user.photo = url
-                })
+                if (person && person.photo) {
+                    getPhoto(person.photo, this.$route, this.$http, (err, url) => {
+                        this.user = person
+                        this.user.photo = url
+                    })
+                }
             })
 
             getMenu(this.$route, this.$http, (err, menu) => {
@@ -238,7 +241,10 @@
             return {
                 token: null,
                 closed: false,
-                user: null,
+                user: {
+                    name: null,
+                    photo: null
+                },
                 menu: []
             }
         },
