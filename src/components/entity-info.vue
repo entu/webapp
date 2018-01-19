@@ -1,8 +1,8 @@
 <template lang="pug">
     .h-100.col
         .row.h-100
-            .h-100.col.mt-2
-                p
+            .h-100.col
+                p.mt-2
 </template>
 
 
