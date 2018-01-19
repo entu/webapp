@@ -97,16 +97,16 @@
             .fa-university
                 color: #369a21
 
-            i
-                text-align center
-                height 16px
-                width 16px
-
             span
                 font-weight bold
 
         &:last-child
             border-bottom none
+
+        i
+            text-align center
+            height 16px
+            width 16px
 
     span
         padding-left 10px
@@ -220,6 +220,7 @@
         methods: {
             logOut () {
                 this.accounts = null
+                this.authenticating = false
                 sessionStorage.removeItem('accounts')
             }
         }
