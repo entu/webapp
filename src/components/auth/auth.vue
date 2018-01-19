@@ -65,7 +65,8 @@
 
     h1
         font-size 34px
-
+    ul
+        margin-bottom 0
     li
         border-bottom 1px solid #e4e4e4
 
@@ -120,7 +121,7 @@
         .background-image(v-bind:class='background')
         .content.row.h-100.justify-content-center
             .h-100.col-xs-12.col-sm-6.col-md-4.col-lg-3.col-xl-2.borderbox
-                .row.h-100(v-show='!accounts')
+                .row.h-100(v-show='!this.authenticating && !accounts')
                     .col-12.mt-5.align-self-top
                         h1.text-center.mb-5 Logi sisse
                         ul.list-unstyled
@@ -173,6 +174,8 @@
     export default {
         created() {
             if (this.$route.params.id) {
+                this.authenticating = true
+
                 const options = {
                     headers: {
                         Authorization: `Bearer ${this.$route.params.id}`
@@ -193,7 +196,13 @@
                        })
                     }
 
-                    sessionStorage.setItem('accounts', JSON.stringify(this.accounts))
+                    if (this.accounts.length > 0) {
+                        sessionStorage.setItem('accounts', JSON.stringify(this.accounts))
+                    } else {
+                        this.accounts = null
+                    }
+
+                    this.authenticating = false
                 }).catch(function (data) {
                     console.log(data)
                     this.$router.push({ name: 'auth' })
@@ -209,7 +218,7 @@
             return {
                 host: window.location.origin,
                 background: `bg-${Math.ceil(Math.random()*12)}`,
-                authenticated: false,
+                authenticating: false,
                 accounts: null
             }
         },
