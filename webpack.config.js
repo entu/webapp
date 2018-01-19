@@ -35,7 +35,7 @@ module.exports = {
         }),
         new FaviconsWebpackPlugin({
             logo: './src/assets/logo.png',
-            prefix: 'icons.[hash]/',
+            prefix: '[hash:16]/',
             inject: true,
             online: false,
             persistentCache: false,
@@ -54,8 +54,7 @@ module.exports = {
         }),
         new webpack.HashedModuleIdsPlugin({
             hashFunction: 'md5',
-            hashDigest: 'hex',
-            hashDigestLength: 16
+            hashDigest: 'hex'
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor'
@@ -63,7 +62,7 @@ module.exports = {
         new webpack.optimize.CommonsChunkPlugin({
             name: 'manifest'
         }),
-        new ExtractTextPlugin(`[name].[contenthash].css`),
+        new ExtractTextPlugin(`[contenthash:16]/[name].css`),
         new webpack.LoaderOptionsPlugin({
             minimize: true
         })
@@ -97,7 +96,7 @@ module.exports = {
                 test: /\.(png|jpg|gif|svg)$/,
                 loader: 'file-loader',
                 options: {
-                    name: `[name].[hash].[ext]`
+                    name: `[hash:16]/[name].[ext]`
                 }
             }
         ]
@@ -108,8 +107,7 @@ module.exports = {
         overlay: true
     },
     output: {
-        hashDigestLength: 16,
-        filename: `[name].${process.env.NODE_ENV === 'production' ? '[chunkhash]' : '[hash]'}.js`,
+        filename: `${process.env.NODE_ENV === 'production' ? '[chunkhash:16]' : '[hash:16]'}/[name].js`,
         path: path.resolve(__dirname, 'dist'),
         publicPath: '/',
     }
