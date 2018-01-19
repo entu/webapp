@@ -6,7 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
     entry: {
-        entry: './src/main.js',
+        main: './src/main.js',
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin({
