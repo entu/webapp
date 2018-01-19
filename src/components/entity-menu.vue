@@ -70,7 +70,8 @@
             a(href='', @click.prevent='closed = !closed')
                 i.fas.fa-bars.float-left
             router-link(v-show='!closed', :to="{ name: 'auth' }")
-                i.fas.fa-sign-out-alt.float-right
+                i.fas.fa-sign-in-alt.float-right(v-if='!authenticated')
+                i.fas.fa-sign-out-alt.float-right(v-if='authenticated')
         #menu-content.p-3(v-show='!closed')
             img.border.col-5.mb-3.rounded-circle.mx-auto.d-block(v-if='user.photo', :src='user.photo', :alt='user.name')
             img.col-6.mb-3.mx-auto.d-block(v-if='!user.photo', src='../assets/logo.png', :alt='user.name')
@@ -248,8 +249,13 @@
                 menu: []
             }
         },
-        methods: {
+        computed: {
+            authenticated () {
+                const account = this.$route.params.account
+                const accounts = JSON.parse(sessionStorage.getItem('accounts'))
 
+                return accounts && accounts[account] && accounts[account].token
+            }
         }
     }
 </script>
