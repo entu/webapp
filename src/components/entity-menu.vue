@@ -68,7 +68,9 @@
     #menu.h-100.d-none.d-lg-block.p-0(:class='{ "col-lg-2": !closed, "col-auto": closed }')
         .p-3
             a(href='', @click.prevent='closed = !closed')
-                i.fas.fa-bars.float-right
+                i.fas.fa-bars.float-left
+            router-link(v-show='!closed', :to="{ name: 'auth' }")
+                i.fas.fa-sign-out-alt.float-right
         #menu-content.p-3(v-show='!closed')
             img.col-5.mb-3.rounded-circle.mx-auto.d-block(:src='user.photo', :alt='user.name')
 
