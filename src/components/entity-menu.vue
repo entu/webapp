@@ -17,14 +17,16 @@
                 text-decoration none
 
         h4
-            font-size 20px
-            line-height 24px
+            font-size 18px
+            line-height 20px
             font-weight 400
             // letter-spacing 1px
 
         .menu-group
             h5
-                font-weight 500
+                font-size 16px
+                line-height 16px
+                font-weight 700
                 text-transform uppercase
                 letter-spacing 1px
                 text-overflow ellipsis
@@ -47,6 +49,9 @@
                     text-overflow ellipsis
                     white-space nowrap
                     overflow hidden
+
+                    &:hover
+                        font-weight 500
 
     .fade-enter-active
     .fade-leave-active
@@ -110,17 +115,17 @@
                 }
             }
 
-            const accounts = JSON.parse(sessionStorage.getItem('accounts'))
             const account = this.$route.params.account
-            const token = accounts[account]
+            const accounts = JSON.parse(sessionStorage.getItem('accounts'))
 
-            if (!token) {
+            if (accounts && accounts[account] && accounts[account].token) {
                 options.headers = {
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${accounts[account].token}`
                 }
             } else {
                 options.params.account = account
             }
+            console.log(options);
 
             this.$http.get('https://api.entu.ee/entity', options).then(function (data) {
                 return data.json()
@@ -147,6 +152,8 @@
                 this.menu = Object.values(menu)
 
                 this.menu[0].active = true
+            }).catch(function (data) {
+                console.log(data);
             })
         },
         data () {
