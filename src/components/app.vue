@@ -12,6 +12,13 @@
         input
             outline 0
 
+        a
+            color inherit
+
+            &:hover
+                color inherit
+                text-decoration none
+
         .fade-enter-active
         .fade-leave-active
             transition opacity .6s

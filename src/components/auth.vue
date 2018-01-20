@@ -61,7 +61,8 @@
             border-left 1px solid #d1d1d1
 
             h1
-                font-size 34px
+                font-size 30px
+                line-height 30px
 
             li
                 border-top 1px solid #e4e4e4
@@ -69,43 +70,40 @@
                 &:first-child
                     border-top none
 
-                a
-                    display block
-                    padding 10px
-                    padding-left 40px
-                    color inherit
+            a
+                display block
+                padding 10px
+                // padding-left 40px
+                color inherit
 
-                    &:hover
-                        color inherit
-                        text-decoration none
-
-                        .fa-google
-                            color: #e22c29
-                        .fa-facebook
-                            color: #39579a
-                        .fa-microsoft
-                            color: #0070c9
-                        .fa-mobile-alt
-                            color: #f04822
-                        .fa-id-card
-                            color: #3d89f7
-                        .fa-university
-                            color: #369a21
-                        .fa-database
-                            color: #3399ff
-                        .fa-sign-out-alt
-                            color: #cc0033
-
-                        span
-                            font-weight bold
-
-                    i
-                        text-align center
-                        height 16px
-                        width 16px
+                &:hover
+                    .fa-google
+                        color: #e22c29
+                    .fa-facebook
+                        color: #39579a
+                    .fa-microsoft
+                        color: #0070c9
+                    .fa-mobile-alt
+                        color: #f04822
+                    .fa-id-card
+                        color: #3d89f7
+                    .fa-university
+                        color: #369a21
+                    .fa-database
+                        color: #3399ff
+                    .fa-sign-out-alt
+                        color: #cc0033
 
                     span
-                        padding-left 10px
+                        font-weight bold
+
+                i
+                    text-align center
+                    height 16px
+                    width 16px
+
+                span
+                    padding-left 10px
 
             p
                 font-size 14px
@@ -120,46 +118,48 @@
             .borderbox.h-100.col-xs-12.col-sm-6.col-md-4.col-lg-3.col-xl-2
                 .row.h-100(v-show='!this.authenticating && !accounts')
                     .col-12
+                        img.col-6.mt-5.mx-auto.d-block(src='../assets/logo.png', alt='Entu')
                         h1.text-center.mt-5.mb-5 Logi sisse
                         ul.list-unstyled
                             li
-                                a(:href='"https://api.entu.ee/auth/google?next=" + host + "/auth/"')
+                                a.pl-5(:href='"https://api.entu.ee/auth/google?next=" + host + "/auth/"')
                                     i.fab.fa-google
                                     span Google
                             li
-                                a(:href='"https://api.entu.ee/auth/facebook?next=" + host + "/auth/"')
+                                a.pl-5(:href='"https://api.entu.ee/auth/facebook?next=" + host + "/auth/"')
                                     i.fab.fa-facebook
                                     span Facebook
                             li
-                                a(:href='"https://api.entu.ee/auth/microsoft?next=" + host + "/auth/"')
+                                a.pl-5(:href='"https://api.entu.ee/auth/microsoft?next=" + host + "/auth/"')
                                     i.fab.fa-microsoft
                                     span Microsoft
                             li(style='border-color:#bebebe')
-                                a(href='')
+                                a.pl-5(href='')
                                     i.fas.fa-mobile-alt
                                     span Mobiil-ID
                             li
-                                a(href='')
+                                a.pl-5(href='')
                                     i.fas.fa-id-card
                                     span ID-kaart
                             li(style='border-color:#bebebe')
-                                a(href='')
+                                a.pl-5(href='')
                                     i.fas.fa-university
                                     span TAAT
                     .col-12.align-self-end
                         p.text-center Entu.ee kasutab autentimiseks ülaltoodud teenusepakkujaid. Teie kasutajanime ega parooli meile ei edastata.
                 .row.h-100(v-show='accounts && accounts.length > 0')
                     .col-12
+                        img.col-6.mt-5.mx-auto.d-block(src='../assets/logo.png', alt='Entu')
                         h1.text-center.mt-5.mb-5 Vali andmebaas
                         ul.list-unstyled
                             li(v-for='a in accounts')
-                                router-link(:to="{ name: 'menu', params: { account: a.account } }")
+                                router-link.pl-5(:to="{ name: 'menu', params: { account: a.account } }")
                                     i.fas.fa-database
                                     span {{ a.account }}
-                            li(style='border-color:#bebebe')
-                                a(href='', @click.prevent='logOut')
-                                    i.fas.fa-sign-out-alt
-                                    span Välju
+                    .col-12.align-self-end.text-center
+                        a(href='', @click.prevent='logOut')
+                            i.fas.fa-sign-out-alt
+                            span Välju
                 .row.h-100(v-show='authenticating')
                     .col-12.align-self-center.text-center
                         i.fas.fa-spinner.fa-pulse
