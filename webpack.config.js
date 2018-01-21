@@ -65,6 +65,12 @@ module.exports = {
         new ExtractTextPlugin(`[contenthash:16]/[name].css`),
         new webpack.LoaderOptionsPlugin({
             minimize: true
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+            sourceMap: true,
+            compress: {
+                warnings: false
+            }
         })
     ],
     module: {
