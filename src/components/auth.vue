@@ -118,8 +118,8 @@
             .borderbox.h-100.col-xs-12.col-sm-6.col-md-4.col-lg-3.col-xl-2
                 .row.h-100(v-show='!this.authenticating && !accounts')
                     .col-12
-                        img.col-5.col-sm-6.mt-5.mx-auto.d-block(src='../assets/logo.png', alt='Entu')
-                        h1.text-center.mt-3.mb-4 Logi sisse
+                        img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../assets/logo.png', alt='Entu')
+                        h1.text-center.mt-5.mb-4 Logi sisse
                         ul.list-unstyled
                             li
                                 a.pl-4(:href='"https://api.entu.ee/auth/google?next=" + host + "/auth/"')
@@ -149,8 +149,8 @@
                         p.text-center Entu.ee kasutab autentimiseks ülaltoodud teenusepakkujaid. Teie kasutajanime ega parooli meile ei edastata.
                 .row.h-100(v-show='accounts && accounts.length > 0')
                     .col-12
-                        img.col-5.col-sm-6.mt-5.mx-auto.d-block(src='../assets/logo.png', alt='Entu')
-                        h1.text-center.mt-3.mb-4 Vali andmebaas
+                        img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../assets/logo.png', alt='Entu')
+                        h1.text-center.mt-5.mb-4 Vali andmebaas
                         ul.list-unstyled
                             li(v-for='a in accounts')
                                 router-link.pl-4(:to="{ name: 'menu', params: { account: a.account } }")
