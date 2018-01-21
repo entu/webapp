@@ -86,6 +86,8 @@
                     ul.list-unstyled(v-show='mg.active', style='display:block')
                         li(v-for='l in mg.links')
                             a(href='') {{ l.title }}
+        .col.mt-5.text-center(v-if='menu.length === 0')
+            i.fas.fa-spinner.fa-pulse
 </template>
 
 
