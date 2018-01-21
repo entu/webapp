@@ -115,7 +115,7 @@
     div
         .background(:class='background')
         .content.row.justify-content-center
-            .borderbox.h-100.col-xs-12.col-sm-6.col-md-4.col-lg-3.col-xl-2
+            .borderbox.h-100.col-10.col-sm-6.col-md-4.col-lg-3.col-xl-2
                 .row.h-100(v-show='!this.authenticating && !accounts')
                     .col-12
                         img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../assets/logo.png', alt='Entu')
