@@ -41,7 +41,7 @@ module.exports = {
             persistentCache: false,
             icons: {
                 android: false,
-                appleIcon: true,
+                appleIcon: false,
                 appleStartup: false,
                 coast: false,
                 favicons: true,
@@ -79,7 +79,8 @@ module.exports = {
                 test: /\.vue$/,
                 loader: 'vue-loader',
                 options: {
-                    extractCSS: true,
+                    extractCSS: false,
+                    preserveWhitespace: false,
                     preLoaders: {
                         i18n: 'yaml-loader'
                     },
