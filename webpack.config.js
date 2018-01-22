@@ -1,5 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -9,10 +10,25 @@ module.exports = {
         main: './src/main.js',
     },
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            minChunks: module => {
-                return module.context && module.context.indexOf('node_modules') !== -1
+        new CleanWebpackPlugin('./dist'),
+        new ExtractTextPlugin(`[contenthash:16]/[name].css`),
+        new FaviconsWebpackPlugin({
+            logo: './src/assets/logo.png',
+            prefix: '[hash:16]/',
+            inject: true,
+            online: false,
+            persistentCache: false,
+            icons: {
+                android: false,
+                appleIcon: false,
+                appleStartup: false,
+                coast: false,
+                favicons: true,
+                firefox: false,
+                opengraph: false,
+                twitter: false,
+                windows: false,
+                yandex: false
             }
         }),
         new HtmlWebpackPlugin({
@@ -33,38 +49,24 @@ module.exports = {
                 useShortDoctype                : true
             }
         }),
-        new FaviconsWebpackPlugin({
-            logo: './src/assets/logo.png',
-            prefix: '[hash:16]/',
-            inject: true,
-            online: false,
-            persistentCache: false,
-            icons: {
-                android: false,
-                appleIcon: false,
-                appleStartup: false,
-                coast: false,
-                favicons: true,
-                firefox: false,
-                opengraph: false,
-                twitter: false,
-                windows: false,
-                yandex: false
-            }
-        }),
         new webpack.HashedModuleIdsPlugin({
             hashFunction: 'md5',
             hashDigest: 'hex'
+        }),
+        new webpack.LoaderOptionsPlugin({
+            minimize: true
+        }),
+        new webpack.optimize.CommonsChunkPlugin({
+            name: 'vendor',
+            minChunks: module => {
+                return module.context && module.context.indexOf('node_modules') !== -1
+            }
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor'
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'manifest'
-        }),
-        new ExtractTextPlugin(`[contenthash:16]/[name].css`),
-        new webpack.LoaderOptionsPlugin({
-            minimize: true
         }),
         new webpack.optimize.UglifyJsPlugin({
             sourceMap: true,
@@ -80,6 +82,7 @@ module.exports = {
                 loader: 'vue-loader',
                 options: {
                     extractCSS: false,
+                    cssSourceMap: true,
                     preserveWhitespace: false,
                     preLoaders: {
                         i18n: 'yaml-loader'

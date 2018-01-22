@@ -60,14 +60,6 @@
         position: fixed
         bottom: 0px
         font-weight 700
-
-    .fade-enter-active
-    .fade-leave-active
-        transition opacity .2s
-
-    .fade-enter
-    .fade-leave-to
-        opacity 0
 </style>
 
 
