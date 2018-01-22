@@ -60,6 +60,7 @@
         position: fixed
         bottom: 0px
         font-weight 700
+        font-size 14px
 </style>
 
 
@@ -114,6 +115,7 @@
 
     const getUser = (route, http, callback) => {
         let options = {
+            headers: {},
             params: {
                 'props': [
                     'forename.string',
@@ -129,9 +131,7 @@
         const accounts = JSON.parse(sessionStorage.getItem('accounts'))
 
         if (accounts && accounts[account] && accounts[account]._id && accounts[account].token) {
-            options.headers = {
-                Authorization: `Bearer ${accounts[account].token}`
-            }
+            options.headers.Authorization = `Bearer ${accounts[account].token}`
         } else {
             return callback(null, null)
         }
@@ -150,15 +150,15 @@
 
 
     const getPhoto = (_id, route, http, callback) => {
-        let options = {}
+        let options = {
+            headers: {}
+        }
 
         const account = route.params.account
         const accounts = JSON.parse(sessionStorage.getItem('accounts'))
 
         if (accounts && accounts[account] && accounts[account]._id && accounts[account].token) {
-            options.headers = {
-                Authorization: `Bearer ${accounts[account].token}`
-            }
+            options.headers.Authorization = `Bearer ${accounts[account].token}`
         } else {
             return callback(null, null)
         }
@@ -175,6 +175,7 @@
 
     const getMenu = (route, http, callback) => {
         let options = {
+            headers: {},
             params: {
                 '_type.string': 'menu',
                 'props': [
@@ -191,9 +192,7 @@
         const accounts = JSON.parse(sessionStorage.getItem('accounts'))
 
         if (accounts && accounts[account] && accounts[account].token) {
-            options.headers = {
-                Authorization: `Bearer ${accounts[account].token}`
-            }
+            options.headers.Authorization = `Bearer ${accounts[account].token}`
         } else {
             options.params.account = account
         }
