@@ -29,7 +29,7 @@ const router = new VueRouter({
         { path: '/auth/:id', component: auth },
         { path: '/:account', component: entity, children: [
             { name: 'menu', path: '', component: entityInfo },
-            { name: 'list', path: ':menu', component: entityList }
+            { name: 'list', path: ':query', component: entityList }
         ] }
     ]
 })

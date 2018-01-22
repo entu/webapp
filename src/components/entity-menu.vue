@@ -53,6 +53,9 @@
                     &:hover
                         font-weight 500
 
+                    a.router-link-exact-active
+                        font-weight 700
+
     .fade-enter-active
     .fade-leave-active
         transition opacity .2s
@@ -85,7 +88,7 @@
                             span {{ mg.title }}
                     ul.list-unstyled(v-show='mg.active', style='display:block')
                         li(v-for='l in mg.links')
-                            a(href='') {{ l.title }}
+                            router-link(:to="{ name: 'list', params: { query: l.query } }", exact) {{ l.title }}
         .col.mt-5.text-center(v-if='menu.length === 0')
             i.fas.fa-spinner.fa-pulse
 </template>
@@ -195,7 +198,7 @@
         http.get('https://api.entu.ee/entity', options).then(data => {
             return data.json()
         }).then(data => {
-            if (!data.entities) { return }
+            if (!data || !data.entities) { return }
 
             let menu = {}
 
@@ -210,7 +213,7 @@
                 }
                 menu[group].links.push({
                     title: getValue(entity.title),
-                    url: getValue(entity.query)
+                    query: entity._id
                 })
             })
 

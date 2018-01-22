@@ -1,24 +1,3 @@
-<template lang="pug">
-    .h-100.col
-        .row.h-100
-            .h-100.col-12.col-sm-4.col-lg-3
-                .row.h-100
-                    form#search.col-12.p-0(action='.')
-                        .input-group.p-3
-                            label.input-group-addon(for='search-field')
-                                i.fas.fa-lg.fa-search
-                            input#search-field.form-control(type='search')
-                    #list.h-100.col-12.p-0
-                        router-link.media.p-3(v-for='e in entities' :key='e.id' :to='"/entity/"+e.id', exact)
-                            img.rounded-circle.align-self-start.col-2.mr-3(:src='e.img', :alt='e.title')
-                            .media-body.align-self-center
-                                h5.t-0 {{ e.title }}
-                                p.mb-0.mt-2 {{ e.description }}
-            entity-content
-</template>
-
-
-
 <style lang="stylus" scoped>
     .h-100.col
         padding-bottom 56px
@@ -69,10 +48,37 @@
                 padding 2px !important
                 border 1px solid #d5d5d5
 
+            h5
+                font-size 16px
+                line-height 18px
+
             .media-body
                 p
                     color #919191
+                    font-size 14px
+                    line-height 17px
 </style>
+
+
+
+<template lang="pug">
+    .h-100.col
+        .row.h-100
+            .h-100.col-12.col-sm-4.col-lg-3
+                .row.h-100
+                    form#search.col-12.p-0(action='.')
+                        .input-group.p-3
+                            label.input-group-addon(for='search-field')
+                                i.fas.fa-lg.fa-search
+                            input#search-field.form-control(type='search')
+                    #list.h-100.col-12.p-0
+                        router-link.media.p-3(v-for='e in entities' :key='e.id' :to='"/entity/"+e.id')
+                            img.rounded-circle.align-self-start.col-2.mr-3(:src='e.img', :alt='e.title')
+                            .media-body.align-self-center
+                                h5.mb-1.t-0 {{ e.title }}
+                                p.mb-0.mt-0 {{ e.description }}
+            entity-content
+</template>
 
 
 
@@ -88,7 +94,7 @@
                 entities: [
                     {
                         id: '1',
-                        title: 'Cras tempor dui lacus',
+                        title: 'Cras tempor euismod mauris dui lacus',
                         description: 'Etiam euismod mauris in maximus varius. Quisque sit amet purus sed elit porta accumsan.',
                         img: 'https://lorempixel.com/100/100/abstract/'
                     },
