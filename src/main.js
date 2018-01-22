@@ -17,6 +17,11 @@ import entityInfo from './components/entity-info.vue'
 import entityList from './components/entity-list.vue'
 
 
+// Mixins
+import mixins from './mixins'
+Vue.mixin(mixins)
+
+
 // Use packages
 Vue.use(VueResource)
 Vue.use(VueRouter)
