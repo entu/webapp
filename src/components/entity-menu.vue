@@ -96,18 +96,21 @@
 
 
 <script>
+    var locale
+
+
     const getValue = (valueList) => {
-        const language = 'et'
         let values = []
 
         valueList.forEach((v) => {
-            if (!v.language || v.language === language) {
+            if (!v.language || v.language === locale) {
                 values.push(v.string)
             }
         })
 
         return values[0]
     }
+
 
     const getUser = (route, http, callback) => {
         let options = {
@@ -223,8 +226,11 @@
         })
     }
 
+
     export default {
         created() {
+            locale = this.$i18n.locale
+
             getUser(this.$route, this.$http, (err, person) => {
                 if (err) { return console.log(err) }
 
@@ -260,6 +266,11 @@
                 const accounts = JSON.parse(sessionStorage.getItem('accounts'))
 
                 return accounts && accounts[account] && accounts[account].token
+            }
+        },
+        watch: {
+            locale (val) {
+                this.$i18n.locale = val
             }
         }
     }

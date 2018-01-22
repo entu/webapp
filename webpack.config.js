@@ -80,9 +80,13 @@ module.exports = {
                 loader: 'vue-loader',
                 options: {
                     extractCSS: true,
+                    preLoaders: {
+                        i18n: 'yaml-loader'
+                    },
                     loaders: {
                         html: 'pug',
-                        css: 'css!stylus-loader'
+                        css: 'css!stylus-loader',
+                        i18n: '@kazupon/vue-i18n-loader'
                     }
                 }
             },

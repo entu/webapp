@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueResource from 'vue-resource'
 import VueRouter from 'vue-router'
+import VueI18n from 'vue-i18n'
+
 
 // Import bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css'
@@ -18,6 +20,7 @@ import entityList from './components/entity-list.vue'
 // Use packages
 Vue.use(VueResource)
 Vue.use(VueRouter)
+Vue.use(VueI18n)
 
 
 // Register routes
@@ -35,8 +38,15 @@ const router = new VueRouter({
 })
 
 
+// Set default locale
+const i18n = new VueI18n({
+    locale: 'en'
+})
+
+
 new Vue({
     el: '#app',
     render: h => h(app),
-    router: router
+    router: router,
+    i18n: i18n
 })

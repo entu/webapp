@@ -119,7 +119,7 @@
                 .row.h-100(v-show='!this.authenticating && !accounts')
                     .col-12
                         img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../assets/logo.png', alt='Entu')
-                        h1.text-center.mt-5.mb-4 Logi sisse
+                        h1.text-center.mt-5.mb-4 {{ $t('login') }}
                         ul.list-unstyled
                             li
                                 a.pl-4(:href='"https://api.entu.ee/auth/google?next=" + host + "/auth/"')
@@ -140,17 +140,17 @@
                             li
                                 a.pl-4(href='')
                                     i.fas.fa-id-card
-                                    span ID-kaart
+                                    span {{ $t('id_card') }}
                             //- li(style='border-color:#bebebe')
                             //-     a.pl-4(href='')
                             //-         i.fas.fa-university
                             //-         span TAAT
                     .col-12.align-self-end
-                        p.text-center Entu.ee kasutab autentimiseks ülaltoodud teenusepakkujaid. Teie kasutajanime ega parooli meile ei edastata.
+                        p.text-center {{ $t('info') }}
                 .row.h-100(v-show='accounts && accounts.length > 0')
                     .col-12
                         img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../assets/logo.png', alt='Entu')
-                        h1.text-center.mt-5.mb-4 Vali andmebaas
+                        h1.text-center.mt-5.mb-4 {{ $t('chose_db') }}
                         ul.list-unstyled
                             li(v-for='a in accounts')
                                 router-link.pl-4(:to="{ name: 'menu', params: { account: a.account } }")
@@ -159,11 +159,28 @@
                     .col-12.align-self-end.text-center
                         a(href='', @click.prevent='logOut')
                             i.fas.fa-sign-out-alt
-                            span Välju
+                            span {{ $t('logout') }}
                 .row.h-100(v-show='authenticating')
                     .col-12.align-self-center.text-center
                         i.fas.fa-spinner.fa-pulse
 </template>
+
+
+
+<i18n lang="yaml">
+    en:
+        login: Log In
+        logout: Exit
+        chose_db: Chose database
+        id_card: ID-card
+        info: Entu.ee uses those providers for user authentication. We don't get nor save Your password.
+    et:
+        login: Logi sisse
+        logout: Välju
+        chose_db: Vali andmebaas
+        id_card: ID-kaart
+        info: Entu.ee kasutab autentimiseks ülaltoodud teenusepakkujaid. Teie kasutajanime ega parooli meile ei edastata.
+</i18n>
 
 
 
