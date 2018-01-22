@@ -39,9 +39,14 @@ const router = new VueRouter({
 
 
 // Set default locale
+if (!sessionStorage.getItem('locale')) {
+    sessionStorage.setItem('locale' ,'et')
+}
+
 const i18n = new VueI18n({
-    locale: 'en'
+    locale: sessionStorage.getItem('locale')
 })
+
 
 
 new Vue({

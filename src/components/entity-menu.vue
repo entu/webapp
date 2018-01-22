@@ -56,6 +56,11 @@
                     a.router-link-exact-active
                         font-weight 700
 
+    #menu-language
+        position: fixed
+        bottom: 0px
+        font-weight 700
+
     .fade-enter-active
     .fade-leave-active
         transition opacity .2s
@@ -68,14 +73,14 @@
 
 
 <template lang="pug">
-    #menu.h-100.d-none.d-lg-block.p-0(:class='{ "col-lg-2": !closed, "col-auto": closed }')
+    #menu.align-self-start.h-100.d-none.d-lg-block.p-0(:class='{ "col-lg-2": !closed, "col-auto": closed }')
         .p-3
             a(href='', @click.prevent='closed = !closed')
                 i.fas.fa-bars.float-left
             router-link(v-show='!closed', :to="{ name: 'auth' }")
                 i.fas.fa-sign-in-alt.float-right(v-if='!authenticated')
                 i.fas.fa-sign-out-alt.float-right(v-if='authenticated')
-        #menu-content.p-3(v-show='!closed')
+        #menu-content.align-self-start.p-3(v-show='!closed')
             img.border.col-5.mb-3.rounded-circle.mx-auto.d-block(v-if='user.photo', :src='user.photo', :alt='user.name')
             img.col-6.mb-3.mx-auto.d-block(v-if='!user.photo', src='../assets/logo.png', :alt='user.name')
 
@@ -89,8 +94,11 @@
                     ul.list-unstyled(v-show='mg.active', style='display:block')
                         li(v-for='l in mg.links')
                             router-link(:to="{ name: 'list', params: { query: l.query } }", exact) {{ l.title }}
-        .col.mt-5.text-center(v-if='menu.length === 0')
+        .col.align-self-start.mt-5.text-center(v-if='menu.length === 0')
             i.fas.fa-spinner.fa-pulse
+        #menu-language.col-lg-2.pb-1.text-right
+            a(href='', v-if="locale !== 'et'", @click.prevent="setLocale('et')") ET
+            a(href='', v-if="locale !== 'en'", @click.prevent="setLocale('en')") EN
 </template>
 
 
@@ -229,7 +237,8 @@
 
     export default {
         created() {
-            locale = this.$i18n.locale
+            locale = sessionStorage.getItem('locale')
+            this.$i18n.locale = locale
 
             getUser(this.$route, this.$http, (err, person) => {
                 if (err) { return console.log(err) }
@@ -266,11 +275,16 @@
                 const accounts = JSON.parse(sessionStorage.getItem('accounts'))
 
                 return accounts && accounts[account] && accounts[account].token
+            },
+            locale () {
+                return this.$i18n.locale
             }
         },
-        watch: {
-            locale (val) {
+        methods: {
+            setLocale (val) {
+                sessionStorage.setItem('locale', val)
                 this.$i18n.locale = val
+                this.$router.go()
             }
         }
     }
