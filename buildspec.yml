@@ -7,10 +7,6 @@ phases:
     build:
         commands:
             - npm run build
-    post_build:
-        commands:
-            - cp ./src/assets/robots.txt ./dist/robots.txt
-            - cp ./src/assets/favicon.ico ./dist/favicon.ico
 
 artifacts:
     files:
