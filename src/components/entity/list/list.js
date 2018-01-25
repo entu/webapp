@@ -3,6 +3,7 @@ import entityContent from '../content/content.vue'
 
 
 export default {
+    name: 'EntityList',
     components: {
         'entity-content': entityContent
     },

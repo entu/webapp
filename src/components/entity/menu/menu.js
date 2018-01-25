@@ -134,6 +134,7 @@ const getMenu = (route, http, callback) => {
 
 
 export default {
+    name: 'EntityMenu',
     created() {
         locale = this.locale
 

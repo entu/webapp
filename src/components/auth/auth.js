@@ -1,4 +1,5 @@
 export default {
+    name: 'Auth',
     created() {
         if (this.$route.params.id === 'out') {
             this.logOut()
