@@ -11,7 +11,7 @@ export default {
     },
     methods: {
         setLocale (val) {
-            sessionStorage.setItem('locale', val)
+            localStorage.setItem('locale', val)
             this.$i18n.locale = val
             this.$router.go()
         }

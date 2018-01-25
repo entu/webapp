@@ -44,12 +44,12 @@ const router = new VueRouter({
 
 
 // Set default locale
-if (!sessionStorage.getItem('locale')) {
-    sessionStorage.setItem('locale' ,'et')
+if (!localStorage.getItem('locale')) {
+    localStorage.setItem('locale' ,'et')
 }
 
 const i18n = new VueI18n({
-    locale: sessionStorage.getItem('locale')
+    locale: localStorage.getItem('locale')
 })
 
 
