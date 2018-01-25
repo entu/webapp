@@ -1,0 +1,26 @@
+#menu.align-self-start.h-100.d-none.d-lg-block.p-0(:class='{ "col-lg-2": !closed, "col-auto": closed }')
+    .p-3
+        a(href='', @click.prevent='closed = !closed')
+            i.fas.fa-bars.float-left
+        router-link(v-show='!closed', :to="{ name: 'auth' }")
+            i.fas.fa-sign-in-alt.float-right(v-if='!authenticated')
+            i.fas.fa-sign-out-alt.float-right(v-if='authenticated')
+    #menu-content.align-self-start.p-3(v-show='!closed')
+        img.border.col-5.mb-3.rounded-circle.mx-auto.d-block(v-if='user.photo', :src='user.photo', :alt='user.name')
+        img.col-6.mb-3.mx-auto.d-block(v-if='!user.photo', src='../../../assets/logo.png', :alt='user.name')
+
+        //- h4.pb-3.text-center {{ user.name }}
+        ul.list-unstyled
+            li.menu-group.mt-4(v-for='mg in menu')
+                a(href='', @click.prevent='mg.active = !mg.active')
+                    h5.mb-1
+                        i.fas(:class='{ "fa-angle-down": mg.active, "fa-angle-right": !mg.active }')
+                        span {{ mg.title }}
+                ul.list-unstyled(v-show='mg.active', style='display:block')
+                    li(v-for='l in mg.links')
+                        router-link(:to="{ name: 'list', params: { query: l.query } }", exact) {{ l.title }}
+    .col.align-self-start.mt-5.text-center(v-if='menu.length === 0')
+        i.fas.fa-spinner.fa-pulse
+    #menu-language.col-lg-2.pb-1.text-right
+        a(href='', v-if="locale !== 'et'", @click.prevent="setLocale('et')") ET
+        a(href='', v-if="locale !== 'en'", @click.prevent="setLocale('en')") EN

@@ -1,0 +1,62 @@
+#menu
+    background #323333
+    color #ffffff
+    overflow-y auto
+    overflow-x hidden
+    -webkit-overflow-scrolling touch
+
+    img.border
+        padding 2px !important
+        border 1px solid #d5d5d5
+
+    a
+        color #ffffff
+
+        &:hover
+            text-decoration none
+
+    h4
+        font-size 18px
+        line-height 20px
+        font-weight 400
+        // letter-spacing 1px
+
+    .menu-group
+        h5
+            font-size 16px
+            line-height 16px
+            font-weight 700
+            text-transform uppercase
+            letter-spacing 1px
+            text-overflow ellipsis
+            white-space nowrap
+            overflow hidden
+
+            i
+                width 20px
+                height 20px
+
+        ul
+            display none
+            margin-left 22px
+
+            li
+                display block
+                font-weight 200
+                line-height 26px
+                letter-spacing 0.8px
+                text-overflow ellipsis
+                white-space nowrap
+                overflow hidden
+
+                &:hover
+                    font-weight 500
+
+                a.router-link-exact-active
+                    font-weight 700
+
+#menu-language
+    position: fixed
+    bottom: 0px
+    font-weight 700
+    font-size 14px

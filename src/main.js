@@ -10,11 +10,11 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 // Import app and components
 import app from './components/app.vue'
-import info from './components/info.vue'
-import auth from './components/auth.vue'
-import entity from './components/entity.vue'
-import entityInfo from './components/entity-info.vue'
-import entityList from './components/entity-list.vue'
+import info from './components/info/info.vue'
+import auth from './components/auth/auth.vue'
+import entity from './components/entity/entity.vue'
+import entityInfo from './components/entity/info/info.vue'
+import entityList from './components/entity/list/list.vue'
 
 
 // Mixins
