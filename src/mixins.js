@@ -5,6 +5,9 @@ export default {
             const accounts = JSON.parse(sessionStorage.getItem('accounts'))
             return accounts && accounts[account] && accounts[account].token
         },
+        locales () {
+            return ['et', 'en']
+        },
         locale () {
             return this.$i18n.locale
         }

@@ -22,5 +22,4 @@
     .col.align-self-start.mt-5.text-center(v-if='menu.length === 0')
         i.fas.fa-spinner.fa-pulse
     #menu-language.col-lg-2.pb-1.text-right
-        a(href='', v-if="locale !== 'et'", @click.prevent="setLocale('et')") ET
-        a(href='', v-if="locale !== 'en'", @click.prevent="setLocale('en')") EN
+        a(href='', v-for='l in locales' v-if="locale !== l", @click.prevent="setLocale(l)") {{ l.toUpperCase() }}

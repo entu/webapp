@@ -134,8 +134,7 @@ const getMenu = (route, http, callback) => {
 
 export default {
     created() {
-        locale = sessionStorage.getItem('locale')
-        this.$i18n.locale = locale
+        locale = this.locale
 
         getUser(this.$route, this.$http, (err, person) => {
             if (err) { return console.log(err) }
