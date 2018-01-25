@@ -1,5 +1,7 @@
 import content from '../content/content.vue'
 
+
+
 export default {
     components: {
         'entity-content': content
@@ -89,7 +91,7 @@ export default {
                     title: 'Cras tempor dui lacus',
                     description: 'Etiam euismod mauris in maximus varius. Quisque sit amet purus sed elit porta accumsan.',
                     img: 'https://lorempixel.com/100/100/transport/'
-                },
+                }
             ]
         }
     }

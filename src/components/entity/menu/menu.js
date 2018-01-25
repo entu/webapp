@@ -1,6 +1,7 @@
 var locale
 
 
+
 const getValue = (valueList) => {
     let values = []
 
@@ -12,6 +13,7 @@ const getValue = (valueList) => {
 
     return values[0]
 }
+
 
 
 const getUser = (route, http, callback) => {
@@ -50,6 +52,7 @@ const getUser = (route, http, callback) => {
 }
 
 
+
 const getPhoto = (_id, route, http, callback) => {
     let options = {
         headers: {}
@@ -72,6 +75,7 @@ const getPhoto = (_id, route, http, callback) => {
         callback(data)
     })
 }
+
 
 
 const getMenu = (route, http, callback) => {
@@ -125,6 +129,7 @@ const getMenu = (route, http, callback) => {
         callback(data)
     })
 }
+
 
 
 export default {
