@@ -226,9 +226,13 @@
         data () {
             return {
                 host: window.location.origin,
-                background: `bg-${Math.ceil(Math.random()*12)}`,
                 authenticating: false,
                 accounts: null
+            }
+        },
+        computed: {
+            background () {
+                return 'bg-' + Math.ceil(Math.random() * 12)
             }
         },
         methods: {
