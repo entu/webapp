@@ -1,4 +1,4 @@
-#menu.align-self-start.h-100.d-none.d-lg-block.p-0(:class='{ "col-lg-2": !closed, "col-auto": closed }')
+#menu.align-self-start.h-100.d-none.d-lg-block.p-0(:class="{ 'col-lg-2': !closed, 'col-auto': closed }")
     .p-3
         a(href='', @click.prevent='closed = !closed')
             i.fas.fa-bars.float-left
@@ -11,15 +11,15 @@
 
         //- h4.pb-3.text-center {{ user.name }}
         ul.list-unstyled
-            li.menu-group.mt-4(v-for='mg in menu')
+            li.menu-group.mt-4(v-for='mg in menu', :key='mg.title')
                 a(href='', @click.prevent='mg.active = !mg.active')
                     h5.mb-1
-                        i.fas(:class='{ "fa-angle-down": mg.active, "fa-angle-right": !mg.active }')
+                        i.fas(:class="{ 'fa-angle-down': mg.active, 'fa-angle-right': !mg.active }")
                         span {{ mg.title }}
                 ul.list-unstyled(v-show='mg.active', style='display:block')
-                    li(v-for='l in mg.links')
+                    li(v-for='l in mg.links', :key='l._id')
                         router-link(:to="{ name: 'list', params: { query: l.query } }", exact) {{ l.title }}
     .col.align-self-start.mt-5.text-center(v-if='menu.length === 0')
         i.fas.fa-spinner.fa-pulse
     #menu-language.col-lg-2.pb-1.text-right
-        a(href='', v-for='l in locales' v-if="locale !== l", @click.prevent="setLocale(l)") {{ l.toUpperCase() }}
+        a(href='', v-for='l in selectableLocales', @click.prevent='setLocale(l)') {{ l.toUpperCase() }}

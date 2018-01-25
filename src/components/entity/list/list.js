@@ -1,10 +1,10 @@
-import content from '../content/content.vue'
+import entityContent from '../content/content.vue'
 
 
 
 export default {
     components: {
-        'entity-content': content
+        'entity-content': entityContent
     },
     data () {
         return {

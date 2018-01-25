@@ -8,15 +8,15 @@ div
                     h1.text-center.mt-5.mb-4 {{ $t('login') }}
                     ul.list-unstyled
                         li
-                            a.pl-4(:href='"https://api.entu.ee/auth/google?next=" + host + "/auth/"')
+                            a.pl-4(:href="'https://api.entu.ee/auth/google?next=' + host + '/auth/'")
                                 i.fab.fa-google
                                 span Google
                         li
-                            a.pl-4(:href='"https://api.entu.ee/auth/facebook?next=" + host + "/auth/"')
+                            a.pl-4(:href="'https://api.entu.ee/auth/facebook?next=' + host + '/auth/'")
                                 i.fab.fa-facebook
                                 span Facebook
                         li
-                            a.pl-4(:href='"https://api.entu.ee/auth/microsoft?next=" + host + "/auth/"')
+                            a.pl-4(:href="'https://api.entu.ee/auth/microsoft?next=' + host + '/auth/'")
                                 i.fab.fa-microsoft
                                 span Microsoft
                         li(style='border-color:#bebebe')
@@ -35,10 +35,10 @@ div
                     p.text-center {{ $t('info') }}
             .row.h-100(v-show='accounts && accounts.length > 0')
                 .col-12
-                    img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../../assets/logo.png', alt='Entu')
+                    img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../../assets/logo.png' alt='Entu')
                     h1.text-center.mt-5.mb-4 {{ $t('chose_db') }}
                     ul.list-unstyled
-                        li(v-for='a in accounts')
+                        li(v-for='a in accounts', :key='a.account')
                             router-link.pl-4(:to="{ name: 'menu', params: { account: a.account } }")
                                 i.fas.fa-database
                                 span {{ a.account }}

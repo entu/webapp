@@ -1,9 +1,9 @@
-import menu from './menu/menu.vue'
+import entityMenu from './menu/menu.vue'
 
 
 
 export default {
     components: {
-        'entity-menu': menu
+        'entity-menu': entityMenu
     }
 }

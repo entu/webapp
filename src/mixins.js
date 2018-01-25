@@ -8,6 +8,9 @@ export default {
         locales () {
             return ['et', 'en']
         },
+        selectableLocales () {
+            return this.locales.filter(l => l !== this.locale)
+        },
         locale () {
             return this.$i18n.locale
         }
