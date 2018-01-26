@@ -1,3 +1,5 @@
+import { get } from 'axios'
+
 var locale
 
 
@@ -24,22 +26,26 @@ const getUser = (route, callback) => {
         return callback(null, null)
     }
 
-    const headers = new Headers({
-        Authorization: `Bearer ${accounts[account].token}`
-    })
+    const options = {
+        headers: {
+            Authorization: `Bearer ${accounts[account].token}`
+        },
+        params: {
+            props: [
+                'forename.string',
+                'forename.language',
+                'surname.string',
+                'surname.language',
+                'photo._id'
+            ].join(',')
+        }
+    }
 
-    fetch(`https://api.entu.ee/entity/${accounts[account]._id}?props=forename.string,forename.language,surname.string,surname.language,photo._id`, { headers: headers })
-        .then(res => {
-            if (!res.ok) {
-                throw new TypeError(res.statusText)
-            } else {
-                return res.json()
-            }
-        })
-        .then(data => {
+    get(`https://api.entu.ee/entity/${accounts[account]._id}`, options)
+        .then(response => {
             callback(null, {
-                name: [getValue(data.forename), getValue(data.forename)].join(' '),
-                photo: data.photo[0]._id
+                name: [getValue(response.data.forename), getValue(response.data.forename)].join(' '),
+                photo: response.data.photo[0]._id
             })
         })
         .catch(err => {
@@ -57,20 +63,15 @@ const getPhoto = (_id, route, callback) => {
         return callback(null, null)
     }
 
-    const headers = new Headers({
-        Authorization: `Bearer ${accounts[account].token}`
-    })
+    const options = {
+        headers: {
+            Authorization: `Bearer ${accounts[account].token}`
+        }
+    }
 
-    fetch(`https://api.entu.ee/property/${_id}`, { headers: headers })
-        .then(res => {
-            if (!res.ok) {
-                throw new TypeError(res.statusText)
-            } else {
-                return res.json()
-            }
-        })
-        .then(data => {
-            callback(null, data.url)
+    get(`https://api.entu.ee/property/${_id}`, options)
+        .then(response => {
+            callback(null, response.data.url)
         })
         .catch(err => {
             callback(err)
@@ -82,28 +83,33 @@ const getPhoto = (_id, route, callback) => {
 const getMenu = (route, callback) => {
     const account = route.params.account
     const accounts = JSON.parse(sessionStorage.getItem('accounts'))
-    let options = {}
-
-    if (accounts && accounts[account] && accounts[account].token) {
-        options.headers = new Headers({
-            Authorization: `Bearer ${accounts[account].token}`
-        })
+    let options = {
+        params: {
+            account: account,
+            '_type.string': 'menu',
+            props: [
+                'group.string',
+                'group.language',
+                'title.string',
+                'title.language',
+                'query.string'
+            ].join(',')
+        }
     }
 
-    fetch(`https://api.entu.ee/entity?account=${account}&_type.string=menu&props=group.string,group.language,title.string,title.language,query.string`, options)
-        .then(res => {
-            if (!res.ok) {
-                throw new TypeError(res.statusText)
-            } else {
-                return res.json()
-            }
-        })
-        .then(data => {
-            if (!data || !data.entities) { return callback(new TypeError('No menu')) }
+    if (accounts && accounts[account] && accounts[account].token) {
+        options.headers = {
+            Authorization: `Bearer ${accounts[account].token}`
+        }
+    }
+
+    get(`https://api.entu.ee/entity`, options)
+        .then(response => {
+            if (!response.data || !response.data.entities) { return callback(new TypeError('No menu')) }
 
             let menu = {}
 
-            data.entities.forEach((entity) => {
+            response.data.entities.forEach((entity) => {
                 let group = getValue(entity.group)
                 if (!menu[group]) {
                     menu[group] = {

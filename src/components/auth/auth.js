@@ -1,3 +1,7 @@
+import { get } from 'axios'
+
+
+
 export default {
     name: 'Auth',
     created() {
@@ -6,27 +10,21 @@ export default {
         } else if (this.$route.params.id) {
             this.authenticating = true
 
-            const headers = new Headers({
-                Authorization: `Bearer ${this.$route.params.id}`
-            })
+            const options = {
+                headers: {
+                    Authorization: `Bearer ${this.$route.params.id}`
+                }
+            }
 
-            fetch('https://api.entu.ee/auth', { headers: headers })
-                .then(res => {
-                    if (!res.ok) {
-                        throw new TypeError(res.statusText)
-                    } else {
-                        return res.json()
-                    }
-                })
-                .then(data => {
-                    this.accounts = Object.values(data)
-
+            get('https://api.entu.ee/auth', options)
+                .then(response => {
                     this.authenticating = false
 
+                    this.accounts = Object.values(response.data)
                     if (this.accounts.length === 1) {
                         this.$router.push({ name: 'menu', params: { account: this.accounts[0].account } })
                     } else if (this.accounts.length > 0) {
-                        sessionStorage.setItem('accounts', JSON.stringify(data))
+                        sessionStorage.setItem('accounts', JSON.stringify(response.data))
                     } else {
                         this.accounts = null
                     }
