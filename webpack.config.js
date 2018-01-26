@@ -59,9 +59,6 @@ module.exports = {
             hashFunction: 'md5',
             hashDigest: 'hex'
         }),
-        new webpack.LoaderOptionsPlugin({
-            minimize: true
-        }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             minChunks: module => {
@@ -73,12 +70,6 @@ module.exports = {
         }),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'manifest'
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            sourceMap: true,
-            compress: {
-                warnings: false
-            }
         })
     ],
     module: {
@@ -131,4 +122,26 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         publicPath: '/',
     }
+}
+
+
+
+if (process.env.NODE_ENV === 'production') {
+    module.exports.devtool = '#source-map'
+    module.exports.plugins = (module.exports.plugins || []).concat([
+        new webpack.DefinePlugin({
+            'process.env': {
+                NODE_ENV: '"production"'
+            }
+        }),
+        new webpack.LoaderOptionsPlugin({
+            minimize: true
+        }),
+        new webpack.optimize.UglifyJsPlugin({
+            sourceMap: true,
+            compress: {
+                warnings: false
+            }
+        })
+    ])
 }
