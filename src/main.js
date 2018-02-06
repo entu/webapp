@@ -33,7 +33,6 @@ Vue.use(VueI18n)
 
 // Register routes
 const router = new VueRouter({
-    mode: 'history',
     routes: [
         { path: '/', component: info },
         { name: 'auth', path: '/auth', component: auth },

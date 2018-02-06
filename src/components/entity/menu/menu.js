@@ -121,7 +121,7 @@ const getMenu = (route, callback) => {
                 menu[group].links.push({
                     _id: entity._id,
                     title: getValue(entity.title),
-                    query: entity._id
+                    query: getValue(entity.query)
                 })
             })
 
