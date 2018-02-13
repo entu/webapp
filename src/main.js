@@ -15,6 +15,7 @@ import info from './components/info/info.vue'
 import auth from './components/auth/auth.vue'
 import entity from './components/entity/entity.vue'
 import entityInfo from './components/entity/info/info.vue'
+import entityView from './components/entity/view/view.vue'
 import entityList from './components/entity/list/list.vue'
 
 
