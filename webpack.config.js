@@ -5,19 +5,34 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
     entry: {
         main: './src/main.js',
     },
+    devtool: '#source-map',
+    optimization: {
+        splitChunks: {
+            cacheGroups: {
+                commons: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendor',
+                    chunks: 'all',
+                },
+            },
+        },
+        runtimeChunk: {
+            name: 'manifest',
+        }
+    },
     plugins: [
         new CleanWebpackPlugin('./dist'),
-        new CopyWebpackPlugin([{
-            from: './src/assets/robots.txt'
-        }, {
-            from: './src/assets/favicon.ico'
-        }]),
-        new ExtractTextPlugin(`[contenthash:16]/[name].css`),
+        new CopyWebpackPlugin([
+            './src/assets/robots.txt',
+            './src/assets/favicon.ico'
+        ]),
+        new ExtractTextPlugin(`[chunkhash:16]/[name].css`),
         new FaviconsWebpackPlugin({
             logo: './src/assets/logo.png',
             prefix: '[hash:16]/',
@@ -55,21 +70,10 @@ module.exports = {
                 useShortDoctype                : true
             }
         }),
+        new VueLoaderPlugin(),
         new webpack.HashedModuleIdsPlugin({
             hashFunction: 'md5',
             hashDigest: 'hex'
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            minChunks: module => {
-                return module.context && module.context.indexOf('node_modules') !== -1
-            }
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor'
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'manifest'
         })
     ],
     module: {
@@ -77,19 +81,40 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue-loader',
+                // test: /\.vue$/,
+                // loader: 'vue-loader',
                 options: {
-                    extractCSS: false,
+                    extractCSS: true,
                     cssSourceMap: true,
-                    preserveWhitespace: false,
-                    preLoaders: {
-                        i18n: 'yaml-loader'
-                    },
-                    loaders: {
-                        html: 'pug',
-                        css: 'css!stylus-loader',
-                        i18n: '@kazupon/vue-i18n-loader'
-                    }
+                //     preserveWhitespace: false,
+                //     preLoaders: {
+                //         i18n: 'yaml-loader'
+                //     },
+                //     loaders: {
+                //         html: 'pug',
+                //         css: 'css!stylus-loader',
+                //         i18n: '@kazupon/vue-i18n-loader'
+                //     }
                 }
+            },
+            {
+                test: /\.pug$/,
+                loader: 'pug-plain-loader'
+            },
+            {
+                resourceQuery: /blockType=i18n/,
+                use: [
+                    '@kazupon/vue-i18n-loader',
+                    'yaml-loader'
+                ]
+            },
+            {
+              test: /\.styl(us)?$/,
+              use: [
+                'vue-style-loader',
+                'css-loader',
+                'stylus-loader'
+              ]
             },
             {
                 test: /\.js$/,
@@ -98,10 +123,10 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: [
-                    'vue-style-loader',
-                    'css-loader'
-                ],
+                use: ExtractTextPlugin.extract({
+                    fallback: 'vue-style-loader',
+                    use: 'css-loader'
+                })
             },
             {
                 test: /\.(png|jpg|gif|svg)$/,
@@ -120,28 +145,6 @@ module.exports = {
     output: {
         filename: `${process.env.NODE_ENV === 'production' ? '[chunkhash:16]' : '[hash:16]'}/[name].js`,
         path: path.resolve(__dirname, 'dist'),
-        publicPath: '/',
+        publicPath: '/'
     }
-}
-
-
-
-if (process.env.NODE_ENV === 'production') {
-    module.exports.devtool = '#source-map'
-    module.exports.plugins = (module.exports.plugins || []).concat([
-        new webpack.DefinePlugin({
-            'process.env': {
-                NODE_ENV: '"production"'
-            }
-        }),
-        new webpack.LoaderOptionsPlugin({
-            minimize: true
-        }),
-        new webpack.optimize.UglifyJsPlugin({
-            sourceMap: true,
-            compress: {
-                warnings: false
-            }
-        })
-    ])
 }
