@@ -1,13 +1,32 @@
 const path = require('path')
+const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[hash].js'
+    // filename: '[id]-[contenthash].js'
+    filename: 'js/[name].js'
+  },
+  optimization: {
+    minimize: true,
+    splitChunks: {
+      cacheGroups: {
+        default: false,
+        commons: {
+          test: /node_modules/,
+          name: 'vendor',
+          chunks: 'all'
+        }
+      }
+    },
+    runtimeChunk: {
+      name: 'manifest'
+    }
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),
@@ -22,6 +41,7 @@ module.exports = {
     ]),
     new HtmlWebpackPlugin({
       template: './src/index.html',
+      hash: true,
       minify: {
         html5: true,
         collapseWhitespace: true,
@@ -38,6 +58,10 @@ module.exports = {
         useShortDoctype: true
       }
     }),
+    new MiniCssExtractPlugin({
+      // filename: '[id]-[contenthash].css'
+      filename: 'css/[name].css'
+    }),
     new VueLoaderPlugin()
   ],
   module: {
@@ -53,8 +77,8 @@ module.exports = {
       {
         test: /\.styl(us)?$/,
         use: [
-          'vue-style-loader',
-          'css-loader',
+          MiniCssExtractPlugin.loader,
+          { loader: 'css-loader', options: { minimize: true } },
           'stylus-loader'
         ]
       },
@@ -73,15 +97,16 @@ module.exports = {
       {
         test: /\.css$/,
         use: [
-          'vue-style-loader',
-          'css-loader'
+          MiniCssExtractPlugin.loader,
+          { loader: 'css-loader', options: { minimize: true } }
         ]
       },
       {
         test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
         loader: 'file-loader',
         options: {
-          name: '[sha256:hash:hex:20].[ext]'
+          // name: '2-[sha256:hash:hex:20].[ext]'
+          name: '[ext]/[name].[ext]'
         }
       }
     ]
