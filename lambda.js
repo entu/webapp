@@ -14,5 +14,7 @@ exports.handler = async (event) => {
     Bucket: bucket,
     CopySource: `${bucket}/${key}`,
     Key: key.replace('build/', 'public/')
-  }).prototype()
+  }).promise()
+
+  console.log(key)
 }
