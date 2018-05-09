@@ -81,12 +81,10 @@ module.exports = {
             {
                 test: /\.vue$/,
                 loader: 'vue-loader',
-                // test: /\.vue$/,
-                // loader: 'vue-loader',
                 options: {
                     extractCSS: true,
                     cssSourceMap: true,
-                //     preserveWhitespace: false,
+                    preserveWhitespace: false,
                 //     preLoaders: {
                 //         i18n: 'yaml-loader'
                 //     },

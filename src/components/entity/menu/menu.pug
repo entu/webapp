@@ -18,7 +18,7 @@
                         span {{ mg.title }}
                 ul.list-unstyled(v-show='mg.active', style='display:block')
                     li(v-for='l in mg.links', :key='l._id')
-                        router-link(:to="{ name: 'list', params: { query: l.query } }", exact) {{ l.title }}
+                        router-link(:to="{ name: 'list', params: { entity: entity, query: l.query } }", exact) {{ l.title }}
     .col.align-self-start.mt-5.text-center(v-if='menu.length === 0')
         i.fas.fa-spinner.fa-pulse
     #menu-language.col-lg-2.pb-1.text-right

@@ -1,5 +1,5 @@
 export default {
-    created() {
-        this.$router.push({ name: 'auth' })
-    }
+  created () {
+    this.$router.push({ name: 'auth' })
+  }
 }
