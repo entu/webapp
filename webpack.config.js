@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
-const time = (new Date()).getTime()
+const time = Math.floor((new Date()).getTime() / 1000)
 
 module.exports = {
   entry: './src/main.js',
