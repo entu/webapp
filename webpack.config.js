@@ -10,7 +10,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     // filename: '[id]-[contenthash].js'
-    filename: 'js/[name].js'
+    filename: '[name].js'
   },
   optimization: {
     minimize: true,
@@ -60,7 +60,7 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       // filename: '[id]-[contenthash].css'
-      filename: 'css/[name].css'
+      filename: '[name].css'
     }),
     new VueLoaderPlugin()
   ],
@@ -106,7 +106,7 @@ module.exports = {
         loader: 'file-loader',
         options: {
           // name: '2-[sha256:hash:hex:20].[ext]'
-          name: '[ext]/[name].[ext]'
+          name: '[name].[ext]'
         }
       }
     ]
