@@ -5,12 +5,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
+const time = (new Date()).getTime()
+
 module.exports = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     // filename: '[id]-[contenthash].js'
-    filename: '[name].js'
+    filename: `${time}/[name].js`
   },
   optimization: {
     minimize: true,
@@ -41,7 +43,6 @@ module.exports = {
     ]),
     new HtmlWebpackPlugin({
       template: './src/index.html',
-      hash: true,
       minify: {
         html5: true,
         collapseWhitespace: true,
@@ -60,7 +61,7 @@ module.exports = {
     }),
     new MiniCssExtractPlugin({
       // filename: '[id]-[contenthash].css'
-      filename: '[name].css'
+      filename: `${time}/[name].css`
     }),
     new VueLoaderPlugin()
   ],
@@ -106,7 +107,7 @@ module.exports = {
         loader: 'file-loader',
         options: {
           // name: '2-[sha256:hash:hex:20].[ext]'
-          name: '[name].[ext]'
+          name: `${time}/[name].[ext]`
         }
       }
     ]
