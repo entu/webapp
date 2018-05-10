@@ -35,7 +35,7 @@ div
                     h1.text-center.mt-5.mb-4 {{ $t('chose_db') }}
                     ul.list-unstyled
                         li(v-for='a in accounts', :key='a.account')
-                            router-link.pl-4(:to="{ name: 'menu', params: { account: a.account } }")
+                            router-link.pl-4(:to="{ name: 'account', params: { account: a.account } }")
                                 i.icon-database
                                 span {{ a.account }}
                 .col-12.align-self-end.text-center

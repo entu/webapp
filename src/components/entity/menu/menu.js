@@ -98,7 +98,7 @@ export default {
             menu[group].links.push({
               _id: entity._id,
               title: this.getValue(entity.title),
-              query: entity._id
+              query: this.getValue(entity.query)
             })
 
             this.menuQueries[entity._id] = this.getValue(entity.query)

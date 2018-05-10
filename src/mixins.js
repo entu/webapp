@@ -30,6 +30,8 @@ export default {
       this.$router.go()
     },
     getValue (valueList) {
+      if (!valueList) { return }
+
       let values = []
 
       valueList.forEach((v) => {

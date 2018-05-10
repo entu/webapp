@@ -11,7 +11,7 @@ import info from './components/info/info.vue'
 import auth from './components/auth/auth.vue'
 import entity from './components/entity/entity.vue'
 import entityInfo from './components/entity/info/info.vue'
-import entityList from './components/entity/list/list.vue'
+import entityView from './components/entity/view/view.vue'
 
 // Mixins
 import mixins from './mixins'
@@ -25,13 +25,35 @@ Vue.use(VueI18n)
 const router = new VueRouter({
   mode: 'history',
   routes: [
-    { path: '/', component: info },
-    { name: 'auth', path: '/auth', component: auth },
-    { path: '/auth/:id', component: auth },
-    { path: '/:account', component: entity, children: [
-      { name: 'menu', path: '', component: entityInfo },
-      { name: 'list', path: ':query', component: entityList }
-    ] }
+    {
+      path: '/',
+      component: info
+    },
+    {
+      name: 'auth',
+      path: '/auth',
+      component: auth
+    },
+    {
+      path: '/auth/:id',
+      component: auth
+    },
+    {
+      path: '/:account',
+      component: entity,
+      children: [
+        {
+          name: 'account',
+          path: '',
+          component: entityInfo
+        },
+        {
+          name: 'view',
+          path: ':entity/:query',
+          component: entityView
+        }
+      ]
+    }
   ]
 })
 

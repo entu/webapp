@@ -1,8 +1,10 @@
-import entityTools from '../tools/tools.vue'
+import entityList from './list/list.vue'
+import entityTools from './tools/tools.vue'
 
 export default {
   name: 'EntityContent',
   components: {
+    'entity-list': entityList,
     'entity-tools': entityTools
   }
 }
