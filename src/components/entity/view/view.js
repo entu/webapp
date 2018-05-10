@@ -6,5 +6,10 @@ export default {
   components: {
     'entity-list': entityList,
     'entity-tools': entityTools
+  },
+  computed: {
+    id () {
+      return this.$route.params.entity
+    }
   }
 }

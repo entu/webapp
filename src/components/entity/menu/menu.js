@@ -13,9 +13,12 @@ export default {
         photo: null
       },
       closed: false,
-      menu: [],
-      menuQueries: {},
-      entity: this.$route.params.entity
+      menu: []
+    }
+  },
+  computed: {
+    entity () {
+      return this.$route.params.entity || '_'
     }
   },
   methods: {
@@ -100,8 +103,6 @@ export default {
               title: this.getValue(entity.title),
               query: this.getValue(entity.query)
             })
-
-            this.menuQueries[entity._id] = this.getValue(entity.query)
           })
 
           this.menu = Object.values(menu)
