@@ -55,6 +55,12 @@ export default {
         })
     },
     getMenu () {
+      const sorter = (a, b) => {
+        if (a.title < b.title) { return -1 }
+        if (a.title > b.title) { return 1 }
+        return 0
+      }
+
       const options = {
         params: {
           '_type.string': 'menu',
@@ -93,6 +99,12 @@ export default {
           })
 
           this.menu = Object.values(menu)
+
+          this.menu.forEach((m) => {
+            m.links.sort(sorter)
+          })
+          this.menu.sort(sorter)
+
           this.menu[0].active = true
         }).catch(err => {
           console.error(err.response.data.message || err.response.data || err.response || err)
