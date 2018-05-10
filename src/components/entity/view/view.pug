@@ -4,7 +4,7 @@
         .col.d-none.d-sm-block
             .row.h-100
                 entity-tools
-                #content.col-12.h-100.p-0(v-if='id')
+                #content.col-12.h-100.p-0(v-if='entity')
                     .p-3
-                        h1 {{ id }}
-                        pre {{ entity }}
+                        h1 {{ name }}
+                        p {{ entity }}

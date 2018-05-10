@@ -25,6 +25,9 @@ export default {
   computed: {
     id () {
       return this.$route.params.entity !== '_' ? this.$route.params.entity : null
+    },
+    name () {
+      return this.getValue(this.entity.title)
     }
   },
   methods: {
