@@ -1,5 +1,3 @@
-import { get } from 'axios'
-
 export default {
   name: 'EntityList',
   data () {
@@ -21,10 +19,18 @@ export default {
     }
   },
   methods: {
-    getEntities (query) {
-      this.entities = []
+    getEntities (q) {
+      const query = new URLSearchParams(this.query)
 
-      get(`https://api.entu.app/entity?account=${this.account}&${this.query}&props=title.string,photo_id&sort=title.string`, { headers: this.authHeader })
+      let params = {}
+      for (let p of query) {
+        params[p[0]] = p[1]
+      }
+      params.props = 'title.string,photo_id'
+      params.sort = 'title.string'
+
+      this.entities = []
+      this.axios.get('/entity', { params: params })
         .then(response => {
           if (!response.data || !response.data.entities) { return }
 

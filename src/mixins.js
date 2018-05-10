@@ -1,32 +1,37 @@
+import axios from 'axios'
+
 export default {
   data () {
     return {
-      locales: ['et', 'en']
+      locales: ['et', 'en'],
     }
   },
   computed: {
+    accounts () {
+      return JSON.parse(sessionStorage.getItem('accounts'))
+    },
     account () {
       return this.$route.params.account
     },
-    token () {
-      const accounts = JSON.parse(sessionStorage.getItem('accounts'))
-      return accounts && accounts[this.account] && accounts[this.account].token
-    },
     userId () {
-      const accounts = JSON.parse(sessionStorage.getItem('accounts'))
-      return accounts && accounts[this.account] && accounts[this.account]._id
-    },
-    authHeader () {
-      if (this.token) {
-        return { Authorization: `Bearer ${this.token}` }
-      }
+      return this.accounts && this.accounts[this.account] && this.accounts[this.account]._id
     },
     selectableLocales () {
       return this.locales.filter(l => l !== this.locale)
     },
     locale () {
       return this.$i18n.locale
+    },
+    axios () {
+      const token = this.accounts && this.accounts[this.account] && this.accounts[this.account].token
+
+      return axios.create({
+        baseURL: 'https://api.entu.app',
+        headers: token ? { Authorization: `Bearer ${token}` } : null,
+        params: { account: this.account }
+      })
     }
+
   },
   methods: {
     setLocale (val) {

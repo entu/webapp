@@ -1,5 +1,3 @@
-import { get } from 'axios'
-
 export default {
   name: 'Auth',
   data () {
@@ -15,13 +13,7 @@ export default {
     } else if (this.$route.params.id) {
       this.authenticating = true
 
-      const options = {
-        headers: {
-          Authorization: `Bearer ${this.$route.params.id}`
-        }
-      }
-
-      get('https://api.entu.app/auth', options)
+      this.axios.get('/auth', { headers: { Authorization: `Bearer ${this.$route.params.id}` } })
         .then(response => {
           this.authenticating = false
 

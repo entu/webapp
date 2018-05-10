@@ -1,5 +1,3 @@
-import { get } from 'axios'
-
 import entityList from './list/list.vue'
 import entityTools from './tools/tools.vue'
 
@@ -36,7 +34,7 @@ export default {
         this.entity = null
         return
       }
-      get(`https://api.entu.app/entity/${this.id}`, { headers: this.authHeader })
+      this.axios.get(`/entity/${this.id}`)
         .then(response => {
           this.entity = response.data
         })

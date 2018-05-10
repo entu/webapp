@@ -1,5 +1,3 @@
-import { get } from 'axios'
-
 export default {
   name: 'EntityMenu',
   data () {
@@ -23,10 +21,9 @@ export default {
   },
   methods: {
     getUser () {
-      if (!this.userId || !this.token) { return }
+      if (!this.userId) { return }
 
       const options = {
-        headers: this.authHeader,
         params: {
           props: [
             'forename.string',
@@ -38,13 +35,13 @@ export default {
         }
       }
 
-      get(`https://api.entu.app/entity/${this.userId}`, options)
+      this.axios.get(`/entity/${this.userId}`, options)
         .then(response => {
           this.user.name = [this.getValue(response.data.forename), this.getValue(response.data.forename)].join(' ')
 
           if (!response.data.photo) { return }
 
-          get(`https://api.entu.app/property/${response.data.photo[0]._id}`, { headers: this.authHeader })
+          this.axios.get(`/property/${response.data.photo[0]._id}`)
             .then(response => {
               this.user.photo = response.data.url
               delete this.user.photoId
@@ -58,10 +55,8 @@ export default {
         })
     },
     getMenu () {
-      let options = {
-        headers: this.authHeader,
+      const options = {
         params: {
-          account: this.account,
           '_type.string': 'menu',
           props: [
             'group.string',
@@ -73,7 +68,7 @@ export default {
         }
       }
 
-      get(`https://api.entu.app/entity`, options)
+      this.axios.get('/entity', options)
         .then(response => {
           if (!response.data || !response.data.entities) { return }
 
