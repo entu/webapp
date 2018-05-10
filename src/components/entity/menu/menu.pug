@@ -3,8 +3,8 @@
         a(href='', @click.prevent='closed = !closed')
             i.icon-menu.float-left
         router-link(v-show='!closed', :to="{ name: 'auth' }")
-            i.icon-sign-in.float-right(v-if='!authenticated')
-            i.icon-sign-out.float-right(v-if='authenticated')
+            i.icon-sign-in.float-right(v-if='!token')
+            i.icon-sign-out.float-right(v-if='token')
     #menu-content.align-self-start.p-3(v-show='!closed')
         img.border.col-5.mb-3.rounded-circle.mx-auto.d-block(v-if='user.photo', :src='user.photo', :alt='user.name')
         img.col-6.mb-3.mx-auto.d-block(v-if='!user.photo', src='../../../assets/logo.png', :alt='user.name')

@@ -6,7 +6,7 @@
     "license": "MIT",
     "private": true,
     "scripts": {
-        "dev": "webpack-dev-server --open --hot --trace-deprecation",
+        "dev": "webpack-dev-server  --mode development --open --hot --trace-deprecation",
         "build": "webpack --mode production --hide-modules"
     },
     "browserslist": [
