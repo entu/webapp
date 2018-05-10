@@ -35,7 +35,7 @@ export default {
           }
         })
         .catch(err => {
-          console.error(err)
+          console.error(err.response.data.message || err.response.data || err.response || err)
           this.authenticating = false
           this.$router.push({ name: 'auth' })
         })

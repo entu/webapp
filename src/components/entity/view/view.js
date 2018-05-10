@@ -38,7 +38,7 @@ export default {
           this.entity = response.data
         })
         .catch(err => {
-          console.error(err)
+          console.error(err.response.data.message || err.response.data || err.response || err)
         })
     }
   }

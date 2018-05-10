@@ -50,11 +50,11 @@ export default {
               delete this.user.photoId
             })
             .catch(err => {
-              console.error(err)
+              console.error(err.response.data.message || err.response.data || err.response || err)
             })
         })
         .catch(err => {
-          console.error(err)
+          console.error(err.response.data.message || err.response.data || err.response || err)
         })
     },
     getMenu () {
@@ -100,7 +100,7 @@ export default {
           this.menu = Object.values(menu)
           this.menu[0].active = true
         }).catch(err => {
-          console.error(err)
+          console.error(err.response.data.message || err.response.data || err.response || err)
         })
     }
   }
