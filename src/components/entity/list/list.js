@@ -8,8 +8,8 @@ export default {
   },
   created () {
     console.log(this.menuQueries)
-    console.log(`https://api.entu.ee/entity?account=${this.$route.params.account}&${this.$route.params.query}`)
-    // get(`https://api.entu.ee/entity?account=${this.$route.params.account}&${this.$route.params.query}`)
+    console.log(`https://api.entu.app/entity?account=${this.$route.params.account}&${this.$route.params.query}`)
+    // get(`https://api.entu.app/entity?account=${this.$route.params.account}&${this.$route.params.query}`)
     //   .then(response => {
     //     if (!response.data || !response.data.entities) { return callback(new TypeError('No entities')) }
     //

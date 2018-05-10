@@ -1,1 +1,1 @@
-Entu.ee frontend
+entu.app frontend

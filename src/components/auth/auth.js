@@ -14,7 +14,7 @@ export default {
         }
       }
 
-      get('https://api.entu.ee/auth', options)
+      get('https://api.entu.app/auth', options)
         .then(response => {
           this.authenticating = false
 

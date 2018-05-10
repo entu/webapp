@@ -37,7 +37,7 @@ const getUser = (route, callback) => {
     }
   }
 
-  get(`https://api.entu.ee/entity/${accounts[account]._id}`, options)
+  get(`https://api.entu.app/entity/${accounts[account]._id}`, options)
     .then(response => {
       callback(null, {
         name: [getValue(response.data.forename), getValue(response.data.forename)].join(' '),
@@ -63,7 +63,7 @@ const getPhoto = (_id, route, callback) => {
     }
   }
 
-  get(`https://api.entu.ee/property/${_id}`, options)
+  get(`https://api.entu.app/property/${_id}`, options)
     .then(response => {
       callback(null, response.data.url)
     })
@@ -95,7 +95,7 @@ const getMenu = (route, callback) => {
     }
   }
 
-  get(`https://api.entu.ee/entity`, options)
+  get(`https://api.entu.app/entity`, options)
     .then(response => {
       if (!response.data || !response.data.entities) { return callback(new TypeError('No menu')) }
 
