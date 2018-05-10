@@ -7,14 +7,14 @@ export default {
     }
   },
   computed: {
-    accounts () {
+    allAccounts () {
       return JSON.parse(sessionStorage.getItem('accounts'))
     },
     account () {
       return this.$route.params.account
     },
     userId () {
-      return this.accounts && this.accounts[this.account] && this.accounts[this.account]._id
+      return this.allAccounts && this.allAccounts[this.account] && this.allAccounts[this.account]._id
     },
     selectableLocales () {
       return this.locales.filter(l => l !== this.locale)
@@ -23,7 +23,7 @@ export default {
       return this.$i18n.locale
     },
     axios () {
-      const token = this.accounts && this.accounts[this.account] && this.accounts[this.account].token
+      const token = this.allAccounts && this.allAccounts[this.account] && this.allAccounts[this.account].token
 
       return axios.create({
         baseURL: 'https://api.entu.app',
