@@ -9,28 +9,24 @@ div
                     ul.list-unstyled
                         li
                             a.pl-4(:href="'https://api.entu.app/auth/google?next=' + host + '/auth/'")
-                                i.fab.fa-google
+                                i.icon-google
                                 span Google
                         li
                             a.pl-4(:href="'https://api.entu.app/auth/facebook?next=' + host + '/auth/'")
-                                i.fab.fa-facebook
+                                i.icon-facebook
                                 span Facebook
                         li
                             a.pl-4(:href="'https://api.entu.app/auth/microsoft?next=' + host + '/auth/'")
-                                i.fab.fa-microsoft
+                                i.icon-microsoft
                                 span Microsoft
                         li(style='border-color:#bebebe')
                             a.pl-4(href='')
-                                i.fas.fa-mobile-alt
+                                i.icon-mobile-id
                                 span Mobiil-ID
                         li
                             a.pl-4(href='')
-                                i.fas.fa-id-card
+                                i.icon-id-card
                                 span {{ $t('id_card') }}
-                        //- li(style='border-color:#bebebe')
-                        //-     a.pl-4(href='')
-                        //-         i.fas.fa-university
-                        //-         span TAAT
                 .col-12.align-self-end
                     p.text-center {{ $t('info') }}
             .row.h-100(v-show='accounts && accounts.length > 0')
@@ -40,12 +36,12 @@ div
                     ul.list-unstyled
                         li(v-for='a in accounts', :key='a.account')
                             router-link.pl-4(:to="{ name: 'menu', params: { account: a.account } }")
-                                i.fas.fa-database
+                                i.icon-database
                                 span {{ a.account }}
                 .col-12.align-self-end.text-center
                     a(href='', @click.prevent='logOut')
-                        i.fas.fa-sign-out-alt
+                        i.icon-sign-out
                         span {{ $t('logout') }}
             .row.h-100(v-show='authenticating')
                 .col-12.align-self-center.text-center
-                    i.fas.fa-spinner.fa-pulse
+                    i.icon-spinner
