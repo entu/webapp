@@ -9,7 +9,10 @@ const mimeTypes = {
   'ico': 'image/x-icon',
   'js': 'application/javascript',
   'png': 'image/png',
-  'txt': 'text/plain'
+  'svg': 'image/svg+xml',
+  'ttf': 'font/ttf',
+  'txt': 'text/plain',
+  'woff': 'application/font-woff'
 }
 
 exports.handler = async (event) => {
