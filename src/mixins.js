@@ -16,6 +16,11 @@ export default {
       const accounts = JSON.parse(sessionStorage.getItem('accounts'))
       return accounts && accounts[this.account] && accounts[this.account]._id
     },
+    authHeader () {
+      if (this.token) {
+        return { Authorization: `Bearer ${this.token}` }
+      }
+    },
     selectableLocales () {
       return this.locales.filter(l => l !== this.locale)
     },

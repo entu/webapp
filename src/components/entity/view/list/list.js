@@ -2,15 +2,13 @@ import { get } from 'axios'
 
 export default {
   name: 'EntityList',
-  mounted () {
-    console.log('mounted')
-
-    this.getEntities()
-  },
   data () {
     return {
       entities: []
     }
+  },
+  created () {
+    this.getEntities()
   },
   watch: {
     query () {
@@ -26,7 +24,7 @@ export default {
     getEntities (query) {
       this.entities = []
 
-      get(`https://api.entu.app/entity?account=${this.$route.params.account}&${this.$route.params.query}&props=title.string,photo_id&sort=title.string`)
+      get(`https://api.entu.app/entity?account=${this.account}&${this.query}&props=title.string,photo_id&sort=title.string`, { headers: this.authHeader })
         .then(response => {
           if (!response.data || !response.data.entities) { return }
 

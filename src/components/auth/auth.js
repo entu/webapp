@@ -2,6 +2,13 @@ import { get } from 'axios'
 
 export default {
   name: 'Auth',
+  data () {
+    return {
+      host: window.location.origin,
+      authenticating: false,
+      accounts: null
+    }
+  },
   created () {
     if (this.$route.params.id === 'out') {
       this.logOut()
@@ -37,13 +44,6 @@ export default {
     const accounts = JSON.parse(sessionStorage.getItem('accounts'))
     if (!this.accounts && accounts) {
       this.accounts = Object.values(accounts)
-    }
-  },
-  data () {
-    return {
-      host: window.location.origin,
-      authenticating: false,
-      accounts: null
     }
   },
   computed: {

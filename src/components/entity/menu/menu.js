@@ -2,10 +2,6 @@ import { get } from 'axios'
 
 export default {
   name: 'EntityMenu',
-  created () {
-    this.getUser()
-    this.getMenu()
-  },
   data () {
     return {
       user: {
@@ -16,6 +12,10 @@ export default {
       menu: []
     }
   },
+  created () {
+    this.getUser()
+    this.getMenu()
+  },
   computed: {
     entity () {
       return this.$route.params.entity || '_'
@@ -25,11 +25,8 @@ export default {
     getUser () {
       if (!this.userId || !this.token) { return }
 
-      const headers = {
-        Authorization: `Bearer ${this.token}`
-      }
       const options = {
-        headers: headers,
+        headers: this.authHeader,
         params: {
           props: [
             'forename.string',
@@ -47,7 +44,7 @@ export default {
 
           if (!response.data.photo) { return }
 
-          get(`https://api.entu.app/property/${response.data.photo[0]._id}`, { headers: headers })
+          get(`https://api.entu.app/property/${response.data.photo[0]._id}`, { headers: this.authHeader })
             .then(response => {
               this.user.photo = response.data.url
               delete this.user.photoId
@@ -62,6 +59,7 @@ export default {
     },
     getMenu () {
       let options = {
+        headers: this.authHeader,
         params: {
           account: this.account,
           '_type.string': 'menu',
@@ -72,12 +70,6 @@ export default {
             'title.language',
             'query.string'
           ].join(',')
-        }
-      }
-
-      if (this.token) {
-        options.headers = {
-          Authorization: `Bearer ${this.token}`
         }
       }
 
