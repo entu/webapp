@@ -25,7 +25,9 @@ export default {
       return this.$route.params.entity !== '_' ? this.$route.params.entity : null
     },
     name () {
-      return this.getValue(this.entity.title)
+      const name = this.getValue(this.entity.title)
+      window.document.title = name ? `${name} · Entu` : 'Entu'
+      return name
     }
   },
   methods: {
