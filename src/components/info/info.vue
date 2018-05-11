@@ -1,1 +1,1 @@
-<script   src="./info.js"></script>
+<script src="./info.js"></script>
