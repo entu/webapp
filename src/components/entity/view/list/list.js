@@ -1,4 +1,4 @@
-const debounce = require('lodash/debounce')
+const _debounce = require('lodash/debounce')
 
 export default {
   name: 'EntityList',
@@ -15,14 +15,16 @@ export default {
     this.getEntities(true)
     this.setSearchString()
 
-    document.getElementById('list').addEventListener('scroll', () => {
-      const el = document.getElementById('list')
-      const toBottom = el.scrollHeight - el.offsetHeight - el.scrollTop
+    const el = document.getElementById('list')
+    if (el) {
+      el.addEventListener('scroll', () => {
+        const toBottom = el.scrollHeight - el.offsetHeight - el.scrollTop
 
-      if (toBottom < 200) {
-        this.getEntities()
-      }
-    })
+        if (toBottom < 200) {
+          this.getEntities()
+        }
+      })
+    }
   },
   watch: {
     query () {
@@ -38,7 +40,7 @@ export default {
       return this.$route.params.query
     },
     queryObj () {
-      if (!this.query) { return }
+      if (!this.query) { return {} }
 
       const query = this.query.split('&')
 
@@ -89,9 +91,8 @@ export default {
 
           this.skip += this.limit
           this.loading = false
-        }).catch(err => {
+        }).catch(() => {
           this.loading = false
-          console.error(err.response.data.message || err.response.data || err.response || err)
         })
     },
     setSearchString () {
@@ -105,9 +106,11 @@ export default {
         this.searchString = ''
       }
     },
-    doSearch: debounce(function () {
+    doSearch: _debounce(function () {
       let query = []
       let params = this.queryObj
+
+      console.log(this.searchString)
 
       if (this.searchString) {
         params['title.string.regex'] = `/${this.searchString}/i`

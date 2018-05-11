@@ -1,4 +1,5 @@
 import axios from 'axios'
+const _get = require('lodash/get')
 
 export default {
   data () {
@@ -24,14 +25,37 @@ export default {
     },
     axios () {
       const token = this.allAccounts && this.allAccounts[this.account] && this.allAccounts[this.account].token
+      const a = axios.create({ baseURL: 'https://api.entu.app' })
 
-      return axios.create({
-        baseURL: 'https://api.entu.app',
-        headers: token ? { Authorization: `Bearer ${token}` } : null,
-        params: { account: this.account }
+      if (token) {
+        a.defaults.headers = { Authorization: `Bearer ${token}` }
+      } else if (this.account) {
+        a.defaults.params = { account: this.account }
+      }
+
+      a.interceptors.response.use(function (response) {
+        console.log(response.request.responseURL)
+
+        return response
+      }, function (error) {
+        if (_get(error, 'response.data.message')) {
+          console.error(error.response.data.message)
+        } else if (_get(error, 'response.data')) {
+          console.error(error.response.data)
+        } else if (_get(error, 'response')) {
+          console.error(error.response)
+        }
+
+        if (error.response.status === 401) {
+          sessionStorage.clear()
+          location.reload()
+        }
+
+        return error
       })
-    }
 
+      return a
+    }
   },
   methods: {
     setLocale (val) {

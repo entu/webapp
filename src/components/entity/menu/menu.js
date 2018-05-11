@@ -35,24 +35,16 @@ export default {
         }
       }
 
-      this.axios.get(`/entity/${this.userId}`, options)
-        .then(response => {
-          this.user.name = [this.getValue(response.data.forename), this.getValue(response.data.forename)].join(' ')
+      this.axios.get(`/entity/${this.userId}`, options).then(response => {
+        this.user.name = [this.getValue(response.data.forename), this.getValue(response.data.forename)].join(' ')
 
-          if (!response.data.photo) { return }
+        if (!response.data.photo) { return }
 
-          this.axios.get(`/property/${response.data.photo[0]._id}`)
-            .then(response => {
-              this.user.photo = response.data.url
-              delete this.user.photoId
-            })
-            .catch(err => {
-              console.error(err.response.data.message || err.response.data || err.response || err)
-            })
+        this.axios.get(`/property/${response.data.photo[0]._id}`).then(response => {
+          this.user.photo = response.data.url
+          delete this.user.photoId
         })
-        .catch(err => {
-          console.error(err.response.data.message || err.response.data || err.response || err)
-        })
+      })
     },
     getMenu () {
       const sorter = (a, b) => {
@@ -74,41 +66,38 @@ export default {
         }
       }
 
-      this.axios.get('/entity', options)
-        .then(response => {
-          if (!response.data || !response.data.entities) { return }
+      this.axios.get('/entity', options).then(response => {
+        if (!response.data || !response.data.entities) { return }
 
-          let menu = {}
+        let menu = {}
 
-          response.data.entities.forEach((entity) => {
-            let group = this.getValue(entity.group)
+        response.data.entities.forEach((entity) => {
+          let group = this.getValue(entity.group)
 
-            if (!menu[group]) {
-              menu[group] = {
-                title: this.getValue(entity.group),
-                links: [],
-                active: false
-              }
+          if (!menu[group]) {
+            menu[group] = {
+              title: this.getValue(entity.group),
+              links: [],
+              active: false
             }
+          }
 
-            menu[group].links.push({
-              _id: entity._id,
-              title: this.getValue(entity.title),
-              query: this.getValue(entity.query)
-            })
+          menu[group].links.push({
+            _id: entity._id,
+            title: this.getValue(entity.title),
+            query: this.getValue(entity.query)
           })
-
-          this.menu = Object.values(menu)
-
-          this.menu.forEach((m) => {
-            m.links.sort(sorter)
-          })
-          this.menu.sort(sorter)
-
-          this.menu[0].active = true
-        }).catch(err => {
-          console.error(err.response.data.message || err.response.data || err.response || err)
         })
+
+        this.menu = Object.values(menu)
+
+        this.menu.forEach((m) => {
+          m.links.sort(sorter)
+        })
+        this.menu.sort(sorter)
+
+        this.menu[0].active = true
+      })
     }
   }
 }

@@ -36,13 +36,9 @@ export default {
         this.entity = null
         return
       }
-      this.axios.get(`/entity/${this.id}`)
-        .then(response => {
-          this.entity = response.data
-        })
-        .catch(err => {
-          console.error(err.response.data.message || err.response.data || err.response || err)
-        })
+      this.axios.get(`/entity/${this.id}`).then(response => {
+        this.entity = response.data
+      })
     }
   }
 }
