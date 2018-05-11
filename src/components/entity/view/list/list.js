@@ -3,17 +3,32 @@ export default {
   data () {
     return {
       searchString: '',
+      loading: false,
+      limit: 50,
+      skip: 0,
       entities: []
     }
   },
-  created () {
-    this.getEntities()
+  mounted () {
+    this.getEntities(true)
     this.setSearchString()
+
+    document.getElementById('list').addEventListener('scroll', () => {
+      const el = document.getElementById('list')
+      const toBottom = el.scrollHeight - el.offsetHeight - el.scrollTop
+
+      if (toBottom < 200) {
+        this.getEntities()
+      }
+    })
   },
   watch: {
     query () {
-      this.getEntities()
+      this.getEntities(true)
       this.setSearchString()
+    },
+    searchString () {
+      this.doSearch()
     }
   },
   computed: {
@@ -32,16 +47,31 @@ export default {
       }
 
       return params
+    },
+    count () {
+      return this.entities.length
+    },
+    allFetched () {
+      return this.entities.length < this.skip
     }
   },
   methods: {
-    getEntities () {
-      let params = this.queryObj
+    getEntities (restart) {
+      if (this.loading) { return }
+      if (restart) {
+        this.skip = 0
+        this.entities = []
+      }
+      if (this.allFetched) { return }
 
+      this.loading = true
+
+      let params = this.queryObj
       params.props = 'title.string,photo_id'
       params.sort = 'title.string'
+      params.limit = this.limit
+      params.skip = this.skip
 
-      this.entities = []
       this.axios.get('/entity', { params: params })
         .then(response => {
           if (!response.data || !response.data.entities) { return }
@@ -54,7 +84,11 @@ export default {
               img: `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`
             })
           })
+
+          this.skip += this.limit
+          this.loading = false
         }).catch(err => {
+          this.loading = false
           console.error(err.response.data.message || err.response.data || err.response || err)
         })
     },
