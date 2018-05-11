@@ -25,6 +25,8 @@ export default {
           } else {
             this.accounts = null
           }
+
+          this.$router.push({ name: 'auth' })
         })
         .catch(err => {
           console.error(err.response.data.message || err.response.data || err.response || err)
