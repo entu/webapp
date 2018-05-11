@@ -27,7 +27,7 @@ export default {
     }
   },
   watch: {
-    query () {
+    queryStr () {
       this.getEntities(true)
       this.setSearchString()
     },
@@ -36,21 +36,11 @@ export default {
     }
   },
   computed: {
-    query () {
-      return this.$route.params.query
+    isQuery () {
+      return Object.keys(this.$route.query).length > 0
     },
-    queryObj () {
-      if (!this.query) { return {} }
-
-      const query = this.query.split('&')
-
-      let params = {}
-      for (let parameter of query) {
-        let p = parameter.split('=')
-        params[p[0]] = p[1]
-      }
-
-      return params
+    queryStr () {
+      return JSON.stringify(this.$route.query)
     },
     count () {
       return this.entities.length
@@ -61,6 +51,7 @@ export default {
   },
   methods: {
     getEntities (restart) {
+      if (!this.isQuery) { return }
       if (this.loading) { return }
       if (restart) {
         this.skip = 0
@@ -70,13 +61,13 @@ export default {
 
       this.loading = true
 
-      let params = this.queryObj
-      params.props = 'title.string,photo_id'
-      params.sort = 'title.string'
-      params.limit = this.limit
-      params.skip = this.skip
+      let query = Object.assign({}, this.$route.query)
+      query.props = 'title.string,photo_id'
+      query.sort = 'title.string'
+      query.limit = this.limit
+      query.skip = this.skip
 
-      this.axios.get('/entity', { params: params })
+      this.axios.get('/entity', { params: query })
         .then((response) => {
           if (!response.data || !response.data.entities) { return }
 
@@ -96,8 +87,10 @@ export default {
         })
     },
     setSearchString () {
-      if (this.queryObj['title.string.regex']) {
-        this.searchString = this.queryObj['title.string.regex']
+      let query = Object.assign({}, this.$route.query)
+
+      if (query['title.string.regex']) {
+        this.searchString = query['title.string.regex']
 
         if (this.searchString.startsWith('/') && this.searchString.endsWith('/i')) {
           this.searchString = this.searchString.substr(1, this.searchString.length - 3)
@@ -107,23 +100,15 @@ export default {
       }
     },
     doSearch: _debounce(function () {
-      let query = []
-      let params = this.queryObj
-
-      console.log(this.searchString)
+      let query = Object.assign({}, this.$route.query)
 
       if (this.searchString) {
-        params['title.string.regex'] = `/${this.searchString}/i`
+        query['title.string.regex'] = `/${this.searchString}/i`
       } else {
-        delete params['title.string.regex']
+        delete query['title.string.regex']
       }
 
-      for (var variable in params) {
-        if (variable === 'props') { continue }
-        query.push(`${variable}=${params[variable]}`)
-      }
-
-      this.$router.push({ name: 'view', params: { entity: this.$route.params.entity, query: query.join('&') } })
+      this.$router.push({ name: 'view', params: { entity: this.$route.params.entity }, query: query })
     }, 500)
   }
 }

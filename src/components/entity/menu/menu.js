@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     entity () {
-      return this.$route.params.entity || '_'
+      return this.$route.params.entity
     }
   },
   methods: {
@@ -85,7 +85,7 @@ export default {
           menu[group].links.push({
             _id: entity._id,
             title: this.getValue(entity.title),
-            query: this.getValue(entity.query)
+            query: this.queryObj(this.getValue(entity.query))
           })
         })
 
@@ -98,6 +98,19 @@ export default {
 
         this.menu[0].active = true
       })
+    },
+    queryObj (q) {
+      if (!q) { return {} }
+
+      const query = q.split('&')
+
+      let params = {}
+      for (let parameter of query) {
+        let p = parameter.split('=')
+        params[p[0]] = p[1]
+      }
+
+      return params
     }
   }
 }

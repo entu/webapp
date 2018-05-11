@@ -48,18 +48,8 @@ const router = new VueRouter({
           component: entityInfo
         },
         {
-          name: 'viewNoEntity',
-          path: '_',
-          redirect: { name: 'account' }
-        },
-        {
           name: 'view',
-          path: ':entity/:query',
-          component: entityView
-        },
-        {
-          name: 'viewNoList',
-          path: ':entity',
+          path: ':entity?',
           component: entityView
         }
       ]
