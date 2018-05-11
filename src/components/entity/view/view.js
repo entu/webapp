@@ -36,7 +36,7 @@ export default {
         this.entity = null
         return
       }
-      this.axios.get(`/entity/${this.id}`).then(response => {
+      this.axios.get(`/entity/${this.id}`).then((response) => {
         this.entity = response.data
       })
     }

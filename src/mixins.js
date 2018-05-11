@@ -18,7 +18,7 @@ export default {
       return this.allAccounts && this.allAccounts[this.account] && this.allAccounts[this.account]._id
     },
     selectableLocales () {
-      return this.locales.filter(l => l !== this.locale)
+      return this.locales.filter((l) => l !== this.locale)
     },
     locale () {
       return this.$i18n.locale

@@ -77,7 +77,7 @@ const i18n = new VueI18n({
 
 new Vue({
   el: '#app',
-  render: h => h(app),
+  render: (h) => h(app),
   router: router,
   i18n: i18n
 })

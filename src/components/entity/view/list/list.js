@@ -77,7 +77,7 @@ export default {
       params.skip = this.skip
 
       this.axios.get('/entity', { params: params })
-        .then(response => {
+        .then((response) => {
           if (!response.data || !response.data.entities) { return }
 
           response.data.entities.forEach((entity) => {
