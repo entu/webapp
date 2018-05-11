@@ -2,7 +2,7 @@ import entityList from './list/list.vue'
 import entityTools from './tools/tools.vue'
 
 export default {
-  name: 'EntityContent',
+  name: 'Entity',
   components: {
     'entity-list': entityList,
     'entity-tools': entityTools

@@ -9,9 +9,9 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import app from './components/app.vue'
 import info from './components/info/info.vue'
 import auth from './components/auth/auth.vue'
-import entity from './components/entity/entity.vue'
-import entityInfo from './components/entity/info/info.vue'
-import entityView from './components/entity/view/view.vue'
+import account from './components/account/account.vue'
+import accountInfo from './components/account/info/info.vue'
+import entityView from './components/account/entity/entity.vue'
 
 // Mixins
 import mixins from './mixins'
@@ -36,16 +36,16 @@ const router = new VueRouter({
     },
     {
       path: '/:account',
-      component: entity,
+      component: account,
       children: [
         {
           name: 'account',
           path: '',
-          component: entityInfo
+          component: accountInfo
         },
         {
           name: 'view',
-          path: ':entity?',
+          path: ':entity',
           component: entityView
         }
       ]

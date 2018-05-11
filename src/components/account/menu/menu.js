@@ -1,5 +1,5 @@
 export default {
-  name: 'EntityMenu',
+  name: 'AccountMenu',
   data () {
     return {
       user: {
@@ -16,7 +16,7 @@ export default {
   },
   computed: {
     entity () {
-      return this.$route.params.entity
+      return this.$route.params.entity || '_'
     }
   },
   methods: {
