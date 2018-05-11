@@ -1,4 +1,4 @@
-const _debounce = require('lodash/debounce')
+import _debounce from 'lodash/debounce'
 
 export default {
   name: 'EntityList',

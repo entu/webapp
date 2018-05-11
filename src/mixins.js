@@ -1,10 +1,10 @@
 import axios from 'axios'
-const _get = require('lodash/get')
+import _get from 'lodash/get'
 
 export default {
   data () {
     return {
-      locales: ['et', 'en'],
+      locales: ['et', 'en']
     }
   },
   computed: {
@@ -15,7 +15,7 @@ export default {
       return this.$route.params.account
     },
     userId () {
-      return this.allAccounts && this.allAccounts[this.account] && this.allAccounts[this.account]._id
+      return _get(this, ['allAccounts', this.account, '_id'])
     },
     selectableLocales () {
       return this.locales.filter((l) => l !== this.locale)
@@ -24,7 +24,7 @@ export default {
       return this.$i18n.locale
     },
     axios () {
-      const token = this.allAccounts && this.allAccounts[this.account] && this.allAccounts[this.account].token
+      const token = _get(this, ['allAccounts', this.account, 'token'])
       const a = axios.create({ baseURL: 'https://api.entu.app' })
 
       if (token) {
