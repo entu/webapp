@@ -31,11 +31,7 @@ const router = new VueRouter({
     },
     {
       name: 'auth',
-      path: '/auth',
-      component: auth
-    },
-    {
-      path: '/auth/:id',
+      path: '/auth/:id?',
       component: auth
     },
     {
