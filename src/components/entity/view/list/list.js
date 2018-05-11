@@ -1,3 +1,5 @@
+const debounce = require('lodash/debounce')
+
 export default {
   name: 'EntityList',
   data () {
@@ -103,7 +105,7 @@ export default {
         this.searchString = ''
       }
     },
-    doSearch () {
+    doSearch: debounce(function () {
       let query = []
       let params = this.queryObj
 
@@ -119,6 +121,6 @@ export default {
       }
 
       this.$router.push({ name: 'view', params: { entity: this.$route.params.entity, query: query.join('&') } })
-    }
+    }, 500)
   }
 }
