@@ -33,11 +33,17 @@ export default {
         a.defaults.params = { account: this.account }
       }
 
-      a.interceptors.response.use(function (response) {
-        // console.log(response.request.responseURL)
+      a.interceptors.request.use((config) => {
+        this.$root.$data.openRequests += 1
+        return config
+      })
 
+      a.interceptors.response.use((response) => {
+        this.$root.$data.openRequests -= 1
         return response
-      }, function (error) {
+      }, (error) => {
+        this.$root.$data.openRequests -= 1
+
         if (_get(error, 'response.data.message')) {
           console.error(error.response.data.message)
         } else if (_get(error, 'response.data')) {

@@ -105,6 +105,17 @@ i
 .icon-chevron-down
     &:before
         content "\e913"
-.icon-spinner
-    &:before
-        content "\e914"
+
+.loader
+    margin 0px auto
+    width 50px
+    height 50px
+    border 2px solid #d1d1d1
+    border-top 2px solid #6c6c6c
+    border-radius 50%
+    animation spin 1s linear infinite
+
+@keyframes spin {
+    0% { transform: rotate(0deg) }
+    100% { transform: rotate(360deg) }
+}

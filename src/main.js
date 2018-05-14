@@ -18,6 +18,11 @@ if (!localStorage.getItem('locale')) { localStorage.setItem('locale' ,'et') }
 // Start Vue app
 new Vue({
   el: '#app',
+  data () {
+    return {
+      openRequests: 0
+    }
+  },
   render: (h) => h(app),
   router: new VueRouter(routes),
   i18n: new VueI18n({ locale: localStorage.getItem('locale') })

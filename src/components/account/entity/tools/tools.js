@@ -1,3 +1,8 @@
 export default {
-  name: 'EntityTools'
+  name: 'EntityTools',
+  computed: {
+    openRequests () {
+      return this.$root.$data.openRequests
+    }
+  }
 }
