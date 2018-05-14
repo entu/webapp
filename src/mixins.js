@@ -34,7 +34,7 @@ export default {
       }
 
       a.interceptors.response.use(function (response) {
-        console.log(response.request.responseURL)
+        // console.log(response.request.responseURL)
 
         return response
       }, function (error) {
