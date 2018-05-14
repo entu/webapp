@@ -3,6 +3,9 @@ export default {
   computed: {
     openRequests () {
       return this.$root.$data.openRequests
+    },
+    entity () {
+      return this.$parent.$data.entity
     }
   }
 }

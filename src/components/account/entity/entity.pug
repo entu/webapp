@@ -4,7 +4,16 @@
         .col.d-none.d-sm-block
             .row.h-100
                 entity-tools
-                #content.col-12.h-100.p-0(v-if='entity')
+                #content.col-12.h-100.p-0(v-if='entityView')
                     .p-3
-                        h1 {{ name }}
-                        pre {{ entity }}
+                        h1.mb-4 {{ name }}
+                        .row.mb-2(v-for='v, p in entityView')
+                            strong.col-12.col-md-4.col-xl-3.text-md-right {{ p }}
+                            .col-12.col-md-8.col-xl-9
+                                template(v-for='i, idx in v')
+                                    p.mb-0(v-if='i.to')
+                                        router-link(:to='i.to') {{ i.string }}
+                                    p.mb-0(v-else-if='i.url')
+                                        a(:href='i.url') {{ i.string }}
+                                    p.mb-0(v-else-if='i.string') {{ i.string }}
+                                    p.mb-0(v-else) {{ i }}
