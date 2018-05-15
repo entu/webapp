@@ -44,20 +44,23 @@ export default {
       }, (error) => {
         this.$root.$data.openRequests -= 1
 
-        if (_get(error, 'response.data.message')) {
-          console.error(error.response.data.message)
-        } else if (_get(error, 'response.data')) {
-          console.error(error.response.data)
-        } else if (_get(error, 'response')) {
-          console.error(error.response)
-        }
-
         if (error.response.status === 401) {
           sessionStorage.clear()
           location.reload()
         }
 
-        return error
+        let result
+        if (_get(error, 'response.data.message')) {
+          result = error.response.data.message
+        } else if (_get(error, 'response.data')) {
+          result = error.response.data
+        } else if (_get(error, 'response')) {
+          result = error.response
+        }
+
+        console.error(result)
+
+        return Promise.reject(result)
       })
 
       return a

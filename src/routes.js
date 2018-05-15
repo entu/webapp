@@ -3,6 +3,7 @@ import auth from './components/auth/auth.vue'
 import account from './components/account/account.vue'
 import accountInfo from './components/account/info/info.vue'
 import entityView from './components/account/entity/entity.vue'
+import file from './components/file/file.vue'
 
 export default {
   mode: 'history',
@@ -31,6 +32,11 @@ export default {
           component: entityView
         }
       ]
+    },
+    {
+      name: 'file',
+      path: '/:account/file/:id',
+      component: file
     }
   ]
 }

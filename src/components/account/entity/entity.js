@@ -74,7 +74,7 @@ export default {
         return { string: v.reference, to: { name: 'view', params: { entity: v.reference }, query: this.$route.query } }
       }
       if (v.filename) {
-        return { string: v.filename, url: `https://api.entu.app/property/${v._id}?download` }
+        return { string: v.filename, file: `/${this.$route.params.account}/file/${v._id}` }
       }
       if (v.boolean) {
         return { string: v.boolean ? this.$t('true') : this.$t('false') }
