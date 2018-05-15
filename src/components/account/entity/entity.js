@@ -1,3 +1,5 @@
+import _get from 'lodash/get'
+
 import entityList from './list/list.vue'
 import entityTools from './tools/tools.vue'
 
@@ -12,7 +14,8 @@ export default {
   },
   data () {
     return {
-      entity: null
+      entity: null,
+      picture: null
     }
   },
   watch: {
@@ -56,8 +59,20 @@ export default {
         this.entity = null
         return
       }
+
+      // this.entity = null
+      this.picture = null
+
       this.axios.get(`/entity/${this.id}`).then((response) => {
         this.entity = response.data
+
+        if (_get(this.entity, 'photo.0._id')) {
+          this.axios.get(`/property/${_get(this.entity, 'photo.0._id')}`).then((response) => {
+            this.picture = _get(response, 'data.url', `https://secure.gravatar.com/avatar/${this.entity._id}?d=identicon&s=300`)
+          })
+        } else {
+          this.picture = `https://secure.gravatar.com/avatar/${this.entity._id}?d=identicon&s=300`
+        }
       })
     },
     parseValue (v) {
