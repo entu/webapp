@@ -108,25 +108,15 @@ export default {
         })
     },
     setSearchString () {
-      let query = Object.assign({}, this.$route.query)
-
-      if (query['title.string.regex']) {
-        this.searchString = query['title.string.regex']
-
-        if (this.searchString.startsWith('/') && this.searchString.endsWith('/i')) {
-          this.searchString = this.searchString.substr(1, this.searchString.length - 3)
-        }
-      } else {
-        this.searchString = ''
-      }
+      this.searchString = _get(this, '$route.query.q', '')
     },
     doSearch: _debounce(function () {
       let query = Object.assign({}, this.$route.query)
 
       if (this.searchString) {
-        query['title.string.regex'] = `/${this.searchString}/i`
+        query['q'] = this.searchString
       } else {
-        delete query['title.string.regex']
+        delete query['q']
       }
 
       this.$router.push({ name: 'view', params: { entity: this.$route.params.entity }, query: query })
