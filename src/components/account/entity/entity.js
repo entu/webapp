@@ -15,7 +15,7 @@ export default {
   data () {
     return {
       entity: null,
-      picture: null
+      image: null
     }
   },
   watch: {
@@ -61,17 +61,17 @@ export default {
       }
 
       // this.entity = null
-      this.picture = null
+      this.image = null
 
       this.axios.get(`/entity/${this.id}`).then((response) => {
         this.entity = response.data
 
         if (_get(this.entity, 'photo.0._id')) {
           this.axios.get(`/property/${_get(this.entity, 'photo.0._id')}`).then((response) => {
-            this.picture = _get(response, 'data.url', `https://secure.gravatar.com/avatar/${this.entity._id}?d=identicon&s=300`)
+            this.image = _get(response, 'data.url', `https://secure.gravatar.com/avatar/${this.entity._id}?d=identicon&s=300`)
           })
         } else {
-          this.picture = `https://secure.gravatar.com/avatar/${this.entity._id}?d=identicon&s=300`
+          this.image = `https://secure.gravatar.com/avatar/${this.entity._id}?d=identicon&s=300`
         }
       })
     },

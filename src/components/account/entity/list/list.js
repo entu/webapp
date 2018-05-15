@@ -78,14 +78,14 @@ export default {
               _id: entity._id,
               title: this.getValue(entity.title),
               description: this.getValue(entity.description),
-              img: null
+              image: null
             }
             this.entities.push(e)
 
             if (_get(entity, 'photo.0._id')) {
-              imageRequests.push(this.getPicture(_get(entity, 'photo.0._id'), e))
+              imageRequests.push(this.getImage(_get(entity, 'photo.0._id'), e))
             } else {
-              e.img = `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`
+              e.image = `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`
             }
           })
 
@@ -101,10 +101,10 @@ export default {
           this.loading = false
         })
     },
-    getPicture (photoId, entity) {
+    getImage (photoId, entity) {
       return this.axios.get(`/property/${photoId}`)
         .then((response) => {
-          entity.img = _get(response, 'data.url', `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`)
+          entity.image = _get(response, 'data.url', `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`)
         })
     },
     setSearchString () {
