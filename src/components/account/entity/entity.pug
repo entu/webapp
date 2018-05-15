@@ -4,11 +4,10 @@
         .col.d-none.d-sm-block
             .row.h-100
                 entity-tools
-                #content.col-12.h-100.p-3(v-if='entityView')
-                    img.col-2.p-1.img-thumbnail.float-right(:src='image', :alt='name')
-                    h1.mb-4 {{ name }}
-                    .row
-                        .col
+                #content.col-12.h-100(v-if='entityView')
+                    .row.mt-3
+                        .col-10
+                            h1.mb-4 {{ name }}
                             .row.mb-2(v-for='v, p in entityView')
                                 strong.col-12.col-md-4.col-xl-3.text-md-right {{ p }}
                                 .col-12.col-md-8.col-xl-9
@@ -19,3 +18,5 @@
                                             a(:href='i.file' target='_blank') {{ i.string }}
                                         p.mb-0(v-else-if='i.string') {{ i.string }}
                                         p.mb-0(v-else) {{ i }}
+                        .col-2
+                            img.p-1.img-thumbnail(:src='image', :alt='name')
