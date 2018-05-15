@@ -37,17 +37,24 @@ export default {
     },
     entityView () {
       const hidden = [
-        '_id',
-        'title'
+        // '_id',
+        // '_search',
+        // 'title'
       ]
 
       let result = {}
-      for (var property in this.entity) {
+      for (let property in this.entity) {
+        console.log(property, Array.isArray(this.entity[property]))
         if (!this.entity.hasOwnProperty(property)) { continue }
         // if (property.startsWith('_')) { continue }
         if (hidden.indexOf(property) !== -1) { continue }
 
-        result[property] = this.entity[property].map(this.parseValue)
+        if (Array.isArray(this.entity[property])) {
+          result[property] = this.entity[property].map(this.parseValue)
+        } else {
+          result[property] = [this.entity[property]]
+        }
+
       }
 
       return result
