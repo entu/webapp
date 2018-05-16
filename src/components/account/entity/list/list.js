@@ -7,7 +7,7 @@ export default {
     return {
       searchString: '',
       loading: false,
-      limit: 50,
+      limit: 20,
       skip: 0,
       entities: []
     }
