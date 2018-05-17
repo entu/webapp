@@ -42,7 +42,9 @@ export default {
       a.interceptors.response.use((response) => {
         const endTime = new Date()
         console.log(`${endTime.getTime() - response.config.startTime.getTime()}ms - ${response.request.responseURL}`);
+
         this.$root.$data.openRequests -= 1
+
         return response
       }, (error) => {
         this.$root.$data.openRequests -= 1
@@ -61,7 +63,8 @@ export default {
           result = error.response
         }
 
-        console.error(result)
+        const endTime = new Date()
+        console.log(`${endTime.getTime() - error.config.startTime.getTime()}ms - ${error.request.responseURL} (${error.response.status}) ${result}`);
 
         return Promise.reject(result)
       })
