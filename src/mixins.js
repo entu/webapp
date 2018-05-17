@@ -34,11 +34,14 @@ export default {
       }
 
       a.interceptors.request.use((config) => {
+        config.startTime = new Date()
         this.$root.$data.openRequests += 1
         return config
       })
 
       a.interceptors.response.use((response) => {
+        const endTime = new Date()
+        console.log(`${endTime.getTime() - response.config.startTime.getTime()}ms - ${response.request.responseURL}`);
         this.$root.$data.openRequests -= 1
         return response
       }, (error) => {

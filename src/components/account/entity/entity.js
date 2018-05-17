@@ -44,7 +44,6 @@ export default {
 
       let result = {}
       for (let property in this.entity) {
-        console.log(property, Array.isArray(this.entity[property]))
         if (!this.entity.hasOwnProperty(property)) { continue }
         // if (property.startsWith('_')) { continue }
         if (hidden.indexOf(property) !== -1) { continue }
