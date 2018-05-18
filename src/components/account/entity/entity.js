@@ -120,22 +120,25 @@ export default {
       })
     },
     parseValue (v) {
-      if (v.string) {
+      if (v.hasOwnProperty('string')) {
         return { string: v.string }
       }
-      if (v.date) {
+      if (v.hasOwnProperty('date')) {
         return { string: (new Date(v.date)).toLocaleString(this.locale) }
       }
-      if (v.decimal) {
+      if (v.hasOwnProperty('integer')) {
+        return { string: v.integer.toLocaleString(this.locale, { minimumFractionDigits: 0 }) }
+      }
+      if (v.hasOwnProperty('decimal')) {
         return { string: v.decimal.toLocaleString(this.locale, { minimumFractionDigits: 2 }) }
       }
-      if (v.reference) {
+      if (v.hasOwnProperty('reference')) {
         return { string: v.reference, to: { name: 'view', params: { entity: v.reference }, query: this.$route.query } }
       }
-      if (v.filename) {
+      if (v.hasOwnProperty('filename')) {
         return { string: v.filename, file: `/${this.$route.params.account}/file/${v._id}` }
       }
-      if (v.boolean) {
+      if (v.hasOwnProperty('boolean')) {
         return { string: v.boolean ? this.$t('true') : this.$t('false') }
       }
 
