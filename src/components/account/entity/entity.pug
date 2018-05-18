@@ -19,7 +19,7 @@
                                         p.mb-0(v-else-if='i.string') {{ i.string }}
                                         p.mb-0(v-else) {{ i }}
                         .col-2
-                            img.p-1.img-thumbnail(:src='image', :alt='name')
+                            img.p-1.img-thumbnail(:src='_thumbnail', :alt='name')
                     //- .row.mt-5
                     //-     pre.col-12 {{ childs }}
                     .row.mt-5(v-if='childs')
@@ -36,5 +36,5 @@
                                         tr(v-for='c in childsGroup')
                                             td
                                                 router-link(:to='c.to')
-                                                    img.rounded-circle.align-self-center.mr-3(:src='c.image', :alt='c.title')
+                                                    img.rounded-circle.align-self-center.mr-3(:src='c._thumbnail', :alt='c.title')
                                                     | {{ c.title || c._id }}

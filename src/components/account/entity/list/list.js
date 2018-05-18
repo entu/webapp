@@ -63,7 +63,7 @@ export default {
       this.loading = true
 
       let query = Object.assign({}, this.$route.query)
-      query.props = 'title.string,photo._id'
+      query.props = '_thumbnail,title.string'
       query.sort = 'title.string'
       query.limit = this.limit
       query.skip = this.skip
@@ -72,39 +72,21 @@ export default {
         .then((response) => {
           if (!response.data || !response.data.entities) { return }
 
-          let imageRequests = []
           response.data.entities.forEach((entity) => {
             let e = {
               _id: entity._id,
+              _thumbnail: entity._thumbnail || `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`,
               title: this.getValue(entity.title),
-              description: this.getValue(entity.description),
-              image: null
+              description: this.getValue(entity.description)
             }
-            this.entities.push(e)
 
-            if (_get(entity, 'photo.0._id')) {
-              imageRequests.push(this.getImage(_get(entity, 'photo.0._id'), e))
-            } else {
-              e.image = `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`
-            }
+            this.entities.push(e)
           })
 
           this.skip += this.limit
           this.loading = false
-
-          this.axios.all(imageRequests)
-            .then(this.axios.spread(function (acct, perms) {
-              console.log(acct)
-              console.log(perms)
-            }))
         }).catch(() => {
           this.loading = false
-        })
-    },
-    getImage (photoId, entity) {
-      return this.axios.get(`/property/${photoId}`)
-        .then((response) => {
-          entity.image = _get(response, 'data.url', `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`)
         })
     },
     setSearchString () {
