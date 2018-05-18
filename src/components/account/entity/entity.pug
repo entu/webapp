@@ -7,7 +7,7 @@
                 #content.col-12.h-100(v-if='entityView')
                     .row.mt-3
                         .col-10
-                            h1.mb-4 {{ name }}
+                            h1.mb-4 {{ name || _id }}
                             .row.mb-2(v-for='v, p in entityView')
                                 strong.col-12.col-md-4.col-xl-3.text-md-right {{ p }}
                                 .col-12.col-md-8.col-xl-9
@@ -20,3 +20,21 @@
                                         p.mb-0(v-else) {{ i }}
                         .col-2
                             img.p-1.img-thumbnail(:src='image', :alt='name')
+                    //- .row.mt-5
+                    //-     pre.col-12 {{ childs }}
+                    .row.mt-5(v-if='childs')
+                        h2.col-12
+                            | {{ $t('childs') }}
+                            span.float-right {{ childsCount }}
+                        template(v-for='childsGroup, group in childs')
+                            h3.mt-3.col-12
+                                | {{ group }}
+                                span.float-right {{ childsGroup.length }}
+                            .col-12
+                                table.table.table-hover.table-striped.table-sm
+                                    tbody
+                                        tr(v-for='c in childsGroup')
+                                            td
+                                                router-link(:to='c.to')
+                                                    img.rounded-circle.align-self-center.mr-3(:src='c.image', :alt='c.title')
+                                                    | {{ c.title || c._id }}

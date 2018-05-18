@@ -1,4 +1,5 @@
 import _get from 'lodash/get'
+import _groupBy from 'lodash/groupBy'
 
 import entityList from './list/list.vue'
 import entityTools from './tools/tools.vue'
@@ -11,20 +12,24 @@ export default {
   },
   created () {
     this.getEntity()
+    this.getChilds()
   },
   data () {
     return {
       entity: null,
+      childs: null,
+      childsCount: 0,
       image: null
     }
   },
   watch: {
-    id () {
+    _id () {
       this.getEntity()
+      this.getChilds()
     }
   },
   computed: {
-    id () {
+    _id () {
       return this.$route.params.entity !== '_' ? this.$route.params.entity : null
     },
     name () {
@@ -45,7 +50,7 @@ export default {
       let result = {}
       for (let property in this.entity) {
         if (!this.entity.hasOwnProperty(property)) { continue }
-        // if (property.startsWith('_')) { continue }
+        if (property.startsWith('_') && property !== '_parent') { continue }
         if (hidden.indexOf(property) !== -1) { continue }
 
         if (Array.isArray(this.entity[property])) {
@@ -53,7 +58,6 @@ export default {
         } else {
           result[property] = [this.entity[property]]
         }
-
       }
 
       return result
@@ -61,7 +65,7 @@ export default {
   },
   methods: {
     getEntity () {
-      if (!this.id) {
+      if (!this._id) {
         this.entity = null
         return
       }
@@ -69,7 +73,7 @@ export default {
       // this.entity = null
       this.image = null
 
-      this.axios.get(`/entity/${this.id}`).then((response) => {
+      this.axios.get(`/entity/${this._id}`).then((response) => {
         this.entity = response.data
 
         if (_get(this.entity, 'photo.0._id')) {
@@ -80,6 +84,58 @@ export default {
           this.image = `https://secure.gravatar.com/avatar/${this.entity._id}?d=identicon&s=300`
         }
       })
+    },
+    getChilds () {
+      if (!this._id) {
+        this.entity = null
+        return
+      }
+
+      this.childs = null
+      this.childsCount = 0
+
+      let imageRequests = []
+
+      const query = {
+        '_parent.reference': this._id,
+        props: '_type.string,title.string,photo._id',
+        sort: 'title.string',
+        limit: 1000
+      }
+
+      this.axios.get(`/entity`, { params: query }).then((response) => {
+        if (!response.data || !response.data.entities) { return }
+
+        let childs = []
+        response.data.entities.forEach((entity) => {
+          let e = {
+            _id: entity._id,
+            _type: this.getValue(entity._type),
+            title: this.getValue(entity.title),
+            to: { name: 'view', params: { entity: entity._id }, query: this.$route.query },
+            image: null
+          }
+          childs.push(e)
+
+          if (_get(entity, 'photo.0._id')) {
+            imageRequests.push(this.getImage(_get(entity, 'photo.0._id'), e))
+          } else {
+            e.image = `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`
+          }
+        })
+
+        this.childsCount = childs.length
+
+        if (childs.length > 0) {
+          this.childs = _groupBy(childs, '_type')
+        }
+      })
+    },
+    getImage (photoId, entity) {
+      return this.axios.get(`/property/${photoId}`)
+        .then((response) => {
+          entity.image = _get(response, 'data.url', `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`)
+        })
     },
     parseValue (v) {
       if (v.string) {
