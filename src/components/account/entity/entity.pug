@@ -36,5 +36,5 @@
                                         tr(v-for='c in childsGroup')
                                             td
                                                 router-link(:to='c.to')
-                                                    img.rounded-circle.align-self-center.mr-3(:src='c._thumbnail', :alt='c.title')
-                                                    | {{ c.title || c._id }}
+                                                    img.rounded-circle.align-self-center.mr-3(:src='c._thumbnail', :alt='c.name')
+                                                    | {{ c.name || c._id }}

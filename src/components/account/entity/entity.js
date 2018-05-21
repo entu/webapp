@@ -39,7 +39,7 @@ export default {
     name () {
       if (!this.entity) { return '' }
 
-      const name = this.getValue(this.entity.title)
+      const name = this.getValue(this.entity.name)
       window.document.title = name ? `${name} · Entu` : 'Entu'
 
       return name
@@ -48,7 +48,7 @@ export default {
       const hidden = [
         // '_id',
         // '_search',
-        'title'
+        'name'
       ]
 
       let result = {}
@@ -92,8 +92,8 @@ export default {
 
       const query = {
         '_parent.reference': this._id,
-        props: '_thumbnail,_type.string,title.string',
-        sort: 'title.string',
+        props: '_thumbnail,_type.string,name.string',
+        sort: 'name.string',
         limit: 1000
       }
 
@@ -106,7 +106,7 @@ export default {
             _id: entity._id,
             _thumbnail: entity._thumbnail || `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`,
             _type: this.getValue(entity._type),
-            title: this.getValue(entity.title),
+            name: this.getValue(entity.name),
             to: { name: 'view', params: { entity: entity._id }, query: this.$route.query }
           }
           childs.push(e)

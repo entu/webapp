@@ -11,14 +11,14 @@
 
         //- h4.pb-3.text-center {{ user.name }}
         ul.list-unstyled
-            li.menu-group.mt-4(v-for='mg in menu', :key='mg.title')
+            li.menu-group.mt-4(v-for='mg in menu', :key='mg.name')
                 a(href='', @click.prevent='mg.active = !mg.active')
                     h5.mb-1
                         i(:class="{ 'icon-chevron-down': mg.active, 'icon-chevron-right': !mg.active }")
-                        span {{ mg.title }}
+                        span {{ mg.name }}
                 ul.list-unstyled(v-show='mg.active', style='display:block')
                     li(v-for='l in mg.links', :key='l._id')
-                        router-link(:to="{ name: 'view', params: { entity: entity }, query: l.query }", exact) {{ l.title }}
+                        router-link(:to="{ name: 'view', params: { entity: entity }, query: l.query }", exact) {{ l.name }}
     .col.align-self-start.mt-5.text-center(v-if='menu.length === 0')
         i.icon-spinner
     #menu-language.col-lg-2.pb-1.text-right

@@ -63,8 +63,8 @@ export default {
       this.loading = true
 
       let query = Object.assign({}, this.$route.query)
-      query.props = '_thumbnail,title.string'
-      query.sort = 'title.string'
+      query.props = '_thumbnail,name.string'
+      query.sort = 'name.string'
       query.limit = this.limit
       query.skip = this.skip
 
@@ -76,7 +76,7 @@ export default {
             let e = {
               _id: entity._id,
               _thumbnail: entity._thumbnail || `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`,
-              title: this.getValue(entity.title),
+              name: this.getValue(entity.name),
               description: this.getValue(entity.description)
             }
 

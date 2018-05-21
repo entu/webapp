@@ -48,8 +48,8 @@ export default {
     },
     getMenu () {
       const sorter = (a, b) => {
-        if (!a.title || a.title < b.title) { return -1 }
-        if (!b.title || a.title > b.title) { return 1 }
+        if (!a.name || a.name < b.name) { return -1 }
+        if (!b.name || a.name > b.name) { return 1 }
         return 0
       }
 
@@ -59,8 +59,8 @@ export default {
           props: [
             'group.string',
             'group.language',
-            'title.string',
-            'title.language',
+            'name.string',
+            'name.language',
             'query.string'
           ].join(',')
         }
@@ -76,7 +76,7 @@ export default {
 
           if (!menu[group]) {
             menu[group] = {
-              title: this.getValue(entity.group),
+              name: this.getValue(entity.group),
               links: [],
               active: false
             }
@@ -84,7 +84,7 @@ export default {
 
           menu[group].links.push({
             _id: entity._id,
-            title: this.getValue(entity.title),
+            name: this.getValue(entity.name),
             query: this.queryObj(this.getValue(entity.query))
           })
         })
