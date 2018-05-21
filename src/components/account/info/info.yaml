@@ -1,0 +1,12 @@
+en:
+    entities: Entities
+    deletedEntities: Deleted entities
+    db: Database
+    files: Files
+    deletedFiles: Deleted files
+et:
+    entities: Objektid
+    deletedEntities: Kustutatud objektid
+    db: Andmebaas
+    files: Failid
+    deletedFiles: Kustutatud failid

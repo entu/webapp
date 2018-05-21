@@ -1,4 +1,33 @@
 .h-100.col
     .row.h-100
-        .h-100.col
-            p.mt-2 boo
+        .col-12.align-self-center
+            .loader(v-if='openRequests')
+
+            .row(v-if='!openRequests')
+                .mb-5.col-12.col-lg-6
+                    .mb-3
+                        .mb-0 {{ $t('entities') }}
+                            span.float-right {{ entitiesStr }}
+                        .progress
+                            .progress-bar.bg-info(max=100, :style='entitiesStyle')
+                    .mb-3
+                        .mb-0 {{ $t('deletedEntities') }}
+                            span.float-right {{ deletedEntitiesStr }}
+                        .progress
+                            .progress-bar.bg-warning(max=100, :style='deletedEntitiesStyle')
+                .mb-5.col-12.col-lg-6
+                    .mb-3
+                        .mb-0 {{ $t('db') }}
+                            span.float-right {{ dbSizeStr }}
+                        .progress
+                            .progress-bar.bg-secondary(max=100, :style='dbSizeStyle')
+                    .mb-3
+                        .mb-0 {{ $t('files') }}
+                            span.float-right {{ filesSizeStr }}
+                        .progress
+                            .progress-bar.bg-success(max=100, :style='filesSizeStyle')
+                    .mb-3
+                        .mb-0 {{ $t('deletedFiles') }}
+                            span.float-right {{ deletedFilesSizeStr }}
+                        .progress
+                            .progress-bar.bg-warning(max=100, :style='deletedFilesSizeStyle')

@@ -97,7 +97,7 @@ export default {
     },
     getReadableFileSize (fileSizeInBytes) {
       let i = -1
-      const byteUnits = ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+      const byteUnits = [' KB', ' MB', ' GB', ' TB', ' PB', ' EB', ' ZB', ' YB']
 
       do {
         fileSizeInBytes = fileSizeInBytes / 1000
