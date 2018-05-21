@@ -136,7 +136,7 @@ export default {
         return { string: v.reference, to: { name: 'view', params: { entity: v.reference }, query: this.$route.query } }
       }
       if (v.hasOwnProperty('filename')) {
-        return { string: v.filename, file: `/${this.$route.params.account}/file/${v._id}` }
+        return { string: v.filename, file: `/${this.$route.params.account}/file/${v._id}`, size: this.getReadableFileSize(v.size) }
       }
       if (v.hasOwnProperty('boolean')) {
         return { string: v.boolean ? this.$t('true') : this.$t('false') }

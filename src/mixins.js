@@ -90,6 +90,21 @@ export default {
       })
 
       return values[0]
+    },
+    precisionRound (number, precision) {
+      var factor = Math.pow(10, precision)
+      return Math.round(number * factor) / factor
+    },
+    getReadableFileSize (fileSizeInBytes) {
+      let i = -1
+      const byteUnits = ['KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+      do {
+        fileSizeInBytes = fileSizeInBytes / 1000
+        i++
+      } while (fileSizeInBytes > 1000)
+
+      return this.precisionRound(fileSizeInBytes, 2).toLocaleString(this.locale) + byteUnits[i]
     }
   }
 }
