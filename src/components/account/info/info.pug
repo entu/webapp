@@ -23,7 +23,6 @@
                         .mb-0 {{ $t('files') }}
                             span.float-right {{ $t('deleted') }}
                         .progress
-                            .progress-bar.bg-secondary(max=100, :style='dbSizeStyle')
                             .progress-bar.bg-success(max=100, :style='filesSizeStyle')
                         .mb-0 {{ filesSizeStr }}
                             span.float-right {{ deletedFilesSizeStr }}
