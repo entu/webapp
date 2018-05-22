@@ -3,31 +3,32 @@
         .col-12.align-self-center
             .loader(v-if='openRequests')
 
-            .row(v-if='!openRequests')
-                .mb-5.col-12.col-lg-6
+            .row.justify-content-md-center(v-if='!openRequests')
+                .mb-5.col-12.col-md-10.col-lg-6.col-xl-4
                     .mb-3
                         .mb-0 {{ $t('entities') }}
-                            span.float-right {{ entitiesStr }}
+                            span.float-right {{ $t('deleted') }}
                         .progress
                             .progress-bar.bg-info(max=100, :style='entitiesStyle')
-                    .mb-3
-                        .mb-0 {{ $t('deletedEntities') }}
+                        .mb-0 {{ entitiesStr }}
                             span.float-right {{ deletedEntitiesStr }}
-                        .progress
-                            .progress-bar.bg-warning(max=100, :style='deletedEntitiesStyle')
-                .mb-5.col-12.col-lg-6
                     .mb-3
-                        .mb-0 {{ $t('db') }}
-                            span.float-right {{ dbSizeStr }}
+                        .mb-0 {{ $t('properties') }}
+                            span.float-right {{ $t('deleted') }}
                         .progress
-                            .progress-bar.bg-secondary(max=100, :style='dbSizeStyle')
+                            .progress-bar.bg-warning(max=100, :style='propertiesStyle')
+                        .mb-0 {{ propertiesStr }}
+                            span.float-right {{ deletedPropertiesStr }}
                     .mb-3
                         .mb-0 {{ $t('files') }}
-                            span.float-right {{ filesSizeStr }}
+                            span.float-right {{ $t('deleted') }}
                         .progress
+                            .progress-bar.bg-secondary(max=100, :style='dbSizeStyle')
                             .progress-bar.bg-success(max=100, :style='filesSizeStyle')
-                    .mb-3
-                        .mb-0 {{ $t('deletedFiles') }}
+                        .mb-0 {{ filesSizeStr }}
                             span.float-right {{ deletedFilesSizeStr }}
+                    .mb-3
+                        .mb-0 {{ $t('db') }}
                         .progress
-                            .progress-bar.bg-warning(max=100, :style='deletedFilesSizeStyle')
+                            .progress-bar.bg-secondary(max=100, :style='dbSizeStyle')
+                        .mb-0 {{ dbSizeStr }}
