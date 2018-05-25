@@ -63,7 +63,7 @@ export default {
       this.loading = true
 
       let query = Object.assign({}, this.$route.query)
-      query.props = '_thumbnail,name.string'
+      query.props = '_thumbnail,name'
       query.sort = 'name.string'
       query.limit = this.limit
       query.skip = this.skip
