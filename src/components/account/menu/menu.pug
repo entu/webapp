@@ -10,7 +10,8 @@
         img.col-6.mb-3.mx-auto.d-block(v-if='!user.photo', src='../../../assets/logo.png', :alt='user.name')
 
         //- h4.pb-3.text-center {{ user.name }}
-        h4.pb-3.text-center {{ account }}
+        h4.pb-3.text-center
+            router-link(:to="{ name: 'account', params: { account: account } }") {{ account }}
         ul.list-unstyled
             li.menu-group.mt-4(v-for='mg in menu', :key='mg.name')
                 a(href='', @click.prevent='mg.active = !mg.active')
