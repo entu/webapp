@@ -21,7 +21,8 @@ export default {
       filesSizeStyle: '',
       properties: 0,
       propertiesStr: '',
-      propertiesStyle: ''
+      propertiesStyle: '',
+      totalFilesSizeStr: 0
     }
   },
   created () {
@@ -50,6 +51,8 @@ export default {
       this.dbSize = _get(response, 'data.dbSize', 0)
       this.dbSizeStr = this.getReadableFileSize(this.dbSize)
       this.dbSizeStyle = `width: ${Math.round(this.dbSize * 100 / (this.dbSize + this.filesSize + this.deletedFilesSize))}%`
+
+      this.totalFilesSizeStr = this.getReadableFileSize(this.dbSize + this.filesSize + this.deletedFilesSize)
     })
   },
   computed: {

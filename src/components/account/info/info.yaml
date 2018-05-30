@@ -4,9 +4,11 @@ en:
     files: Files
     db: Database
     deleted: deleted
+    totalUsage: total usage
 et:
     entities: Objektid
     properties: Parameetrid
     files: Failid
     db: Andmebaas
     deleted: kustutatud
+    totalUsage: kogu andmemaht
