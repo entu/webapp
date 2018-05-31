@@ -1,7 +1,7 @@
 .col-12.col-lg-10.h-100
     .row.h-100
         entity-list
-        .col-12.col-sm-8.col-lg-9.d-none.d-sm-block
+        .col-12.d-none.d-sm-block(:class="{'col-sm-8': isQuery, 'col-lg-9': isQuery }")
             .row.h-100
                 entity-tools
                 #content.col-12.h-100(v-if='entityView')

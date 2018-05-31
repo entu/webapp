@@ -29,6 +29,9 @@ export default {
     }
   },
   computed: {
+    isQuery () {
+      return Object.keys(this.$route.query).length > 0
+    },
     _id () {
       return this.$route.params.entity !== '_' ? this.$route.params.entity : null
     },
