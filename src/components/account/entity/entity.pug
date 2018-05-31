@@ -13,7 +13,7 @@
                             i.icon-parent.float-right
                     .row.mt-4
                         .col-10
-                            h1.mb-4 {{ name || (entity ? entity._id : '') }}
+                            h1.mb-4 {{ name || error }}
                             .row.mb-2(v-for='v, p in entityView')
                                 strong.col-12.col-md-4.col-xl-3.text-md-right {{ p }}
                                 .col-12.col-md-8.col-xl-9

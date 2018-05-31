@@ -16,6 +16,7 @@ export default {
   },
   data () {
     return {
+      error: null,
       entity: null,
       childs: null,
       childsCount: 0
@@ -39,23 +40,18 @@ export default {
     name () {
       if (!this.entity) { return '' }
 
-      const name = this.getValue(this.entity.name)
+      const name = this.getValue(this.entity.name) || this.entity._id
       window.document.title = name ? `${name} · Entu` : 'Entu'
 
       return name
     },
     entityView () {
-      const hidden = [
-        // '_id',
-        // '_search',
-        'name'
-      ]
-
       let result = {}
+
       for (let property in this.entity) {
         if (!this.entity.hasOwnProperty(property)) { continue }
         if (property.startsWith('_')) { continue }
-        if (hidden.indexOf(property) !== -1) { continue }
+        if (property === 'name') { continue }
 
         if (Array.isArray(this.entity[property])) {
           result[property] = this.entity[property].filter(this.filterByLanguage).map(this.parseValue)
@@ -81,11 +77,13 @@ export default {
         return
       }
 
-      // this.entity = null
-      // this.image = null
-
       this.axios.get(`/entity/${this._id}`).then((response) => {
+        this.error = null
         this.entity = response.data
+      }).catch((err) => {
+        this.error = err
+        this.entity = null
+        this.image = null
       })
     },
     getChilds () {
