@@ -69,7 +69,7 @@ export default {
     _parent () {
       if (this.entity && this.entity._parent) {
         return this.entity._parent.map((p) => {
-          return { string: p.reference, to: { name: 'view', params: { entity: p.reference }, query: this.$route.query } }
+          return { string: p.string || p.reference, to: { name: 'view', params: { entity: p.reference }, query: this.$route.query } }
         })
       }
     }
@@ -99,7 +99,7 @@ export default {
 
       const query = {
         '_parent.reference': this._id,
-        props: '_thumbnail,_type.string,name.string',
+        props: '_thumbnail,_type.string,name',
         sort: 'name.string',
         limit: 1000
       }
@@ -130,9 +130,6 @@ export default {
       return !v.language || v.language === this.locale
     },
     parseValue (v) {
-      if (v.hasOwnProperty('string')) {
-        return { string: v.string }
-      }
       if (v.hasOwnProperty('date')) {
         return { string: (new Date(v.date)).toLocaleString(this.locale) }
       }
@@ -143,13 +140,16 @@ export default {
         return { string: v.decimal.toLocaleString(this.locale, { minimumFractionDigits: 2 }) }
       }
       if (v.hasOwnProperty('reference')) {
-        return { string: v.reference, to: { name: 'view', params: { entity: v.reference }, query: this.$route.query } }
+        return { string: v.string || v.reference, to: { name: 'view', params: { entity: v.reference }, query: this.$route.query } }
       }
       if (v.hasOwnProperty('filename')) {
         return { string: v.filename, file: `/${this.$route.params.account}/file/${v._id}`, size: this.getReadableFileSize(v.size) }
       }
       if (v.hasOwnProperty('boolean')) {
         return { string: v.boolean ? this.$t('true') : this.$t('false') }
+      }
+      if (v.hasOwnProperty('string')) {
+        return { string: v.string }
       }
 
       delete v._id
