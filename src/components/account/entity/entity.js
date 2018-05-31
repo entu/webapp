@@ -58,7 +58,7 @@ export default {
         if (hidden.indexOf(property) !== -1) { continue }
 
         if (Array.isArray(this.entity[property])) {
-          result[property] = this.entity[property].map(this.parseValue)
+          result[property] = this.entity[property].filter(this.filterByLanguage).map(this.parseValue)
         } else {
           result[property] = [this.entity[property]]
         }
@@ -118,6 +118,9 @@ export default {
           this.childs = _groupBy(childs, '_type')
         }
       })
+    },
+    filterByLanguage (v) {
+      return !v.language || v.language === this.locale
     },
     parseValue (v) {
       if (v.hasOwnProperty('string')) {
