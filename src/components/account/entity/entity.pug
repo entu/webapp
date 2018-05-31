@@ -1,7 +1,7 @@
-.col.h-100
+.col-12.col-lg-10.h-100
     .row.h-100
         entity-list
-        .col.d-none.d-sm-block
+        .col-12.col-sm-8.col-lg-9.d-none.d-sm-block
             .row.h-100
                 entity-tools
                 #content.col-12.h-100(v-if='entityView')
@@ -13,11 +13,11 @@
                             i.icon-parent.float-right
                     .row.mt-4
                         .col-10
-                            h1.mb-4 {{ name || entity ? entity._id : '' }}
+                            h1.mb-4 {{ name || (entity ? entity._id : '') }}
                             .row.mb-2(v-for='v, p in entityView')
                                 strong.col-12.col-md-4.col-xl-3.text-md-right {{ p }}
                                 .col-12.col-md-8.col-xl-9
-                                    template(v-for='i, idx in v')
+                                    .property(v-for='i, idx in v')
                                         p.mb-0(v-if='i.to')
                                             router-link(:to='i.to') {{ i.string }}
                                         p.filename.mb-0(v-else-if='i.file')
