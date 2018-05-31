@@ -54,7 +54,7 @@ export default {
       let result = {}
       for (let property in this.entity) {
         if (!this.entity.hasOwnProperty(property)) { continue }
-        if (property.startsWith('_') && property !== '_parent') { continue }
+        if (property.startsWith('_')) { continue }
         if (hidden.indexOf(property) !== -1) { continue }
 
         if (Array.isArray(this.entity[property])) {
@@ -65,6 +65,13 @@ export default {
       }
 
       return result
+    },
+    _parent () {
+      if (this.entity && this.entity._parent) {
+        return this.entity._parent.map((p) => {
+          return { string: p.reference, to: { name: 'view', params: { entity: p.reference }, query: this.$route.query } }
+        })
+      }
     }
   },
   methods: {

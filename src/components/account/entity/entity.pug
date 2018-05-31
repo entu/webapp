@@ -5,7 +5,13 @@
             .row.h-100
                 entity-tools
                 #content.col-12.h-100(v-if='entityView')
-                    .row.mt-3
+                    #parent.row.m-0.mt-3.pb-2(v-if='_parent')
+                        .col-auto.p-1
+                            i.icon-parent.float-left
+                        router-link.col.text-center(v-for='p in _parent', :to='p.to') {{ p.string }}
+                        .col-auto.p-1
+                            i.icon-parent.float-right
+                    .row.mt-4
                         .col-10
                             h1.mb-4 {{ name || entity ? entity._id : '' }}
                             .row.mb-2(v-for='v, p in entityView')
