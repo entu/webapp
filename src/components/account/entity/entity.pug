@@ -7,7 +7,7 @@
                 #content.col-12.h-100(v-if='entityView')
                     .row.mt-3
                         .col-10
-                            h1.mb-4 {{ name || _id }}
+                            h1.mb-4 {{ name || entity ? entity._id : '' }}
                             .row.mb-2(v-for='v, p in entityView')
                                 strong.col-12.col-md-4.col-xl-3.text-md-right {{ p }}
                                 .col-12.col-md-8.col-xl-9
