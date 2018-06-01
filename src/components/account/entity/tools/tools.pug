@@ -1,6 +1,7 @@
 nav.navbar.navbar-expand-sm.col.p-0
     .collapse.navbar-collapse.pr-2.pl-2
-        .loader(v-if='openRequests')
+        transition(name='fade', :duration=200)
+            .loader(v-if='openRequests')
         ul.navbar-nav.ml-sm-auto(v-if='entity')
             li.nav-item
                 a.nav-link.p-3(href='#')

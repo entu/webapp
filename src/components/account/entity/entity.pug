@@ -4,44 +4,46 @@
         .col-12.d-none.d-sm-block(:class="{'col-sm-8': isQuery, 'col-lg-9': isQuery }")
             .row.h-100
                 entity-tools
-                #content.col-12.h-100(v-if='entityView')
-                    #parent.row.m-0.mt-3.pb-2(v-if='_parent')
-                        .col-auto.p-1
-                            i.icon-parent.float-left
-                        router-link.col.text-center(v-for='p in _parent', :to='p.to') {{ p.string }}
-                        .col-auto.p-1
-                            i.icon-parent.float-right
-                    .row.mt-4
-                        .col-10
-                            h1.mb-4 {{ name || error }}
-                            .row.mb-2(v-for='v, p in entityView')
-                                strong.col-12.col-md-4.col-xl-3.text-md-right {{ p }}
-                                .col-12.col-md-8.col-xl-9
-                                    .property(v-for='i, idx in v')
-                                        p.mb-0(v-if='i.to')
-                                            router-link(:to='i.to') {{ i.string }}
-                                        p.filename.mb-0(v-else-if='i.file')
-                                            a(:href='i.file' target='_blank') {{ i.string }}
-                                            span {{ i.size }}
-                                        p.mb-0(v-else-if='i.string') {{ i.string }}
-                                        p.mb-0(v-else) {{ i }}
-                        .col-2
-                            img.p-1.img-thumbnail(:src='_thumbnail', :alt='name')
-                    //- .row.mt-5
-                    //-     pre.col-12 {{ childs }}
-                    .row.mt-5(v-if='childs')
-                        h2.col-12
-                            | {{ $t('childs') }}
-                            span.float-right {{ childsCount }}
-                        template(v-for='childsGroup, group in childs')
-                            h3.mt-3.col-12
-                                | {{ group }}
-                                span.float-right {{ childsGroup.length }}
-                            .col-12
-                                table.table.table-hover.table-striped.table-sm
-                                    tbody
-                                        tr(v-for='c in childsGroup')
-                                            td
-                                                router-link(:to='c.to')
-                                                    img.rounded-circle.align-self-center.mr-3(:src='c._thumbnail', :alt='c.name')
-                                                    | {{ c.name || c._id }}
+                transition(name='fade')
+                    #content.col-12.h-100(v-if='entity')
+                        #parent.row.m-0.mt-3.pb-2(v-if='_parent')
+                            .col-auto.p-1
+                                i.icon-parent.float-left
+                            router-link.col.text-center(v-for='p in _parent', :to='p.to') {{ p.string }}
+                            .col-auto.p-1
+                                i.icon-parent.float-right
+                        .row.mt-4
+                            .col-10
+                                h1.mb-4 {{ name || error }}
+                                .row.mb-2(v-for='v, p in entityView')
+                                    strong.col-12.col-md-4.col-xl-3.text-md-right {{ p }}
+                                    .col-12.col-md-8.col-xl-9
+                                        .property(v-for='i, idx in v')
+                                            p.mb-0(v-if='i.to')
+                                                router-link(:to='i.to') {{ i.string }}
+                                            p.filename.mb-0(v-else-if='i.file')
+                                                a(:href='i.file' target='_blank') {{ i.string }}
+                                                span {{ i.size }}
+                                            p.mb-0(v-else-if='i.string') {{ i.string }}
+                                            p.mb-0(v-else) {{ i }}
+                            .col-2(v-if='_thumbnail')
+                                img.p-1.img-thumbnail(:src='_thumbnail', :alt='name')
+                        //- .row.mt-5
+                        //-     pre.col-12 {{ entity }}
+                        transition(name='fade')
+                            .row.mt-5(v-if='childs')
+                                h2.col-12
+                                    | {{ $t('childs') }}
+                                    span.float-right {{ childsCount }}
+                                template(v-for='childsGroup, group in childs')
+                                    h3.mt-3.col-12
+                                        | {{ group }}
+                                        span.float-right {{ childsGroup.length }}
+                                    .col-12
+                                        table.table.table-hover.table-striped.table-sm
+                                            tbody
+                                                tr(v-for='c in childsGroup')
+                                                    td
+                                                        router-link(:to='c.to')
+                                                            img.rounded-circle.align-self-center.mr-3(:src='c._thumbnail', :alt='c.name')
+                                                            | {{ c.name || c._id }}

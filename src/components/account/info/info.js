@@ -22,7 +22,8 @@ export default {
       properties: 0,
       propertiesStr: '',
       propertiesStyle: '',
-      totalFilesSizeStr: 0
+      totalFilesSizeStr: 0,
+      showStats: false
     }
   },
   created () {
@@ -53,6 +54,8 @@ export default {
       this.dbSizeStyle = `width: ${Math.round(this.dbSize * 100 / (this.dbSize + this.filesSize + this.deletedFilesSize))}%`
 
       this.totalFilesSizeStr = this.getReadableFileSize(this.dbSize + this.filesSize + this.deletedFilesSize)
+
+      this.showStats = true
     })
   },
   computed: {

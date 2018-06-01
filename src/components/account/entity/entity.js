@@ -80,13 +80,14 @@ export default {
         return
       }
 
+      this.entity = null
+      this.image = null
+
       this.axios.get(`/entity/${this._id}`).then((response) => {
         this.error = null
         this.entity = response.data
       }).catch((err) => {
         this.error = err
-        this.entity = null
-        this.image = null
       })
     },
     getChilds () {
