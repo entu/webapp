@@ -133,7 +133,10 @@ export default {
     },
     parseValue (v) {
       if (v.hasOwnProperty('date')) {
-        return { string: (new Date(v.date)).toLocaleString(this.locale) }
+        return { string: (new Date(v.date.substr(0, 10))).toLocaleDateString(this.locale) }
+      }
+      if (v.hasOwnProperty('datetime')) {
+        return { string: (new Date(v.datetime)).toLocaleString(this.locale) }
       }
       if (v.hasOwnProperty('integer')) {
         return { string: v.integer.toLocaleString(this.locale, { minimumFractionDigits: 0 }) }
