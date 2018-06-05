@@ -69,18 +69,16 @@ export default {
       query.skip = this.skip
 
       this.axios.get('/entity', { params: query })
-        .then((response) => {
+        .then(response => {
           if (!response.data || !response.data.entities) { return }
 
-          response.data.entities.forEach((entity) => {
-            let e = {
+          response.data.entities.forEach(entity => {
+            this.entities.push({
               _id: entity._id,
               _thumbnail: entity._thumbnail || `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`,
               name: this.getValue(entity.name),
               description: this.getValue(entity.description)
-            }
-
-            this.entities.push(e)
+            })
           })
 
           this.skip += this.limit

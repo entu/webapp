@@ -14,7 +14,7 @@ export default {
       this.authenticating = true
 
       this.axios.get('/auth', { headers: { Authorization: `Bearer ${this.$route.params.id}` } })
-        .then((response) => {
+        .then(response => {
           this.authenticating = false
 
           this.accounts = Object.values(response.data)

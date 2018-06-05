@@ -67,8 +67,8 @@ export default {
     },
     _parent () {
       if (this.entity && this.entity._parent) {
-        return this.entity._parent.map((p) => {
-          return { string: p.string || p.reference, to: { name: 'view', params: { entity: p.reference }, query: this.$route.query } }
+        return this.entity._parent.map(p => {
+          return { _id: p.reference, string: p.string || p.reference, to: { name: 'view', params: { entity: p.reference }, query: this.$route.query } }
         })
       }
     }
@@ -83,10 +83,10 @@ export default {
       this.entity = null
       this.image = null
 
-      this.axios.get(`/entity/${this._id}`).then((response) => {
+      this.axios.get(`/entity/${this._id}`).then(response => {
         this.error = null
         this.entity = response.data
-      }).catch((err) => {
+      }).catch(err => {
         this.error = err
       })
     },
@@ -106,19 +106,18 @@ export default {
         limit: 1000
       }
 
-      this.axios.get(`/entity`, { params: query }).then((response) => {
+      this.axios.get(`/entity`, { params: query }).then(response => {
         if (!response.data || !response.data.entities) { return }
 
         let childs = []
-        response.data.entities.forEach((entity) => {
-          let e = {
+        response.data.entities.forEach(entity => {
+          childs.push({
             _id: entity._id,
             _thumbnail: entity._thumbnail || `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`,
             _type: this.getValue(entity._type),
             name: this.getValue(entity.name),
             to: { name: 'view', params: { entity: entity._id }, query: this.$route.query }
-          }
-          childs.push(e)
+          })
         })
 
         this.childsCount = childs.length

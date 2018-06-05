@@ -10,12 +10,12 @@ export default {
     if (!this.$route.params.id) { return }
 
     this.axios.get(`/property/${this.$route.params.id}`)
-      .then((response) => {
+      .then(response => {
         if (response.data.url) {
           window.location.replace(response.data.url)
         }
       })
-      .catch((err) => {
+      .catch(err => {
         this.error = err
       })
   }

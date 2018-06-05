@@ -35,12 +35,12 @@ export default {
         }
       }
 
-      this.axios.get(`/entity/${this.userId}`, options).then((response) => {
+      this.axios.get(`/entity/${this.userId}`, options).then(response => {
         this.user.name = [this.getValue(response.data.forename), this.getValue(response.data.forename)].join(' ')
 
         if (!response.data.photo) { return }
 
-        this.axios.get(`/property/${response.data.photo[0]._id}`).then((response) => {
+        this.axios.get(`/property/${response.data.photo[0]._id}`).then(response => {
           this.user.photo = response.data.url
           delete this.user.photoId
         })
@@ -66,12 +66,12 @@ export default {
         }
       }
 
-      this.axios.get('/entity', options).then((response) => {
+      this.axios.get('/entity', options).then(response => {
         if (!response.data || !response.data.entities) { return }
 
         let menu = {}
 
-        response.data.entities.forEach((entity) => {
+        response.data.entities.forEach(entity => {
           let group = this.getValue(entity.group)
 
           if (!menu[group]) {
@@ -91,7 +91,7 @@ export default {
 
         this.menu = Object.values(menu)
 
-        this.menu.forEach((m) => {
+        this.menu.forEach(m => {
           m.links.sort(sorter)
         })
         this.menu.sort(sorter)

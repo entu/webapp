@@ -9,7 +9,7 @@
                         #parent.row.m-0.mt-3.pb-2(v-if='_parent')
                             .col-auto.p-1
                                 i.icon-parent.float-left
-                            router-link.col.text-center(v-for='p in _parent', :to='p.to') {{ p.string }}
+                            router-link.col.text-center(v-for='p in _parent', :key='p._id', :to='p.to') {{ p.string }}
                             .col-auto.p-1
                                 i.icon-parent.float-right
                         .row.mt-4

@@ -27,7 +27,7 @@ export default {
     }
   },
   created () {
-    this.axios.get('/account').then((response) => {
+    this.axios.get('/account').then(response => {
       this.entities = _get(response, 'data.entities', 0)
       this.deletedEntities = _get(response, 'data.deletedEntities', 0)
 

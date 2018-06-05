@@ -18,7 +18,7 @@ export default {
       return _get(this, ['allAccounts', this.account, '_id'])
     },
     selectableLocales () {
-      return this.locales.filter((l) => l !== this.locale)
+      return this.locales.filter(l => l !== this.locale)
     },
     locale () {
       return this.$i18n.locale
@@ -33,13 +33,13 @@ export default {
         a.defaults.params = { account: this.account }
       }
 
-      a.interceptors.request.use((config) => {
+      a.interceptors.request.use(config => {
         config.startTime = new Date()
         this.$root.$data.openRequests += 1
         return config
       })
 
-      a.interceptors.response.use((response) => {
+      a.interceptors.response.use(response => {
         const endTime = new Date()
         console.log(`${endTime.getTime() - response.config.startTime.getTime()}ms - ${response.request.responseURL}`);
 
@@ -83,7 +83,7 @@ export default {
 
       let values = []
 
-      valueList.forEach((v) => {
+      valueList.forEach(v => {
         if (!v.language || v.language === this.locale) {
           values.push(v.string)
         }
