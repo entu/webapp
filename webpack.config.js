@@ -1,6 +1,7 @@
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const LicenseWebpackPlugin = require('license-webpack-plugin').LicenseWebpackPlugin
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
@@ -11,7 +12,6 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: `/`,
-    // filename: '[id]-[contenthash].js'
     filename: `${time}/[name].js`
   },
   optimization: {
@@ -60,10 +60,17 @@ module.exports = {
       }
     }),
     new MiniCssExtractPlugin({
-      // filename: '[id]-[contenthash].css'
       filename: `${time}/[name].css`
     }),
-    new VueLoaderPlugin()
+    new VueLoaderPlugin(),
+    new LicenseWebpackPlugin({
+      pattern: /.*/,
+      addBanner: true,
+      perChunkOutput: false,
+      includePackagesWithoutLicense: true,
+      additionalPackages: ['bootstrap'],
+      outputFilename: `${time}/licenses.txt`
+    })
   ],
   module: {
     rules: [
@@ -106,7 +113,6 @@ module.exports = {
         test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
         loader: 'file-loader',
         options: {
-          // name: '2-[sha256:hash:hex:20].[ext]'
           name: `${time}/[name].[ext]`
         }
       }
