@@ -7,6 +7,6 @@ phases:
     build:
         commands:
             - npm run build
-  post_build:
-    commands:
-        - aws s3 sync --delete --sse AES256 --acl private --only-show-errors dist/ s3://entu-webapp
+    post_build:
+        commands:
+            - aws s3 sync --delete --sse AES256 --acl private --only-show-errors dist/ s3://entu-webapp
