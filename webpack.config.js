@@ -96,7 +96,7 @@ module.exports = {
         test: /\.styl(us)?$/,
         use: [
           MiniCssExtractPlugin.loader,
-          { loader: 'css-loader', options: { minimize: true } },
+          { loader: 'css-loader' },
           'stylus-loader'
         ]
       },
@@ -116,7 +116,7 @@ module.exports = {
         test: /\.css$/,
         use: [
           MiniCssExtractPlugin.loader,
-          { loader: 'css-loader', options: { minimize: true } }
+          { loader: 'css-loader' }
         ]
       },
       {
