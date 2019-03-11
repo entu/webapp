@@ -9,6 +9,7 @@ export default {
   mode: 'history',
   routes: [
     {
+      name: 'info',
       path: '/',
       component: info
     },

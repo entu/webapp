@@ -1,14 +1,14 @@
 #start
     #background(:class='background')
-    #nav.row.fixed-top
+    #nav.fixed-top
         .container
             nav.navbar.navbar-expand-sm.navbar-dark.row
                 a.navbar-brand.mr-auto(href='/')
                     strong Entu
                 ul.navbar-nav
-                    li.nav-item
+                    li.nav-item.d-none.d-sm-block
                         a.nav-link.text-white(href='#info') Info
-                    li.nav-item
+                    li.nav-item.d-none.d-sm-block
                         a.nav-link.text-white(href='#hind') Hind
                     li.nav-item
                         router-link.btn.btn-outline-success.text-light.ml-2.px-3(:to="{ name: 'auth' }") Logi sisse

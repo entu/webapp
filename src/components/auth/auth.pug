@@ -4,7 +4,8 @@ div
         .borderbox.h-100.col-10.col-sm-6.col-md-4.col-lg-3.col-xl-2
             .row.h-100(v-show='!this.authenticating && !accounts')
                 .col-12
-                    img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../../assets/logo.png', alt='Entu')
+                    router-link(:to="{ name: 'info' }")
+                        img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../../assets/logo.png', alt='Entu')
                     h1.text-center.mt-5.mb-4 {{ $t('login') }}
                     ul.list-unstyled
                         li
@@ -31,7 +32,8 @@ div
                     p.text-center {{ $t('info') }}
             .row.h-100(v-show='accounts && accounts.length > 0')
                 .col-12
-                    img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../../assets/logo.png' alt='Entu')
+                    router-link(:to="{ name: 'info' }")
+                        img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../../assets/logo.png' alt='Entu')
                     h1.text-center.mt-5.mb-4 {{ $t('chose_db') }}
                     ul.list-unstyled
                         li(v-for='a in accounts', :key='a.account')
