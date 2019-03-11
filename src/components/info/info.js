@@ -1,5 +1,7 @@
 export default {
-  created () {
-    this.$router.push({ name: 'auth' })
+  computed: {
+    background () {
+      return this.$root.$data.background
+    }
   }
 }

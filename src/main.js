@@ -20,7 +20,8 @@ new Vue({
   el: '#app',
   data () {
     return {
-      openRequests: 0
+      openRequests: 0,
+      background: 'bg-' + Math.ceil(Math.random() * 12)
     }
   },
   render: (h) => h(app),

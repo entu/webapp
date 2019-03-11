@@ -1,0 +1,167 @@
+#start
+    #background(:class='background')
+    #nav.row.fixed-top
+        .container
+            nav.navbar.navbar-expand-sm.navbar-dark.row
+                a.navbar-brand.mr-auto(href='/')
+                    strong Entu
+                ul.navbar-nav
+                    li.nav-item
+                        a.nav-link.text-white(href='#info') Info
+                    li.nav-item
+                        a.nav-link.text-white(href='#hind') Hind
+                    li.nav-item
+                        router-link.btn.btn-outline-success.text-light.ml-2.px-3(:to="{ name: 'auth' }") Logi sisse
+
+    .row
+        .col-12.mb-0.jumbotron.jumbotron-fluid.d-flex.align-items-center.justify-content-center
+            h1 Tuleviku andmehaldus
+
+    .row.bg-white
+        .container
+            .row.pt-5
+                .col-12.col-sm-6.col-md-4.mb-5
+                    h2.text-center
+                        strong Lihtne
+                    p Infosüsteemi juurutamine ja kasutamine ei peaks olema keeruline. Entu disaini juures oleme lähtunud põhimõttest, et lihtne on alati parem.
+                .col-12.col-sm-6.col-md-4.mb-5
+                    h2.text-center
+                        strong Paindlik
+                    p Enamik infosüsteeme on mõeldud katma vaid kitsast ärivaldkonda. Nende muutmine on võimatu või kulukas. Entu saad seadistada just oma vajadustest lähtuvalt.
+                .col-12.col-sm-6.col-md-4.mb-5
+                    h2.text-center
+                        strong Turvaline
+                    p Kogu andmevahetus Sinu arvuti ja Entu serveri vahel on krüpteeritud. Kõikidest andmetest tehakse varukoopia kolme erinevasse serverisse.
+                .col-12.col-sm-6.col-md-4.mb-5
+                    h2.text-center
+                        strong Liidestatav
+                    p Kui Entu veel ei kata kõiki vajadusi või kasutad mõnd spetsiaalrakendust, siis saad selle Entuga siduda API kaudu.
+                .col-12.col-sm-6.col-md-4.mb-5
+                    h2.text-center
+                        strong Pilvel
+                    p Entu on veebipõhine ja kättesaadav igast internetiühendusega arvutist. Sa ei pea muretsema tarkvara paigaldamise ega uuendamise pärast. Entu on pidevas arendamises. Kuulame klientide tagasisidet ja lisame pidevalt uusi võimalusi.
+                .col-12.col-sm-6.col-md-4.mb-5
+                    h2.text-center
+                        strong Soodne
+                    p Infosüsteemi(de) haldamine või uue rätsepatööna tellimine on kallis. Entuga saad alustada tasuta ning andmemahu kasvades valida soodsa kuumaksuga paketi.
+
+    #info.row.gray-row
+        .container
+            .row.py-5
+                .col-12.col-sm-7
+                    h2
+                        strong Kergesti kohaldatav
+                    p Iga üksikisik, asutus, ettevõte, organisatsioon tekitab mingeid andmeid, mida on vaja korrastada, hoida, kasutajatele tagasi jagada vaatamiseks või toimetamiseks. Enamik infosüsteeme on mõeldud katma vaid kitsast ärivaldkonda. Nende muutmine on kulukas. Muutuvate vajaduste jaoks luuakse aina uusi, eraldiseisvaid andmebaase. Enamasti on raskendatud ka nende omavaheline liidestamine ja andmete liigutamine ühest süsteemist teise käib käsitsi.
+                    p Entu kohaneb kergesti Sinu andmete koosseisuga. Hõlpsasti kirjeldad andmeobjektide tüüpe, nende parameetreid ja omavahelisi seosed. Seda kõike saad hiljem täiendada ja muuta. Tänu Entu paindlikkusele saad kogu oma info siia kokku koondada ja jääb ära eri süsteemide liidestamine või käsitsi infovahetus.
+
+                    h2.mt-5
+                        strong Andmeobjektid
+                    p Entu hoiab andmeid objektides. Objekti tüüpe (näiteks raamat, persoon, artikkel, kaust, tegevus) saad ise defineerida ja hiljem alati täiendada ning muuta. Objekti tüüpi defineerides saad anda sellele nime ja kirjelduse; määrata, mis moodulis (või menüüpunktis) seda tüüpi objekte kuvatakse; milliste teist tüüpi objektidega on ta seotud jne. Üks objekt saab sisaldada ka teisi objekte (näiteks kaust dokumente, õpik peatükke jne).
+                    p Igal objektil on parameetrid (näiteks raamatul on pealkiri, autor, ilmumisaasta). Parameetrid võivad olla teksti, numbri, kuupäeva, viite (teisele objektile) jm tüüpi. Igal parameetril saad seadistada nime ja kirjelduse; kas see on avalikus vaates nähtav; kas selle järgi saab otsida ja/või sorteerida; mis on vaikeväärtus; kas seda parameetrit võib sisestada ühe või mitu (näiteks raamatul on üks pealkiri, aga mitu autorit) jm. Lisaks staatilistele andmeväljadele on olemas ka dünaamilised, teiste andmeväljade või teiste objektide väljade järgi arvutatavad väljad.
+
+                    h2.mt-5
+                        strong Õigused
+                    p Kasutajate autentimine käib läbi suuremate identiteedihoidjate (Google, Microsoft, Mobiil ID, ID-Kaart) ning kasutajaõigused on objektipõhised - rolli mõistet süsteemis pole. Igal objektil on omanik(ud). Omanik saab määrata, kes sellele objektile ligi pääsevad, kes saab seda muuta, täiendada, kustutada.
+
+                    h2.mt-5
+                        strong Turvalisus
+                    p Kogu liiklus Sinu brauseri ja Entu serveri vahel on krüpteeritud. Entus Sinu salalsõna ei salvestata - see ei käi meie juurest isegi läbi. Sinu andmebaasist tehakse kord ööpäevas koopia, mida säilitatakse serverites kolmes erinevas maailmaosas.
+
+                    h2.mt-5
+                        strong Eelseadistatud moodulid
+                    p Entu kasutuselevõtu hõlbustamiseks on mitmeid mooduleid eelseadistatud. Neis moodulites olevad objektide tüübid püüavad katta erinevaid infovajadusi ja ilmutada Sulle Entu võimalusi. Eelseadistatud mooduleid ja objekte saad ise muuta ning laiendada, aga ka kustutada. Mõned eelseadistatud moodulid on näiteks personal ja kontaktid; dokumendihaldus; raamatukogu; ruumid ja inventar.
+
+    #hind.row
+        .container
+            .row.py-5
+                .col-12.mb-3.text-center
+                    h2
+                        strong Hind
+                    p majutusteenuse ühe kuu käibemaksuga hind
+
+                .col-8.offset-2.col-sm-3.offset-sm-0.d-flex.mb-3.align-items-stretch
+                    .card.w-100
+                        .card-body
+                            h3.card-title.text-center Tasuta
+                            ul.list-unstyled.card-text
+                                li Eelseadistatud moodulid
+                                li Piiramatult kasutajaid
+                                li Kuni 1000 objekti
+                                li Kuni 100MB andmeid
+                .col-8.offset-2.col-sm-3.offset-sm-0.d-flex.mb-3.align-items-stretch
+                    .card.w-100
+                        .card-body
+                            h3.card-title.text-center 9 €
+                            ul.list-unstyled.card-text
+                                li Eelseadistatud moodulid
+                                li Piiramatult kasutajaid
+                                li Kuni 10 000 objekti
+                                li Kuni 1GB andmeid
+                                li Igapäevane varukoopia
+                .col-8.offset-2.col-sm-3.offset-sm-0.d-flex.mb-3.align-items-stretch
+                    .card.w-100
+                        .card-body
+                            h3.card-title.text-center 39 €
+                            ul.list-unstyled.card-text
+                                li Eelseadistatud moodulid
+                                li Piiramatult kasutajaid
+                                li Kuni 100 000 objekti
+                                li Kuni 5GB andmeid
+                                li Igapäevane varukoopia
+                                li Oma aadress
+                .col-8.offset-2.col-sm-3.offset-sm-0.d-flex.mb-3.align-items-stretch
+                    .card.w-100
+                        .card-body
+                            h3.card-title.text-center 198 €
+                            ul.list-unstyled.card-text
+                                li Eelseadistatud moodulid
+                                li Piiramatult kasutajaid
+                                li Kuni 500 000 objekti
+                                li Kuni 50GB andmeid
+                                li Igapäevane varukoopia
+                                li Oma aadress
+                                li Personaalteenindus
+
+    .row.bg-white
+        .container
+            .row.py-5
+                h2.col-12.mb-3.text-center
+                    strong Kliendid ja partnerid
+                ul.col-12.col-sm-4.mb-0.list-unstyled
+                    li Are Põhikool
+                    li Aseri Kool
+                    li August Kitzbergi nimeline Gümnaasium
+                    li Eesti Kunstiakadeemia
+                    li Entusiastid OÜ
+                    li Gaia Kool
+                    li Hõimurahvaste programm
+                    li Hummuli Põhikool
+                    li Kanuti Gildi Saal
+                    li Kool 21. sajandil
+                ul.col-12.col-sm-4.mb-0.list-unstyled
+                    li Kunda Hariduse Toetusselts
+                    li MTÜ Fenno-Ugria Asutus
+                    li MTÜ Pillimuuseum
+                    li Okupatsioonide ja vabaduse muuseum Vabamu
+                    li Pärnu Vabakool
+                    li Piletilevi AS
+                    li Põlva Ühisgümnaasium
+                    li Püünsi Kool
+                    li Tallinna Ehituskool
+                    li Tallinna Läänemere Gümnaasium
+                ul.col-12.col-sm-4.mb-0.list-unstyled
+                    li Tallinna Linnamäe Vene Lütseum
+                    li Tallinna Mustamäe Gümnaasium
+                    li Tallinna Nõmme Gümnaasium
+                    li Tallinna Pääsküla Gümnaasium
+                    li Tallinna Tondi Põhikool
+                    li Toidu- ja Fermentatsioonitehnoloogia Arenduskeskus
+                    li Valga Kaugõppegümnaasium
+                    li Vanalinna Hariduskolleegium
+                    li Vasalemma Põhikool
+
+    #footer.row.py-3
+        .container
+            .row
+                .col-12.text-center
+                    a(href='mailto:info@entu.ee', target='_blank') info@entu.ee

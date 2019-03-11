@@ -41,7 +41,7 @@ export default {
   },
   computed: {
     background () {
-      return 'bg-' + Math.ceil(Math.random() * 12)
+      return this.$root.$data.background
     }
   },
   methods: {
