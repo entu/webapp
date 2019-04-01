@@ -6,15 +6,16 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
+const childProcess = require('child_process')
 
-const time = Math.floor((new Date()).getTime() / 1000)
+const VERSION = childProcess.execSync('git rev-parse HEAD').toString().substring(0, 7)
 
 module.exports = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: `/`,
-    filename: `${time}/[name].js`
+    filename: `${VERSION}/[name].js`
   },
   optimization: {
     minimize: true,
@@ -70,7 +71,7 @@ module.exports = {
       }
     }),
     new MiniCssExtractPlugin({
-      filename: `${time}/[name].css`
+      filename: `${VERSION}/[name].css`
     }),
     new VueLoaderPlugin(),
     new LicenseWebpackPlugin({
@@ -79,7 +80,7 @@ module.exports = {
       perChunkOutput: false,
       includePackagesWithoutLicense: true,
       additionalPackages: ['bootstrap'],
-      outputFilename: `${time}/licenses.txt`
+      outputFilename: `${VERSION}/licenses.txt`
     })
   ],
   module: {
@@ -123,7 +124,7 @@ module.exports = {
         test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
         loader: 'file-loader',
         options: {
-          name: `${time}/[name].[ext]`
+          name: `${VERSION}/[name].[ext]`
         }
       }
     ]
