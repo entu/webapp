@@ -9,5 +9,5 @@ phases:
             - npm run build
     post_build:
         commands:
-            - aws s3 sync --delete --sse AES256 --acl private --only-show-errors --cache-control max-age=2592000 dist/ s3://entu-webapp
+            - aws s3 sync --sse AES256 --acl private --only-show-errors --cache-control max-age=2592000 dist/ s3://entu-webapp
             - aws s3 cp --sse AES256 --acl private --only-show-errors --cache-control max-age=300 dist/index.html s3://entu-webapp/index.html
