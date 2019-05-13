@@ -49,6 +49,7 @@ export default {
       this.accounts = null
       this.authenticating = false
       sessionStorage.removeItem('accounts')
+      this.$router.push({ name: 'info' })
     }
   }
 }
