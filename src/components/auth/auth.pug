@@ -34,7 +34,7 @@ div
                 .col-12
                     router-link(:to="{ name: 'info' }")
                         img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../../assets/logo.png' alt='Entu')
-                    h1.text-center.mt-5.mb-4 {{ $t('chose_db') }}
+                    h1.text-center.mt-5.mb-4 {{ $t('choose_db') }}
                     ul.list-unstyled
                         li(v-for='a in accounts', :key='a.account')
                             router-link.pl-4(:to="{ name: 'account', params: { account: a.account } }")
