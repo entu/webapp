@@ -15,6 +15,7 @@ export default {
   mounted () {
     this.getEntities(true)
     this.setSearchString()
+    this.setTitle()
 
     const el = document.getElementById('list')
     if (el) {

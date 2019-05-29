@@ -79,7 +79,7 @@ export default {
       this.$router.go()
     },
     setTitle (title) {
-      window.document.title = title ? `${title} · Entu` : 'Entu'
+      window.document.title = title ? `Entu · ${title}` : 'Entu'
     },
     getValue (valueList) {
       if (!valueList) { return }

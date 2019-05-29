@@ -27,6 +27,8 @@ export default {
     }
   },
   created () {
+    this.setTitle(this.$t('title'))
+
     this.axios.get('/account').then(response => {
       this.entities = _get(response, 'data.entities', 0)
       this.deletedEntities = _get(response, 'data.deletedEntities', 0)

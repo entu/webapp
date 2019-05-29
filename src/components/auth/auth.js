@@ -36,7 +36,11 @@ export default {
 
     const accounts = JSON.parse(sessionStorage.getItem('accounts'))
     if (!this.accounts && accounts) {
+      this.setTitle(this.$t('chose_db'))
+
       this.accounts = Object.values(accounts)
+    } else {
+      this.setTitle(this.$t('login'))
     }
   },
   computed: {

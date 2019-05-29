@@ -1,4 +1,5 @@
 en:
+    title: Overview
     entities: Entities
     properties: Properties
     files: Files
@@ -6,6 +7,7 @@ en:
     deleted: deleted
     totalUsage: total usage
 et:
+    title: Ülevaade
     entities: Objektid
     properties: Parameetrid
     files: Failid
