@@ -14,6 +14,9 @@ export default {
     this.getEntity()
     this.getChilds()
   },
+  updated () {
+    this.setTitle(this.name)
+  },
   data () {
     return {
       error: null,
@@ -43,10 +46,7 @@ export default {
     name () {
       if (!this.entity) { return '' }
 
-      const name = this.getValue(this.entity.name) || this.entity._id
-      window.document.title = name ? `${name} · Entu` : 'Entu'
-
-      return name
+      return this.getValue(this.entity.name) || this.entity._id
     },
     entityView () {
       let result = {}

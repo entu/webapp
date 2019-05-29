@@ -78,6 +78,9 @@ export default {
       this.$i18n.locale = val
       this.$router.go()
     },
+    setTitle (title) {
+      window.document.title = title ? `${title} · Entu` : 'Entu'
+    },
     getValue (valueList) {
       if (!valueList) { return }
 
