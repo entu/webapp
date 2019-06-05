@@ -9,15 +9,23 @@ div
                     h1.text-center.mt-5.mb-4 {{ $t('login') }}
                     ul.list-unstyled
                         li
+                            a.pl-4(:href="'https://api.entu.app/auth/apple?next=' + host + '/auth/'")
+                                i.icon-apple
+                                span Apple
+                        li
                             a.pl-4(:href="'https://api.entu.app/auth/google?next=' + host + '/auth/'")
                                 i.icon-google
                                 span Google
                         li
-                            a.pl-4(href='')
+                            a.pl-4(:href="'https://api.entu.app/auth/lhv?next=' + host + '/auth/'")
+                                i.icon-bank
+                                span LHV Pank
+                        li
+                            a.pl-4(:href="'https://api.entu.app/auth/mid?next=' + host + '/auth/'")
                                 i.icon-mobile-id
                                 span Mobiil-ID
                         li
-                            a.pl-4(href='')
+                            a.pl-4(:href="'https://api.entu.app/auth/idc?next=' + host + '/auth/'")
                                 i.icon-id-card
                                 span {{ $t('id_card') }}
                 .col-12.align-self-end

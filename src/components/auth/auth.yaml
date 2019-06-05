@@ -3,10 +3,10 @@ en:
     logout: Exit
     choose_db: Choose database
     id_card: ID-card
-    info: entu.app uses those providers for user authentication. We don't get nor save Your password.
+    info: Entu uses those providers for user authentication. We don't get nor save Your password.
 et:
     login: Sisene
     logout: Välju
     choose_db: Vali andmebaas
     id_card: ID-kaart
-    info: entu.app kasutab autentimiseks ülaltoodud teenusepakkujaid. Teie kasutajanime ega parooli meile ei edastata.
+    info: Entu kasutab autentimiseks ülaltoodud teenusepakkujaid. Teie kasutajanime ega parooli meile ei edastata.
