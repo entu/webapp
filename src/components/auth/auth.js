@@ -23,12 +23,12 @@ export default {
         {
           name: 'Mobiil-ID',
           url: `https://api.entu.app/auth/mid?next=${window.location.origin}/auth/`,
-          icon: 'icon-mobile-id'
+          icon: 'icon-mid'
         },
         {
           name: this.$t('id_card'),
           url: `https://api.entu.app/auth/idc?next=${window.location.origin}/auth/`,
-          icon: 'icon-id-card'
+          icon: 'icon-idc'
         },
       ],
       accounts: null,

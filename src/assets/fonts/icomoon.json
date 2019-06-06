@@ -295,22 +295,22 @@
     },
     {
       "order": 72,
-      "name": "mobile-id",
+      "name": "mid",
       "prevSize": 32
     },
     {
       "order": 73,
-      "name": "id-card",
+      "name": "idc",
       "prevSize": 32
     },
     {
       "order": 74,
-      "name": "log-in",
+      "name": "in",
       "prevSize": 32
     },
     {
       "order": 75,
-      "name": "log-out",
+      "name": "out",
       "prevSize": 32
     },
     {
