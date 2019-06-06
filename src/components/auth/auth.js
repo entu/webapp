@@ -4,7 +4,34 @@ export default {
     return {
       host: window.location.origin,
       authenticating: false,
-      accounts: null
+      authenticators: [
+        {
+          name: 'Apple',
+          url: `https://api.entu.app/auth/apple?next=${window.location.origin}/auth/`,
+          icon: 'icon-apple'
+        },
+        {
+          name: 'Google',
+          url: `https://api.entu.app/auth/google?next=${window.location.origin}/auth/`,
+          icon: 'icon-google'
+        },
+        {
+          name: 'LHV Pank',
+          url: `https://api.entu.app/auth/lhv?next=${window.location.origin}/auth/`,
+          icon: 'icon-bank'
+        },
+        {
+          name: 'Mobiil-ID',
+          url: `https://api.entu.app/auth/mid?next=${window.location.origin}/auth/`,
+          icon: 'icon-mobile-id'
+        },
+        {
+          name: this.$t('id_card'),
+          url: `https://api.entu.app/auth/idc?next=${window.location.origin}/auth/`,
+          icon: 'icon-id-card'
+        },
+      ],
+      accounts: null,
     }
   },
   created () {
