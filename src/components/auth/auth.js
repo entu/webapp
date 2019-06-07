@@ -33,10 +33,10 @@ export default {
     }
   },
   created () {
-    if (this.accounts.length > 0) {
+    if (this.accounts.length === 1) {
+      this.$router.push({ name: 'account', params: { account: this.accounts[0].account } })
+    } else if (this.accounts.length > 0) {
       this.setTitle(this.$t('choose_db'))
-    } else if (this.accounts.length === 1) {
-      this.$router.push({ name: 'menu', params: { account: this.accounts[0].account } })
     } else {
       this.setTitle(this.$t('login'))
     }
@@ -46,7 +46,7 @@ export default {
     } else if (this.$route.params.id) {
       this.authenticating = true
 
-      this.axios.get('/auth', { headers: { Authorization: `Bearer ${this.$route.params.id}` }, params: { account: self.customHost } })
+      this.axios.get('/auth', { headers: { Authorization: `Bearer ${this.$route.params.id}` }, params: { account: this.customHost } })
         .then(response => {
           this.setAccounts(response.data)
           this.authenticating = false
