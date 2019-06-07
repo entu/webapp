@@ -2,7 +2,7 @@ div
     .background(:class='background')
     .content.row.justify-content-center
         .borderbox.h-100.col-10.col-sm-6.col-md-4.col-lg-3.col-xl-2
-            .row.h-100(v-show='!this.authenticating && !accounts')
+            .row.h-100(v-show='!authenticating && accounts.length === 0')
                 .col-12
                     router-link(:to="{ name: 'info' }")
                         img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../../assets/logo.png', alt='Entu')
@@ -14,7 +14,7 @@ div
                                 span {{ a.name }}
                 .col-12.align-self-end
                     p.text-center {{ $t('info') }}
-            .row.h-100(v-show='accounts && accounts.length > 0')
+            .row.h-100(v-show='!authenticating && accounts.length > 0')
                 .col-12
                     router-link(:to="{ name: 'info' }")
                         img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../../assets/logo.png' alt='Entu')
@@ -28,6 +28,6 @@ div
                     a(href='', @click.prevent='logOut')
                         i.icon-out
                         span {{ $t('logout') }}
-            .row.h-100(v-if='authenticating')
+            .row.h-100(v-show='authenticating')
                 .col-12.align-self-center.text-center
                     .loader

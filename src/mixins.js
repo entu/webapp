@@ -4,18 +4,29 @@ import _get from 'lodash/get'
 export default {
   data () {
     return {
-      locales: ['et', 'en']
+      locales: ['et', 'en'],
+      accounts: [],
+      customHost: window.location.hostname !== 'entu.app' ? window.location.hostname : null
+    }
+  },
+  created () {
+    if (localStorage.getItem('accounts')) {
+      this.accounts = JSON.parse(localStorage.getItem('accounts'))
     }
   },
   computed: {
-    allAccounts () {
-      return JSON.parse(sessionStorage.getItem('accounts'))
-    },
     account () {
       return this.$route.params.account
     },
+    token () {
+      if (this.account && this.accounts.length > 0) {
+        return this.accounts.filter(a => a.account === this.account)[0].token
+      }
+    },
     userId () {
-      return _get(this, ['allAccounts', this.account, '_id'])
+      if (this.accounts.length > 0) {
+        return this.accounts.filter(a => a.account === this.account)[0]._id
+      }
     },
     selectableLocales () {
       return this.locales.filter(l => l !== this.locale)
@@ -24,16 +35,15 @@ export default {
       return this.$i18n.locale
     },
     axios () {
-      const token = _get(this, ['allAccounts', this.account, 'token'])
       const a = axios.create({ baseURL: 'https://api.entu.app' })
 
-      if (token) {
-        a.defaults.headers = { Authorization: `Bearer ${token}` }
-      } else if (this.account) {
-        a.defaults.params = { account: this.account }
-      }
-
       a.interceptors.request.use(config => {
+        if (this.token) {
+          config.headers = { Authorization: `Bearer ${this.token}` }
+        } else if (this.account) {
+          config.params.account = this.account
+        }
+
         config.startTime = new Date()
         this.$root.$data.openRequests += 1
         return config
@@ -50,7 +60,7 @@ export default {
         this.$root.$data.openRequests -= 1
 
         if (error.response.status === 401) {
-          sessionStorage.clear()
+          localStorage.clear()
           location.reload()
         }
 
@@ -73,6 +83,15 @@ export default {
     }
   },
   methods: {
+    setAccounts (accounts) {
+      if (accounts && accounts.length > 0) {
+        this.accounts = accounts
+        localStorage.setItem('accounts', JSON.stringify(accounts))
+      } else {
+        this.accounts = []
+        localStorage.removeItem('accounts')
+      }
+    },
     setLocale (val) {
       localStorage.setItem('locale', val)
       this.$i18n.locale = val
