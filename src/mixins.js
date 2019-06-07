@@ -5,8 +5,7 @@ export default {
   data () {
     return {
       locales: ['et', 'en'],
-      accounts: [],
-      customHost: window.location.hostname !== 'entu.app' ? window.location.hostname : null
+      accounts: []
     }
   },
   created () {
@@ -15,6 +14,11 @@ export default {
     }
   },
   computed: {
+    customHost () {
+      if (window.location.hostname !== 'entu.app') {
+        return window.location.hostname.replace('.entu.app', '')
+      }
+    },
     account () {
       return this.$route.params.account
     },
