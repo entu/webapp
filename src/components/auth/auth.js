@@ -33,15 +33,13 @@ export default {
     }
   },
   created () {
-    if (this.accounts.length === 1) {
-      this.$router.push({ name: 'account', params: { account: this.accounts[0].account } })
-    } else if (this.accounts.length > 0) {
+    if (this.accounts.length > 0) {
       this.setTitle(this.$t('choose_db'))
     } else {
       this.setTitle(this.$t('login'))
     }
 
-    if (this.$route.params.id === 'out') {
+    if (this.$route.params.id === 'exit') {
       this.logOut()
     } else if (this.$route.params.id) {
       this.authenticating = true
@@ -50,7 +48,12 @@ export default {
         .then(response => {
           this.setAccounts(response.data)
           this.authenticating = false
-          this.$router.push({ name: 'auth' })
+
+          if (this.accounts.length === 1) {
+            this.$router.push({ name: 'account', params: { account: this.accounts[0].account } })
+          } else {
+            this.$router.push({ name: 'auth' })
+          }
         })
         .catch(() => {
           this.setAccounts()

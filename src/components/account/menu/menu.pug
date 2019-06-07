@@ -2,7 +2,7 @@
     .p-3
         a(href='', @click.prevent='closed = !closed')
             i.icon-menu.float-left
-        router-link(v-show='!closed', :to="{ name: 'auth' }")
+        router-link(v-show='!closed', :to="authTo")
             i.icon-in.float-right(v-if='!userId')
             i.icon-out.float-right(v-if='userId')
     #menu-content.align-self-start.p-3(v-show='!closed')

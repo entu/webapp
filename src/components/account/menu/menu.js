@@ -17,6 +17,14 @@ export default {
   computed: {
     entity () {
       return this.$route.params.entity || '_'
+    },
+    authTo () {
+      console.log(this.accounts.length);
+      if (this.accounts.length === 1) {
+        return { name: 'auth', params: { id: 'exit' } }
+      } else {
+        return { name: 'auth' }
+      }
     }
   },
   methods: {
