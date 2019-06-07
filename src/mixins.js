@@ -15,12 +15,16 @@ export default {
   },
   computed: {
     customHost () {
-      if (window.location.hostname !== 'entu.app') {
+      if (!['entu.app', 'localhost'].includes(window.location.hostname)) {
         return window.location.hostname.replace('.entu.app', '')
       }
     },
     account () {
-      return this.$route.params.account
+      if (['entu.app', 'localhost'].includes(window.location.hostname)) {
+        return this.$route.params.account
+      } else {
+        return this.customHost
+      }
     },
     token () {
       if (this.account && this.accounts.length > 0) {

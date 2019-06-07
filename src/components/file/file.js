@@ -6,7 +6,7 @@ export default {
     }
   },
   created () {
-    if (!this.$route.params.account) { return }
+    if (!this.account) { return }
     if (!this.$route.params.id) { return }
 
     this.axios.get(`/property/${this.$route.params.id}`)
