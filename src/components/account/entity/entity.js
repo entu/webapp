@@ -146,7 +146,10 @@ export default {
       if (v.hasOwnProperty('reference')) {
         return { string: v.string || v.reference, to: { name: 'view', params: { entity: v.reference }, query: this.$route.query } }
       }
-      if (v.hasOwnProperty('filename')) {
+      if (v.hasOwnProperty('filename') && this.customHost) {
+        return { string: v.filename, file: `/file/${v._id}`, size: this.getReadableFileSize(v.size) }
+      }
+      if (v.hasOwnProperty('filename') && !this.customHost) {
         return { string: v.filename, file: `/${this.account}/file/${v._id}`, size: this.getReadableFileSize(v.size) }
       }
       if (v.hasOwnProperty('boolean')) {
