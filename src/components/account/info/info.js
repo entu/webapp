@@ -1,7 +1,6 @@
 import _get from 'lodash/get'
 
 export default {
-  name: 'accountInfo',
   data () {
     return {
       dbSize: 0,

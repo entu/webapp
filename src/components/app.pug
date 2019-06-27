@@ -1,3 +1,6 @@
 .container-fluid.h-100
-    transition(name='fade')
-        router-view
+    .row.h-100
+        router-view(name='menu')
+        router-view(name='list')
+        transition(name='fade')
+            router-view

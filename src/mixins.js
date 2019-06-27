@@ -1,5 +1,6 @@
 import axios from 'axios'
 import _get from 'lodash/get'
+import _set from 'lodash/set'
 
 export default {
   data () {
@@ -47,9 +48,9 @@ export default {
 
       a.interceptors.request.use(config => {
         if (this.token) {
-          config.headers = { Authorization: `Bearer ${this.token}` }
+          _set(config, 'headers.Authorization', `Bearer ${this.token}`)
         } else if (this.account) {
-          config.params.account = this.account
+          _set(config, 'params.account', this.account)
         }
 
         config.startTime = new Date()

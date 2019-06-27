@@ -1,5 +1,4 @@
 export default {
-  name: 'AccountMenu',
   data () {
     return {
       user: {

@@ -1,6 +1,7 @@
 import info from './components/info/info.vue'
 import auth from './components/auth/auth.vue'
-import account from './components/account/account.vue'
+import accountMenu from './components/account/menu/menu.vue'
+import accountList from './components/account/list/list.vue'
 import accountInfo from './components/account/info/info.vue'
 import entityView from './components/account/entity/entity.vue'
 import file from './components/file/file.vue'
@@ -22,20 +23,30 @@ if (['entu.app', 'localhost'].includes(window.location.hostname)) {
         component: auth
       },
       {
+        name: 'account',
         path: '/:account',
-        component: account,
-        children: [
-          {
-            name: 'account',
-            path: '',
-            component: accountInfo
-          },
-          {
-            name: 'view',
-            path: ':entity',
-            component: entityView
-          }
-        ]
+        components: {
+          default: accountInfo,
+          menu: accountMenu,
+        }
+      },
+      {
+        name: 'list',
+        path: '/:account/_',
+        components: {
+          default: entityView,
+          menu: accountMenu,
+          list: accountList,
+        }
+      },
+      {
+        name: 'entity',
+        path: '/:account/:entity',
+        components: {
+          default: entityView,
+          menu: accountMenu,
+          list: accountList,
+        }
       },
       {
         name: 'file',
@@ -54,20 +65,30 @@ if (['entu.app', 'localhost'].includes(window.location.hostname)) {
         component: auth
       },
       {
+        name: 'account',
         path: '/',
-        component: account,
-        children: [
-          {
-            name: 'account',
-            path: '',
-            component: accountInfo
-          },
-          {
-            name: 'view',
-            path: ':entity',
-            component: entityView
-          }
-        ]
+        components: {
+          default: accountInfo,
+          menu: accountMenu,
+        }
+      },
+      {
+        name: 'list',
+        path: '/_',
+        components: {
+          default: entityView,
+          menu: accountMenu,
+          list: accountList,
+        }
+      },
+      {
+        name: 'entity',
+        path: '/:entity',
+        components: {
+          default: entityView,
+          menu: accountMenu,
+          list: accountList,
+        }
       },
       {
         name: 'file',

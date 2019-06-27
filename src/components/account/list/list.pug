@@ -6,7 +6,7 @@
                     i.icon-search
                 input#search-field.form-control(type='search', v-model='searchString', @keydown.enter.prevent)
         transition-group#list.h-100.col-12.p-0(name='fade', :duration=200)
-            router-link.media.p-3(v-for='e in entities', :key='e._id', :to="{ name: 'view', params: { entity: e._id }, query: $route.query }")
+            router-link.media.p-3(v-for='e in entities', :key='e._id', :to="{ name: 'entity', params: { entity: e._id }, query: $route.query }")
                 img.rounded-circle.align-self-start.mr-3(:src='e._thumbnail', :alt='e.name')
                 .media-body.align-self-center
                     h5.mb-1.t-0 {{ e.name || e._id }}

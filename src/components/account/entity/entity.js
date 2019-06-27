@@ -1,13 +1,10 @@
 import _get from 'lodash/get'
 import _groupBy from 'lodash/groupBy'
 
-import entityList from './list/list.vue'
 import entityTools from './tools/tools.vue'
 
 export default {
-  name: 'Entity',
   components: {
-    'entity-list': entityList,
     'entity-tools': entityTools
   },
   created () {
@@ -68,7 +65,7 @@ export default {
     _parent () {
       if (this.entity && this.entity._parent) {
         return this.entity._parent.map(p => {
-          return { _id: p.reference, string: p.string || p.reference, to: { name: 'view', params: { entity: p.reference }, query: this.$route.query } }
+          return { _id: p.reference, string: p.string || p.reference, to: { name: 'entity', params: { entity: p.reference }, query: this.$route.query } }
         })
       }
     }
@@ -116,7 +113,7 @@ export default {
             _thumbnail: entity._thumbnail || `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`,
             _type: this.getValue(entity._type),
             name: this.getValue(entity.name),
-            to: { name: 'view', params: { entity: entity._id }, query: this.$route.query }
+            to: { name: 'entity', params: { entity: entity._id }, query: this.$route.query }
           })
         })
 
@@ -144,7 +141,7 @@ export default {
         return { string: v.decimal.toLocaleString(this.locale, { minimumFractionDigits: 2 }) }
       }
       if (v.hasOwnProperty('reference')) {
-        return { string: v.string || v.reference, to: { name: 'view', params: { entity: v.reference }, query: this.$route.query } }
+        return { string: v.string || v.reference, to: { name: 'entity', params: { entity: v.reference }, query: this.$route.query } }
       }
       if (v.hasOwnProperty('filename') && this.customHost) {
         return { string: v.filename, file: `/file/${v._id}`, size: this.getReadableFileSize(v.size) }

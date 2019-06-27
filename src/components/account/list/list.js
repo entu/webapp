@@ -2,7 +2,6 @@ import _debounce from 'lodash/debounce'
 import _get from 'lodash/get'
 
 export default {
-  name: 'EntityList',
   data () {
     return {
       searchString: '',
@@ -100,7 +99,7 @@ export default {
         delete query['q']
       }
 
-      this.$router.push({ name: 'view', params: { entity: this.$route.params.entity }, query: query })
+      this.$router.push({ name: 'entity', params: { entity: this.$route.params.entity }, query: query })
     }, 500)
   }
 }
