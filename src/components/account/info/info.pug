@@ -1,35 +1,34 @@
-.h-100.col
-    .row.h-100
-        .col-12.align-self-center
-            transition(name='fade', mode='out-in')
-                .row.justify-content-md-center(v-if='showStats', key='show')
-                    .mb-5.col-12.col-md-10.col-lg-6.col-xl-4
-                        .mb-3
-                            .mb-0 {{ $t('entities') }}
-                                span.float-right {{ $t('deleted') }}
-                            .progress(style='background:#D1ECF1')
-                                .progress-bar.bg-info(max=100, :style='entitiesStyle')
-                            .mb-0 {{ entitiesStr }}
-                                span.float-right {{ deletedEntitiesStr }}
-                        .mb-3
-                            .mb-0 {{ $t('properties') }}
-                                span.float-right {{ $t('deleted') }}
-                            .progress(style='background:#FFF3CD')
-                                .progress-bar.bg-warning(max=100, :style='propertiesStyle')
-                            .mb-0 {{ propertiesStr }}
-                                span.float-right {{ deletedPropertiesStr }}
-                        .mb-3
-                            .mb-0 {{ $t('files') }}
-                                span.float-right {{ $t('deleted') }}
-                            .progress(style='background:#D4EDDA')
-                                .progress-bar.bg-success(max=100, :style='filesSizeStyle')
-                            .mb-0 {{ filesSizeStr }}
-                                span.float-right {{ deletedFilesSizeStr }}
-                        .mb-3
-                            .mb-0 {{ $t('db') }}
-                                span.float-right {{ $t('totalUsage') }}
-                            .progress(style='background:#E2E3E5')
-                                .progress-bar.bg-secondary(max=100, :style='dbSizeStyle')
-                            .mb-0 {{ dbSizeStr }}
-                                span.float-right {{ totalFilesSizeStr }}
-                .loader(v-else, key='loading')
+.col.align-self-center
+    transition(name='fade', mode='out-in')
+        .row.justify-content-md-center(v-if='showStats', key='show')
+            .col-12.col-md-10.col-lg-6.col-xl-4
+
+                .mt-0 {{ $t('entities') }}
+                    span.float-right {{ $t('deleted') }}
+                .progress(style='background:#D1ECF1')
+                    .progress-bar.bg-info(max=100, :style='entitiesStyle')
+                .mb-3 {{ entitiesStr }}
+                    span.float-right {{ deletedEntitiesStr }}
+
+                .mt-3 {{ $t('properties') }}
+                    span.float-right {{ $t('deleted') }}
+                .progress(style='background:#FFF3CD')
+                    .progress-bar.bg-warning(max=100, :style='propertiesStyle')
+                .mb-3 {{ propertiesStr }}
+                    span.float-right {{ deletedPropertiesStr }}
+
+                .mt-3 {{ $t('files') }}
+                    span.float-right {{ $t('deleted') }}
+                .progress(style='background:#D4EDDA')
+                    .progress-bar.bg-success(max=100, :style='filesSizeStyle')
+                .mb-3 {{ filesSizeStr }}
+                    span.float-right {{ deletedFilesSizeStr }}
+
+                .mt-3 {{ $t('db') }}
+                    span.float-right {{ $t('totalUsage') }}
+                .progress(style='background:#E2E3E5')
+                    .progress-bar.bg-secondary(max=100, :style='dbSizeStyle')
+                .mb-0 {{ dbSizeStr }}
+                    span.float-right {{ totalFilesSizeStr }}
+
+        .loader(v-else, key='loading')
