@@ -16,7 +16,8 @@ export default {
         },
         {
           name: 'LHV Pank',
-          url: `https://api.entu.app/auth/lhv?next=${window.location.origin}/auth/`,
+          url: '#',
+          click: this.authLHV,
           icon: 'icon-bank'
         },
         {
@@ -68,6 +69,36 @@ export default {
     }
   },
   methods: {
+    authLHV () {
+      this.authenticating = true
+
+      this.axios.get('/auth/lhv', { params: { next: window.location.origin + '/auth/' } })
+        .then(response => {
+          const url = response.data.url
+          const params = response.data.signedRequest
+
+          const form = document.createElement('form')
+          form.method = 'POST'
+          form.action = url
+
+          for (const key in params) {
+            if (!params.hasOwnProperty(key)) { continue }
+
+            const hiddenField = document.createElement('input')
+            hiddenField.type = 'hidden'
+            hiddenField.name = key
+            hiddenField.value = params[key]
+
+            form.appendChild(hiddenField)
+          }
+
+          document.body.appendChild(form)
+          form.submit()
+        })
+        .catch(() => {
+          this.authenticating = false
+        })
+    },
     logOut () {
       this.setAccounts()
       this.authenticating = false

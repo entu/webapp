@@ -2,6 +2,7 @@
     .background(:class='background')
     .content.row.justify-content-center
         .borderbox.h-100.col-10.col-sm-6.col-md-4.col-lg-3.col-xl-2
+
             .row.h-100(v-show='!authenticating && accounts.length === 0')
                 .col-12
                     router-link(:to="{ name: 'info' }")
@@ -9,11 +10,12 @@
                     h1.text-center.mt-5.mb-4 {{ $t('login') }}
                     ul.list-unstyled
                         li(v-for='a in authenticators', :key='a.name')
-                            a.pl-4(:href='a.url')
+                            a.pl-4(:href='a.url', @click.prevent='a.click')
                                 i(:class='a.icon')
                                 span {{ a.name }}
                 .col-12.align-self-end
                     p.text-center {{ $t('info') }}
+
             .row.h-100(v-show='!authenticating && accounts.length > 0')
                 .col-12
                     router-link(:to="{ name: 'info' }")
@@ -28,6 +30,7 @@
                     a(href='', @click.prevent='logOut')
                         i.icon-out
                         span {{ $t('logout') }}
+
             .row.h-100(v-show='authenticating')
                 .col-12.align-self-center.text-center
                     .loader
