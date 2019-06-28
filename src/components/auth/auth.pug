@@ -10,7 +10,7 @@
                     h1.text-center.mt-5.mb-4 {{ $t('login') }}
                     ul.list-unstyled
                         li(v-for='a in authenticators', :key='a.name')
-                            a.pl-4(:href='a.url', @click.prevent='a.click')
+                            a.pl-4(@click.prevent='a.click')
                                 i(:class='a.icon')
                                 span {{ a.name }}
                 .col-12.align-self-end

@@ -6,29 +6,28 @@ export default {
       authenticators: [
         {
           name: 'Apple',
-          url: `https://api.entu.app/auth/apple?next=${window.location.origin}/auth/`,
-          icon: 'icon-apple'
+          icon: 'icon-apple',
+          click: this.authApple
         },
         {
           name: 'Google',
-          url: `https://api.entu.app/auth/google?next=${window.location.origin}/auth/`,
-          icon: 'icon-google'
+          icon: 'icon-google',
+          click: this.authGoogle
         },
         {
           name: 'LHV Pank',
-          url: '#',
-          click: this.authLHV,
-          icon: 'icon-bank'
+          icon: 'icon-bank',
+          click: this.authLHV
         },
         {
           name: 'Mobiil-ID',
-          url: `https://api.entu.app/auth/mid?next=${window.location.origin}/auth/`,
-          icon: 'icon-mid'
+          icon: 'icon-mid',
+          click: this.authMid
         },
         {
           name: this.$t('id_card'),
-          url: `https://api.entu.app/auth/idc?next=${window.location.origin}/auth/`,
-          icon: 'icon-idc'
+          icon: 'icon-idc',
+          click: this.authIdc
         },
       ]
     }
@@ -69,6 +68,13 @@ export default {
     }
   },
   methods: {
+    authApple () {
+
+    },
+    authGoogle () {
+      this.authenticating = true
+      window.location = `https://api.entu.app/auth/google?next=${window.location.origin}/auth/`
+    },
     authLHV () {
       this.authenticating = true
 
@@ -98,6 +104,12 @@ export default {
         .catch(() => {
           this.authenticating = false
         })
+    },
+    authMid () {
+
+    },
+    authIdc () {
+
     },
     logOut () {
       this.setAccounts()
