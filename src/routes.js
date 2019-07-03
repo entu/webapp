@@ -15,6 +15,7 @@ if (['entu.app', 'localhost'].includes(window.location.hostname)) {
       {
         name: 'info',
         path: '/',
+        alias: '/info',
         component: info
       },
       {

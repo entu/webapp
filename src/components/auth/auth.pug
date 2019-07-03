@@ -18,7 +18,7 @@
 
             .row.h-100(v-show='!authenticating && accounts.length > 0')
                 .col-12
-                    router-link(:to="{ name: 'info' }")
+                    router-link(:to="{ path: '/info' }")
                         img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../../assets/logo.png' alt='Entu')
                     h1.text-center.mt-5.mb-4 {{ $t('choose_db') }}
                     ul.list-unstyled
