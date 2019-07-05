@@ -9,5 +9,5 @@
             router-link.media.px-3(v-for='e in entities', :key='e._id', :to="{ name: 'entity', params: { entity: e._id }, query: $route.query }")
                 img.rounded-circle.align-self-start.mt-2.mr-2(v-if='e._thumbnail', :src='e._thumbnail', :alt='e.name')
                 .media-body.align-self-center
-                    h5.m-0 {{ e.name || e._id }}
+                    h5.m-0 {{ e.name }}
                     p.m-0 {{ e.description }}

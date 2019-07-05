@@ -43,7 +43,7 @@ export default {
     name () {
       if (!this.entity) { return '' }
 
-      return this.getValue(this.entity.name) || this.entity._id
+      return this.getValue(this.entity.name)
     },
     entityView () {
       let result = {}
@@ -65,7 +65,7 @@ export default {
     _parent () {
       if (this.entity && this.entity._parent) {
         return this.entity._parent.map(p => {
-          return { _id: p.reference, string: p.string || p.reference, to: { name: 'entity', params: { entity: p.reference }, query: this.$route.query } }
+          return { _id: p.reference, string: p.string, to: { name: 'entity', params: { entity: p.reference }, query: this.$route.query } }
         })
       }
     }
