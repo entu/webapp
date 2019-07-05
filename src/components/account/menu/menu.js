@@ -5,7 +5,6 @@ export default {
         name: null,
         photo: null
       },
-      closed: false,
       menu: []
     }
   },

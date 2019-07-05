@@ -21,7 +21,8 @@ new Vue({
   data () {
     return {
       openRequests: 0,
-      background: 'bg-' + Math.ceil(Math.random() * 12)
+      background: 'bg-' + Math.ceil(Math.random() * 12),
+      menu: true
     }
   },
   render: (h) => h(app),

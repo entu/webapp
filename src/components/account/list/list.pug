@@ -1,6 +1,8 @@
 .h-100.col-12.col-sm-4.col-lg-3(v-if='isQuery')
     .row.h-100
-        form#search.col-12.p-0(action='.')
+        a#toggle-menu.col-auto.p-2.pull-left(v-if='!showMenu', href='', @click.prevent='toggleMenu()')
+            i.icon-menu.float-left
+        form#search.col.p-0(action='.')
             .input-group.p-3
                 label.input-group-addon(for='search-field')
                     i.icon-search

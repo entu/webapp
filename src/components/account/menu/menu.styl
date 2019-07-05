@@ -59,10 +59,22 @@
                     font-weight 700
 
 #menu-language
-    position: fixed
-    bottom: 0
+    position fixed
+    bottom 0
     font-weight 700
     font-size 14px
+
+.slide-leave-active
+    transition-duration .1s
+
+.slide-enter-active
+    transition-duration .3s
+
+.slide-enter
+    transform translate(-100%, 0)
+
+.slide-leave-to
+    transform translate(-100%, 0)
 
 @media (prefers-color-scheme: dark)
     #menu

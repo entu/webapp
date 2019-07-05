@@ -1,4 +1,4 @@
-.col-12.col-sm-8.col-lg-7.d-none.d-sm-block.h-100
+.col-12.d-none.d-sm-block.h-100(:class="{ 'col-sm-8 col-lg-7': showMenu, 'col-sm-10 col-lg-9': !showMenu }")
     .row
         entity-tools
     .row.h-100

@@ -1,27 +1,28 @@
-#menu.align-self-start.h-100.d-none.d-lg-block.p-0(:class="{ 'col-lg-2': !closed, 'col-auto': closed }")
-    .p-3
-        a(href='', @click.prevent='closed = !closed')
-            i.icon-menu.float-left
-        router-link(v-show='!closed', :to="authTo")
-            i.icon-in.float-right(v-if='!userId')
-            i.icon-out.float-right(v-if='userId')
-    #menu-content.align-self-start.p-3(v-show='!closed')
-        img.border.col-5.mb-3.rounded-circle.mx-auto.d-block(v-if='user.photo', :src='user.photo', :alt='user.name')
-        img.col-6.mb-3.mx-auto.d-block(v-if='!user.photo', src='../../../assets/logo.png', :alt='user.name')
+transition(name='slide')
+    #menu.col-2.align-self-start.h-100.d-none.d-lg-block.p-0(v-if="showMenu")
+        .p-3
+            a(href='', @click.prevent='toggleMenu()')
+                i.icon-menu.float-left.pt-1
+            router-link(:to="authTo")
+                i.icon-in.float-right.pt-1(v-if='!userId')
+                i.icon-out.float-right.pt-1(v-if='userId')
+        #menu-content.align-self-start.p-3
+            img.border.col-5.mb-3.rounded-circle.mx-auto.d-block(v-if='user.photo', :src='user.photo', :alt='user.name')
+            img.col-6.mb-3.mx-auto.d-block(v-if='!user.photo', src='../../../assets/logo.png', :alt='user.name')
 
-        //- h4.pb-3.text-center {{ user.name }}
-        h4.pb-3.text-center
-            router-link(:to="{ name: 'account', params: { account: account } }") {{ account }}
-        ul.list-unstyled
-            li.menu-group.mt-4(v-for='mg in menu', :key='mg.name')
-                a(href='', @click.prevent='mg.active = !mg.active')
-                    h5.mb-1
-                        i(:class="{ 'icon-chevron-down': mg.active, 'icon-chevron-right': !mg.active }")
-                        span {{ mg.name }}
-                ul.list-unstyled(v-show='mg.active', style='display:block')
-                    li(v-for='l in mg.links', :key='l._id')
-                        router-link(:to="{ name: 'list', params: { entity: entity }, query: l.query }", exact) {{ l.name }}
-    .col.align-self-start.mt-5.text-center(v-if='menu.length === 0')
-        i.icon-spinner
-    #menu-language.col-lg-2.pb-1.text-right(v-show='!closed')
-        a(href='', v-for='l in selectableLocales', @click.prevent='setLocale(l)') {{ l.toUpperCase() }}
+            //- h4.pb-3.text-center {{ user.name }}
+            h4.pb-3.text-center
+                router-link(:to="{ name: 'account', params: { account: account } }") {{ account }}
+            ul.list-unstyled
+                li.menu-group.mt-4(v-for='mg in menu', :key='mg.name')
+                    a(href='', @click.prevent='mg.active = !mg.active')
+                        h5.mb-1
+                            i(:class="{ 'icon-chevron-down': mg.active, 'icon-chevron-right': !mg.active }")
+                            span {{ mg.name }}
+                    ul.list-unstyled(v-show='mg.active', style='display:block')
+                        li(v-for='l in mg.links', :key='l._id')
+                            router-link(:to="{ name: 'list', params: { entity: entity }, query: l.query }", exact) {{ l.name }}
+        .col.align-self-start.mt-5.text-center(v-if='menu.length === 0')
+            i.icon-spinner
+        #menu-language.col-lg-2.pb-1.text-right
+            a(href='', v-for='l in selectableLocales', @click.prevent='setLocale(l)') {{ l.toUpperCase() }}

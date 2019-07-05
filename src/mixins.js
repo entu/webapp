@@ -89,6 +89,9 @@ export default {
       })
 
       return a
+    },
+    showMenu () {
+      return this.$root.$data.menu
     }
   },
   methods: {
@@ -100,6 +103,9 @@ export default {
         this.accounts = []
         localStorage.removeItem('accounts')
       }
+    },
+    toggleMenu () {
+      this.$root.$data.menu = !this.$root.$data.menu
     },
     setLocale (val) {
       localStorage.setItem('locale', val)
