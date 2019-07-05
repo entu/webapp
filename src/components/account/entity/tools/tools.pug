@@ -1,8 +1,10 @@
-nav.navbar.navbar-expand-sm.col.p-0
-    .collapse.navbar-collapse.pr-2.pl-2
+nav.navbar.navbar-expand.col.p-0
+    .collapse.navbar-collapse
+        router-link.nav-link.d-md-none.col-auto.mt-3(v-if='!showList', :to="{ name: 'entity', params: { entity: '_' }, query: $route.query }", @click.native='toggleList(true)')
+            i.icon-chevron-left
         transition(name='fade', :duration=200)
-            .loader(v-if='openRequests')
-        ul.navbar-nav.ml-sm-auto(v-if='entity')
+            .loader.m-3(v-if='openRequests')
+        ul.navbar-nav.ml-auto(v-if='entity')
             li.nav-item
                 a.nav-link.p-3(href='#')
                     i.icon-add

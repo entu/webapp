@@ -92,6 +92,12 @@ export default {
     },
     showMenu () {
       return this.$root.$data.menu
+    },
+    showList () {
+      return this.$root.$data.list || document.body.clientWidth > 576
+    },
+    showEntity () {
+      return !this.showList || document.body.clientWidth >= 576
     }
   },
   methods: {
@@ -106,6 +112,9 @@ export default {
     },
     toggleMenu () {
       this.$root.$data.menu = !this.$root.$data.menu
+    },
+    toggleList (value) {
+      this.$root.$data.list = value
     },
     setLocale (val) {
       localStorage.setItem('locale', val)

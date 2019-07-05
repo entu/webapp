@@ -195,7 +195,17 @@
     },
     {
       "paths": [
-        "M829.196 540.599l-471.556 471.556c-15.888 15.888-41.309 15.888-57.197 0l-105.496-105.496c-15.888-15.888-15.888-41.309 0-57.197l337.462-337.462-337.462-337.462c-15.888-15.888-15.888-41.309 0-57.197l105.496-105.496c15.888-15.888 41.309-15.888 57.197 0l471.556 471.556c15.888 15.888 15.888 41.309 0 57.197z"
+        "M829.081 174.584l-337.415 337.415 337.415 337.415c15.886 15.886 15.886 41.303 0 57.189l-105.482 105.482c-15.886 15.886-41.303 15.886-57.189 0l-471.491-471.491c-15.886-15.886-15.886-41.303 0-57.189l471.491-471.491c15.886-15.886 41.303-15.886 57.189 0l105.482 105.482c15.886 15.886 15.886 41.303 0 57.189z"
+      ],
+      "tags": [
+        "chevron-left"
+      ],
+      "grid": 20,
+      "defaultCode": 59662
+    },
+    {
+      "paths": [
+        "M829.153 540.596l-471.493 471.493c-15.885 15.885-41.303 15.885-57.188 0l-105.481-105.481c-15.885-15.885-15.885-41.303 0-57.188l337.417-337.417-337.417-337.417c-15.885-15.885-15.885-41.303 0-57.188l105.481-105.481c15.885-15.885 41.303-15.885 57.188 0l471.493 471.493c15.885 15.885 15.885 41.303 0 57.188z"
       ],
       "width": 1024.142857142857,
       "tags": [
@@ -222,13 +232,13 @@
         "globe"
       ],
       "grid": 20,
-      "defaultCode": 59662
+      "defaultCode": 59669
     }
   ],
   "height": 1024,
   "metadata": {
     "name": "icomoon",
-    "iconsHash": 956130246
+    "iconsHash": 2138293342
   },
   "preferences": {
     "showGlyphs": true,
@@ -256,7 +266,8 @@
       "selector": "i",
       "showMetrics": true,
       "showMetadata": true,
-      "showVersion": true
+      "showVersion": true,
+      "classSelector": ".icon"
     },
     "imagePref": {
       "prefix": "icon-",
@@ -279,107 +290,112 @@
   },
   "selection": [
     {
-      "order": 69,
+      "order": 6,
       "name": "apple",
       "prevSize": 32
     },
     {
-      "order": 70,
+      "order": 7,
       "name": "google",
       "prevSize": 32
     },
     {
-      "order": 71,
+      "order": 8,
       "name": "bank",
       "prevSize": 32
     },
     {
-      "order": 72,
+      "order": 9,
       "name": "mid",
       "prevSize": 32
     },
     {
-      "order": 73,
+      "order": 10,
       "name": "idc",
       "prevSize": 32
     },
     {
-      "order": 74,
+      "order": 11,
       "name": "in",
       "prevSize": 32
     },
     {
-      "order": 75,
+      "order": 12,
       "name": "out",
       "prevSize": 32
     },
     {
-      "order": 76,
+      "order": 13,
       "name": "add",
       "prevSize": 32
     },
     {
-      "order": 77,
+      "order": 14,
       "name": "edit",
       "prevSize": 32
     },
     {
-      "order": 78,
+      "order": 15,
       "name": "duplicate",
       "prevSize": 32
     },
     {
-      "order": 79,
+      "order": 16,
       "name": "parent",
       "prevSize": 32
     },
     {
-      "order": 80,
+      "order": 17,
       "name": "unlock",
       "prevSize": 32
     },
     {
-      "order": 81,
+      "order": 18,
       "name": "lock",
       "prevSize": 32
     },
     {
-      "order": 82,
+      "order": 19,
       "name": "share",
       "prevSize": 32
     },
     {
-      "order": 83,
+      "order": 20,
       "name": "search",
       "prevSize": 32
     },
     {
-      "order": 84,
+      "order": 21,
       "name": "menu",
       "prevSize": 32
     },
     {
-      "order": 85,
+      "order": 22,
       "prevSize": 32,
       "name": "spinner"
     },
     {
-      "order": 86,
+      "order": 23,
       "name": "database",
       "prevSize": 32
     },
     {
-      "order": 87,
+      "order": 24,
+      "name": "chevron-left",
+      "prevSize": 32
+    },
+    {
+      "order": 25,
       "name": "chevron-right",
       "prevSize": 32
     },
     {
-      "order": 88,
+      "order": 26,
       "name": "chevron-down",
       "prevSize": 32
     },
     {
-      "order": 89,
+      "order": 27,
       "name": "public",
       "prevSize": 32
     }

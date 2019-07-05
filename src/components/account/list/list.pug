@@ -1,4 +1,4 @@
-.h-100.col-12.col-sm-4.col-lg-3(v-if='isQuery')
+.h-100.col-12.col-sm-4.col-lg-3(v-if='isQuery && showList')
     .row.h-100
         a#toggle-menu.col-auto.p-2.pull-left(v-if='!showMenu', href='', @click.prevent='toggleMenu()')
             i.icon-menu.float-left
@@ -8,7 +8,7 @@
                     i.icon-search
                 input#search-field.form-control(type='search', v-model='searchString', @keydown.enter.prevent)
         transition-group#list.h-100.col-12.p-0(name='fade', :duration=200)
-            router-link.media.px-3(v-for='e in entities', :key='e._id', :to="{ name: 'entity', params: { entity: e._id }, query: $route.query }")
+            router-link.media.px-3(v-for='e in entities', :key='e._id', :to="{ name: 'entity', params: { entity: e._id }, query: $route.query }", @click.native='toggleList(false)')
                 img.rounded-circle.align-self-start.mt-2.mr-2(v-if='e._thumbnail', :src='e._thumbnail', :alt='e.name')
                 .media-body.align-self-center
                     h5.m-0 {{ e.name }}

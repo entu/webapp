@@ -77,6 +77,10 @@ export default {
         return
       }
 
+      if (document.body.clientWidth <= 576) {
+        this.toggleList(false)
+      }
+
       this.entity = null
       this.image = null
 
