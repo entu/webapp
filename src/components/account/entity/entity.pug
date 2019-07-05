@@ -1,8 +1,9 @@
-.col.d-none.d-sm-block.h-100
-    .row.h-100
+.col-12.col-sm-8.col-lg-7.d-none.d-sm-block.h-100
+    .row
         entity-tools
+    .row.h-100
         transition(name='fade')
-            #content.col-12.h-100(v-if='entity')
+            #content.col.h-100(v-if='entity')
                 #parent.row.m-0.mt-3.pb-2(v-if='_parent')
                     .col-auto.p-1
                         i.icon-parent.float-left
@@ -10,7 +11,7 @@
                     .col-auto.p-1
                         i.icon-parent.float-right
                 .row.mt-4
-                    .col
+                    div(:class="{ 'col-10': _thumbnail,  'col-12': !_thumbnail }")
                         h1.mb-4 {{ name || error }}
                         .row.mb-2(v-for='v, p in entityView')
                             strong.col-12.col-md-4.col-xl-3.text-md-right {{ p }}
