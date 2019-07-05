@@ -38,7 +38,7 @@ export default {
     _thumbnail () {
       if (!this.entity) { return '' }
 
-      return _get(this, 'entity._thumbnail') || `https://secure.gravatar.com/avatar/${this._id}?d=identicon&s=150`
+      return _get(this, 'entity._thumbnail')
     },
     name () {
       if (!this.entity) { return '' }
@@ -110,7 +110,7 @@ export default {
         response.data.entities.forEach(entity => {
           childs.push({
             _id: entity._id,
-            _thumbnail: entity._thumbnail || `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`,
+            _thumbnail: entity._thumbnail,
             _type: this.getValue(entity._type),
             name: this.getValue(entity.name),
             to: { name: 'entity', params: { entity: entity._id }, query: this.$route.query }

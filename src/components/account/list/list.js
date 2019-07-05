@@ -75,7 +75,7 @@ export default {
           response.data.entities.forEach(entity => {
             this.entities.push({
               _id: entity._id,
-              _thumbnail: entity._thumbnail || `https://secure.gravatar.com/avatar/${entity._id}?d=identicon&s=150`,
+              _thumbnail: entity._thumbnail,
               name: this.getValue(entity.name),
               description: this.getValue(entity.description)
             })

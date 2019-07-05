@@ -10,7 +10,7 @@
                     .col-auto.p-1
                         i.icon-parent.float-right
                 .row.mt-4
-                    .col-10
+                    .col
                         h1.mb-4 {{ name || error }}
                         .row.mb-2(v-for='v, p in entityView')
                             strong.col-12.col-md-4.col-xl-3.text-md-right {{ p }}
@@ -24,7 +24,7 @@
                                     p.mb-0(v-else-if='i.string') {{ i.string }}
                                     p.mb-0(v-else) {{ i }}
                     .col-2(v-if='_thumbnail')
-                        img.p-1.img-thumbnail(:src='_thumbnail', :alt='name')
+                        img.col.p-0.img-thumbnail(:src='_thumbnail', :alt='name')
                 //- .row.mt-5
                 //-     pre.col-12 {{ entity }}
                 transition(name='fade')
@@ -42,5 +42,5 @@
                                         tr(v-for='c in childsGroup')
                                             td
                                                 router-link(:to='c.to')
-                                                    img.rounded-circle.align-self-center.mr-3(:src='c._thumbnail', :alt='c.name')
+                                                    img.rounded-circle.align-self-center.mr-2(v-if='c._thumbnail', :src='c._thumbnail', :alt='c.name')
                                                     | {{ c.name || c._id }}
