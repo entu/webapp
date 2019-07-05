@@ -12,7 +12,7 @@ transition(name='slide')
 
             //- h4.pb-3.text-center {{ user.name }}
             h4.pb-3.text-center
-                router-link(:to="{ name: 'account', params: { account: account } }") {{ account }}
+                router-link(:to="{ name: 'account', params: { account: account } }", @click.native="hideMenu()") {{ account }}
             ul.list-unstyled
                 li.menu-group.mt-4(v-for='mg in menu', :key='mg.name')
                     a(href='', @click.prevent='mg.active = !mg.active')
@@ -21,7 +21,7 @@ transition(name='slide')
                             span {{ mg.name }}
                     ul.list-unstyled(v-show='mg.active', style='display:block')
                         li(v-for='l in mg.links', :key='l._id')
-                            router-link(:to="{ name: 'list', params: { entity: entity }, query: l.query }", exact) {{ l.name }}
+                            router-link(:to="{ name: 'list', params: { entity: entity }, query: l.query }", @click.native="hideMenu()", exact) {{ l.name }}
         .col.align-self-start.mt-5.text-center(v-if='menu.length === 0')
             i.icon-spinner
         #menu-language.col-lg-2.pb-1.text-right

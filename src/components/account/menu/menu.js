@@ -116,6 +116,11 @@ export default {
       }
 
       return params
+    },
+    hideMenu () {
+      if (document.body.clientWidth <= 768) {
+        this.toggleMenu()
+      }
     }
   }
 }
