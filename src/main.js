@@ -22,8 +22,8 @@ new Vue({
     return {
       openRequests: 0,
       background: 'bg-' + Math.ceil(Math.random() * 12),
-      menu: true
-    }
+      menu: document.body.clientWidth > 768
+     }
   },
   render: (h) => h(app),
   router: new VueRouter(routes),
