@@ -37,6 +37,10 @@ export default {
       this.setTitle(this.$t('choose_db'))
     } else {
       this.setTitle(this.$t('login'))
+
+      let appleIDAuthScript = document.createElement('script')
+      appleIDAuthScript.setAttribute('src', 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js')
+      document.body.appendChild(appleIDAuthScript)
     }
 
     if (this.$route.params.id === 'exit') {
@@ -69,7 +73,12 @@ export default {
   },
   methods: {
     authApple () {
-
+      AppleID.auth.init({
+        clientId : this.$root.$data.appleIDAuthClientId,
+        scope : 'name email',
+        redirectURI: `https://api.entu.app/auth/apple?next=${window.location.origin}/auth/`
+      })
+      AppleID.auth.signIn()
     },
     authGoogle () {
       this.authenticating = true
