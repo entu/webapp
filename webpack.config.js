@@ -23,9 +23,18 @@ module.exports = {
       new UglifyJsPlugin({
         cache: true,
         parallel: true,
-        sourceMap: true
+        sourceMap: true,
+        uglifyOptions: {
+          output: {
+            comments: false
+          }
+        }
       }),
-      new OptimizeCSSAssetsPlugin({})
+      new OptimizeCSSAssetsPlugin({
+        cssProcessorPluginOptions: {
+          preset: ['default', { discardComments: { removeAll: true } }]
+        }
+      })
     ],
     splitChunks: {
       cacheGroups: {
