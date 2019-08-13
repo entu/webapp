@@ -7,7 +7,7 @@
                 .col-12
                     router-link(:to="{ name: 'info' }")
                         img.col-5.col-sm-6.col-xl-7.mt-5.mx-auto.d-block(src='../../assets/logo.png', alt='Entu')
-                    h1.text-center.mt-5.mb-4 {{ $t('login') }}
+                    h1.text-center.mt-5.mb-4 {{ $t('signin') }}
                     ul.list-unstyled
                         li(v-for='a in authenticators', :key='a.name')
                             a.pl-4(@click.prevent='a.click')
@@ -29,7 +29,7 @@
                 .col-12.align-self-end.text-center
                     a(href='', @click.prevent='logOut')
                         i.icon-out
-                        span {{ $t('logout') }}
+                        span {{ $t('signout') }}
 
             .row.h-100(v-show='authenticating')
                 .col-12.align-self-center.text-center

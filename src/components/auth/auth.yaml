@@ -1,12 +1,12 @@
 en:
-    login: Log In
-    logout: Exit
+    signin: Sign In with
+    signout: Sign Out
     choose_db: Choose database
     id_card: ID-card
     info: Entu uses those providers for user authentication. We don't get nor save Your password.
 et:
-    login: Sisene
-    logout: Välju
+    signin: Sisene
+    signout: Välju
     choose_db: Vali andmebaas
     id_card: ID-kaart
     info: Entu kasutab autentimiseks ülaltoodud teenusepakkujaid. Teie kasutajanime ega parooli meile ei edastata.

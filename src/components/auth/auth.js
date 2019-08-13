@@ -36,7 +36,7 @@ export default {
     if (this.accounts.length > 0) {
       this.setTitle(this.$t('choose_db'))
     } else {
-      this.setTitle(this.$t('login'))
+      this.setTitle(this.$t('signin'))
 
       let appleIDAuthScript = document.createElement('script')
       appleIDAuthScript.setAttribute('src', 'https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js')
