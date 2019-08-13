@@ -9,23 +9,18 @@ en:
         -
             title: Simple
             text: Infosüsteemi juurutamine ja kasutamine ei peaks olema keeruline. Entu disaini juures oleme lähtunud põhimõttest, et lihtne on alati parem.
-
         -
             title: Flexible
             text: Enamik infosüsteeme on mõeldud katma vaid kitsast ärivaldkonda. Nende muutmine on võimatu või kulukas. Entu saad seadistada just oma vajadustest lähtuvalt.
-
         -
             title: Secure
             text: Kogu andmevahetus Sinu arvuti ja Entu serveri vahel on krüpteeritud. Kõikidest andmetest tehakse varukoopia kolme erinevasse serverisse.
-
         -
             title: API
             text: Kui Entu veel ei kata kõiki vajadusi või kasutad mõnd spetsiaalrakendust, siis saad selle Entuga siduda API kaudu.
-
         -
             title: Cloud
             text: Entu on veebipõhine ja kättesaadav igast internetiühendusega arvutist. Sa ei pea muretsema tarkvara paigaldamise ega uuendamise pärast. Entu on pidevas arendamises. Kuulame klientide tagasisidet ja lisame pidevalt uusi võimalusi.
-
         -
             title: Affordable
             text: Infosüsteemi(de) haldamine või uue rätsepatööna tellimine on kallis. Entuga saad alustada tasuta ning andmemahu kasvades valida soodsa kuumaksuga paketi.
@@ -143,24 +138,18 @@ et:
         -
             title: Lihtne
             text: Infosüsteemi juurutamine ja kasutamine ei peaks olema keeruline. Entu disaini juures oleme lähtunud põhimõttest, et lihtne on alati parem.
-
         -
             title: Paindlik
             text: Enamik infosüsteeme on mõeldud katma vaid kitsast ärivaldkonda. Nende muutmine on võimatu või kulukas. Entu saad seadistada just oma vajadustest lähtuvalt.
-
         -
             title: Turvaline
             text: Kogu andmevahetus Sinu arvuti ja Entu serveri vahel on krüpteeritud. Kõikidest andmetest tehakse varukoopia kolme erinevasse serverisse.
-
         -
             title: Liidestatav
             text: Kui Entu veel ei kata kõiki vajadusi või kasutad mõnd spetsiaalrakendust, siis saad selle Entuga siduda API kaudu.
-                .col-12.col-sm-6.col-md-4.mb-5
-
         -
             title: Pilvel
             text: Entu on veebipõhine ja kättesaadav igast internetiühendusega arvutist. Sa ei pea muretsema tarkvara paigaldamise ega uuendamise pärast. Entu on pidevas arendamises. Kuulame klientide tagasisidet ja lisame pidevalt uusi võimalusi.
-
         -
             title: Soodne
             text: Infosüsteemi(de) haldamine või uue rätsepatööna tellimine on kallis. Entuga saad alustada tasuta ning andmemahu kasvades valida soodsa kuumaksuga paketi.
