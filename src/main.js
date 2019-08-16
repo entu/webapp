@@ -20,7 +20,6 @@ new Vue({
   el: '#app',
   data () {
     return {
-      appleIDAuthClientId: 'qwerty',
       openRequests: 0,
       background: 'bg-' + Math.ceil(Math.random() * 12),
       menu: document.body.clientWidth > 768,
