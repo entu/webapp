@@ -23,12 +23,7 @@ export default {
           name: 'Mobiil-ID',
           icon: 'icon-mid',
           click: this.authMid
-        },
-        {
-          name: this.$t('id_card'),
-          icon: 'icon-idc',
-          click: this.authIdc
-        },
+        }
       ]
     }
   },
