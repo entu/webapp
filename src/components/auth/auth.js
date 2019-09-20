@@ -36,10 +36,10 @@ export default {
 
     if (this.$route.params.id === 'exit') {
       this.logOut()
-    } else if (this.$route.params.id) {
+    } else if (this.$route.query.key) {
       this.authenticating = true
 
-      this.axios.get('/auth', { headers: { Authorization: `Bearer ${this.$route.params.id}` }, params: { account: this.customHost } })
+      this.axios.get('/auth', { headers: { Authorization: `Bearer ${this.$route.query.key}` }, params: { account: this.customHost } })
         .then(response => {
           this.setAccounts(response.data)
           this.authenticating = false
@@ -65,16 +65,16 @@ export default {
   methods: {
     authApple () {
       this.authenticating = true
-      window.location = `https://api.entu.app/auth/apple?next=${window.location.origin}/auth/`
+      window.location = `https://api.entu.app/auth/apple?next=${window.location.origin}/auth/?key=`
     },
     authGoogle () {
       this.authenticating = true
-      window.location = `https://api.entu.app/auth/google?next=${window.location.origin}/auth/`
+      window.location = `https://api.entu.app/auth/google?next=${window.location.origin}/auth/?key=`
     },
     authLHV () {
       this.authenticating = true
 
-      this.axios.get('/auth/lhv', { params: { next: window.location.origin + '/auth/' } })
+      this.axios.get('/auth/lhv', { params: { next: window.location.origin + '/auth/?key=' } })
         .then(response => {
           const url = response.data.url
           const params = response.data.signedRequest
