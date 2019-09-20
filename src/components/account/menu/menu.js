@@ -53,8 +53,15 @@ export default {
     },
     getMenu () {
       const sorter = (a, b) => {
-        if (!a.ordinal || a.ordinal < b.ordinal) { return -1 }
-        if (!b.ordinal || a.ordinal > b.ordinal) { return 1 }
+        if (a.ordinal && b.ordinal && a.ordinal < b.ordinal) { return -1 }
+        if (a.ordinal && b.ordinal && a.ordinal > b.ordinal) { return 1 }
+
+        if (!a.ordinal && b.ordinal) { return -1 }
+        if (a.ordinal && !b.ordinal) { return 1 }
+
+        if (!a.name || a.name < b.name) { return -1 }
+        if (!b.name || a.name > b.name) { return 1 }
+
         return 0
       }
 
