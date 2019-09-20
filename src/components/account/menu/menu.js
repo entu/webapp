@@ -53,8 +53,8 @@ export default {
     },
     getMenu () {
       const sorter = (a, b) => {
-        if (!a.name || a.name < b.name) { return -1 }
-        if (!b.name || a.name > b.name) { return 1 }
+        if (!a.ordinal || a.ordinal < b.ordinal) { return -1 }
+        if (!b.ordinal || a.ordinal > b.ordinal) { return 1 }
         return 0
       }
 
@@ -62,6 +62,7 @@ export default {
         params: {
           '_type.string': 'menu',
           props: [
+            'ordinal.integer',
             'group.string',
             'group.language',
             'name.string',
@@ -77,18 +78,22 @@ export default {
         let menu = {}
 
         response.data.entities.forEach(entity => {
-          let group = this.getValue(entity.group)
+          const group = this.getValue(entity.group)
+          const ordinal = entity.ordinal ? entity.ordinal[0].integer : 0
 
           if (!menu[group]) {
             menu[group] = {
+              ordinal: 0,
               name: this.getValue(entity.group),
               links: [],
               active: false
             }
           }
 
+          menu[group].ordinal += ordinal
           menu[group].links.push({
             _id: entity._id,
+            ordinal: ordinal,
             name: this.getValue(entity.name),
             query: this.queryObj(this.getValue(entity.query))
           })
@@ -97,6 +102,7 @@ export default {
         this.menu = Object.values(menu)
 
         this.menu.forEach(m => {
+          m.ordinal = m.ordinal / m.links.length
           m.links.sort(sorter)
         })
         this.menu.sort(sorter)
