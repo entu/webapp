@@ -1,0 +1,11 @@
+.row.mb-2
+    strong.col-12.col-md-4.col-xl-3.text-md-right {{ property }}
+    .col-12.col-md-8.col-xl-9
+        .property(v-for='i, idx in values')
+            p.mb-0(v-if='i.to')
+                router-link(:to='i.to') {{ i.string }}
+            p.filename.mb-0(v-else-if='i.file')
+                a(:href='i.file' target='_blank') {{ i.string }}
+                span {{ i.size }}
+            p.mb-0(v-else-if='i.string') {{ i.string }}
+            p.mb-0(v-else) {{ i }}

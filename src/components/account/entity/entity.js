@@ -4,10 +4,12 @@ import _get from 'lodash/get'
 import _groupBy from 'lodash/groupBy'
 
 import entityTools from './tools/tools.vue'
+import entityProperty from './property/property.vue'
 
 export default {
   components: {
-    'entity-tools': entityTools
+    'entity-tools': entityTools,
+    'entity-property': entityProperty
   },
   created () {
     this.getEntity()
