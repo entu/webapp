@@ -29,7 +29,7 @@ export default {
       ]
     }
   },
-  created () {
+  async created () {
     if (this.accounts.length > 0) {
       this.setTitle(this.$t('choose_db'))
     } else {
@@ -41,22 +41,29 @@ export default {
     } else if (this.$route.query.key) {
       this.authenticating = true
 
-      this.axios.get('/auth', { headers: { Authorization: `Bearer ${this.$route.query.key}` }, params: { account: this.customHost } })
-        .then(response => {
-          this.setAccounts(response.data)
-          this.authenticating = false
-
-          if (this.accounts.length === 1) {
-            this.$router.push({ name: 'account', params: { account: this.accounts[0].account } })
-          } else {
-            this.$router.push({ name: 'auth' })
+      try {
+        const authResponse = await this.axios.get('/auth', {
+          headers: {
+            Authorization: `Bearer ${this.$route.query.key}`
+          },
+          params: {
+            account: this.customHost
           }
         })
-        .catch(() => {
-          this.setAccounts()
-          this.authenticating = false
+
+        this.setAccounts(authResponse.data)
+        this.authenticating = false
+
+        if (this.accounts.length === 1) {
+          this.$router.push({ name: 'account', params: { account: this.accounts[0].account } })
+        } else {
           this.$router.push({ name: 'auth' })
-        })
+        }
+      } catch (e) {
+        this.setAccounts()
+        this.authenticating = false
+        this.$router.push({ name: 'auth' })
+      }
     }
   },
   computed: {
@@ -73,35 +80,35 @@ export default {
       this.authenticating = true
       window.location = `https://api.entu.app/auth/google?next=${window.location.origin}/auth/?key=`
     },
-    authLHV () {
+    async authLHV () {
       this.authenticating = true
 
-      this.axios.get('/auth/lhv', { params: { next: window.location.origin + '/auth/?key=' } })
-        .then(response => {
-          const url = response.data.url
-          const params = response.data.signedRequest
+      const lhvResponse = await this.axios.get('/auth/lhv', {
+        params: {
+          next: window.location.origin + '/auth/?key='
+        }
+      })
 
-          const form = document.createElement('form')
-          form.method = 'POST'
-          form.action = url
+      const url = lhvResponse.data.url
+      const params = lhvResponse.data.signedRequest
 
-          for (const key in params) {
-            if (!params.hasOwnProperty(key)) { continue }
+      const form = document.createElement('form')
+      form.method = 'POST'
+      form.action = url
 
-            const hiddenField = document.createElement('input')
-            hiddenField.type = 'hidden'
-            hiddenField.name = key
-            hiddenField.value = params[key]
+      for (const key in params) {
+        if (!params.hasOwnProperty(key)) { continue }
 
-            form.appendChild(hiddenField)
-          }
+        const hiddenField = document.createElement('input')
+        hiddenField.type = 'hidden'
+        hiddenField.name = key
+        hiddenField.value = params[key]
 
-          document.body.appendChild(form)
-          form.submit()
-        })
-        .catch(() => {
-          this.authenticating = false
-        })
+        form.appendChild(hiddenField)
+      }
+
+      document.body.appendChild(form)
+      form.submit()
     },
     authMid () {
 

@@ -62,7 +62,8 @@ export default {
 
       a.interceptors.response.use(response => {
         const endTime = new Date()
-        console.log(`${endTime.getTime() - response.config.startTime.getTime()}ms - ${response.request.responseURL}`);
+        const s = (endTime.getTime() - response.config.startTime.getTime()) / 1000
+        console.log(`${s.toFixed(3)} ${response.request.responseURL}`);
 
         this.$root.$data.openRequests -= 1
 
@@ -85,7 +86,8 @@ export default {
         }
 
         const endTime = new Date()
-        console.log(`${endTime.getTime() - error.config.startTime.getTime()}ms - ${error.request.responseURL} (${error.response.status}) ${result}`);
+        const s = (endTime.getTime() - response.config.startTime.getTime()) / 1000
+        console.log(`${s.toFixed(3)} ${error.request.responseURL} (${error.response.status}) ${result}`);
 
         return Promise.reject(result)
       })

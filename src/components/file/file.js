@@ -7,18 +7,14 @@ export default {
       error: ''
     }
   },
-  created () {
+  async created () {
     if (!this.account) { return }
     if (!this.$route.params.id) { return }
 
-    this.axios.get(`/property/${this.$route.params.id}`)
-      .then(response => {
-        if (response.data.url) {
-          window.location.replace(response.data.url)
-        }
-      })
-      .catch(err => {
-        this.error = err
-      })
+    const fileResponse = await this.axios.get(`/property/${this.$route.params.id}`)
+
+    if (fileResponse.data.url) {
+      window.location.replace(fileResponse.data.url)
+    }
   }
 }

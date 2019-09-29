@@ -53,7 +53,7 @@ export default {
     }
   },
   methods: {
-    getEntities (restart) {
+    async getEntities (restart) {
       if (!this.isQuery) { return }
       if (this.loading) { return }
       if (restart) {
@@ -70,24 +70,21 @@ export default {
       query.limit = this.limit
       query.skip = this.skip
 
-      this.axios.get('/entity', { params: query })
-        .then(response => {
-          if (!response.data || !response.data.entities) { return }
+      const entitiesResponse = await this.axios.get('/entity', { params: query })
 
-          response.data.entities.forEach(entity => {
-            this.entities.push({
-              _id: entity._id,
-              _thumbnail: entity._thumbnail,
-              name: this.getValue(entity.name),
-              description: this.getValue(entity.description)
-            })
-          })
+      if (!entitiesResponse.data || !entitiesResponse.data.entities) { return }
 
-          this.skip += this.limit
-          this.loading = false
-        }).catch(() => {
-          this.loading = false
+      entitiesResponse.data.entities.forEach(entity => {
+        this.entities.push({
+          _id: entity._id,
+          _thumbnail: entity._thumbnail,
+          name: this.getValue(entity.name),
+          description: this.getValue(entity.description)
         })
+      })
+
+      this.skip += this.limit
+      this.loading = false
     },
     setSearchString () {
       this.searchString = _get(this, '$route.query.q', '')

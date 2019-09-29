@@ -27,10 +27,10 @@ export default {
     }
   },
   methods: {
-    getUser () {
+    async getUser () {
       if (!this.userId) { return }
 
-      const options = {
+      const userResponse = await this.axios.get(`/entity/${this.userId}`, {
         params: {
           props: [
             'forename.string',
@@ -40,20 +40,18 @@ export default {
             'photo._id'
           ].join(',')
         }
-      }
-
-      this.axios.get(`/entity/${this.userId}`, options).then(response => {
-        this.user.name = [this.getValue(response.data.forename), this.getValue(response.data.forename)].join(' ')
-
-        if (!response.data.photo) { return }
-
-        this.axios.get(`/property/${response.data.photo[0]._id}`).then(response => {
-          this.user.photo = response.data.url
-          delete this.user.photoId
-        })
       })
+
+      this.user.name = [this.getValue(userResponse.data.forename), this.getValue(userResponse.data.forename)].join(' ')
+
+      if (userResponse.data.photo) {
+        const photoResponse = await this.axios.get(`/property/${userResponse.data.photo[0]._id}`)
+
+        this.user.photo = photoResponse.data.url
+        delete this.user.photoId
+      }
     },
-    getMenu () {
+    async getMenu () {
       const sorter = (a, b) => {
         if (a.ordinal && b.ordinal && a.ordinal < b.ordinal) { return -1 }
         if (a.ordinal && b.ordinal && a.ordinal > b.ordinal) { return 1 }
@@ -67,7 +65,7 @@ export default {
         return 0
       }
 
-      const options = {
+      const menuResponse = await this.axios.get('/entity', {
         params: {
           '_type.string': 'menu',
           props: [
@@ -79,45 +77,43 @@ export default {
             'query.string'
           ].join(',')
         }
-      }
-
-      this.axios.get('/entity', options).then(response => {
-        if (!response.data || !response.data.entities) { return }
-
-        let menu = {}
-
-        response.data.entities.forEach(entity => {
-          const group = this.getValue(entity.group)
-          const ordinal = entity.ordinal ? entity.ordinal[0].integer : 0
-
-          if (!menu[group]) {
-            menu[group] = {
-              ordinal: 0,
-              name: this.getValue(entity.group),
-              links: [],
-              active: false
-            }
-          }
-
-          menu[group].ordinal += ordinal
-          menu[group].links.push({
-            _id: entity._id,
-            ordinal: ordinal,
-            name: this.getValue(entity.name),
-            query: this.queryObj(this.getValue(entity.query))
-          })
-        })
-
-        this.menu = Object.values(menu)
-
-        this.menu.forEach(m => {
-          m.ordinal = m.ordinal / m.links.length
-          m.links.sort(sorter)
-        })
-        this.menu.sort(sorter)
-
-        this.menu[0].active = true
       })
+
+      if (!menuResponse.data || !menuResponse.data.entities) { return }
+
+      let menu = {}
+
+      menuResponse.data.entities.forEach(entity => {
+        const group = this.getValue(entity.group)
+        const ordinal = entity.ordinal ? entity.ordinal[0].integer : 0
+
+        if (!menu[group]) {
+          menu[group] = {
+            ordinal: 0,
+            name: this.getValue(entity.group),
+            links: [],
+            active: false
+          }
+        }
+
+        menu[group].ordinal += ordinal
+        menu[group].links.push({
+          _id: entity._id,
+          ordinal: ordinal,
+          name: this.getValue(entity.name),
+          query: this.queryObj(this.getValue(entity.query))
+        })
+      })
+
+      this.menu = Object.values(menu)
+
+      this.menu.forEach(m => {
+        m.ordinal = m.ordinal / m.links.length
+        m.links.sort(sorter)
+      })
+      this.menu.sort(sorter)
+
+      this.menu[0].active = true
     },
     queryObj (q) {
       if (!q) { return {} }

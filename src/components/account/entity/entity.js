@@ -73,7 +73,7 @@ export default {
     }
   },
   methods: {
-    getEntity () {
+    async getEntity () {
       if (!this._id) {
         this.entity = null
         return
@@ -86,14 +86,11 @@ export default {
       this.entity = null
       this.image = null
 
-      this.axios.get(`/entity/${this._id}`).then(response => {
-        this.error = null
-        this.entity = response.data
-      }).catch(err => {
-        this.error = err
+      const entityResponse = await this.axios.get(`/entity/${this._id}`)
+      this.entity = entityResponse.data
       })
     },
-    getChilds () {
+    async getChilds () {
       if (!this._id) {
         this.entity = null
         return
@@ -109,26 +106,24 @@ export default {
         limit: 1000
       }
 
-      this.axios.get(`/entity`, { params: query }).then(response => {
-        if (!response.data || !response.data.entities) { return }
+      const childsResponse = await this.axios.get(`/entity`, { params: query })
 
-        let childs = []
-        response.data.entities.forEach(entity => {
-          childs.push({
-            _id: entity._id,
-            _thumbnail: entity._thumbnail,
-            _type: this.getValue(entity._type),
-            name: this.getValue(entity.name),
-            to: { name: 'entity', params: { entity: entity._id }, query: this.$route.query }
-          })
+      let childs = []
+      childsResponse.data.entities.forEach(entity => {
+        childs.push({
+          _id: entity._id,
+          _thumbnail: entity._thumbnail,
+          _type: this.getValue(entity._type),
+          name: this.getValue(entity.name),
+          to: { name: 'entity', params: { entity: entity._id }, query: this.$route.query }
         })
-
-        this.childsCount = childs.length
-
-        if (childs.length > 0) {
-          this.childs = _groupBy(childs, '_type')
-        }
       })
+
+      this.childsCount = childs.length
+
+      if (childs.length > 0) {
+        this.childs = _groupBy(childs, '_type')
+      }
     },
     filterByLanguage (v) {
       return !v.language || v.language === this.locale
