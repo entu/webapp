@@ -1,3 +1,5 @@
+'use strict'
+
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -11,7 +13,7 @@ const childProcess = require('child_process')
 const VERSION = childProcess.execSync('git rev-parse HEAD').toString().substring(0, 7)
 
 module.exports = {
-  entry: './src/main.js',
+  entry: ['@babel/polyfill', './src/main.js'],
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: `/`,

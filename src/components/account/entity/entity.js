@@ -1,3 +1,5 @@
+'use strict'
+
 import _get from 'lodash/get'
 import _groupBy from 'lodash/groupBy'
 

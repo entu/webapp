@@ -1,3 +1,5 @@
+'use strict'
+
 import _debounce from 'lodash/debounce'
 import _get from 'lodash/get'
 

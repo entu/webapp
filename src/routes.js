@@ -1,3 +1,5 @@
+'use strict'
+
 import info from './components/info/info.vue'
 import auth from './components/auth/auth.vue'
 import accountMenu from './components/account/menu/menu.vue'
