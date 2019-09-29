@@ -23,7 +23,7 @@
                         h2.col-12
                             | {{ $t('childs') }}
                             span.float-right {{ childsCount }}
-                        template(v-for='childsGroup, group in childs')
+                        template(v-for='(childsGroup, group) in childs')
                             h3.mt-3.col-12
                                 | {{ group }}
                                 span.float-right {{ childsGroup.length }}
