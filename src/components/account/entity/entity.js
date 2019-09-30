@@ -23,7 +23,8 @@ export default {
       error: null,
       entity: null,
       childs: null,
-      childsCount: 0
+      childsCount: 0,
+      editMode: false
     }
   },
   watch: {

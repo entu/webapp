@@ -1,10 +1,11 @@
 .col-12.h-100(v-if='showEntity', :class="{ 'col-sm-8 col-md-6 col-lg-7': showMenu, 'col-sm-8 col-md-8 col-lg-9': !showMenu }")
     .row
-        entity-tools
+        transition(name='fade')
+            entity-tools
     .row.h-100
         transition(name='fade')
             #content.col.h-100(v-if='entity')
-                #parent.row.m-0.mt-3.pb-2(v-if='_parent')
+                #parent.row.m-0.mt-3.pb-2(v-if='_parent && !editMode')
                     .col-auto.p-1
                         i.icon-parent.float-left
                     router-link.col.text-center(v-for='p in _parent', :key='p._id', :to='p.to') {{ p.string }}
@@ -19,7 +20,7 @@
                 //- .row.mt-5
                 //-     pre.col-12 {{ entity }}
                 transition(name='fade')
-                    .row.mt-5(v-if='childs')
+                    .row.mt-5(v-if='childs && !editMode')
                         h2.col-12
                             | {{ $t('childs') }}
                             span.float-right {{ childsCount }}

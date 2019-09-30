@@ -8,6 +8,14 @@ export default {
     },
     entity () {
       return this.$parent.$data.entity
+    },
+    editMode () {
+      return this.$parent.$data.editMode
+    }
+  },
+  methods: {
+    toggleEdit () {
+      this.$parent.$data.editMode = !this.$parent.$data.editMode
     }
   }
 }
