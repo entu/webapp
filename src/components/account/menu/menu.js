@@ -37,19 +37,13 @@ export default {
             'forename.language',
             'surname.string',
             'surname.language',
-            'photo._id'
+            '_thumbnail'
           ].join(',')
         }
       })
 
       this.user.name = [this.getValue(userResponse.data.forename), this.getValue(userResponse.data.forename)].join(' ')
-
-      if (userResponse.data.photo) {
-        const photoResponse = await this.axios.get(`/property/${userResponse.data.photo[0]._id}`)
-
-        this.user.photo = photoResponse.data.url
-        delete this.user.photoId
-      }
+      this.user.photo = userResponse.data._thumbnail
     },
     async getMenu () {
       const sorter = (a, b) => {
