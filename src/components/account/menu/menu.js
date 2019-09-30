@@ -42,8 +42,8 @@ export default {
         }
       })
 
-      this.user.name = [this.getValue(userResponse.data.forename), this.getValue(userResponse.data.forename)].join(' ')
-      this.user.photo = userResponse.data._thumbnail
+      this.user.name = [this.getValue(userResponse.data.entity.forename), this.getValue(userResponse.data.entity.forename)].join(' ')
+      this.user.photo = userResponse.data.entity._thumbnail
     },
     async getMenu () {
       const sorter = (a, b) => {

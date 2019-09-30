@@ -90,7 +90,7 @@ export default {
       this.image = null
 
       const entityResponse = await this.axios.get(`/entity/${this._id}`)
-      this.entity = entityResponse.data
+      this.entity = entityResponse.data.entity
       })
     },
     async getChilds () {
