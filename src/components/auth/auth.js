@@ -119,7 +119,7 @@ export default {
     logOut () {
       this.setAccounts()
       this.authenticating = false
-      this.$router.push({ name: 'auth' })
+      window.location.reload()
     }
   }
 }
