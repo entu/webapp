@@ -91,7 +91,6 @@ export default {
 
       const entityResponse = await this.axios.get(`/entity/${this._id}`)
       this.entity = entityResponse.data.entity
-      })
     },
     async getChilds () {
       if (!this._id) {
