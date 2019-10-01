@@ -99,6 +99,16 @@
     },
     {
       "paths": [
+        "M756.023 860.428l-348.428-348.428 348.428-348.428c25.739-25.739 25.739-67.408 0-93.082s-67.408-25.739-93.082 0l-394.967 394.967c-25.739 25.739-25.739 67.408 0 93.082l394.967 394.967c25.739 25.739 67.408 25.739 93.082 0s25.739-67.408 0-93.082z"
+      ],
+      "tags": [
+        "left"
+      ],
+      "grid": 20,
+      "defaultCode": 59669
+    },
+    {
+      "paths": [
         "M361.057 953.508l394.967-394.967c25.739-25.739 25.739-67.408 0-93.081l-394.967-394.967c-25.739-25.739-67.408-25.739-93.081 0s-25.739 67.408 0 93.081l348.428 348.428-348.428 348.428c-25.739 25.739-25.739 67.408 0 93.081s67.408 25.739 93.081 0z"
       ],
       "tags": [
@@ -221,7 +231,7 @@
   "height": 1024,
   "metadata": {
     "name": "icomoon",
-    "iconsHash": 2069037281
+    "iconsHash": 1539033881
   },
   "preferences": {
     "showGlyphs": true,
@@ -272,107 +282,112 @@
   },
   "selection": [
     {
-      "order": 69,
+      "order": 93,
       "name": "apple",
       "prevSize": 32
     },
     {
-      "order": 70,
+      "order": 94,
       "name": "google",
       "prevSize": 32
     },
     {
-      "order": 71,
+      "order": 95,
       "name": "bank",
       "prevSize": 32
     },
     {
-      "order": 72,
+      "order": 96,
       "name": "mid",
       "prevSize": 32
     },
     {
-      "order": 73,
+      "order": 97,
       "name": "idc",
       "prevSize": 32
     },
     {
-      "order": 74,
+      "order": 98,
       "prevSize": 32,
       "name": "database"
     },
     {
-      "order": 75,
+      "order": 99,
       "name": "login",
       "prevSize": 32
     },
     {
-      "order": 76,
+      "order": 100,
       "name": "logout",
       "prevSize": 32
     },
     {
-      "order": 77,
+      "order": 101,
       "name": "menu",
       "prevSize": 32
     },
     {
-      "order": 78,
+      "order": 102,
+      "prevSize": 32,
+      "name": "left"
+    },
+    {
+      "order": 103,
       "name": "right",
       "prevSize": 32
     },
     {
-      "order": 79,
+      "order": 104,
       "name": "down",
       "prevSize": 32
     },
     {
-      "order": 80,
+      "order": 105,
       "prevSize": 32,
       "name": "parent"
     },
     {
-      "order": 81,
+      "order": 106,
       "prevSize": 32,
       "name": "close"
     },
     {
-      "order": 82,
+      "order": 107,
       "name": "search",
       "prevSize": 32
     },
     {
-      "order": 83,
+      "order": 108,
       "prevSize": 32,
       "name": "command"
     },
     {
-      "order": 84,
+      "order": 109,
       "prevSize": 32,
       "name": "add"
     },
     {
-      "order": 85,
+      "order": 110,
       "prevSize": 32,
       "name": "duplicate"
     },
     {
-      "order": 86,
+      "order": 111,
       "prevSize": 32,
       "name": "edit"
     },
     {
-      "order": 87,
+      "order": 112,
       "prevSize": 32,
       "name": "share"
     },
     {
-      "order": 88,
+      "order": 113,
       "prevSize": 32,
       "name": "delete"
     },
     {
-      "order": 89,
+      "order": 114,
       "prevSize": 32,
       "name": "unlock"
     }
