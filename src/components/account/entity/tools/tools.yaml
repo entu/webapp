@@ -2,6 +2,7 @@ en:
     command: Command
     add: Add
     edit: Edit
+    editTitle: Edit object "{name}"
     duplicate: Duplicate
     parent: Edit parents
     unlock: Edit rights
@@ -11,6 +12,7 @@ et:
     command: Rakendus
     add: Lisa
     edit: Muuda
+    editTitle: Muuda objekti "{name}"
     duplicate: Dubleeri
     parent: Muuda kuuluvust
     unlock: Muuda õiguseid

@@ -3,24 +3,26 @@
         transition(name='fade')
             entity-tools
     .row.h-100
-        transition(name='fade')
-            #content.col.h-100(v-if='entity')
-                #parent.row.m-0.mt-3.pb-2(v-if='_parent && !editMode')
-                    .col-auto.p-1
-                        i.icon-parent.float-left
-                    router-link.col.text-center(v-for='p in _parent', :key='p._id', :to='p.to') {{ p.string }}
-                    .col-auto.p-1
-                        i.icon-parent.float-right
-                .row.mt-4
-                    div(:class="{ 'col-10': _thumbnail,  'col-12': !_thumbnail }")
-                        h1.mb-4 {{ name || error }}
-                        entity-property(v-for='(values, key, index) in entityView', :key='key', :property='key', :values='values')
-                    .col-2(v-if='_thumbnail')
-                        img.col.p-0.img-thumbnail(:src='_thumbnail', :alt='name')
-                //- .row.mt-5
-                //-     pre.col-12 {{ entity }}
-                transition(name='fade')
-                    .row.mt-5(v-if='childs && !editMode')
+        #content.col.h-100
+            transition(name='fade', mode='out-in', :duration=100)
+                div(v-if='entity && !editMode', key='view')
+                    #parent.row.m-0.mt-3.pb-2(v-if='_parent')
+                        .col-auto.p-1
+                            i.icon-parent.float-left
+                        router-link.col.text-center(v-for='p in _parent', :key='p._id', :to='p.to') {{ p.string }}
+                        .col-auto.p-1
+                            i.icon-parent.float-right
+
+                    .row.mt-4
+                        div(:class="{ 'col-10': _thumbnail,  'col-12': !_thumbnail }")
+                            h1.mb-4(v-if='!editMode') {{ name || error }}
+
+                            entity-property(v-for='p in properties', :key='p.key', :property='p')
+
+                        .col-2(v-if='_thumbnail')
+                            img.col.p-0.img-thumbnail(:src='_thumbnail', :alt='name')
+
+                    .row.mt-5(v-if='childs')
                         h2.col-12
                             | {{ $t('childs') }}
                             span.float-right {{ childsCount }}
@@ -36,3 +38,7 @@
                                                 router-link(:to='c.to')
                                                     img.rounded-circle.align-self-center.mr-2(v-if='c._thumbnail', :src='c._thumbnail', :alt='c.name')
                                                     | {{ c.name || c._id }}
+
+                .row.mt-4.mb-3(v-if='entity && editMode', key='edit')
+                    .col-12
+                        entity-property(v-for='p in properties', :key='p.key', :property='p')

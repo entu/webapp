@@ -2,6 +2,7 @@
 
 import _get from 'lodash/get'
 import _groupBy from 'lodash/groupBy'
+import _isNumber from 'lodash/isNumber'
 
 import entityTools from './tools/tools.vue'
 import entityProperty from './property/property.vue'
@@ -22,6 +23,7 @@ export default {
     return {
       error: null,
       entity: null,
+      properties: [],
       childs: null,
       childsCount: 0,
       editMode: false
@@ -50,23 +52,6 @@ export default {
 
       return this.getValue(this.entity.name)
     },
-    entityView () {
-      let result = {}
-
-      for (let property in this.entity) {
-        if (!this.entity.hasOwnProperty(property)) { continue }
-        if (property.startsWith('_')) { continue }
-        if (property === 'name') { continue }
-
-        if (Array.isArray(this.entity[property])) {
-          result[property] = this.entity[property].filter(this.filterByLanguage).map(this.parseValue)
-        } else {
-          result[property] = [this.entity[property]]
-        }
-      }
-
-      return result
-    },
     _parent () {
       if (this.entity && this.entity._parent) {
         return this.entity._parent.map(p => {
@@ -90,7 +75,92 @@ export default {
       this.image = null
 
       const entityResponse = await this.axios.get(`/entity/${this._id}`)
-      this.entity = entityResponse.data.entity
+      const entity = entityResponse.data.entity
+
+      const definitionResponse = await this.axios.get('/entity', {
+        params: {
+          '_type.string': 'entity',
+          'key.string': _get(entity, '_type.0.string'),
+          props: '_id',
+          limit: 1
+        }
+      })
+      const definition = definitionResponse.data.entities[0]
+
+      let properties = []
+      if (definition) {
+        const propertiesResponse = await this.axios.get('/entity', {
+          params: {
+            '_type.string': 'property',
+            '_parent.reference': definition._id,
+            props: [
+              'key.string',
+              'name.string',
+              'ordinal.integer',
+              'type.string',
+              'public.boolean'
+            ].join(',')
+          }
+        })
+
+        properties = propertiesResponse.data.entities.map(x => {
+          const p = {
+            key: _get(x, 'key.0.string', null),
+            name: _get(x, 'name.0.string', null),
+            ordinal: _get(x, 'ordinal.0.integer', 0),
+            type: _get(x, 'type.0.string', null)
+          }
+
+          if (_get(x, 'public.0.boolean')) {
+            p.public = _get(x, 'public.0.boolean')
+          }
+
+          if (_get(x, 'key.0.string') && _get(entity, _get(x, 'key.0.string'), []).length > 0) {
+            p.values = _get(entity, _get(x, 'key.0.string', null))
+          }
+
+          return p
+        })
+      }
+
+      for (var key in entity) {
+        if (!entity.hasOwnProperty(key)) { continue }
+
+        if (!properties.find(x => x.key === key) && Array.isArray(entity[key])) {
+          const firstValue = _get(entity, [key, 0], {})
+          const newProperty = {
+            key: key,
+            values: []
+          }
+
+          newProperty.type = this.getType(firstValue)
+
+          entity[key].forEach(v => {
+            newProperty.values.push(v)
+          })
+
+          properties.push(newProperty)
+        }
+      }
+
+      properties.sort((a, b) => {
+        if (_isNumber(a.ordinal) && _isNumber(b.ordinal) && a.ordinal < b.ordinal) { return -1 }
+        if (_isNumber(a.ordinal) && _isNumber(b.ordinal) && a.ordinal > b.ordinal) { return 1 }
+
+        if (_isNumber(a.ordinal) && !_isNumber(b.ordinal)) { return -1 }
+        if (!_isNumber(a.ordinal) && _isNumber(b.ordinal)) { return 1 }
+
+        if (!a.key.startsWith('_') && b.key.startsWith('_')) { return -1 }
+        if (a.key.startsWith('_') && !b.key.startsWith('_')) { return 1 }
+
+        if (!a.key || a.key < b.key) { return -1 }
+        if (!b.key || a.key > b.key) { return 1 }
+
+        return 0
+      })
+
+      this.entity = entity
+      this.properties = properties
     },
     async getChilds () {
       if (!this._id) {
@@ -127,41 +197,34 @@ export default {
         this.childs = _groupBy(childs, '_type')
       }
     },
-    filterByLanguage (v) {
-      return !v.language || v.language === this.locale
-    },
-    parseValue (v) {
-      if (v.hasOwnProperty('date')) {
-        return { string: (new Date(v.date.substr(0, 10))).toLocaleDateString(this.locale) }
+    getType (value) {
+      if (value.hasOwnProperty('date')) {
+        return 'date'
       }
-      if (v.hasOwnProperty('datetime')) {
-        return { string: (new Date(v.datetime)).toLocaleString(this.locale) }
+      if (value.hasOwnProperty('datetime') && value.hasOwnProperty('reference')) {
+        return 'atby'
       }
-      if (v.hasOwnProperty('integer')) {
-        return { string: v.integer.toLocaleString(this.locale, { minimumFractionDigits: 0 }) }
+      if (value.hasOwnProperty('datetime')) {
+        return 'datetime'
       }
-      if (v.hasOwnProperty('decimal')) {
-        return { string: v.decimal.toLocaleString(this.locale, { minimumFractionDigits: 2 }) }
+      if (value.hasOwnProperty('integer')) {
+        return 'integer'
       }
-      if (v.hasOwnProperty('reference')) {
-        return { string: v.string || v.reference, to: { name: 'entity', params: { entity: v.reference }, query: this.$route.query } }
+      if (value.hasOwnProperty('decimal')) {
+        return 'decimal'
       }
-      if (v.hasOwnProperty('filename') && this.customHost) {
-        return { string: v.filename, file: `/file/${v._id}`, size: this.getReadableFileSize(v.size) }
+      if (value.hasOwnProperty('reference')) {
+        return 'reference'
       }
-      if (v.hasOwnProperty('filename') && !this.customHost) {
-        return { string: v.filename, file: `/${this.account}/file/${v._id}`, size: this.getReadableFileSize(v.size) }
+      if (value.hasOwnProperty('filename')) {
+        return 'file'
       }
-      if (v.hasOwnProperty('boolean')) {
-        return { string: v.boolean ? this.$t('true') : this.$t('false') }
+      if (value.hasOwnProperty('boolean')) {
+        return 'boolean'
       }
-      if (v.hasOwnProperty('string')) {
-        return { string: v.string }
+      if (value.hasOwnProperty('string')) {
+        return 'string'
       }
-
-      delete v._id
-
-      return v
     }
   }
 }

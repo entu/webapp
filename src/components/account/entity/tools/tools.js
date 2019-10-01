@@ -9,6 +9,9 @@ export default {
     entity () {
       return this.$parent.$data.entity
     },
+    name () {
+      return this.$parent.name
+    },
     editMode () {
       return this.$parent.$data.editMode
     }
