@@ -42,4 +42,4 @@
 
                 .row.mt-4.mb-3(v-if='entity && edit', key='edit')
                     .col-12
-                        entity-property(v-for='p in properties', :key='p.key', :property='p')
+                        entity-property(v-for='p in properties', :key='p.key', :property='p', :edit='edit')
