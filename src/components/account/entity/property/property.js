@@ -3,14 +3,12 @@
 export default {
   name: 'EntityProperty',
   props: [
-    'property'
+    'property',
+    'edit'
   ],
   computed: {
-    editMode () {
-      return this.$parent.editMode
-    },
     values () {
-      if (this.editMode && !this.property.values) { return [{ string : '' }] }
+      if (!this.property.values && this.edit) { return [{ string : '' }] }
       if (!this.property.values) { return }
 
       return this.property.values.filter(v => !v.language || v.language === this.locale).map(v => {

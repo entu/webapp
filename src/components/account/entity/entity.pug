@@ -1,11 +1,12 @@
 .col-12.h-100(v-if='showEntity', :class="{ 'col-sm-8 col-md-6 col-lg-7': showMenu, 'col-sm-8 col-md-8 col-lg-9': !showMenu }")
     .row
         transition(name='fade')
-            entity-tools
+            entity-tools(:entity='entity', :name='name', :edit='edit', :right='right')
+
     .row.h-100
         #content.col.h-100
             transition(name='fade', mode='out-in', :duration=100)
-                div(v-if='entity && !editMode', key='view')
+                div(v-if='entity && !edit', key='view')
                     #parent.row.m-0.mt-3.pb-2(v-if='_parent')
                         .col-auto.p-1
                             i.icon-parent.float-left
@@ -15,9 +16,9 @@
 
                     .row.mt-4
                         div(:class="{ 'col-10': _thumbnail,  'col-12': !_thumbnail }")
-                            h1.mb-4(v-if='!editMode') {{ name || error }}
+                            h1.mb-4(v-if='!edit') {{ name || error }}
 
-                            entity-property(v-for='p in properties', :key='p.key', :property='p')
+                            entity-property(v-for='p in properties', :key='p.key', :property='p', :edit='edit')
 
                         .col-2(v-if='_thumbnail')
                             img.col.p-0.img-thumbnail(:src='_thumbnail', :alt='name')
@@ -39,6 +40,6 @@
                                                     img.rounded-circle.align-self-center.mr-2(v-if='c._thumbnail', :src='c._thumbnail', :alt='c.name')
                                                     | {{ c.name || c._id }}
 
-                .row.mt-4.mb-3(v-if='entity && editMode', key='edit')
+                .row.mt-4.mb-3(v-if='entity && edit', key='edit')
                     .col-12
                         entity-property(v-for='p in properties', :key='p.key', :property='p')

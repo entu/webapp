@@ -26,7 +26,7 @@ export default {
       properties: [],
       childs: null,
       childsCount: 0,
-      editMode: false
+      edit: false
     }
   },
   watch: {

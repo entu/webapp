@@ -1,14 +1,14 @@
-.row.mb-2(v-if="property.key !== 'name' && !editMode && values || editMode")
+.row.mb-2(v-if="property.key !== 'name' && !edit && values || edit")
     strong.col-12.col-md-4.col-xl-3.text-md-right {{ property.name || property.key }}
     .col-12.col-md-8.col-xl-9
         .property(v-for='i in values')
-            template(v-if='!editMode')
+            template(v-if='!edit')
                 p.mb-1(v-if="['reference', 'file', 'atby'].includes(property.type)")
                     router-link(:to='i.to', :target='i.target') {{ i.string }}
                     span {{ i.info }}
                 p.mb-1(v-else-if='i.string') {{ i.string }}
                 p.mb-1(v-else) {{ i }}
-            template(v-if='editMode')
+            template(v-if='edit')
                 input.form-contro1l.col-12.col-md-12.col-xl-8(:value='i.string')
         //- small
         //-     pre {{ property }}
