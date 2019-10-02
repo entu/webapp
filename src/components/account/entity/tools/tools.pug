@@ -5,31 +5,31 @@ nav.navbar.navbar-expand.col.p-0
         transition(name='fade', :duration=200)
             .loader.m-3(v-if='openRequests')
 
-        ul.navbar-nav.mr-2.ml-auto(v-if='entity && !editMode')
-            li.nav-item
-                button.nav-link.p-3(:title="$t('command')")
-                    i.icon-command
-            li.nav-item
-                button.nav-link.p-3(:title="$t('add')")
-                    i.icon-add
-            li.nav-item
+        ul.navbar-nav.mr-2.ml-auto(v-if='entity && !edit')
+            //- li.nav-item
+            //-     button.nav-link.p-3(:title="$t('command')")
+            //-         i.icon-command
+            //- li.nav-item
+            //-     button.nav-link.p-3(:title="$t('add')")
+            //-         i.icon-add
+            li.nav-item(v-if="['owner', 'editor'].includes(right)")
                 button.nav-link.p-3(@click='toggleEdit()', :title="$t('edit')")
                     i.icon-edit
-            li.nav-item
-                button.nav-link.p-3(:title="$t('duplicate')")
-                    i.icon-duplicate
-            li.nav-item
-                button.nav-link.p-3(:title="$t('parent')")
-                    i.icon-parent
-            li.nav-item
+            //- li.nav-item
+            //-     button.nav-link.p-3(:title="$t('duplicate')")
+            //-         i.icon-duplicate
+            //- li.nav-item
+            //-     button.nav-link.p-3(:title="$t('parent')")
+            //-         i.icon-parent
+            li.nav-item(v-if="['owner'].includes(right)")
                 button.nav-link.p-3(:title="$t('unlock')")
                     i.icon-unlock
-            li.nav-item
-                button.nav-link.p-3(:title="$t('share')")
-                    i.icon-share
+            //- li.nav-item
+            //-     button.nav-link.p-3(:title="$t('share')")
+            //-         i.icon-share
 
-        h2.mb-0.ml-2(v-if='entity && editMode') {{ $t('editTitle', { name: name }) }}
-        ul.navbar-nav.mr-2.ml-auto(v-if='entity && editMode')
+        h2.mb-0.ml-2(v-if='entity && edit') {{ $t('editTitle', { name: name }) }}
+        ul.navbar-nav.mr-2.ml-auto(v-if='entity && edit')
             li.nav-item
                 button.nav-link.p-3(@click='toggleEdit()', :title="$t('close')")
                     i.icon-close

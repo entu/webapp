@@ -58,7 +58,13 @@ export default {
           return { _id: p.reference, string: p.string, to: { name: 'entity', params: { entity: p.reference }, query: this.$route.query } }
         })
       }
-    }
+    },
+    right () {
+      if (_get(this.entity, '_owner', []).find(x => x.reference === this.userId)) { return 'owner' }
+      if (_get(this.entity, '_editor', []).find(x => x.reference === this.userId)) { return 'editor' }
+      if (_get(this.entity, '_expander', []).find(x => x.reference === this.userId)) { return 'expander' }
+      if (_get(this.entity, '_viewer', []).find(x => x.reference === this.userId)) { return 'viewer' }
+    },
   },
   methods: {
     async getEntity () {
@@ -161,6 +167,10 @@ export default {
 
       this.entity = entity
       this.properties = properties
+
+      if (!['owner', 'editor'].includes(this.right)) {
+        this.edit = false
+      }
     },
     async getChilds () {
       if (!this._id) {
