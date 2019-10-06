@@ -1,14 +1,16 @@
 'use strict'
 
 const path = require('path')
+const childProcess = require('child_process')
+
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const LicenseWebpackPlugin = require('license-webpack-plugin').LicenseWebpackPlugin
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-const childProcess = require('child_process')
 
 const VERSION = childProcess.execSync('git rev-parse HEAD').toString().substring(0, 7)
 
@@ -92,6 +94,22 @@ module.exports = {
       includePackagesWithoutLicense: true,
       additionalPackages: ['bootstrap'],
       outputFilename: `${VERSION}/licenses.txt`
+    }),
+    new FaviconsWebpackPlugin({
+      logo: './src/assets/logo.png',
+      outputPath: `${VERSION}`,
+      favicons: {
+        icons: {
+          android: false,
+          appleIcon: true,
+          appleStartup: false,
+          coast: false,
+          favicons: true,
+          firefox: false,
+          windows: false,
+          yandex: false
+        }
+      }
     })
   ],
   module: {
