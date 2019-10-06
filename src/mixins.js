@@ -86,7 +86,7 @@ export default {
         }
 
         const endTime = new Date()
-        const s = (endTime.getTime() - response.config.startTime.getTime()) / 1000
+        const s = (endTime.getTime() - error.response.config.startTime.getTime()) / 1000
         console.log(`${s.toFixed(3)} ${error.request.responseURL} (${error.response.status}) ${result}`);
 
         return Promise.reject(result)
