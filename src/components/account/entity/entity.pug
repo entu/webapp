@@ -18,7 +18,7 @@
                         div(:class="{ 'col-10': _thumbnail,  'col-12': !_thumbnail }")
                             h1.mb-4(v-if='!edit') {{ name || error }}
 
-                            entity-property(v-for='p in properties', :key='p.key', :property='p', :edit='edit')
+                            entity-property(v-for='p in properties', :key='p.key', :entity='entity', :property='p', :edit='edit')
 
                         .col-2(v-if='_thumbnail')
                             img.col.p-0.img-thumbnail(:src='_thumbnail', :alt='name')
@@ -42,4 +42,4 @@
 
                 .row.mt-4.mb-3(v-if='entity && edit', key='edit')
                     .col-12
-                        entity-property(v-for='p in properties', :key='p.key', :property='p', :edit='edit')
+                        entity-property(v-for='p in properties', :key='p.key', :entity='entity', :property='p', :edit='edit')

@@ -104,7 +104,12 @@ export default {
               'name.string',
               'ordinal.integer',
               'type.string',
-              'public.boolean'
+              'public.boolean',
+              'readonly.boolean',
+              'multilingual.boolean',
+              'list.boolean',
+              'mandatory.boolean',
+              'classifier.reference'
             ].join(',')
           }
         })
@@ -114,15 +119,19 @@ export default {
             key: _get(x, 'key.0.string', null),
             name: _get(x, 'name.0.string', null),
             ordinal: _get(x, 'ordinal.0.integer', 0),
-            type: _get(x, 'type.0.string', null)
-          }
-
-          if (_get(x, 'public.0.boolean')) {
-            p.public = _get(x, 'public.0.boolean')
+            type: _get(x, 'type.0.string', false),
+            public: _get(x, 'public.0.boolean', false),
+            readonly: _get(x, 'readonly.0.boolean', false),
+            multilingual: _get(x, 'multilingual.0.boolean', false),
+            list: _get(x, 'list.0.boolean', false),
+            mandatory: _get(x, 'mandatory.0.boolean', false),
+            classifier: _get(x, 'classifier', []).map(x => x.reference),
           }
 
           if (_get(x, 'key.0.string') && _get(entity, _get(x, 'key.0.string'), []).length > 0) {
-            p.values = _get(entity, _get(x, 'key.0.string', null))
+            p.values = _get(entity, _get(x, 'key.0.string', null), []).map(x => {
+              return { ...x, type: p.type }
+            })
           }
 
           return p
@@ -133,16 +142,13 @@ export default {
         if (!entity.hasOwnProperty(key)) { continue }
 
         if (!properties.find(x => x.key === key) && Array.isArray(entity[key])) {
-          const firstValue = _get(entity, [key, 0], {})
           const newProperty = {
             key: key,
             values: []
           }
 
-          newProperty.type = this.getType(firstValue)
-
           entity[key].forEach(v => {
-            newProperty.values.push(v)
+            newProperty.values.push({ ...v, type: this.getType(v) })
           })
 
           properties.push(newProperty)
