@@ -21,11 +21,11 @@ export default {
           icon: 'icon-bank',
           click: this.authLHV
         },
-        {
-          name: 'Mobiil-ID',
-          icon: 'icon-mid',
-          click: this.authMid
-        }
+        // {
+        //   name: 'Mobiil-ID',
+        //   icon: 'icon-mid',
+        //   click: this.authMid
+        // }
       ]
     }
   },
