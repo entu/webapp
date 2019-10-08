@@ -126,6 +126,7 @@ export default {
             list: _get(x, 'list.0.boolean', false),
             mandatory: _get(x, 'mandatory.0.boolean', false),
             classifier: _get(x, 'classifier', []).map(x => x.reference),
+            values: []
           }
 
           if (_get(x, 'key.0.string') && _get(entity, _get(x, 'key.0.string'), []).length > 0) {

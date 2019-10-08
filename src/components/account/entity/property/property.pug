@@ -8,7 +8,5 @@
                     span {{ i.info }}
                 p.mb-1(v-else-if='i.string') {{ i.string }}
             template(v-else)
-                input.col-12.col-md-12.col-xl-8.mt-1(v-if='i.control === "input"', :value='i.string', @blur='save({ new: $event.target.value, ...i } )')
-                p.mt-2(v-else-if='i.string') {{ i.string }}
-        //- small.mt-2
-        //-     pre {{ property }}
+                input.col-12.col-md-12.col-xl-8.mt-1(v-if='i.control === "input"', :value='i.string', @keydown='change', @blur='save(i, $event.target.value)')
+                p.mt-2.mb-0(v-else-if='i.string') {{ i.string }}

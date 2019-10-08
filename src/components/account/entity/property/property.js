@@ -19,7 +19,7 @@ export default {
       return true
     },
     values () {
-      let values = _get(this, 'property.values', []).filter(v => !v.language || v.language === this.locale).map(v => {
+      const values = this.property.values.filter(v => !v.deleted && (!v.language || v.language === this.locale)).map(v => {
         if (v.formula) {
           return {
             _id: v._id,
@@ -127,34 +127,62 @@ export default {
         }
       })
 
-      if (this.edit && (this.property.list === true || values.length === 0) && ['date', 'datetime', 'integer', 'decimal', 'string', 'text'].includes(this.property.type)) {
-        values.push({
-          control: 'input',
-          string : ''
-        })
-      }
+      if (!this.edit) { return values }
+      if (!this.property.list && values.length > 0) { return values }
+
+      values.push({
+        control: 'input',
+        string : ''
+      })
 
       return values
     }
   },
   methods: {
-    async save (value) {
+    async save (value, newValue) {
       if (this.property.type !== 'string') { return }
-      if (value.string === value.new) { return }
+      if (value.string === newValue) { return }
+
+      const idx = this.property.values.findIndex(x => x._id === value._id)
 
       if (value._id) {
         const deleteResponse = await this.axios.delete(`/property/${value._id}`)
       }
 
-      if (value.new !== '') {
-        const addResponse = await this.axios.post(`/entity/${this.entity._id}`, [{
-          type: this.property.key,
-          string: value.new
-        }])
-
-        console.log(addResponse.data);
+      if (value._id && newValue === '') {
+        this.property.values[idx]._id = null
+        this.property.values[idx].string = ''
       }
 
+      if (newValue === '') { return }
+
+      const addResponse = await this.axios.post(`/entity/${this.entity._id}`, [{
+        type: this.property.key,
+        string: newValue
+      }])
+
+      const newId = _get(addResponse, 'data.properties.0._id')
+
+      if (idx > -1) {
+        this.property.values[idx]._id = newId
+        this.property.values[idx].string = newValue
+      } else {
+        this.property.values.push({
+          _id: newId,
+          string: newValue,
+          control: 'input'
+        })
+      }
+    },
+    change () {
+      if (!this.edit) { return }
+      if (!this.property.list) { return }
+      if (this.property.values.filter(x => !x._id).length > 0) { return }
+
+      this.property.values.push({
+        control: 'input',
+        string : ''
+      })
     }
   }
 }
