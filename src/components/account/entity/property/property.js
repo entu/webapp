@@ -30,35 +30,35 @@ export default {
           case 'date':
             return {
               _id: v._id,
-              // control: 'input',
+              control: 'input',
               string: (new Date(v.date.substr(0, 10))).toLocaleDateString(this.locale)
             }
             break
           case 'datetime':
             return {
               _id: v._id,
-              // control: 'input',
+              control: 'input',
               string: (new Date(v.datetime)).toLocaleString(this.locale)
             }
             break
           case 'integer':
             return {
               _id: v._id,
-              // control: 'input',
+              control: 'input',
               string: v.integer.toLocaleString(this.locale, { minimumFractionDigits: 0 })
             }
             break
           case 'decimal':
             return {
               _id: v._id,
-              // control: 'input',
+              control: 'input',
               string: v.decimal.toLocaleString(this.locale, { minimumFractionDigits: 2 })
             }
             break
           case 'reference':
             return {
               _id: v._id,
-              // control: 'reference',
+              control: 'reference',
               string: v.string || v.reference,
               to: {
                 name: 'entity',
@@ -72,7 +72,7 @@ export default {
           case 'atby':
             return {
               _id: v._id,
-              // control: 'atby',
+              control: 'atby',
               string: v.string || v.reference,
               to: {
                 name: 'entity',
@@ -87,7 +87,7 @@ export default {
           case 'file':
             return {
               _id: v._id,
-              // control: 'file',
+              control: 'file',
               string: v.filename,
               to: {
                 name: 'file',
@@ -103,7 +103,7 @@ export default {
           case 'boolean':
             return {
               _id: v._id,
-              // control: 'boolean',
+              control: 'boolean',
               string: v.boolean ? this.$t('true') : this.$t('false')
             }
             break
@@ -117,7 +117,7 @@ export default {
           case 'text':
             return {
               _id: v._id,
-              // control: 'text',
+              control: 'text',
               string: v.string
             }
             break
@@ -130,20 +130,24 @@ export default {
       if (!this.edit) { return values }
       if (!this.property.list && values.length > 0) { return values }
 
-      values.push({
-        control: 'input',
-        string : ''
-      })
+      if (['date', 'datetime', 'integer', 'decimal', 'string', 'text'].includes(this.property.type)) {
+        values.push({
+          control: 'input',
+          string : ''
+        })
+      }
 
       return values
     }
   },
   methods: {
     async save (value, newValue) {
-      if (this.property.type !== 'string') { return }
       if (value.string === newValue) { return }
 
       const idx = this.property.values.findIndex(x => x._id === value._id)
+      const newProperty = {
+        type: this.property.key
+      }
 
       if (value._id) {
         const deleteResponse = await this.axios.delete(`/property/${value._id}`)
@@ -154,24 +158,53 @@ export default {
         this.property.values[idx].string = ''
       }
 
-      if (newValue === '') { return }
+      switch (this.property.type) {
+        case 'string':
+          newValue = newValue.trim()
+          if (newValue === '') { return }
+          newProperty.string = newValue.trim()
+          break
+        case 'integer':
+          newValue = newValue.replace(/\s/g, '')
+          newValue = parseInt(newValue, 10)
+          if (!newValue && newValue !== 0) { return }
+          newProperty.integer = newValue
+          break
+        case 'decimal':
+          newValue = newValue.replace(/\s/g, '').replace(',', '.')
+          newValue = parseFloat(newValue)
+          if (!newValue && newValue !== 0) { return }
+          newProperty.decimal = newValue
+          break
+        default:
+          return
+      }
 
-      const addResponse = await this.axios.post(`/entity/${this.entity._id}`, [{
-        type: this.property.key,
-        string: newValue
-      }])
-
+      const addResponse = await this.axios.post(`/entity/${this.entity._id}`, [newProperty])
       const newId = _get(addResponse, 'data.properties.0._id')
 
       if (idx > -1) {
         this.property.values[idx]._id = newId
-        this.property.values[idx].string = newValue
       } else {
         this.property.values.push({
           _id: newId,
-          string: newValue,
           control: 'input'
         })
+      }
+
+      const updatedIdx = this.property.values.findIndex(x => x._id === newId)
+      switch (this.property.type) {
+        case 'string':
+          this.property.values[updatedIdx].string = newValue
+          break
+        case 'integer':
+          this.property.values[updatedIdx].string = newValue.toLocaleString(this.locale, { minimumFractionDigits: 0 })
+          this.property.values[updatedIdx].integer = newValue
+          break
+        case 'decimal':
+          this.property.values[updatedIdx].string = newValue.toLocaleString(this.locale, { minimumFractionDigits: 2 })
+          this.property.values[updatedIdx].decimal = newValue
+          break
       }
     },
     change () {
