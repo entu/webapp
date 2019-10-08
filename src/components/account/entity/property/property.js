@@ -130,9 +130,14 @@ export default {
       if (!this.edit) { return values }
       if (!this.property.list && values.length > 0) { return values }
 
-      if (['date', 'datetime', 'integer', 'decimal', 'string', 'text'].includes(this.property.type)) {
+      if (['date', 'datetime', 'integer', 'decimal', 'string'].includes(this.property.type)) {
         values.push({
           control: 'input',
+          string : ''
+        })
+      } else if (this.property.type === 'text') {
+        values.push({
+          control: 'text',
           string : ''
         })
       }
@@ -159,11 +164,6 @@ export default {
       }
 
       switch (this.property.type) {
-        case 'string':
-          newValue = newValue.trim()
-          if (newValue === '') { return }
-          newProperty.string = newValue.trim()
-          break
         case 'integer':
           newValue = newValue.replace(/\s/g, '')
           newValue = parseInt(newValue, 10)
@@ -175,6 +175,16 @@ export default {
           newValue = parseFloat(newValue)
           if (!newValue && newValue !== 0) { return }
           newProperty.decimal = newValue
+          break
+        case 'string':
+          newValue = newValue.trim()
+          if (newValue === '') { return }
+          newProperty.string = newValue
+          break
+        case 'text':
+          newValue = newValue.trim()
+          if (newValue === '') { return }
+          newProperty.string = newValue
           break
         default:
           return
@@ -194,9 +204,6 @@ export default {
 
       const updatedIdx = this.property.values.findIndex(x => x._id === newId)
       switch (this.property.type) {
-        case 'string':
-          this.property.values[updatedIdx].string = newValue
-          break
         case 'integer':
           this.property.values[updatedIdx].string = newValue.toLocaleString(this.locale, { minimumFractionDigits: 0 })
           this.property.values[updatedIdx].integer = newValue
@@ -205,17 +212,38 @@ export default {
           this.property.values[updatedIdx].string = newValue.toLocaleString(this.locale, { minimumFractionDigits: 2 })
           this.property.values[updatedIdx].decimal = newValue
           break
+        case 'string':
+          this.property.values[updatedIdx].string = newValue
+          break
+        case 'text':
+          this.property.values[updatedIdx].string = newValue
+          this.property.values[updatedIdx].control = 'text'
+          break
       }
     },
     change () {
-      if (!this.edit) { return }
       if (!this.property.list) { return }
       if (this.property.values.filter(x => !x._id).length > 0) { return }
 
-      this.property.values.push({
-        control: 'input',
-        string : ''
-      })
+      if (['date', 'datetime', 'integer', 'decimal', 'string'].includes(this.property.type)) {
+        this.property.values.push({
+          control: 'input',
+          string : ''
+        })
+      } else if (this.property.type === 'text') {
+        this.property.values.push({
+          control: 'text',
+          string : ''
+        })
+      }
+    },
+    resizeText (e) {
+      const offset = e.target.offsetHeight - e.target.clientHeight
+
+      e.target.style.height = 'auto'
+      e.target.style.height = e.target.scrollHeight + offset * 2 + 'px'
+
+      e.target.setAttribute('rows', '3');
     }
   }
 }
