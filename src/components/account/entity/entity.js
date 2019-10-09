@@ -152,6 +152,8 @@ export default {
             newProperty.values.push({ ...v, type: this.getType(v) })
           })
 
+          newProperty.type = newProperty.values[0].type
+
           properties.push(newProperty)
         }
       }

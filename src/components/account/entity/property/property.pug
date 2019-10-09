@@ -1,4 +1,4 @@
-.row.my-2(v-if='visible', :class='{ "mb-3": edit }')
+.row.my-1(v-if='visible', :class='{ "mb-3": edit }')
     strong.col-12.col-md-4.col-xl-3.text-md-right(:class='{ "mt-2": edit }') {{ property.name || property.key }}
     .col-12.col-md-8.col-xl-9
         .property(v-for='i in values' v-if='i')
@@ -8,10 +8,8 @@
                     span {{ i.info }}
                 p.mb-1(v-else-if='i.string') {{ i.string }}
             template(v-else)
-                input.col-12.col-md-12.col-xl-8.mt-1(v-if='i.control === "input"', :value='i.string', @keydown='change', @blur='save(i, $event.target.value)')
-                textarea.col-12.col-md-12.col-xl-8.mt-1(v-else-if='i.control === "text"', :value='i.string', @focus='resizeText', @input='resizeText', @keydown='change', @blur='save(i, $event.target.value)', rows=3)
-                p.mt-2.mb-0(v-else-if='i.string') {{ i.string }}
-        //-     small.mt-2
-        //-         pre {{ i }}
-        //- small.mt-2
-        //-     pre {{ property.type }}
+                .mt-1(v-if='i.control === "boolean"')
+                    i.icon-on(v-if='i.boolean', @click='save(i, false)')
+                    i.icon-off(v-if='!i.boolean', @click='save(i, true)')
+                input.col-12.col-md-12.col-xl-8.my-2(v-if='i.control === "input"', :value='i.string', @keydown='change', @blur='save(i, $event.target.value)')
+                textarea.col-12.col-md-12.col-xl-8.my-2(v-else-if='i.control === "text"', :value='i.string', @focus='resizeText', @input='resizeText', @keydown='change', @blur='save(i, $event.target.value)', rows=3)

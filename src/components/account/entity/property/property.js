@@ -104,7 +104,8 @@ export default {
             return {
               _id: v._id,
               control: 'boolean',
-              string: v.boolean ? this.$t('true') : this.$t('false')
+              string: v.boolean ? this.$t('true') : this.$t('false'),
+              boolean: v.boolean
             }
             break
           case 'string':
@@ -130,7 +131,12 @@ export default {
       if (!this.edit) { return values }
       if (!this.property.list && values.length > 0) { return values }
 
-      if (['date', 'datetime', 'integer', 'decimal', 'string'].includes(this.property.type)) {
+      if (this.property.type === 'boolean') {
+        values.push({
+          control: 'boolean',
+          boolean: false
+        })
+      } else if (['date', 'datetime', 'integer', 'decimal', 'string'].includes(this.property.type)) {
         values.push({
           control: 'input',
           string : ''
@@ -176,6 +182,9 @@ export default {
           if (!newValue && newValue !== 0) { return }
           newProperty.decimal = newValue
           break
+        case 'boolean':
+          newProperty.boolean = newValue
+          break
         case 'string':
           newValue = newValue.trim()
           if (newValue === '') { return }
@@ -211,6 +220,10 @@ export default {
         case 'decimal':
           this.property.values[updatedIdx].string = newValue.toLocaleString(this.locale, { minimumFractionDigits: 2 })
           this.property.values[updatedIdx].decimal = newValue
+          break
+        case 'boolean':
+          this.property.values[updatedIdx].string = newValue ? this.$t('true') : this.$t('false')
+          this.property.values[updatedIdx].boolean = newValue
           break
         case 'string':
           this.property.values[updatedIdx].string = newValue
