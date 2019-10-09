@@ -7,7 +7,8 @@ export default {
         name: null,
         photo: null
       },
-      menu: []
+      menu: [],
+      loading: false
     }
   },
   created () {
@@ -46,6 +47,8 @@ export default {
       this.user.photo = userResponse.data.entity._thumbnail
     },
     async getMenu () {
+      this.loading = true
+
       const sorter = (a, b) => {
         if (a.ordinal && b.ordinal && a.ordinal < b.ordinal) { return -1 }
         if (a.ordinal && b.ordinal && a.ordinal > b.ordinal) { return 1 }
@@ -107,7 +110,11 @@ export default {
       })
       this.menu.sort(sorter)
 
-      this.menu[0].active = true
+      if (this.menu[0]) {
+        this.menu[0].active = true
+      }
+
+      this.loading = false
     },
     queryObj (q) {
       if (!q) { return {} }

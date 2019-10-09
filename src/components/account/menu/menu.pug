@@ -22,7 +22,7 @@ transition(name='slide')
                     ul.list-unstyled(v-show='mg.active', style='display:block')
                         li(v-for='l in mg.links', :key='l._id')
                             router-link(:to="{ name: 'list', params: { entity: entity }, query: l.query }", @click.native="hideMenu()", exact) {{ l.name }}
-        .col.align-self-start.mt-5.text-center(v-if='menu.length === 0')
+        .col.align-self-start.mt-5.text-center(v-if='loading && menu.length === 0')
             .loader
         #menu-language.col-lg-2.pb-1.text-right
             a(href='', v-for='l in selectableLocales', @click.prevent='setLocale(l)') {{ l.toUpperCase() }}
