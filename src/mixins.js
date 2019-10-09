@@ -63,7 +63,7 @@ export default {
       a.interceptors.response.use(response => {
         const endTime = new Date()
         const s = (endTime.getTime() - response.config.startTime.getTime()) / 1000
-        console.log(`${s.toFixed(3)} ${response.request.responseURL}`);
+        console.log(`${s.toFixed(3)} ${response.config.method.toUpperCase()} ${response.request.responseURL}`);
 
         this.$root.$data.openRequests -= 1
 
@@ -87,7 +87,7 @@ export default {
 
         const endTime = new Date()
         const s = (endTime.getTime() - error.response.config.startTime.getTime()) / 1000
-        console.log(`${s.toFixed(3)} ${error.request.responseURL} (${error.response.status}) ${result}`);
+        console.log(`${s.toFixed(3)} ${response.config.method.toUpperCase()} ${error.request.responseURL} (${error.response.status}) ${result}`);
 
         return Promise.reject(result)
       })
