@@ -18,7 +18,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     publicPath: `/`,
-    filename: `${VERSION}/[name].js`
+    filename: `${VERSION}/scripts/[name].js`
   },
   optimization: {
     minimize: true,
@@ -83,12 +83,13 @@ module.exports = {
       }
     }),
     new MiniCssExtractPlugin({
-      filename: `${VERSION}/[name].css`
+      filename: `${VERSION}/styles/[name].css`
     }),
     new VueLoaderPlugin(),
     new FaviconsWebpackPlugin({
       logo: './src/assets/logo.png',
-      outputPath: `${VERSION}`,
+      outputPath: `${VERSION}/favicons`,
+      prefix: `${VERSION}/favicons`,
       favicons: {
         icons: {
           android: false,
@@ -141,10 +142,17 @@ module.exports = {
         ]
       },
       {
-        test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
+        test: /\.(png|jpg|gif|svg)$/,
         loader: 'file-loader',
         options: {
-          name: `${VERSION}/[name].[ext]`
+          name: `${VERSION}/images/[name].[ext]`
+        }
+      },
+      {
+        test: /\.(eot|ttf|woff|woff2)$/,
+        loader: 'file-loader',
+        options: {
+          name: `${VERSION}/fonts/[name].[ext]`
         }
       }
     ]
