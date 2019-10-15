@@ -6,7 +6,6 @@ const childProcess = require('child_process')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const LicenseWebpackPlugin = require('license-webpack-plugin').LicenseWebpackPlugin
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
@@ -87,14 +86,6 @@ module.exports = {
       filename: `${VERSION}/[name].css`
     }),
     new VueLoaderPlugin(),
-    new LicenseWebpackPlugin({
-      pattern: /.*/,
-      addBanner: true,
-      perChunkOutput: false,
-      includePackagesWithoutLicense: true,
-      additionalPackages: ['bootstrap'],
-      outputFilename: `${VERSION}/licenses.txt`
-    }),
     new FaviconsWebpackPlugin({
       logo: './src/assets/logo.png',
       outputPath: `${VERSION}`,
