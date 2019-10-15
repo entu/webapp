@@ -62,7 +62,7 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin([
       './src/assets/robots.txt',
-      './src/assets/favicon.ico'
+      './src/assets/favicons/favicon.ico'
     ]),
     new HtmlWebpackPlugin({
       template: './src/index.html',
@@ -87,7 +87,7 @@ module.exports = {
     }),
     new VueLoaderPlugin(),
     new FaviconsWebpackPlugin({
-      logo: './src/assets/logo.png',
+      logo: './src/assets/favicons/favicon.png',
       outputPath: `${VERSION}/favicons`,
       prefix: `${VERSION}/favicons`,
       favicons: {
@@ -142,14 +142,14 @@ module.exports = {
         ]
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
+        test: /\.(png|jpg)$/,
         loader: 'file-loader',
         options: {
           name: `${VERSION}/images/[name].[ext]`
         }
       },
       {
-        test: /\.(eot|ttf|woff|woff2)$/,
+        test: /\.(svg|ttf|woff)$/,
         loader: 'file-loader',
         options: {
           name: `${VERSION}/fonts/[name].[ext]`

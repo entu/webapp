@@ -8,7 +8,7 @@ transition(name='slide')
                 i.icon-logout.float-right.pt-1(v-if='userId')
         #menu-content.align-self-start.p-3
             img.border.col-5.mb-3.rounded-circle.mx-auto.d-block(v-if='user.photo', :src='user.photo', :alt='user.name')
-            img.col-6.mb-3.mx-auto.d-block(v-if='!user.photo', src='../../../assets/logo.png', :alt='user.name')
+            img.col-6.mb-3.mx-auto.d-block(v-if='!user.photo', src='../../../assets/favicons/favicon.png', :alt='user.name')
 
             //- h4.pb-3.text-center {{ user.name }}
             h4.pb-3.text-center
