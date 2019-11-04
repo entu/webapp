@@ -15,7 +15,7 @@ Vue.use(VueRouter)
 Vue.use(VueI18n)
 
 // Set default locale
-if (!localStorage.getItem('locale')) { localStorage.setItem('locale' ,'et') }
+if (!localStorage.getItem('locale')) { localStorage.setItem('locale' ,'en') }
 
 // Start Vue app
 new Vue({
