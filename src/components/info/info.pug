@@ -12,6 +12,9 @@
                         a.nav-link.text-white(href='#price') {{ $t('menu.price') }}
                     //- li.nav-item
                     //-     router-link.btn.btn-outline-success.text-light.ml-2.px-3(:to="{ name: 'auth' }") {{ $t('menu.signin') }}
+                    li.nav-item.d-none.d-sm-block.ml-4
+                        a.nav-link.text-white(v-if='locale === "en"', @click='setLocale("et")', href='javascript:void(0)') ET
+                        a.nav-link.text-white(v-if='locale === "et"', @click='setLocale("en")', href='javascript:void(0)') EN
 
     .row
         .col-12.mb-0.jumbotron.jumbotron-fluid.d-flex.align-items-center.justify-content-center.text-center
