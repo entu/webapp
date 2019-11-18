@@ -21,13 +21,6 @@ new Vue({
   el: '#app',
   router,
   store,
-  data () {
-    return {
-      background: 'bg-' + Math.ceil(Math.random() * 12),
-      menu: document.body.clientWidth > 768,
-      list: true
-     }
-  },
   render: (h) => h(app),
   i18n: new VueI18n({ locale: store.getters.locale })
 })

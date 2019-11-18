@@ -6,10 +6,5 @@ export default {
       this.$router.push({ name: 'auth' })
     }
     this.setTitle()
-  },
-  computed: {
-    background () {
-      return this.$root.$data.background
-    }
   }
 }

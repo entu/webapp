@@ -18,6 +18,9 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'background',
+      'showMenu',
+      'showList',
       'locales',
       'locale',
       'requests'
@@ -94,13 +97,7 @@ export default {
       return a
     },
     selectedMenu () {
-        return this.$root.$data.selectedMenu
-    },
-    showMenu () {
-      return this.$root.$data.menu
-    },
-    showList () {
-      return this.$root.$data.list || document.body.clientWidth > 576
+      return this.$root.$data.selectedMenu
     },
     showEntity () {
       return !this.showList || document.body.clientWidth >= 576
@@ -108,7 +105,8 @@ export default {
   },
   methods: {
     ...mapMutations([
-      // 'setLocale'
+      'toggleMenu',
+      'toggleList'
     ]),
     setAccounts (accounts) {
       if (accounts && accounts.length > 0) {
@@ -118,12 +116,6 @@ export default {
         this.accounts = []
         localStorage.removeItem('accounts')
       }
-    },
-    toggleMenu () {
-      this.$root.$data.menu = !this.$root.$data.menu
-    },
-    toggleList (value) {
-      this.$root.$data.list = value
     },
     setLocale (locale) {
       this.$store.commit('setLocale', locale)

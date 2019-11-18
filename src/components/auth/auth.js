@@ -66,11 +66,6 @@ export default {
       }
     }
   },
-  computed: {
-    background () {
-      return this.$root.$data.background
-    }
-  },
   methods: {
     authApple () {
       this.authenticating = true
