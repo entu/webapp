@@ -3,11 +3,11 @@
 import axios from 'axios'
 import _get from 'lodash/get'
 import _set from 'lodash/set'
+import { mapGetters, mapMutations } from 'vuex'
 
 export default {
   data () {
     return {
-      locales: ['et', 'en'],
       accounts: []
     }
   },
@@ -17,6 +17,10 @@ export default {
     }
   },
   computed: {
+    ...mapGetters([
+      'locales',
+      'locale'
+    ]),
     customHost () {
       if (!['entu.app', 'localhost'].includes(window.location.hostname)) {
         return window.location.hostname.replace('.entu.app', '')
@@ -38,12 +42,6 @@ export default {
       if (this.accounts.length > 0) {
         return this.accounts.filter(a => a.account === this.account)[0]._id
       }
-    },
-    selectableLocales () {
-      return this.locales.filter(l => l !== this.locale)
-    },
-    locale () {
-      return this.$i18n.locale
     },
     axios () {
       const a = axios.create({ baseURL: 'https://api.entu.app' })
@@ -94,6 +92,9 @@ export default {
 
       return a
     },
+    selectedMenu () {
+        return this.$root.$data.selectedMenu
+    },
     showMenu () {
       return this.$root.$data.menu
     },
@@ -105,6 +106,9 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+      // 'setLocale'
+    ]),
     setAccounts (accounts) {
       if (accounts && accounts.length > 0) {
         this.accounts = accounts
@@ -120,10 +124,10 @@ export default {
     toggleList (value) {
       this.$root.$data.list = value
     },
-    setLocale (val) {
-      localStorage.setItem('locale', val)
-      this.$i18n.locale = val
-      this.$router.go()
+    setLocale (locale) {
+      this.$store.commit('setLocale', locale)
+      this.$i18n.locale = locale
+      // this.$router.go()
     },
     setTitle (title) {
       window.document.title = title ? `Entu · ${title}` : 'Entu'
