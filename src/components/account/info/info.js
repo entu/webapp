@@ -60,10 +60,5 @@ export default {
     this.totalFilesSizeStr = this.getReadableFileSize(this.dbSize + this.filesSize + this.deletedFilesSize)
 
     this.showStats = true
-  },
-  computed: {
-    openRequests () {
-      return this.$root.$data.openRequests
-    }
   }
 }

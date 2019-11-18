@@ -8,11 +8,6 @@ export default {
     'edit',
     'right'
   ],
-  computed: {
-    openRequests () {
-      return this.$root.$data.openRequests
-    }
-  },
   methods: {
     toggleEdit () {
       this.$parent.$data.edit = !this.$parent.$data.edit

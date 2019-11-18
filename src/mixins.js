@@ -19,7 +19,8 @@ export default {
   computed: {
     ...mapGetters([
       'locales',
-      'locale'
+      'locale',
+      'requests'
     ]),
     customHost () {
       if (!['entu.app', 'localhost'].includes(window.location.hostname)) {
@@ -54,7 +55,7 @@ export default {
         }
 
         config.startTime = new Date()
-        this.$root.$data.openRequests += 1
+        this.$store.commit('setRequests', 1)
         return config
       })
 
@@ -63,11 +64,11 @@ export default {
         const s = (endTime.getTime() - response.config.startTime.getTime()) / 1000
         console.log(`${s.toFixed(3)} ${response.config.method.toUpperCase()} ${response.request.responseURL}`);
 
-        this.$root.$data.openRequests -= 1
+        this.$store.commit('setRequests', -1)
 
         return response
       }, (error) => {
-        this.$root.$data.openRequests -= 1
+        this.$store.commit('setRequests', -1)
 
         if (error.response.status === 401) {
           localStorage.clear()

@@ -23,7 +23,6 @@ new Vue({
   store,
   data () {
     return {
-      openRequests: 0,
       background: 'bg-' + Math.ceil(Math.random() * 12),
       menu: document.body.clientWidth > 768,
       list: true
