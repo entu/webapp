@@ -1,5 +1,8 @@
 'use strict'
 
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+
 import info from './components/info/info.vue'
 import auth from './components/auth/auth.vue'
 import accountMenu from './components/account/menu/menu.vue'
@@ -7,6 +10,8 @@ import accountList from './components/account/list/list.vue'
 import accountInfo from './components/account/info/info.vue'
 import entityView from './components/account/entity/entity.vue'
 import file from './components/file/file.vue'
+
+Vue.use(VueRouter)
 
 let route = {}
 
@@ -102,4 +107,4 @@ if (['entu.app', 'localhost'].includes(window.location.hostname)) {
   }
 }
 
-export default route
+export default new VueRouter(route)
