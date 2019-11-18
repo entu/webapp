@@ -30,5 +30,5 @@ new Vue({
      }
   },
   render: (h) => h(app),
-  i18n: new VueI18n({ locale: localStorage.getItem('locale') })
+  i18n: new VueI18n({ locale: store.getters.locale })
 })
