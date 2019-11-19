@@ -73,9 +73,9 @@ export default {
         return
       }
 
-      if (document.body.clientWidth <= 576) {
-        this.toggleList(false)
-      }
+      // if (document.body.clientWidth <= 576) {
+      //   this.hideList()
+      // }
 
       this.entity = null
       this.image = null

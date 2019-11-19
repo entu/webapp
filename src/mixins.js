@@ -21,6 +21,7 @@ export default {
       'background',
       'showMenu',
       'showList',
+      'showEntity',
       'locales',
       'locale',
       'requests'
@@ -70,7 +71,7 @@ export default {
         this.$store.commit('setRequests', -1)
 
         return response
-      }, (error) => {
+      }, error => {
         this.$store.commit('setRequests', -1)
 
         if (error.response.status === 401) {
@@ -98,9 +99,6 @@ export default {
     },
     selectedMenu () {
       return this.$root.$data.selectedMenu
-    },
-    showEntity () {
-      return !this.showList || document.body.clientWidth >= 576
     }
   },
   methods: {

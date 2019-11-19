@@ -21,6 +21,6 @@ new Vue({
   el: '#app',
   router,
   store,
-  render: (h) => h(app),
+  render: h => h(app),
   i18n: new VueI18n({ locale: store.getters.locale })
 })

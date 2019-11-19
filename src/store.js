@@ -10,7 +10,7 @@ export default new Vuex.Store({
   state: {
     background: 'bg-' + Math.ceil(Math.random() * 12),
     menu: document.body.clientWidth > 768,
-    list: true,
+    list: document.body.clientWidth > 576,
     locales: ['et', 'en'],
     activeLocale: localStorage.getItem('locale') || 'et',
     activeRequests: 0
@@ -18,7 +18,8 @@ export default new Vuex.Store({
   getters: {
     background: state => state.background,
     showMenu: state => state.menu,
-    showList: state => state.list || document.body.clientWidth > 576,
+    showList: state => state.list,
+    showEntity: state => !state.list || document.body.clientWidth >= 576,
     locales: state => state.locales.filter(l => l !== state.activeLocale),
     locale: state => state.activeLocale,
     requests: state => state.activeRequests
@@ -27,8 +28,8 @@ export default new Vuex.Store({
     toggleMenu: state => {
       state.menu = !state.menu
     },
-    toggleList: (state, value) => {
-      state.list = value
+    toggleList: (state, visible) => {
+      state.list = visible
     },
     setLocale: (state, locale) => {
       state.activeLocale = locale

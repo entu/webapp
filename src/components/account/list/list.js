@@ -99,6 +99,11 @@ export default {
       }
 
       this.$router.push({ name: 'entity', params: { entity: this.$route.params.entity }, query: query })
-    }, 500)
+    }, 500),
+    hideList () {
+      if (document.body.clientWidth <= 576) {
+        this.toggleList(false)
+      }
+    }
   }
 }
