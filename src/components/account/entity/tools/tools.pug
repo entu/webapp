@@ -13,7 +13,7 @@ nav.navbar.navbar-expand.col.p-0
             //-     button.nav-link.p-3(:title="$t('add')")
             //-         i.icon-add
             li.nav-item(v-if="['owner', 'editor'].includes(right)")
-                button.nav-link.p-3(@click='toggleEdit()', :title="$t('edit')")
+                button.nav-link.p-3(@click='toggleEdit(true)', :title="$t('edit')")
                     i.icon-edit
             //- li.nav-item
             //-     button.nav-link.p-3(:title="$t('duplicate')")
@@ -31,5 +31,5 @@ nav.navbar.navbar-expand.col.p-0
         h2.mb-0.ml-2(v-if='entity && edit') {{ $t('editTitle', { name: name }) }}
         ul.navbar-nav.mr-2.ml-auto(v-if='entity && edit')
             li.nav-item
-                button.nav-link.p-3(@click='toggleEdit()', :title="$t('close')")
+                button.nav-link.p-3(@click='toggleEdit(false)', :title="$t('close')")
                     i.icon-close

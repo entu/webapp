@@ -14,6 +14,7 @@ export default new Vuex.Store({
     locales: ['et', 'en'],
     activeLocale: localStorage.getItem('locale') || 'et',
     activeRequests: 0
+    showEdit: false,
   },
   getters: {
     background: state => state.background,
@@ -23,6 +24,7 @@ export default new Vuex.Store({
     locales: state => state.locales.filter(l => l !== state.activeLocale),
     locale: state => state.activeLocale,
     requests: state => state.activeRequests
+    showEdit: state => state.showEdit,
   },
   mutations: {
     toggleMenu: state => {
@@ -30,6 +32,9 @@ export default new Vuex.Store({
     },
     toggleList: (state, visible) => {
       state.list = visible
+    },
+    toggleEdit: (state, visible) => {
+      state.showEdit = visible
     },
     setLocale: (state, locale) => {
       state.activeLocale = locale

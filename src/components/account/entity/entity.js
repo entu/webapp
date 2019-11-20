@@ -25,8 +25,7 @@ export default {
       entity: null,
       properties: [],
       childs: null,
-      childsCount: 0,
-      edit: false
+      childsCount: 0
     }
   },
   watch: {
@@ -178,7 +177,7 @@ export default {
       this.properties = properties
 
       if (!['owner', 'editor'].includes(this.right)) {
-        this.edit = false
+        this.toggleEdit(false)
       }
     },
     async getChilds () {

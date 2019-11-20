@@ -25,6 +25,7 @@ export default {
       'locales',
       'locale',
       'requests'
+      'showEdit',
     ]),
     customHost () {
       if (!['entu.app', 'localhost'].includes(window.location.hostname)) {
@@ -105,6 +106,7 @@ export default {
     ...mapMutations([
       'toggleMenu',
       'toggleList'
+      'toggleEdit',
     ]),
     setAccounts (accounts) {
       if (accounts && accounts.length > 0) {

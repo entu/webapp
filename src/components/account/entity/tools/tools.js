@@ -8,9 +8,4 @@ export default {
     'edit',
     'right'
   ],
-  methods: {
-    toggleEdit () {
-      this.$parent.$data.edit = !this.$parent.$data.edit
-    }
-  }
 }
