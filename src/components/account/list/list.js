@@ -93,9 +93,9 @@ export default {
       let query = Object.assign({}, this.$route.query)
 
       if (this.searchString) {
-        query['q'] = this.searchString
+        query.q = this.searchString
       } else {
-        delete query['q']
+        delete query.q
       }
 
       this.$router.push({ name: 'entity', params: { entity: this.$route.params.entity }, query: query })

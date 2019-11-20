@@ -8,41 +8,41 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   strict: process.env.NODE_ENV !== 'production',
   state: {
-    background: 'bg-' + Math.ceil(Math.random() * 12),
-    menu: document.body.clientWidth > 768,
-    list: document.body.clientWidth > 576,
     locales: ['et', 'en'],
-    activeLocale: localStorage.getItem('locale') || 'et',
-    activeRequests: 0
+    locale: localStorage.getItem('locale') || 'et',
+    background: 'bg-' + Math.ceil(Math.random() * 12),
+    showMenu: document.body.clientWidth > 768,
+    showList: document.body.clientWidth > 576,
     showEdit: false,
+    activeRequests: 0,
     activeMenu: null
   },
   getters: {
+    locales: state => state.locales.filter(l => l !== state.locale),
+    locale: state => state.locale,
     background: state => state.background,
-    showMenu: state => state.menu,
-    showList: state => state.list,
-    showEntity: state => !state.list || document.body.clientWidth >= 576,
-    locales: state => state.locales.filter(l => l !== state.activeLocale),
-    locale: state => state.activeLocale,
-    requests: state => state.activeRequests
+    showMenu: state => state.showMenu,
+    showList: state => state.showList,
+    showEntity: state => !state.showList || document.body.clientWidth >= 576,
     showEdit: state => state.showEdit,
+    activeRequests: state => state.activeRequests,
     activeMenu: state => state.activeMenu
   },
   mutations: {
-    toggleMenu: state => {
-      state.menu = !state.menu
+    toggleMenu: (state, visible) => {
+      state.showMenu = visible
     },
     toggleList: (state, visible) => {
-      state.list = visible
+      state.showList = visible
     },
     toggleEdit: (state, visible) => {
       state.showEdit = visible
     },
     setLocale: (state, locale) => {
-      state.activeLocale = locale
+      state.locale = locale
       localStorage.setItem('locale', locale)
     },
-    setRequests: (state, count) => {
+    setActiveRequests: (state, count) => {
       state.activeRequests += count
     },
     setActiveMenu: (state, _id) => {

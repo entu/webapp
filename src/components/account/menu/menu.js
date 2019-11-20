@@ -133,7 +133,7 @@ export default {
       this.setActiveMenu(_id)
 
       if (document.body.clientWidth <= 768) {
-        this.toggleMenu()
+        this.toggleMenu(false)
       }
     }
   }

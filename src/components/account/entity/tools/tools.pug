@@ -3,7 +3,7 @@ nav.navbar.navbar-expand.col.p-0
         router-link.nav-link.d-md-none.col-auto.p-3(v-if='!showList', :to="{ name: 'entity', params: { entity: '_' }, query: $route.query }", @click.native='toggleList(true)')
             i.icon-left
         transition(name='fade', :duration=200)
-            .loader.m-3(v-if='requests')
+            .loader.m-3(v-if='activeRequests')
 
         ul.navbar-nav.mr-2.ml-auto(v-if='entity && !edit')
             //- li.nav-item

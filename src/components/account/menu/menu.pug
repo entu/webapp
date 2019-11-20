@@ -1,7 +1,7 @@
 transition(name='slide')
     #menu.col-12.col-sm-4.col-md-2.align-self-start.h-100.p-0(v-if="showMenu")
         .p-3
-            a(href='', @click.prevent='toggleMenu()')
+            a(href='', @click.prevent='toggleMenu(false)')
                 i.icon-menu.float-left.pt-1
             router-link(:to="authTo")
                 i.icon-login.float-right.pt-1(v-if='!userId')

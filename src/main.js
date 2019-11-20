@@ -12,7 +12,7 @@ import store from './store'
 // Disable production message
 Vue.config.productionTip = false
 
-// Load mixin, router and i18n
+// Load mixin and i18n
 Vue.mixin(mixins)
 Vue.use(VueI18n)
 

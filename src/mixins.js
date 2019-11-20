@@ -18,14 +18,14 @@ export default {
   },
   computed: {
     ...mapGetters([
+      'locales',
+      'locale',
       'background',
       'showMenu',
       'showList',
       'showEntity',
-      'locales',
-      'locale',
-      'requests'
       'showEdit',
+      'activeRequests',
       'activeMenu'
     ]),
     customHost () {
@@ -61,7 +61,7 @@ export default {
         }
 
         config.startTime = new Date()
-        this.$store.commit('setRequests', 1)
+        this.$store.commit('setActiveRequests', 1)
         return config
       })
 
@@ -70,11 +70,11 @@ export default {
         const s = (endTime.getTime() - response.config.startTime.getTime()) / 1000
         console.log(`${s.toFixed(3)} ${response.config.method.toUpperCase()} ${response.request.responseURL}`);
 
-        this.$store.commit('setRequests', -1)
+        this.$store.commit('setActiveRequests', -1)
 
         return response
       }, error => {
-        this.$store.commit('setRequests', -1)
+        this.$store.commit('setActiveRequests', -1)
 
         if (error.response.status === 401) {
           localStorage.clear()
@@ -98,15 +98,12 @@ export default {
       })
 
       return a
-    },
-    selectedMenu () {
-      return this.$root.$data.selectedMenu
     }
   },
   methods: {
     ...mapMutations([
       'toggleMenu',
-      'toggleList'
+      'toggleList',
       'toggleEdit',
       'setActiveMenu'
     ]),
