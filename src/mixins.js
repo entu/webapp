@@ -72,7 +72,7 @@ export default {
 
         this.$store.commit('setActiveRequests', -1)
 
-        return response
+        return response.data
       }, error => {
         this.$store.commit('setActiveRequests', -1)
 

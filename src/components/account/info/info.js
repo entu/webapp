@@ -32,28 +32,28 @@ export default {
 
     const accountResponse = await this.axios.get('/account')
 
-    this.entities = _get(accountResponse, 'data.entities', 0)
-    this.deletedEntities = _get(accountResponse, 'data.deletedEntities', 0)
+    this.entities = _get(accountResponse, 'entities', 0)
+    this.deletedEntities = _get(accountResponse, 'deletedEntities', 0)
 
     this.entitiesStr = this.entities.toLocaleString(this.locale)
     this.deletedEntitiesStr = this.deletedEntities.toLocaleString(this.locale)
     this.entitiesStyle = `width: ${Math.round(this.entities * 100 / (this.entities + this.deletedEntities))}%`
 
-    this.properties = _get(accountResponse, 'data.properties', 0)
-    this.deletedProperties = _get(accountResponse, 'data.deletedProperties', 0)
+    this.properties = _get(accountResponse, 'properties', 0)
+    this.deletedProperties = _get(accountResponse, 'deletedProperties', 0)
 
     this.propertiesStr = this.properties.toLocaleString(this.locale)
     this.deletedPropertiesStr = this.deletedProperties.toLocaleString(this.locale)
     this.propertiesStyle = `width: ${Math.round(this.properties * 100 / (this.properties + this.deletedProperties))}%`
 
-    this.filesSize = _get(accountResponse, 'data.filesSize', 0)
-    this.deletedFilesSize = _get(accountResponse, 'data.deletedFilesSize', 0)
+    this.filesSize = _get(accountResponse, 'filesSize', 0)
+    this.deletedFilesSize = _get(accountResponse, 'deletedFilesSize', 0)
 
     this.filesSizeStr = this.getReadableFileSize(this.filesSize)
     this.deletedFilesSizeStr = this.getReadableFileSize(this.deletedFilesSize)
     this.filesSizeStyle = `width: ${Math.round(this.filesSize * 100 / (this.filesSize + this.deletedFilesSize))}%`
 
-    this.dbSize = _get(accountResponse, 'data.dbSize', 0)
+    this.dbSize = _get(accountResponse, 'dbSize', 0)
     this.dbSizeStr = this.getReadableFileSize(this.dbSize)
     this.dbSizeStyle = `width: ${Math.round(this.dbSize * 100 / (this.dbSize + this.filesSize + this.deletedFilesSize))}%`
 

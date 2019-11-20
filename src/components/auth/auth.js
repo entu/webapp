@@ -51,7 +51,7 @@ export default {
           }
         })
 
-        this.setAccounts(authResponse.data)
+        this.setAccounts(authResponse)
         this.authenticating = false
 
         if (this.accounts.length === 1) {
@@ -84,8 +84,8 @@ export default {
         }
       })
 
-      const url = lhvResponse.data.url
-      const params = lhvResponse.data.signedRequest
+      const url = lhvResponse.url
+      const params = lhvResponse.signedRequest
 
       const form = document.createElement('form')
       form.method = 'POST'

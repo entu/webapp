@@ -13,8 +13,8 @@ export default {
 
     const fileResponse = await this.axios.get(`/property/${this.$route.params.id}`)
 
-    if (fileResponse.data.url) {
-      window.location.replace(fileResponse.data.url)
+    if (fileResponse.url) {
+      window.location.replace(fileResponse.url)
     }
   }
 }

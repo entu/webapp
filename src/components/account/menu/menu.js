@@ -43,8 +43,8 @@ export default {
         }
       })
 
-      this.user.name = [this.getValue(userResponse.data.entity.forename), this.getValue(userResponse.data.entity.forename)].join(' ')
-      this.user.photo = userResponse.data.entity._thumbnail
+      this.user.name = [this.getValue(userResponse.entity.forename), this.getValue(userResponse.entity.forename)].join(' ')
+      this.user.photo = userResponse.entity._thumbnail
     },
     async getMenu () {
       this.loading = true
@@ -76,11 +76,11 @@ export default {
         }
       })
 
-      if (!menuResponse.data || !menuResponse.data.entities) { return }
+      if (!menuResponse || !menuResponse.entities) { return }
 
       let menu = {}
 
-      menuResponse.data.entities.forEach(entity => {
+      menuResponse.entities.forEach(entity => {
         const group = this.getValue(entity.group)
         const ordinal = entity.ordinal ? entity.ordinal[0].integer : 0
 

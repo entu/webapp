@@ -200,7 +200,7 @@ export default {
       }
 
       const addResponse = await this.axios.post(`/entity/${this.entity._id}`, [newProperty])
-      const newId = _get(addResponse, 'data.properties.0._id')
+      const newId = _get(addResponse, 'properties.0._id')
 
       if (idx > -1) {
         this.property.values[idx]._id = newId

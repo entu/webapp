@@ -72,9 +72,9 @@ export default {
 
       const entitiesResponse = await this.axios.get('/entity', { params: query })
 
-      if (!entitiesResponse.data || !entitiesResponse.data.entities) { return }
+      if (!entitiesResponse || !entitiesResponse.entities) { return }
 
-      entitiesResponse.data.entities.forEach(entity => {
+      entitiesResponse.entities.forEach(entity => {
         this.entities.push({
           _id: entity._id,
           _thumbnail: entity._thumbnail,
