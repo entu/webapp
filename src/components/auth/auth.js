@@ -78,26 +78,23 @@ export default {
     async authLHV () {
       this.authenticating = true
 
-      const lhvResponse = await this.axios.get('/auth/lhv', {
+      const { url, signedRequest } = await this.axios.get('/auth/lhv', {
         params: {
           next: window.location.origin + '/auth/?key='
         }
       })
 
-      const url = lhvResponse.url
-      const params = lhvResponse.signedRequest
-
       const form = document.createElement('form')
       form.method = 'POST'
       form.action = url
 
-      for (const key in params) {
-        if (!params.hasOwnProperty(key)) { continue }
+      for (const key in signedRequest) {
+        if (!signedRequest.hasOwnProperty(key)) { continue }
 
         const hiddenField = document.createElement('input')
         hiddenField.type = 'hidden'
         hiddenField.name = key
-        hiddenField.value = params[key]
+        hiddenField.value = signedRequest[key]
 
         form.appendChild(hiddenField)
       }

@@ -79,8 +79,7 @@ export default {
       this.entity = null
       this.image = null
 
-      const entityResponse = await this.axios.get(`/entity/${this._id}`)
-      const entity = entityResponse.entity
+      const { entity } = await this.axios.get(`/entity/${this._id}`)
 
       const definitionResponse = await this.axios.get('/entity', {
         params: {
@@ -94,7 +93,7 @@ export default {
 
       let properties = []
       if (definition) {
-        const propertiesResponse = await this.axios.get('/entity', {
+        const { entities } = await this.axios.get('/entity', {
           params: {
             '_type.string': 'property',
             '_parent.reference': definition._id,
@@ -113,7 +112,7 @@ export default {
           }
         })
 
-        properties = propertiesResponse.entities.map(x => {
+        properties = entities.map(x => {
           const p = {
             key: _get(x, 'key.0.string', null),
             name: _get(x, 'name.0.string', null),

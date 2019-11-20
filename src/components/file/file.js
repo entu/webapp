@@ -11,10 +11,10 @@ export default {
     if (!this.account) { return }
     if (!this.$route.params.id) { return }
 
-    const fileResponse = await this.axios.get(`/property/${this.$route.params.id}`)
+    const { url } = await this.axios.get(`/property/${this.$route.params.id}`)
 
-    if (fileResponse.url) {
-      window.location.replace(fileResponse.url)
+    if (url) {
+      window.location.replace(url)
     }
   }
 }

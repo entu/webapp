@@ -31,7 +31,7 @@ export default {
     async getUser () {
       if (!this.userId) { return }
 
-      const userResponse = await this.axios.get(`/entity/${this.userId}`, {
+      const { entity } = await this.axios.get(`/entity/${this.userId}`, {
         params: {
           props: [
             'forename.string',
@@ -43,8 +43,8 @@ export default {
         }
       })
 
-      this.user.name = [this.getValue(userResponse.entity.forename), this.getValue(userResponse.entity.forename)].join(' ')
-      this.user.photo = userResponse.entity._thumbnail
+      this.user.name = [this.getValue(entity.forename), this.getValue(entity.forename)].join(' ')
+      this.user.photo = entity._thumbnail
     },
     async getMenu () {
       this.loading = true
@@ -62,7 +62,7 @@ export default {
         return 0
       }
 
-      const menuResponse = await this.axios.get('/entity', {
+      const { entities } = await this.axios.get('/entity', {
         params: {
           '_type.string': 'menu',
           props: [
@@ -76,11 +76,11 @@ export default {
         }
       })
 
-      if (!menuResponse || !menuResponse.entities) { return }
+      if (!entities) { return }
 
       let menu = {}
 
-      menuResponse.entities.forEach(entity => {
+      entities.forEach(entity => {
         const group = this.getValue(entity.group)
         const ordinal = entity.ordinal ? entity.ordinal[0].integer : 0
 

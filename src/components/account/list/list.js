@@ -64,17 +64,17 @@ export default {
 
       this.loading = true
 
-      let query = Object.assign({}, this.$route.query)
+      let query = { ...this.$route.query }
       query.props = '_thumbnail,name'
       query.sort = 'name.string'
       query.limit = this.limit
       query.skip = this.skip
 
-      const entitiesResponse = await this.axios.get('/entity', { params: query })
+      const { entities } = await this.axios.get('/entity', { params: query })
 
-      if (!entitiesResponse || !entitiesResponse.entities) { return }
+      if (!entities) { return }
 
-      entitiesResponse.entities.forEach(entity => {
+      entities.forEach(entity => {
         this.entities.push({
           _id: entity._id,
           _thumbnail: entity._thumbnail,
@@ -90,7 +90,7 @@ export default {
       this.searchString = _get(this, '$route.query.q', '')
     },
     doSearch: _debounce(function () {
-      let query = Object.assign({}, this.$route.query)
+      let query = { ...this.$route.query }
 
       if (this.searchString) {
         query.q = this.searchString
