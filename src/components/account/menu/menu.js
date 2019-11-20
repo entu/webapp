@@ -98,8 +98,13 @@ export default {
           _id: entity._id,
           ordinal: ordinal,
           name: this.getValue(entity.name),
-          query: this.queryObj(this.getValue(entity.query))
+          query: this.queryObj(this.getValue(entity.query)),
+          queryStr: this.getValue(entity.query)
         })
+
+        if (this.getValue(entity.query) === this.queryStr()) {
+          this.setActiveMenu(entity._id)
+        }
       })
 
       this.menu = Object.values(menu)
@@ -115,6 +120,9 @@ export default {
       }
 
       this.loading = false
+    },
+    queryStr () {
+      return window.location.search.substr(1)
     },
     queryObj (q) {
       if (!q) { return {} }
