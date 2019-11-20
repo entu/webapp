@@ -26,6 +26,7 @@ export default {
       'locale',
       'requests'
       'showEdit',
+      'activeMenu'
     ]),
     customHost () {
       if (!['entu.app', 'localhost'].includes(window.location.hostname)) {
@@ -107,6 +108,7 @@ export default {
       'toggleMenu',
       'toggleList'
       'toggleEdit',
+      'setActiveMenu'
     ]),
     setAccounts (accounts) {
       if (accounts && accounts.length > 0) {

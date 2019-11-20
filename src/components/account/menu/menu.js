@@ -129,7 +129,9 @@ export default {
 
       return params
     },
-    hideMenu () {
+    menuSelect (_id) {
+      this.setActiveMenu(_id)
+
       if (document.body.clientWidth <= 768) {
         this.toggleMenu()
       }

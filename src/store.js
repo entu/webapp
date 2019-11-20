@@ -15,6 +15,7 @@ export default new Vuex.Store({
     activeLocale: localStorage.getItem('locale') || 'et',
     activeRequests: 0
     showEdit: false,
+    activeMenu: null
   },
   getters: {
     background: state => state.background,
@@ -25,6 +26,7 @@ export default new Vuex.Store({
     locale: state => state.activeLocale,
     requests: state => state.activeRequests
     showEdit: state => state.showEdit,
+    activeMenu: state => state.activeMenu
   },
   mutations: {
     toggleMenu: state => {
@@ -42,6 +44,9 @@ export default new Vuex.Store({
     },
     setRequests: (state, count) => {
       state.activeRequests += count
+    },
+    setActiveMenu: (state, _id) => {
+      state.activeMenu = _id
     }
   }
 })
