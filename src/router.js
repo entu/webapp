@@ -57,6 +57,15 @@ if (['entu.app', 'localhost'].includes(window.location.hostname)) {
         }
       },
       {
+        name: 'add',
+        path: '/:account/:parent/add/:type',
+        components: {
+          default: entityView,
+          menu: accountMenu,
+          list: accountList,
+        }
+      },
+      {
         name: 'file',
         path: '/:account/file/:id',
         component: file
@@ -92,6 +101,15 @@ if (['entu.app', 'localhost'].includes(window.location.hostname)) {
       {
         name: 'entity',
         path: '/:entity',
+        components: {
+          default: entityView,
+          menu: accountMenu,
+          list: accountList,
+        }
+      },
+      {
+        name: 'add',
+        path: '/:parent/add/:type',
         components: {
           default: entityView,
           menu: accountMenu,

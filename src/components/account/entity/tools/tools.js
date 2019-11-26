@@ -90,5 +90,25 @@ export default {
         })
       }
     }
+  },
+  computed: {
+    addMenu () {
+      const items = [...this.addUnderEntity, ...this.addUnderOptionalParent]
+
+      const to = items.map(x => {
+        return {
+          name: x.typeName,
+          to: { name: 'add', params: { parent: x.parent || this.entity._id, type: x.type }, query: this.$route.query }
+        }
+      })
+
+      to.sort((a, b) => {
+        if (a.name < b.name) { return -1 }
+        if (a.name > b.name) { return 1 }
+        return 0
+      })
+
+      return to
+    }
   }
 }
