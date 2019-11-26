@@ -5,22 +5,26 @@ nav.navbar.navbar-expand.col.p-0
         transition(name='fade', :duration=200)
             .loader.m-3(v-if='activeRequests')
 
-        ul.navbar-nav.mr-2.ml-auto(v-if='entity && !edit')
+        ul.navbar-nav.mr-2.ml-auto(v-if='!edit')
             //- li.nav-item
             //-     button.nav-link.p-3(:title="$t('command')")
             //-         i.icon-command
-            //- li.nav-item
-            //-     button.nav-link.p-3(:title="$t('add')")
-            //-         i.icon-add
+            li.nav-item.dropdown(v-if='addUnderOptionalParent.length || addUnderEntity.length')
+                button.nav-link.dropdown-toggle.p-3(:title="$t('add')", @mouseover='addMenuDropdown = true', @mouseleave='addMenuDropdown = false', @click='addMenuDropdown = !addMenuDropdown')
+                    i.icon-add
+                    .dropdown-menu(:class='{ show: addMenuDropdown }')
+                        a.dropdown-item(v-for='a in addUnderOptionalParent', href='#') {{ a.typeName }}
+                        .dropdown-divider(v-if='addUnderOptionalParent.length && addUnderEntity.length')
+                        a.dropdown-item(v-for='a in addUnderEntity', href='#') {{ a.typeName }}
             li.nav-item(v-if="['owner', 'editor'].includes(right)")
                 button.nav-link.p-3(@click='toggleEdit(true)', :title="$t('edit')")
                     i.icon-edit
             //- li.nav-item
             //-     button.nav-link.p-3(:title="$t('duplicate')")
             //-         i.icon-duplicate
-            //- li.nav-item
-            //-     button.nav-link.p-3(:title="$t('parent')")
-            //-         i.icon-parent
+            li.nav-item(v-if="['owner'].includes(right)")
+                button.nav-link.p-3(:title="$t('parent')")
+                    i.icon-parent
             li.nav-item(v-if="['owner'].includes(right)")
                 button.nav-link.p-3(:title="$t('unlock')")
                     i.icon-unlock

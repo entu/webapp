@@ -23,6 +23,7 @@ export default {
     return {
       error: null,
       entity: null,
+      definition: null,
       properties: [],
       childs: null,
       childsCount: 0
@@ -72,10 +73,6 @@ export default {
         return
       }
 
-      // if (document.body.clientWidth <= 576) {
-      //   this.hideList()
-      // }
-
       this.entity = null
       this.image = null
 
@@ -85,7 +82,10 @@ export default {
         params: {
           '_type.string': 'entity',
           'key.string': _get(entity, '_type.0.string'),
-          props: '_id',
+          props: [
+            '_id',
+            'allowed_child'
+          ].join(','),
           limit: 1
         }
       })
@@ -173,6 +173,7 @@ export default {
       })
 
       this.entity = entity
+      this.definition = definition
       this.properties = properties
 
       if (!['owner', 'editor'].includes(this.right)) {

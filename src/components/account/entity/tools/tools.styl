@@ -32,12 +32,32 @@ nav
             text-decoration none
             outline none
 
-    .dropdown-menu-right
+    .dropdown-menu
+        background #ffffff
         border-radius 0
-        border 1px solid #d1d1d1
-        border-top none
-        top 54px
+        border 1px solid #99aaae
+        border-top 1px solid #d6ddde
+        top 53px
+        left -100px
         min-width 180px
+
+        &::before
+        &::after
+            border-left 9px solid rgba(0, 0, 0, 0)
+            border-right 9px solid rgba(0, 0, 0, 0)
+            content ''
+            left 115px
+            display inline-block
+            position absolute
+
+        &::before
+            border-bottom 9px solid #d6ddde
+            top -9px
+
+        &::after
+            border-bottom 9px solid #ffffff
+            top -8px
+
 
         .dropdown-item
             span
@@ -46,6 +66,9 @@ nav
             &:active
                 color #ffffff !important
                 background #3b3b3b
+
+    .dropdown-divider
+        border-top-color #d6ddde
 
 @media (prefers-color-scheme: dark)
     nav
