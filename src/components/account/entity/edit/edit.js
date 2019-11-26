@@ -20,11 +20,17 @@ export default {
   },
   data () {
     return {
+      prevRoute: null,
       error: null,
       entity: null,
       definition: null,
       properties: []
     }
+  },
+  beforeRouteEnter (to, from, next) {
+    next(vm => {
+      vm.prevRoute = from
+    })
   },
   watch: {
     _id () {
@@ -46,6 +52,14 @@ export default {
       if (_get(this.entity, '_expander', []).find(x => x.reference === this.userId)) { return 'expander' }
       if (_get(this.entity, '_viewer', []).find(x => x.reference === this.userId)) { return 'viewer' }
     },
+    closeTo () {
+      if (this.$route.params.entity) {
+        return { name: 'entity', params: { entity: this.$route.params.entity }, query: this.$route.query }
+      }
+      if (this.$route.params.parent) {
+        return this.prevRoute
+      }
+    }
   },
   methods: {
     async getEntity () {

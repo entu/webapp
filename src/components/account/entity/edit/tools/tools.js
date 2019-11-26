@@ -3,6 +3,7 @@
 export default {
   name: 'EntityTools',
   props: [
-    'name'
+    'name',
+    'closeTo'
   ]
 }
