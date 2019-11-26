@@ -1,0 +1,20 @@
+en:
+    command: Command
+    add: Add
+    edit: Edit
+    editTitle: Edit object "{name}"
+    duplicate: Duplicate
+    parent: Edit parents
+    unlock: Edit rights
+    share: Share
+    close: Close
+et:
+    command: Rakendus
+    add: Lisa
+    edit: Muuda
+    editTitle: Muuda objekti "{name}"
+    duplicate: Dubleeri
+    parent: Muuda kuuluvust
+    unlock: Muuda õiguseid
+    share: Jaga
+    close: Sulge

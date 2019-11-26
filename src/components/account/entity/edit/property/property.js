@@ -5,15 +5,11 @@ import _get from 'lodash/get'
 export default {
   name: 'EntityProperty',
   props: [
-    'entity',
-    'property',
-    'edit'
+    'property'
   ],
   computed: {
     visible () {
       if (this.property.key.startsWith('_')) { return }
-      if (!this.edit && this.property.key === 'name') { return }
-      if (!this.edit && this.values.length === 0) { return }
       if (this.property.formula) { return }
 
       return true
@@ -128,7 +124,6 @@ export default {
         }
       })
 
-      if (!this.edit) { return values }
       if (!this.property.list && values.length > 0) { return values }
 
       if (this.property.type === 'boolean') {
@@ -199,7 +194,7 @@ export default {
           return
       }
 
-      const addResponse = await this.axios.post(`/entity/${this.entity._id}`, [newProperty])
+      const addResponse = await this.axios.post(`/entity/${this.$route.params.entity}`, [newProperty])
       const newId = _get(addResponse, 'properties.0._id')
 
       if (idx > -1) {

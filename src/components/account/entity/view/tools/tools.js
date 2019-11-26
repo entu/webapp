@@ -15,7 +15,6 @@ export default {
     'entity',
     'definition',
     'name',
-    'edit',
     'right'
   ],
   watch: {
@@ -30,7 +29,7 @@ export default {
           'add_from_menu.reference': val,
           'optional_parent._id.exists': 'true',
           props: [
-            '_type',
+            'key',
             'name',
             'optional_parent'
           ].join(',')
@@ -56,7 +55,7 @@ export default {
           const rights = [..._get(entity, '_owner', []), ..._get(entity, '_editor', []), ..._get(entity, '_expander', [])]
           if (rights.find(x => x.reference === this.userId)) {
             this.addUnderOptionalParent.push({
-              type: this.getValue(entities[i]._type),
+              type: this.getValue(entities[i].key),
               typeName: this.getValue(entities[i].name),
               parent: entity._id,
               parentName: this.getValue(entity.name)
@@ -68,6 +67,7 @@ export default {
     async definition (val) {
       this.addUnderEntity = []
 
+      if (!val) { return }
       if (!val.allowed_child) { return }
       if (!['owner', 'editor', 'expander'].includes(this.right)) { return }
 
@@ -79,26 +79,29 @@ export default {
           params: {
             props: [
               'name',
-              '_type'
+              'key'
             ].join(',')
           }
         })
 
         this.addUnderEntity.push({
-          type: this.getValue(entity._type),
+          type: this.getValue(entity.key),
           typeName: this.getValue(entity.name)
         })
       }
     }
   },
   computed: {
+    _id () {
+      return _get(this, 'entity._id')
+    },
     addMenu () {
       const items = [...this.addUnderEntity, ...this.addUnderOptionalParent]
 
       const to = items.map(x => {
         return {
           name: x.typeName,
-          to: { name: 'add', params: { parent: x.parent || this.entity._id, type: x.type }, query: this.$route.query }
+          to: { name: 'add', params: { parent: x.parent || _get(this, 'entity._id'), type: x.type }, query: this.$route.query }
         }
       })
 

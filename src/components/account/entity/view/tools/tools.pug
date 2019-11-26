@@ -5,17 +5,17 @@ nav.navbar.navbar-expand.col.p-0
         transition(name='fade', :duration=200)
             .loader.m-3(v-if='activeRequests')
 
-        ul.navbar-nav.mr-2.ml-auto(v-if='!edit')
+        ul.navbar-nav.mr-2.ml-auto
             //- li.nav-item
             //-     button.nav-link.p-3(:title="$t('command')")
             //-         i.icon-command
             li.nav-item.dropdown(v-if='addUnderOptionalParent.length || addUnderEntity.length')
                 button.nav-link.dropdown-toggle.p-3(:title="$t('add')", @mouseover='addMenuDropdown = true', @mouseleave='addMenuDropdown = false', @click='addMenuDropdown = !addMenuDropdown')
                     i.icon-add
-                .dropdown-menu.show.py-2(:class='{ show: addMenuDropdown }')
-                    router-link.dropdown-item.py-1.px-3(v-for='a in addMenu', :to='a.to') {{ a.name }}
+                .dropdown-menu.py-2(:class='{ show: addMenuDropdown }')
+                    router-link.dropdown-item.py-1.px-3(v-for='a in addMenu', :key='a.name', :to='a.to') {{ a.name }}
             li.nav-item(v-if="['owner', 'editor'].includes(right)")
-                button.nav-link.p-3(@click='toggleEdit(true)', :title="$t('edit')")
+                router-link.nav-link.p-3(:to="{ name: 'edit', params: { entity: _id }, query: $route.query }", :title="$t('edit')")
                     i.icon-edit
             //- li.nav-item
             //-     button.nav-link.p-3(:title="$t('duplicate')")
@@ -29,9 +29,3 @@ nav.navbar.navbar-expand.col.p-0
             //- li.nav-item
             //-     button.nav-link.p-3(:title="$t('share')")
             //-         i.icon-share
-
-        h2.mb-0.ml-2(v-if='entity && edit') {{ $t('editTitle', { name: name }) }}
-        ul.navbar-nav.mr-2.ml-auto(v-if='entity && edit')
-            li.nav-item
-                button.nav-link.p-3(@click='toggleEdit(false)', :title="$t('close')")
-                    i.icon-close

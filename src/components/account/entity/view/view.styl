@@ -1,0 +1,76 @@
+.col-12.h-100
+    padding-bottom 56px
+
+#content
+    background #ffffff
+    overflow-y auto
+    overflow-x hidden
+    -webkit-overflow-scrolling touch
+    // padding-right env(safe-area-inset-right) !important
+
+#parent
+    border-bottom 1px solid #d6ddde
+
+    a
+        color #99aaae
+        text-decoration none
+
+        &:hover
+            color inherit
+
+    i
+        color #99aaae
+
+h1
+    font-size 28px
+
+h2
+    font-size 20px
+
+    span
+        color #99aaae
+        font-weight 200
+
+h3
+    font-size 18px
+
+    span
+        color #99aaae
+        font-weight 200
+
+a
+    text-decoration underline
+
+    &:hover
+        text-decoration underline
+
+.img-thumbnail
+    border 1px solid #d6ddde
+    border-radius 0
+
+.table
+    th
+    td
+        border none
+
+        a
+            text-decoration none
+
+        img
+            height 24px
+            width 24px
+
+pre
+    font-size 10px
+
+@media (prefers-color-scheme: dark)
+    #parent
+        border-color #697278
+
+    #content
+        color #ffffff
+        background-color #373838
+
+    .img-thumbnail
+        border-color #697278
+        background-color #373838

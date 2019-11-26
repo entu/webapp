@@ -14,7 +14,6 @@ export default {
   },
   created () {
     this.getEntity()
-    this.getChilds()
   },
   updated () {
     this.setTitle(this.name)
@@ -24,40 +23,22 @@ export default {
       error: null,
       entity: null,
       definition: null,
-      properties: [],
-      childs: null,
-      childsCount: 0
+      properties: []
     }
   },
   watch: {
     _id () {
       this.getEntity()
-      this.getChilds()
     }
   },
   computed: {
-    isQuery () {
-      return Object.keys(this.$route.query).length > 0
-    },
     _id () {
       return this.$route.params.entity !== '_' ? this.$route.params.entity : null
-    },
-    _thumbnail () {
-      if (!this.entity) { return '' }
-
-      return _get(this, 'entity._thumbnail')
     },
     name () {
       if (!this.entity) { return '' }
 
       return this.getValue(this.entity.name)
-    },
-    _parent () {
-      if (this.entity && this.entity._parent) {
-        return this.entity._parent.map(p => {
-          return { _id: p.reference, string: p.string, to: { name: 'entity', params: { entity: p.reference }, query: this.$route.query } }
-        })
-      }
     },
     right () {
       if (_get(this.entity, '_owner', []).find(x => x.reference === this.userId)) { return 'owner' }
@@ -72,6 +53,10 @@ export default {
         this.entity = null
         return
       }
+
+      // if (!['owner', 'editor'].includes(this.right)) {
+      //   this.toggleEdit(false)
+      // }
 
       this.entity = null
       this.image = null
@@ -175,45 +160,6 @@ export default {
       this.entity = entity
       this.definition = definition
       this.properties = properties
-
-      if (!['owner', 'editor'].includes(this.right)) {
-        this.toggleEdit(false)
-      }
-    },
-    async getChilds () {
-      if (!this._id) {
-        this.entity = null
-        return
-      }
-
-      this.childs = null
-      this.childsCount = 0
-
-      const query = {
-        '_parent.reference': this._id,
-        props: '_thumbnail,_type.string,name',
-        sort: 'name.string',
-        limit: 1000
-      }
-
-      const childsResponse = await this.axios.get(`/entity`, { params: query })
-
-      let childs = []
-      childsResponse.entities.forEach(entity => {
-        childs.push({
-          _id: entity._id,
-          _thumbnail: entity._thumbnail,
-          _type: this.getValue(entity._type),
-          name: this.getValue(entity.name),
-          to: { name: 'entity', params: { entity: entity._id }, query: this.$route.query }
-        })
-      })
-
-      this.childsCount = childs.length
-
-      if (childs.length > 0) {
-        this.childs = _groupBy(childs, '_type')
-      }
     },
     getType (value) {
       if (value.hasOwnProperty('date')) {

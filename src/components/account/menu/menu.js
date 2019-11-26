@@ -16,9 +16,6 @@ export default {
     this.getMenu()
   },
   computed: {
-    entity () {
-      return this.$route.params.entity || '_'
-    },
     authTo () {
       if (this.accounts.length === 1) {
         return { name: 'auth', params: { id: 'exit' } }

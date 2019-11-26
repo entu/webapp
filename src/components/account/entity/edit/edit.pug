@@ -1,0 +1,11 @@
+.col-12.h-100(:class="{ 'col-sm-8 col-md-6 col-lg-7': showMenu, 'col-sm-8 col-md-8 col-lg-9': !showMenu }")
+    .row
+        transition(name='fade')
+            entity-tools(:name='name')
+
+    .row.h-100
+        #content.col.h-100
+            transition(name='fade', mode='out-in', :duration=100)
+                .row.mt-4.mb-3(v-if='entity')
+                    .col-12
+                        entity-property(v-for='p in properties', :key='p.key', :property='p')

@@ -1,0 +1,10 @@
+nav.navbar.navbar-expand.col.p-0
+    .collapse.navbar-collapse
+        transition(name='fade', :duration=200)
+            .loader.m-3(v-if='activeRequests')
+
+        h2.mb-0.ml-3.ml-md-2 {{ $t('editTitle', { name: name }) }}
+        ul.navbar-nav.mr-1.ml-auto
+            li.nav-item
+                router-link.nav-link.p-3(:to="{ name: 'entity', params: { entity: $route.params.entity }, query: $route.query }", :title="$t('close')")
+                    i.icon-close

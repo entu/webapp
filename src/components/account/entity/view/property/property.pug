@@ -1,0 +1,9 @@
+.row.my-1(v-if='visible')
+    strong.col-12.col-md-4.col-xl-3.text-md-right {{ property.name || property.key }}
+    .col-12.col-md-8.col-xl-9
+        .property(v-for='i in values' v-if='i')
+            template
+                p.mb-1(v-if='i.to')
+                    router-link(:to='i.to', :target='i.target') {{ i.string }}
+                    span {{ i.info }}
+                p.mb-1(v-else-if='i.string') {{ i.string }}

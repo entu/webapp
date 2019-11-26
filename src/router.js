@@ -8,7 +8,8 @@ import auth from './components/auth/auth.vue'
 import accountMenu from './components/account/menu/menu.vue'
 import accountList from './components/account/list/list.vue'
 import accountInfo from './components/account/info/info.vue'
-import entityView from './components/account/entity/entity.vue'
+import entityView from './components/account/entity/view/view.vue'
+import entityEdit from './components/account/entity/edit/edit.vue'
 import file from './components/file/file.vue'
 
 Vue.use(VueRouter)
@@ -39,15 +40,6 @@ if (['entu.app', 'localhost'].includes(window.location.hostname)) {
         }
       },
       {
-        name: 'list',
-        path: '/:account/_',
-        components: {
-          default: entityView,
-          menu: accountMenu,
-          list: accountList,
-        }
-      },
-      {
         name: 'entity',
         path: '/:account/:entity',
         components: {
@@ -57,10 +49,19 @@ if (['entu.app', 'localhost'].includes(window.location.hostname)) {
         }
       },
       {
+        name: 'edit',
+        path: '/:account/:entity/edit',
+        components: {
+          default: entityEdit,
+          menu: accountMenu,
+          list: accountList,
+        }
+      },
+      {
         name: 'add',
         path: '/:account/:parent/add/:type',
         components: {
-          default: entityView,
+          default: entityEdit,
           menu: accountMenu,
           list: accountList,
         }
@@ -90,15 +91,6 @@ if (['entu.app', 'localhost'].includes(window.location.hostname)) {
         }
       },
       {
-        name: 'list',
-        path: '/_',
-        components: {
-          default: entityView,
-          menu: accountMenu,
-          list: accountList,
-        }
-      },
-      {
         name: 'entity',
         path: '/:entity',
         components: {
@@ -108,10 +100,19 @@ if (['entu.app', 'localhost'].includes(window.location.hostname)) {
         }
       },
       {
+        name: 'edit',
+        path: '/:entity/edit',
+        components: {
+          default: entityEdit,
+          menu: accountMenu,
+          list: accountList,
+        }
+      },
+      {
         name: 'add',
         path: '/:parent/add/:type',
         components: {
-          default: entityView,
+          default: entityEdit,
           menu: accountMenu,
           list: accountList,
         }
