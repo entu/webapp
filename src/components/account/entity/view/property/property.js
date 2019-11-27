@@ -5,7 +5,6 @@ import _get from 'lodash/get'
 export default {
   name: 'EntityProperty',
   props: [
-    'entity',
     'property'
   ],
   computed: {
