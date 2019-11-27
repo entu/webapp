@@ -98,7 +98,10 @@ export default {
       })
 
       return a
-    }
+    },
+    hasQuery () {
+      return Object.keys(this.$route.query).length > 0
+    },
   },
   methods: {
     ...mapMutations([

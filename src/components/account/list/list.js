@@ -39,9 +39,6 @@ export default {
     }
   },
   computed: {
-    isQuery () {
-      return Object.keys(this.$route.query).length > 0
-    },
     queryStr () {
       return JSON.stringify(this.$route.query)
     },
@@ -54,7 +51,7 @@ export default {
   },
   methods: {
     async getEntities (restart) {
-      if (!this.isQuery) { return }
+      if (!this.hasQuery) { return }
       if (this.loading) { return }
       if (restart) {
         this.skip = 0

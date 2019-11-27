@@ -59,6 +59,24 @@ export default {
       if (this.$route.params.parent) {
         return this.prevRoute
       }
+    },
+    viewClass () {
+      if (this.hasQuery && this.showMenu) {
+        return [
+          'col-sm-8',
+          'col-md-6',
+          'col-lg-7'
+        ]
+      } else if (this.hasQuery && !this.showMenu) {
+        return [
+          'col-sm-8',
+          'col-lg-9'
+        ]
+      } else if (!this.hasQuery) {
+        return [
+          'col-md-10'
+        ]
+      }
     }
   },
   methods: {

@@ -61,6 +61,24 @@ export default {
       if (_get(this.entity, '_editor', []).find(x => x.reference === this.userId)) { return 'editor' }
       if (_get(this.entity, '_expander', []).find(x => x.reference === this.userId)) { return 'expander' }
       if (_get(this.entity, '_viewer', []).find(x => x.reference === this.userId)) { return 'viewer' }
+    },
+    viewClass () {
+      if (this.hasQuery && this.showMenu) {
+        return [
+          'col-sm-8',
+          'col-md-6',
+          'col-lg-7'
+        ]
+      } else if (this.hasQuery && !this.showMenu) {
+        return [
+          'col-sm-8',
+          'col-lg-9'
+        ]
+      } else if (!this.hasQuery) {
+        return [
+          'col-md-10'
+        ]
+      }
     }
   },
   methods: {
