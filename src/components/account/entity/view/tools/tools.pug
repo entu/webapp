@@ -6,9 +6,9 @@ nav.navbar.navbar-expand.col.p-0
             .loader.m-3(v-if='activeRequests')
 
         ul.navbar-nav.mr-2.ml-auto
-            //- li.nav-item
-            //-     button.nav-link.p-3(:title="$t('command')")
-            //-         i.icon-command
+            li.nav-item
+                button.nav-link.p-3(:title="$t('command')")
+                    i.icon-command
             li.nav-item.dropdown(v-if='addUnderOptionalParent.length || addUnderEntity.length')
                 button.nav-link.dropdown-toggle.p-3(:title="$t('add')", @mouseover='addMenuDropdown = true', @mouseleave='addMenuDropdown = false', @click='addMenuDropdown = !addMenuDropdown')
                     i.icon-add
@@ -17,15 +17,15 @@ nav.navbar.navbar-expand.col.p-0
             li.nav-item(v-if="['owner', 'editor'].includes(right)")
                 router-link.nav-link.p-3(:to="{ name: 'edit', params: { entity: _id }, query: $route.query }", :title="$t('edit')")
                     i.icon-edit
-            //- li.nav-item
-            //-     button.nav-link.p-3(:title="$t('duplicate')")
-            //-         i.icon-duplicate
+            li.nav-item
+                button.nav-link.p-3(:title="$t('duplicate')")
+                    i.icon-duplicate
             li.nav-item(v-if="['owner'].includes(right)")
                 button.nav-link.p-3(:title="$t('parent')")
                     i.icon-parent
             li.nav-item(v-if="['owner'].includes(right)")
                 button.nav-link.p-3(:title="$t('unlock')")
                     i.icon-unlock
-            //- li.nav-item
-            //-     button.nav-link.p-3(:title="$t('share')")
-            //-         i.icon-share
+            li.nav-item
+                button.nav-link.p-3(:title="$t('share')")
+                    i.icon-share
