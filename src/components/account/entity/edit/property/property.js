@@ -8,6 +8,18 @@ export default {
     'property'
   ],
   computed: {
+    add () {
+      return this.$route.name === 'add'
+    },
+    entityId () {
+      return this.add ? this.newEntityId : this.$route.params.entity
+    },
+    parentId () {
+      return this.$route.params.parent
+    },
+    type () {
+      return this.$route.params.type
+    },
     visible () {
       if (this.property.key.startsWith('_')) { return }
       if (this.property.formula) { return }
@@ -194,7 +206,19 @@ export default {
           return
       }
 
-      const addResponse = await this.axios.post(`/entity/${this.$route.params.entity}`, [newProperty])
+      if (this.entityId) {
+        var addResponse = await this.axios.post(`/entity/${this.entityId}`, [newProperty])
+      } else {
+        let newProperties = [
+          { type: '_parent', reference: this.parentId },
+          { type: '_type', string: this.type }
+        ]
+        newProperties.push(newProperty)
+
+        var addResponse = await this.axios.post('/entity', newProperties)
+        this.setNewEntityId(addResponse._id)
+      }
+
       const newId = _get(addResponse, 'properties.0._id')
 
       if (idx > -1) {

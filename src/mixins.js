@@ -26,7 +26,8 @@ export default {
       'showEntity',
       'showEdit',
       'activeRequests',
-      'activeMenu'
+      'activeMenu',
+      'newEntityId'
     ]),
     customHost () {
       if (!['entu.app', 'localhost'].includes(window.location.hostname)) {
@@ -108,7 +109,8 @@ export default {
       'toggleMenu',
       'toggleList',
       'toggleEdit',
-      'setActiveMenu'
+      'setActiveMenu',
+      'setNewEntityId'
     ]),
     setAccounts (accounts) {
       if (accounts && accounts.length > 0) {

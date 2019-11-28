@@ -1,6 +1,8 @@
 en:
+    addTitle: Add new {type}
     editTitle: Edit object "{name}"
     close: Close
 et:
+    addTitle: Lisa uus {type}
     editTitle: Muuda objekti "{name}"
     close: Sulge

@@ -32,19 +32,22 @@ export default {
       vm.prevRoute = from
     })
   },
-  watch: {
-    _id () {
-      this.getEntity()
-    }
-  },
   computed: {
-    _id () {
+    add () {
+      return this.$route.name === 'add'
+    },
+    entityId () {
       return this.$route.params.entity !== '_' ? this.$route.params.entity : null
     },
+    parentId () {
+      return this.$route.params.parent
+    },
     name () {
-      if (!this.entity) { return '' }
-
-      return this.getValue(this.entity.name)
+      if (this.add) {
+        return this.definition ? this.getValue(this.definition.name) : ''
+      } else {
+        return this.entity ? this.getValue(this.entity.name) : ''
+      }
     },
     right () {
       if (_get(this.entity, '_owner', []).find(x => x.reference === this.userId)) { return 'owner' }
@@ -81,26 +84,23 @@ export default {
   },
   methods: {
     async getEntity () {
-      if (!this._id) {
-        this.entity = null
-        return
-      }
-
-      // if (!['owner', 'editor'].includes(this.right)) {
-      //   this.toggleEdit(false)
-      // }
-
       this.entity = null
-      this.image = null
 
-      const { entity } = await this.axios.get(`/entity/${this._id}`)
+      if (this.add) {
+        var entity = {}
+        var type = this.$route.params.type
+      } else {
+        var { entity } = await this.axios.get(`/entity/${this.entityId}`)
+        var type = _get(entity, '_type.0.string')
+      }
 
       const definitionResponse = await this.axios.get('/entity', {
         params: {
           '_type.string': 'entity',
-          'key.string': _get(entity, '_type.0.string'),
+          'key.string': type,
           props: [
             '_id',
+            'name',
             'allowed_child'
           ].join(','),
           limit: 1

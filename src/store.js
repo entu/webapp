@@ -15,7 +15,8 @@ export default new Vuex.Store({
     showList: document.body.clientWidth > 576,
     showEdit: false,
     activeRequests: 0,
-    activeMenu: null
+    activeMenu: null,
+    newEntityId: null
   },
   getters: {
     locales: state => state.locales.filter(l => l !== state.locale),
@@ -26,7 +27,8 @@ export default new Vuex.Store({
     showEntity: state => !state.showList || document.body.clientWidth >= 576,
     showEdit: state => state.showEdit,
     activeRequests: state => state.activeRequests,
-    activeMenu: state => state.activeMenu
+    activeMenu: state => state.activeMenu,
+    newEntityId: state => state.newEntityId
   },
   mutations: {
     toggleMenu: (state, visible) => {
@@ -47,6 +49,9 @@ export default new Vuex.Store({
     },
     setActiveMenu: (state, _id) => {
       state.activeMenu = _id
+    },
+    setNewEntityId: (state, _id) => {
+      state.newEntityId = _id
     }
   }
 })
