@@ -1,7 +1,7 @@
 .col-12.h-100(v-if='showEntity', :class="viewClass")
     .row
         transition(name='fade')
-            entity-tools(:name='name', :closeTo='closeTo')
+            entity-tools(:add='add', :name='name', :closeTo='closeTo')
 
     .row.h-100
         #content.col.h-100
