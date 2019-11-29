@@ -111,7 +111,6 @@ export default {
     logOut () {
       this.setAccounts()
       this.authenticating = false
-      window.location.reload()
     }
   }
 }
