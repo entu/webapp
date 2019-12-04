@@ -17,6 +17,11 @@ export default {
           click: this.authGoogle
         },
         {
+          name: 'Microsoft',
+          icon: 'icon-microsoft',
+          click: this.authMicrosoft
+        },
+        {
           name: 'LHV Pank',
           icon: 'icon-bank',
           click: this.authLHV
@@ -74,6 +79,10 @@ export default {
     authGoogle () {
       this.authenticating = true
       window.location = `https://api.entu.app/auth/google?next=${window.location.origin}/auth/?key=`
+    },
+    authMicrosoft () {
+      this.authenticating = true
+      window.location = `https://api.entu.app/auth/microsoft?next=${window.location.origin}/auth/?key=`
     },
     async authLHV () {
       this.authenticating = true
