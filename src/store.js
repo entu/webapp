@@ -10,7 +10,7 @@ export default new Vuex.Store({
   state: {
     locales: ['et', 'en'],
     locale: localStorage.getItem('locale') || 'et',
-    background: 'bg-' + Math.ceil(Math.random() * 12),
+    background: 'bg-' + Math.ceil(Math.random() * 14),
     showMenu: document.body.clientWidth > 768,
     showList: document.body.clientWidth > 576,
     showEdit: false,
