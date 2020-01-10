@@ -44,7 +44,7 @@ export default {
     },
     name () {
       if (this.add) {
-        return this.definition ? this.getValue(this.definition.name) : ''
+        return this.definition ? this.getValue(this.definition.label) || this.getValue(this.definition.name) : ''
       } else {
         return this.entity ? this.getValue(this.entity.name) : ''
       }
@@ -91,32 +91,30 @@ export default {
         var type = this.$route.params.type
       } else {
         var { entity } = await this.axios.get(`/entity/${this.entityId}`)
-        var type = _get(entity, '_type.0.string')
+        var type = _get(entity, '_type.0.reference')
       }
 
-      const definitionResponse = await this.axios.get('/entity', {
+      const { entity: definition } = await this.axios.get(`/entity/${type}`, {
         params: {
-          '_type.string': 'entity',
-          'key.string': type,
           props: [
-            '_id',
             'name',
+            'label',
             'allowed_child'
           ].join(','),
-          limit: 1
         }
       })
-      const definition = definitionResponse.entities[0]
+
+      this.definition = definition
 
       let properties = []
-      if (definition) {
+      if (this.definition) {
         const { entities } = await this.axios.get('/entity', {
           params: {
             '_type.string': 'property',
-            '_parent.reference': definition._id,
+            '_parent.reference': this.definition._id,
             props: [
-              'key.string',
               'name.string',
+              'label',
               'ordinal.integer',
               'type.string',
               'public.boolean',
@@ -131,8 +129,8 @@ export default {
 
         properties = entities.map(x => {
           const p = {
-            key: _get(x, 'key.0.string', null),
             name: _get(x, 'name.0.string', null),
+            label: this.getValue(_get(x, 'label', null)),
             ordinal: _get(x, 'ordinal.0.integer', 0),
             type: _get(x, 'type.0.string', false),
             public: _get(x, 'public.0.boolean', false),
@@ -144,8 +142,8 @@ export default {
             values: []
           }
 
-          if (_get(x, 'key.0.string') && _get(entity, _get(x, 'key.0.string'), []).length > 0) {
-            p.values = _get(entity, _get(x, 'key.0.string', null), []).map(x => {
+          if (_get(x, 'name.0.string') && _get(entity, _get(x, 'name.0.string'), []).length > 0) {
+            p.values = _get(entity, _get(x, 'name.0.string', null), []).map(x => {
               return { ...x, type: p.type }
             })
           }
@@ -154,16 +152,16 @@ export default {
         })
       }
 
-      for (var key in entity) {
-        if (!entity.hasOwnProperty(key)) { continue }
+      for (var name in entity) {
+        if (!entity.hasOwnProperty(name)) { continue }
 
-        if (!properties.find(x => x.key === key) && Array.isArray(entity[key])) {
+        if (!properties.find(x => x.name === name) && Array.isArray(entity[name])) {
           const newProperty = {
-            key: key,
+            name: name,
             values: []
           }
 
-          entity[key].forEach(v => {
+          entity[name].forEach(v => {
             newProperty.values.push({ ...v, type: this.getType(v) })
           })
 
@@ -180,17 +178,16 @@ export default {
         if (_isNumber(a.ordinal) && !_isNumber(b.ordinal)) { return -1 }
         if (!_isNumber(a.ordinal) && _isNumber(b.ordinal)) { return 1 }
 
-        if (!a.key.startsWith('_') && b.key.startsWith('_')) { return -1 }
-        if (a.key.startsWith('_') && !b.key.startsWith('_')) { return 1 }
+        if (!a.name.startsWith('_') && b.name.startsWith('_')) { return -1 }
+        if (a.name.startsWith('_') && !b.name.startsWith('_')) { return 1 }
 
-        if (!a.key || a.key < b.key) { return -1 }
-        if (!b.key || a.key > b.key) { return 1 }
+        if (!a.name || a.name < b.name) { return -1 }
+        if (!b.name || a.name > b.name) { return 1 }
 
         return 0
       })
 
       this.entity = entity
-      this.definition = definition
       this.properties = properties
     },
     getType (value) {

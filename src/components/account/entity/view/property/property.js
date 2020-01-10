@@ -9,8 +9,8 @@ export default {
   ],
   computed: {
     visible () {
-      if (this.property.key.startsWith('_')) { return }
-      if (this.property.key === 'name') { return }
+      if (this.property.name.startsWith('_')) { return }
+      if (this.property.name === 'name') { return }
       if (this.values.length === 0) { return }
       if (this.property.formula) { return }
 
@@ -18,7 +18,7 @@ export default {
     },
     values () {
       const values = this.property.values.filter(v => !v.deleted && (!v.language || v.language === this.locale)).map(v => {
-        if (v.formula) {
+        if (v.formula && !v.string) {
           return {
             _id: v._id,
             string: v.formula

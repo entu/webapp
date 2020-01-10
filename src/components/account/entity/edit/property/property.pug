@@ -1,5 +1,5 @@
 .row.my-1.mb-3(v-if='visible')
-    strong.col-12.col-md-4.col-xl-3.mt-2.text-md-right {{ property.name || property.key }}
+    strong.col-12.col-md-4.col-xl-3.mt-2.text-md-right {{ property.label || property.name }}
     .col-12.col-md-8.col-xl-9
         .property(v-for='i in values' v-if='i')
             template

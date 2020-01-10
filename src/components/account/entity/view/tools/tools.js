@@ -29,8 +29,8 @@ export default {
           'add_from_menu.reference': val,
           'optional_parent._id.exists': 'true',
           props: [
-            'key',
             'name',
+            'label',
             'optional_parent'
           ].join(',')
         }
@@ -41,7 +41,7 @@ export default {
           const id = _get(entities, [i, 'optional_parent', n, 'reference'])
           if (!id) { continue }
 
-          const { entity } = await this.axios.get(`/entity/${id}`, {
+          const { entity: parent } = await this.axios.get(`/entity/${id}`, {
             params: {
               props: [
                 'name',
@@ -52,43 +52,23 @@ export default {
             }
           })
 
-          const rights = [..._get(entity, '_owner', []), ..._get(entity, '_editor', []), ..._get(entity, '_expander', [])]
+          const rights = [..._get(parent, '_owner', []), ..._get(parent, '_editor', []), ..._get(parent, '_expander', [])]
           if (rights.find(x => x.reference === this.userId)) {
             this.addUnderOptionalParent.push({
-              type: this.getValue(entities[i].key),
-              typeName: this.getValue(entities[i].name),
-              parent: entity._id,
-              parentName: this.getValue(entity.name)
+              type: entities[i]._id,
+              typeName: this.getValue(entities[i].label) || this.getValue(entities[i].name),
+              parent: parent._id,
+              parentName: this.getValue(parent.name)
             })
           }
         }
       }
     },
-    async definition (val) {
-      this.addUnderEntity = []
-
-      if (!val) { return }
-      if (!val.allowed_child) { return }
-      if (!['owner', 'editor', 'expander'].includes(this.right)) { return }
-
-      for (var i = 0; i < val.allowed_child.length; i++) {
-        const id = _get(val, ['allowed_child', i, 'reference'])
-        if (!id) { continue }
-
-        const { entity } = await this.axios.get(`/entity/${id}`, {
-          params: {
-            props: [
-              'name',
-              'key'
-            ].join(',')
-          }
-        })
-
-        this.addUnderEntity.push({
-          type: this.getValue(entity.key),
-          typeName: this.getValue(entity.name)
-        })
-      }
+    async definition () {
+      this.setAddUnderEntity()
+    },
+    async right () {
+      this.setAddUnderEntity()
     }
   },
   computed: {
@@ -100,6 +80,7 @@ export default {
 
       const to = items.map(x => {
         return {
+          key: (x.parent || _get(this, 'entity._id')) + x.type,
           name: x.typeName,
           to: { name: 'add', params: { parent: x.parent || _get(this, 'entity._id'), type: x.type }, query: this.$route.query }
         }
@@ -112,6 +93,35 @@ export default {
       })
 
       return to
+    }
+  },
+  methods: {
+    async setAddUnderEntity () {
+      this.addUnderEntity = []
+
+      if (!this.right) { return }
+      if (!this.definition) { return }
+      if (!this.definition.allowed_child) { return }
+      if (!['owner', 'editor', 'expander'].includes(this.right)) { return }
+
+      for (var i = 0; i < this.definition.allowed_child.length; i++) {
+        const id = _get(this.definition, ['allowed_child', i, 'reference'])
+        if (!id) { continue }
+
+        const { entity } = await this.axios.get(`/entity/${id}`, {
+          params: {
+            props: [
+              'name',
+              'label'
+            ].join(',')
+          }
+        })
+
+        this.addUnderEntity.push({
+          type: entity._id,
+          typeName: this.getValue(entity.label) || this.getValue(entity.name)
+        })
+      }
     }
   }
 }

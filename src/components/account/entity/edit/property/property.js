@@ -17,12 +17,15 @@ export default {
     parentId () {
       return this.$route.params.parent
     },
-    type () {
+    typeId () {
       return this.$route.params.type
     },
     visible () {
-      if (this.property.key.startsWith('_')) { return }
-      if (this.property.formula) { return }
+      if (_get(this, 'property.name').startsWith('_')) { return }
+      if (_get(this, 'property.formula')) { return }
+
+      if (_get(this, 'property.classifier', []).length) { return }
+      if (_get(this, 'property.values', []).find(x => x.formula)) { return }
 
       return true
     },
@@ -31,7 +34,8 @@ export default {
         if (v.formula) {
           return {
             _id: v._id,
-            string: v.formula
+            control: 'formula',
+            string: v.string
           }
         }
         switch (v.type) {
@@ -164,7 +168,7 @@ export default {
 
       const idx = this.property.values.findIndex(x => x._id === value._id)
       const newProperty = {
-        type: this.property.key
+        type: this.property.name
       }
 
       if (value._id) {
@@ -211,7 +215,7 @@ export default {
       } else {
         let newProperties = [
           { type: '_parent', reference: this.parentId },
-          { type: '_type', string: this.type }
+          { type: '_type', reference: this.typeId }
         ]
         newProperties.push(newProperty)
 

@@ -17,7 +17,7 @@
                     div(:class="{ 'col-10': _thumbnail,  'col-12': !_thumbnail }")
                         h1.mb-4 {{ name || error }}
 
-                        entity-property(v-for='p in properties', :key='p.key', :property='p')
+                        entity-property(v-for='p in properties', :key='p.name', :property='p')
 
                     .col-2(v-if='_thumbnail')
                         img.col.p-0.img-thumbnail(:src='_thumbnail', :alt='name')
