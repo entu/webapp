@@ -115,7 +115,7 @@ export default {
         })
       } else if (['date', 'datetime', 'integer', 'decimal', 'string'].includes(this.property.type)) {
         values.push({
-          control: 'input',
+          control: this.property.set && this.property.set.length ? 'set' : 'input',
           string : ''
         })
       } else if (this.property.type === 'text') {

@@ -14,6 +14,7 @@
                     | {{ i.string }}
                     span {{ property.formula }}
                 select.col-12.col-md-12.col-xl-8.my-2(v-else-if='i.control === "set"', :value='i.string', @change='save(i, $event.target.value)')
+                    option
                     option(v-for='s in property.set', :value='s') {{ s }}
                 pre.col-12.col-md-12.col-xl-8.my-2(v-else) {{ i }}
         //- pre.col-12.col-md-12.col-xl-8.my-2 {{ property }}
