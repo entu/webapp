@@ -122,7 +122,8 @@ export default {
               'multilingual.boolean',
               'list.boolean',
               'mandatory.boolean',
-              'classifier.reference'
+              'classifier.reference',
+              'formula.string'
             ].join(',')
           }
         })
@@ -139,6 +140,7 @@ export default {
             list: _get(x, 'list.0.boolean', false),
             mandatory: _get(x, 'mandatory.0.boolean', false),
             classifier: _get(x, 'classifier', []).map(x => x.reference),
+            formula: this.getValue(_get(x, 'formula', null)),
             values: []
           }
 

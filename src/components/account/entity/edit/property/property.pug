@@ -3,8 +3,15 @@
     .col-12.col-md-8.col-xl-9
         .property(v-for='i in values' v-if='i')
             template
-                .mt-1(v-if='i.control === "boolean"')
+                .col-12.col-md-12.col-xl-8.my-2(v-if='property.readonly') {{ i.string }}
+                .mt-1(v-else-if='i.control === "boolean"')
                     i.icon-on(v-if='i.boolean', @click='save(i, false)')
                     i.icon-off(v-if='!i.boolean', @click='save(i, true)')
-                input.col-12.col-md-12.col-xl-8.my-2(v-if='i.control === "input"', :value='i.string', @keydown='change', @blur='save(i, $event.target.value)')
+                input.col-12.col-md-12.col-xl-8.my-2(v-else-if='i.control === "input"', :value='i.string', @keydown='change', @blur='save(i, $event.target.value)')
                 textarea.col-12.col-md-12.col-xl-8.my-2(v-else-if='i.control === "text"', :value='i.string', @focus='resizeText', @input='resizeText', @keydown='change', @blur='save(i, $event.target.value)', rows=3)
+                //- .col-12.col-md-12.col-xl-8.my-2(v-else) {{ i }}
+                .col-12.col-md-12.col-xl-8.my-2(v-else-if='i.control === "formula"')
+                    | {{ i.string }}
+                    span {{ property.formula }}
+                pre.col-12.col-md-12.col-xl-8.my-2(v-else) {{ i }}
+        //- pre.col-12.col-md-12.col-xl-8.my-2 {{ property }}

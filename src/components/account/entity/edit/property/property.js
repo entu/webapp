@@ -22,122 +22,84 @@ export default {
     },
     visible () {
       if (_get(this, 'property.name').startsWith('_')) { return }
-      if (_get(this, 'property.formula')) { return }
-
       if (_get(this, 'property.classifier', []).length) { return }
-      if (_get(this, 'property.values', []).find(x => x.formula)) { return }
 
       return true
     },
     values () {
       const values = this.property.values.filter(v => !v.deleted && (!v.language || v.language === this.locale)).map(v => {
-        if (v.formula) {
-          return {
-            _id: v._id,
-            control: 'formula',
-            string: v.string
-          }
-        }
+        let value = v
+
         switch (v.type) {
           case 'date':
-            return {
-              _id: v._id,
-              control: 'input',
-              string: (new Date(v.date.substr(0, 10))).toLocaleDateString(this.locale)
-            }
+            value.control = 'input'
+            value.string = (new Date(v.date.substr(0, 10))).toLocaleDateString(this.locale)
             break
           case 'datetime':
-            return {
-              _id: v._id,
-              control: 'input',
-              string: (new Date(v.datetime)).toLocaleString(this.locale)
-            }
+            value.control = 'input'
+            value.string = (new Date(v.datetime)).toLocaleString(this.locale)
             break
           case 'integer':
-            return {
-              _id: v._id,
-              control: 'input',
-              string: v.integer.toLocaleString(this.locale, { minimumFractionDigits: 0 })
-            }
+            value.control = 'input'
+            value.string = v.integer.toLocaleString(this.locale, { minimumFractionDigits: 0 })
             break
           case 'decimal':
-            return {
-              _id: v._id,
-              control: 'input',
-              string: v.decimal.toLocaleString(this.locale, { minimumFractionDigits: 2 })
-            }
+            value.control = 'input'
+            value.string = v.decimal.toLocaleString(this.locale, { minimumFractionDigits: 2 })
             break
           case 'reference':
-            return {
-              _id: v._id,
-              control: 'reference',
-              string: v.string || v.reference,
-              to: {
-                name: 'entity',
-                params: {
-                  entity: v.reference
-                },
-                query: this.$route.query
-              }
+            value.control = 'reference'
+            value.string = v.string || v.reference
+            value.to = {
+              name: 'entity',
+              params: {
+                entity: v.reference
+              },
+              query: this.$route.query
             }
             break
           case 'atby':
-            return {
-              _id: v._id,
-              control: 'atby',
-              string: v.string || v.reference,
-              to: {
-                name: 'entity',
-                params: {
-                  entity: v.reference
-                },
-                query: this.$route.query
+            value.control = 'atby'
+            value.string = v.string || v.reference
+            value.to = {
+              name: 'entity',
+              params: {
+                entity: v.reference
               },
-              info: (new Date(v.datetime)).toLocaleString(this.locale)
+              query: this.$route.query
             }
+            value.info = (new Date(v.datetime)).toLocaleString(this.locale)
             break
           case 'file':
-            return {
-              _id: v._id,
-              control: 'file',
-              string: v.filename,
-              to: {
-                name: 'file',
-                params: {
-                  account: this.account,
-                  id: v._id
-                }
-              },
-              target: '_blank',
-              info: this.getReadableFileSize(v.size)
+            value.control = 'file'
+            value.string = v.filename
+            value.to = {
+              name: 'file',
+              params: {
+                account: this.account,
+                id: v._id
+              }
             }
+            value.target = '_blank'
+            value.info = this.getReadableFileSize(v.size)
             break
           case 'boolean':
-            return {
-              _id: v._id,
-              control: 'boolean',
-              string: v.boolean ? this.$t('true') : this.$t('false'),
-              boolean: v.boolean
-            }
+            value.control = 'boolean'
+            value.string = v.boolean ? this.$t('true') : this.$t('false')
             break
           case 'string':
-            return {
-              _id: v._id,
-              control: 'input',
-              string: v.string
-            }
+            value.control = 'input'
             break
           case 'text':
-            return {
-              _id: v._id,
-              control: 'text',
-              string: v.string
-            }
-            break
-          default:
-            return v
+            value.control = 'text'
             break
         }
+
+        if (this.property.formula) {
+          value.control = 'formula'
+        }
+
+        return value
       })
 
       if (!this.property.list && values.length > 0) { return values }
