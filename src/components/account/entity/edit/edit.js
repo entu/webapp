@@ -123,7 +123,8 @@ export default {
               'list.boolean',
               'mandatory.boolean',
               'classifier.reference',
-              'formula.string'
+              'formula.string',
+              'set.string'
             ].join(',')
           }
         })
@@ -141,6 +142,7 @@ export default {
             mandatory: _get(x, 'mandatory.0.boolean', false),
             classifier: _get(x, 'classifier', []).map(x => x.reference),
             formula: this.getValue(_get(x, 'formula', null)),
+            set: _get(x, 'set', []).map(x => x.string).sort(),
             values: []
           }
 

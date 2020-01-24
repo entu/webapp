@@ -99,6 +99,10 @@ export default {
           value.control = 'formula'
         }
 
+        if (this.property.set && this.property.set.length) {
+          value.control = 'set'
+        }
+
         return value
       })
 
