@@ -9,11 +9,6 @@ export default {
   props: [
     'property'
   ],
-  data () {
-    return {
-      uploadProgress: {}
-    }
-  },
   created () {
     this.addEmptyValue()
   },
@@ -180,6 +175,12 @@ export default {
             }.bind(this)
           }
 
+          if (this.activeUploads === 0) {
+            window.onbeforeunload = (e) => 'Sure?'
+          }
+
+          this.$store.commit('setActiveUploads', 1)
+
           axios.put(property.upload.url, file, config)
             .then(response => {
               delete property.percent
@@ -188,6 +189,12 @@ export default {
               property.percent = error.toString()
             })
             .then(() => {
+              this.$store.commit('setActiveUploads', -1)
+
+              if (this.activeUploads === 0) {
+                window.onbeforeunload = null
+              }
+
               this.$forceUpdate()
             })
         }

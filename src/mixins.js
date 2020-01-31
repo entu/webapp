@@ -26,6 +26,7 @@ export default {
       'showEntity',
       'showEdit',
       'activeRequests',
+      'activeUploads',
       'activeMenu',
       'newEntityId'
     ]),

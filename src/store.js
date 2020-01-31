@@ -15,6 +15,7 @@ export default new Vuex.Store({
     showList: document.body.clientWidth > 576,
     showEdit: false,
     activeRequests: 0,
+    activeUploads: 0,
     activeMenu: null,
     newEntityId: null
   },
@@ -27,6 +28,7 @@ export default new Vuex.Store({
     showEntity: state => !state.showList || document.body.clientWidth >= 576,
     showEdit: state => state.showEdit,
     activeRequests: state => state.activeRequests,
+    activeUploads: state => state.activeUploads,
     activeMenu: state => state.activeMenu,
     newEntityId: state => state.newEntityId
   },
@@ -46,6 +48,9 @@ export default new Vuex.Store({
     },
     setActiveRequests: (state, count) => {
       state.activeRequests += count
+    },
+    setActiveUploads: (state, count) => {
+      state.activeUploads += count
     },
     setActiveMenu: (state, _id) => {
       state.activeMenu = _id
