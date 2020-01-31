@@ -30,7 +30,7 @@ export default {
     typeId () {
       return this.$route.params.type
     },
-    visible () {
+    isVisible () {
       if (_get(this, 'property.name').startsWith('_')) { return }
       if (_get(this, 'property.classifier', []).length) { return }
       if (_get(this, 'property.formula')) { return }

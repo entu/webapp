@@ -1,4 +1,4 @@
-.row.my-1.mb-3(v-if='visible')
+.row.my-1.mb-3(v-if='isVisible')
     strong.col-12.col-md-4.col-xl-3.mt-2.text-md-right {{ property.label || property.name }}
     .col-12.col-md-8.col-xl-9
         .property(v-for='i, idx in property.values' v-if='i')
@@ -38,20 +38,24 @@
                     rows=3
                     :readonly='activeRequests > 0'
                 )
-                .col-12.col-md-12.col-xl-8.my-2(
+                .col-12.col-md-12.col-xl-8.my-2.px-0(
                     v-else-if='isFile && i.filename',
                 )
                     router-link(:to='{ name: "file", params: { account: account, id: i._id } }', target='_blank') {{ i.filename }}
                     span.text-danger(v-if='i.percent') {{ (i.percent) }}
                     span(v-if='!i.percent') {{ getReadableFileSize(i.filesize) }}
-                    i.icon-delete.float-right(@click='save(i, "", idx)')
-                input.col-12.col-md-12.col-xl-8.my-2(
+                    i.icon-delete.float-right(@click='save(i, "", idx)', :title='$t("fileDelete")')
+                .col-12.col-md-12.col-xl-8.my-2.px-0(
                     v-else-if='isFile && !i.filename',
-                    type='file',
-                    multiple,
-                    @change='save(i, $event.target.files, idx)'
-                    :readonly='activeRequests > 0'
                 )
+                    input.d-none(
+                        :ref='"file"',
+                        type='file',
+                        multiple,
+                        @change='save(i, $event.target.files, idx)'
+                        :readonly='activeRequests > 0'
+                    )
+                    button.btn.btn-light(@click='$refs.file[0].click()') {{ $t('fileUpload') }}
                 pre.col-12.col-md-12.col-xl-8.my-2(
                     v-else
                 )
