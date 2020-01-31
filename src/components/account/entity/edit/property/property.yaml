@@ -1,6 +1,8 @@
 en:
     true: Yes
     false: No
+    fileDeleteConfirmation: Are you sure you want to delete file {filename}?
 et:
     true: Jah
     false: Ei
+    fileDeleteConfirmation: Olete kindel, et soovite kustutada faili {filename}?

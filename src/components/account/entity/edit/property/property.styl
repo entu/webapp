@@ -17,6 +17,9 @@
     select
         border 1px solid #eeeeee
 
+    input[type="file"]
+        border none
+
     textarea
         box-sizing border-box
         resize none
@@ -47,6 +50,12 @@
 
         &:hover
             color #1e434c
+
+    .icon-delete
+        cursor pointer
+
+        &:hover
+            color red
 
 @media (prefers-color-scheme: dark)
     .property

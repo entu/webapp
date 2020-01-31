@@ -1,20 +1,59 @@
 .row.my-1.mb-3(v-if='visible')
     strong.col-12.col-md-4.col-xl-3.mt-2.text-md-right {{ property.label || property.name }}
     .col-12.col-md-8.col-xl-9
-        .property(v-for='i in values' v-if='i')
+        .property(v-for='i, idx in property.values' v-if='i')
             template
-                .col-12.col-md-12.col-xl-8.my-2(v-if='property.readonly') {{ i.string }}
-                .mt-1(v-else-if='i.control === "boolean"')
-                    i.icon-on(v-if='i.boolean', @click='save(i, false)')
-                    i.icon-off(v-if='!i.boolean', @click='save(i, true)')
-                input.col-12.col-md-12.col-xl-8.my-2(v-else-if='i.control === "input"', :value='i.string', @keydown='change', @blur='save(i, $event.target.value)')
-                textarea.col-12.col-md-12.col-xl-8.my-2(v-else-if='i.control === "text"', :value='i.string', @focus='resizeText', @input='resizeText', @keydown='change', @blur='save(i, $event.target.value)', rows=3)
-                //- .col-12.col-md-12.col-xl-8.my-2(v-else) {{ i }}
-                .col-12.col-md-12.col-xl-8.my-2(v-else-if='i.control === "formula"')
+                .col-12.col-md-12.col-xl-8.my-2(
+                    v-if='isFormula'
+                )
                     | {{ i.string }}
                     span {{ property.formula }}
-                select.col-12.col-md-12.col-xl-8.my-2(v-else-if='i.control === "set"', :value='i.string', @change='save(i, $event.target.value)')
+                .mt-1(
+                    v-else-if='isBoolean'
+                )
+                    i.icon-on(v-if='i.boolean', @click='save(i, false, idx)')
+                    i.icon-off(v-if='!i.boolean', @click='save(i, true, idx)')
+                input.col-12.col-md-12.col-xl-8.my-2(
+                    v-else-if='isInput',
+                    :value='i.string',
+                    @keyup='change',
+                    @blur='save(i, $event.target.value, idx)'
+                    :readonly='activeRequests > 0'
+                )
+                select.col-12.col-md-12.col-xl-8.my-2(
+                    v-else-if='isSet',
+                    :value='i.string',
+                    @change='save(i, $event.target.value, idx)'
+                    :readonly='activeRequests > 0'
+                )
                     option
                     option(v-for='s in property.set', :value='s') {{ s }}
-                pre.col-12.col-md-12.col-xl-8.my-2(v-else) {{ i }}
-        //- pre.col-12.col-md-12.col-xl-8.my-2 {{ property }}
+                textarea.col-12.col-md-12.col-xl-8.my-2(
+                    v-else-if='isText',
+                    :value='i.string',
+                    @focus='resizeText',
+                    @input='resizeText',
+                    @keyup='change',
+                    @blur='save(i, $event.target.value, idx)',
+                    rows=3
+                    :readonly='activeRequests > 0'
+                )
+                .col-12.col-md-12.col-xl-8.my-2(
+                    v-else-if='isFile && i.filename',
+                )
+                    router-link(:to='{ name: "file", params: { account: account, id: i._id } }', target='_blank') {{ i.filename }}
+                    span.text-danger(v-if='i.percent') {{ (i.percent) }}
+                    span(v-if='!i.percent') {{ getReadableFileSize(i.filesize) }}
+                    i.icon-delete.float-right(@click='save(i, "", idx)')
+                input.col-12.col-md-12.col-xl-8.my-2(
+                    v-else-if='isFile && !i.filename',
+                    type='file',
+                    multiple,
+                    @change='save(i, $event.target.files, idx)'
+                    :readonly='activeRequests > 0'
+                )
+                pre.col-12.col-md-12.col-xl-8.my-2(
+                    v-else
+                )
+                    | {{ i.string }}
+        //- pre.col-12.col-md-12.col-xl-8.my-2 {{ property.values }}

@@ -1,12 +1,22 @@
 'use strict'
 
 import _get from 'lodash/get'
+import _isEqual from 'lodash/isEqual'
+import axios from 'axios'
 
 export default {
   name: 'EntityProperty',
   props: [
     'property'
   ],
+  data () {
+    return {
+      uploadProgress: {}
+    }
+  },
+  created () {
+    this.addEmptyValue()
+  },
   computed: {
     add () {
       return this.$route.name === 'add'
@@ -23,127 +33,56 @@ export default {
     visible () {
       if (_get(this, 'property.name').startsWith('_')) { return }
       if (_get(this, 'property.classifier', []).length) { return }
+      if (_get(this, 'property.formula')) { return }
+      if (_get(this, 'property.readonly')) { return }
 
       return true
     },
-    values () {
-      const values = this.property.values.filter(v => !v.deleted && (!v.language || v.language === this.locale)).map(v => {
-        let value = v
-
-        switch (v.type) {
-          case 'date':
-            value.control = 'input'
-            value.string = (new Date(v.date.substr(0, 10))).toLocaleDateString(this.locale)
-            break
-          case 'datetime':
-            value.control = 'input'
-            value.string = (new Date(v.datetime)).toLocaleString(this.locale)
-            break
-          case 'integer':
-            value.control = 'input'
-            value.string = v.integer.toLocaleString(this.locale, { minimumFractionDigits: 0 })
-            break
-          case 'decimal':
-            value.control = 'input'
-            value.string = v.decimal.toLocaleString(this.locale, { minimumFractionDigits: 2 })
-            break
-          case 'reference':
-            value.control = 'reference'
-            value.string = v.string || v.reference
-            value.to = {
-              name: 'entity',
-              params: {
-                entity: v.reference
-              },
-              query: this.$route.query
-            }
-            break
-          case 'atby':
-            value.control = 'atby'
-            value.string = v.string || v.reference
-            value.to = {
-              name: 'entity',
-              params: {
-                entity: v.reference
-              },
-              query: this.$route.query
-            }
-            value.info = (new Date(v.datetime)).toLocaleString(this.locale)
-            break
-          case 'file':
-            value.control = 'file'
-            value.string = v.filename
-            value.to = {
-              name: 'file',
-              params: {
-                account: this.account,
-                id: v._id
-              }
-            }
-            value.target = '_blank'
-            value.info = this.getReadableFileSize(v.size)
-            break
-          case 'boolean':
-            value.control = 'boolean'
-            value.string = v.boolean ? this.$t('true') : this.$t('false')
-            break
-          case 'string':
-            value.control = 'input'
-            break
-          case 'text':
-            value.control = 'text'
-            break
-        }
-
-        if (this.property.formula) {
-          value.control = 'formula'
-        }
-
-        if (this.property.set && this.property.set.length) {
-          value.control = 'set'
-        }
-
-        return value
-      })
-
-      if (!this.property.list && values.length > 0) { return values }
-
-      if (this.property.type === 'boolean') {
-        values.push({
-          control: 'boolean',
-          boolean: false
-        })
-      } else if (['date', 'datetime', 'integer', 'decimal', 'string'].includes(this.property.type)) {
-        values.push({
-          control: this.property.set && this.property.set.length ? 'set' : 'input',
-          string : ''
-        })
-      } else if (this.property.type === 'text') {
-        values.push({
-          control: 'text',
-          string : ''
-        })
-      }
-
-      return values
+    isReadOnly () {
+      return this.property.readonly
+    },
+    isInput () {
+      return !this.isReadOnly && !this.isSet && ['date', 'datetime', 'integer', 'decimal', 'string'].includes(this.property.type)
+    },
+    isText () {
+      return !this.isReadOnly && !this.isSet && this.property.type === 'text'
+    },
+    isSet () {
+      return !this.isReadOnly && this.property.set && this.property.set.length > 0
+    },
+    isFormula () {
+      return this.property.formula
+    },
+    isReference () {
+      return !this.isReadOnly && !this.isSet && this.property.type === 'reference'
+    },
+    isBoolean () {
+      return !this.isReadOnly && !this.isSet && this.property.type === 'boolean'
+    },
+    isFile () {
+      return !this.isReadOnly && !this.isSet && this.property.type === 'file'
     }
   },
   methods: {
-    async save (value, newValue) {
+    async save (value, newValue, valueIndex) {
       if (value.string === newValue) { return }
+      if (this.isFile && value._id && newValue === '' && !confirm(this.$t('fileDeleteConfirmation', { filename: value.filename }))) { return }
 
-      const idx = this.property.values.findIndex(x => x._id === value._id)
-      const newProperty = {
-        type: this.property.name
-      }
+      value.string = newValue
+
+      let newProperties = []
 
       if (value._id) {
         const deleteResponse = await this.axios.delete(`/property/${value._id}`)
       }
 
       if (value._id && newValue === '') {
-        this.property.values[idx]._id = null
-        this.property.values[idx].string = ''
+        if (this.isFile) {
+          this.property.values.splice(valueIndex, 1)
+        } else {
+          this.property.values.splice(valueIndex, 1, {})
+        }
+        return
       }
 
       switch (this.property.type) {
@@ -151,93 +90,125 @@ export default {
           newValue = newValue.replace(/\s/g, '')
           newValue = parseInt(newValue, 10)
           if (!newValue && newValue !== 0) { return }
-          newProperty.integer = newValue
+
+          newProperties.push({
+            type: this.property.name,
+            integer: newValue
+          })
           break
         case 'decimal':
           newValue = newValue.replace(/\s/g, '').replace(',', '.')
           newValue = parseFloat(newValue)
           if (!newValue && newValue !== 0) { return }
-          newProperty.decimal = newValue
+
+          newProperties.push({
+            type: this.property.name,
+            decimal: newValue
+          })
           break
         case 'boolean':
-          newProperty.boolean = newValue
+          newProperties.push({
+            type: this.property.name,
+            boolean: newValue
+          })
           break
         case 'string':
           newValue = newValue.trim()
           if (newValue === '') { return }
-          newProperty.string = newValue
+
+          newProperties.push({
+            type: this.property.name,
+            string: newValue
+          })
           break
         case 'text':
           newValue = newValue.trim()
           if (newValue === '') { return }
-          newProperty.string = newValue
+
+          newProperties.push({
+            type: this.property.name,
+            string: newValue
+          })
+          break
+        case 'file':
+          if (newValue.length === 0) { return }
+
+          for (var i = 0; i < newValue.length; i++) {
+            newProperties.push({
+              type: this.property.name,
+              filename: newValue[i].name,
+              filesize: newValue[i].size,
+              filetype: newValue[i].type
+            })
+          }
           break
         default:
           return
       }
 
       if (this.entityId) {
-        var addResponse = await this.axios.post(`/entity/${this.entityId}`, [newProperty])
+        var addResponse = await this.axios.post(`/entity/${this.entityId}`, newProperties)
       } else {
-        let newProperties = [
-          { type: '_parent', reference: this.parentId },
-          { type: '_type', reference: this.typeId }
-        ]
-        newProperties.push(newProperty)
+        newProperties.push({
+          type: '_parent',
+          reference: this.parentId
+        })
+        newProperties.push({
+          type: '_type',
+          reference: this.typeId
+        })
 
         var addResponse = await this.axios.post('/entity', newProperties)
         this.setNewEntityId(addResponse._id)
       }
 
-      const newId = _get(addResponse, 'properties.0._id')
+      const addedProperties = _get(addResponse, 'properties', [])
 
-      if (idx > -1) {
-        this.property.values[idx]._id = newId
-      } else {
-        this.property.values.push({
-          _id: newId,
-          control: 'input'
-        })
-      }
+      for (var i = 0; i < addedProperties.length; i++) {
+        const property = addedProperties[i]
 
-      const updatedIdx = this.property.values.findIndex(x => x._id === newId)
-      switch (this.property.type) {
-        case 'integer':
-          this.property.values[updatedIdx].string = newValue.toLocaleString(this.locale, { minimumFractionDigits: 0 })
-          this.property.values[updatedIdx].integer = newValue
-          break
-        case 'decimal':
-          this.property.values[updatedIdx].string = newValue.toLocaleString(this.locale, { minimumFractionDigits: 2 })
-          this.property.values[updatedIdx].decimal = newValue
-          break
-        case 'boolean':
-          this.property.values[updatedIdx].string = newValue ? this.$t('true') : this.$t('false')
-          this.property.values[updatedIdx].boolean = newValue
-          break
-        case 'string':
-          this.property.values[updatedIdx].string = newValue
-          break
-        case 'text':
-          this.property.values[updatedIdx].string = newValue
-          this.property.values[updatedIdx].control = 'text'
-          break
+        if (property.type === '_type') { continue }
+        if (property.type === '_parent') { continue }
+
+        if (property.upload) {
+          const file = [...newValue].find(x => x.name === property.filename)
+          const config = {
+            headers: property.upload.headers,
+            onUploadProgress: function (progressEvent) {
+              property.percent = (progressEvent.loaded / progressEvent.total).toLocaleString(this.locale, { style: 'percent', minimumFractionDigits: 2 })
+              this.$forceUpdate()
+            }.bind(this)
+          }
+
+          axios.put(property.upload.url, file, config)
+            .then(response => {
+              delete property.percent
+            })
+            .catch(error => {
+              property.percent = error.toString()
+            })
+            .then(() => {
+              this.$forceUpdate()
+            })
+        }
+
+        delete property.upload
+        delete property.type
+
+        this.property.values.splice(valueIndex + i, 1, property)
+        this.$forceUpdate()
+
+        this.addEmptyValue()
       }
     },
     change () {
-      if (!this.property.list) { return }
-      if (this.property.values.filter(x => !x._id).length > 0) { return }
+      // this.addEmptyValue()
+    },
+    addEmptyValue () {
+      if (!this.property.list && this.property.values.length > 0) { return }
+      if (_isEqual(this.property.values[this.property.values.length - 1], {})) { return }
 
-      if (['date', 'datetime', 'integer', 'decimal', 'string'].includes(this.property.type)) {
-        this.property.values.push({
-          control: 'input',
-          string : ''
-        })
-      } else if (this.property.type === 'text') {
-        this.property.values.push({
-          control: 'text',
-          string : ''
-        })
-      }
+      this.property.values.push({})
     },
     resizeText (e) {
       const offset = e.target.offsetHeight - e.target.clientHeight

@@ -88,7 +88,7 @@ export default {
                 }
               },
               target: '_blank',
-              info: this.getReadableFileSize(v.size)
+              info: this.getReadableFileSize(v.filesize)
             }
             break
           case 'boolean':
