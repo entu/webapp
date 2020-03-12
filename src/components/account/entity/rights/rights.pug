@@ -1,0 +1,39 @@
+.col-12.h-100(v-if='showEntity', :class="viewClass")
+    .row
+        transition(name='fade')
+            entity-tools(:name='name', :closeTo='closeTo')
+
+    .row.h-100
+        #content.col.h-100.pt-4
+            transition-group(name='fade', mode='out-in', :duration=100)
+                //- pre {{ rights }}
+                .row.my-2(:key='"public"')
+                    strong.col-12.col-md-6.my-2.text-md-right {{ $t('isPublic') }}
+                    .col-12.col-md-6.my-1
+                        i.icon-on(v-if='public', @click='save(i, false, idx)')
+                        i.icon-off(v-if='!public', @click='save(i, true, idx)')
+
+                .row.my-2(:key='"propagate"')
+                    strong.col-12.col-md-6.my-2.text-md-right {{ $t('propagateFromParent') }}
+                    .col-12.col-md-6.my-1
+                        i.icon-on(v-if='propagate', @click='save(i, false, idx)')
+                        i.icon-off(v-if='!propagate', @click='save(i, true, idx)')
+
+                .row.my-3(:key='"hr"')
+                    .col-12
+                        hr
+
+                .row.my-3(v-for='r in rights', :key='r._id')
+                    router-link.col-12.col-md-4.my-2.text-md-right(:to='{ name: "entity", params: { entity: r.reference }, query: $route.query }', target='_blank')
+                        strong {{ r.string }}
+                    .btn-group.col-12.col-md-4
+                        button.btn.btn-light.py-0.pt-1.px-3(:class='{ "btn-dark": r.right === "no" }')
+                            i.icon-right-no
+                        button.btn.btn-light.py-0.pt-1.px-3(:class='{ "btn-dark": r.right === "viewer" }')
+                            i.icon-right-viewer
+                        button.btn.btn-light.py-0.pt-1.px-3(:class='{ "btn-dark": r.right === "editor" }')
+                            i.icon-right-editor
+                        button.btn.btn-light.py-0.pt-1.px-3(:class='{ "btn-dark": r.right === "expander" }')
+                            i.icon-right-expander
+                        button.btn.btn-light.py-0.pt-1.px-3(:class='{ "btn-dark": r.right === "owner" }')
+                            i.icon-right-owner

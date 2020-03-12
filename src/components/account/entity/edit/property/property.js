@@ -59,6 +59,40 @@ export default {
     }
   },
   methods: {
+    // values () {
+    //   const values = this.property.values.filter(v => !v.deleted && (!v.language || v.language === this.locale)).map(v => {
+    //     let value = v
+    //
+    //     switch (this.property.type || v.type) {
+    //       case 'date':
+    //         value.string = (new Date(v.date.substr(0, 10))).toLocaleDateString(this.locale)
+    //         break
+    //       case 'datetime':
+    //         value.string = (new Date(v.datetime)).toLocaleString(this.locale)
+    //         break
+    //       case 'integer':
+    //         value.string = v.integer.toLocaleString(this.locale, { minimumFractionDigits: 0 })
+    //         break
+    //       case 'decimal':
+    //         value.string = v.decimal.toLocaleString(this.locale, { minimumFractionDigits: 2 })
+    //         break
+    //       case 'reference':
+    //         value.string = v.string || v.reference
+    //         value.to = {
+    //           name: 'entity',
+    //           params: {
+    //             entity: v.reference
+    //           },
+    //           query: this.$route.query
+    //         }
+    //         break
+    //     }
+    //
+    //     return value
+    //   })
+    //
+    //   return values
+    // },
     async save (value, newValue, valueIndex) {
       if (value.string === newValue) { return }
       if (this.isFile && value._id && newValue === '' && !confirm(this.$t('fileDeleteConfirmation', { filename: value.filename }))) { return }

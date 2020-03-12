@@ -9,6 +9,7 @@ import accountMenu from './components/account/menu/menu.vue'
 import accountList from './components/account/list/list.vue'
 import accountInfo from './components/account/info/info.vue'
 import entityView from './components/account/entity/view/view.vue'
+import entityRights from './components/account/entity/rights/rights.vue'
 import entityEdit from './components/account/entity/edit/edit.vue'
 import file from './components/file/file.vue'
 
@@ -44,6 +45,15 @@ if (['entu.app', 'localhost'].includes(window.location.hostname)) {
         path: '/:account/:entity',
         components: {
           default: entityView,
+          menu: accountMenu,
+          list: accountList,
+        }
+      },
+      {
+        name: 'rights',
+        path: '/:account/:entity/rights',
+        components: {
+          default: entityRights,
           menu: accountMenu,
           list: accountList,
         }
@@ -95,6 +105,15 @@ if (['entu.app', 'localhost'].includes(window.location.hostname)) {
         path: '/:entity',
         components: {
           default: entityView,
+          menu: accountMenu,
+          list: accountList,
+        }
+      },
+      {
+        name: 'rights',
+        path: '/:entity/rights',
+        components: {
+          default: entityRights,
           menu: accountMenu,
           list: accountList,
         }

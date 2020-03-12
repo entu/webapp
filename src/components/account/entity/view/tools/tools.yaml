@@ -4,7 +4,7 @@ en:
     edit: Edit
     duplicate: Duplicate
     parent: Edit parents
-    unlock: Edit rights
+    rights: Edit rights
     share: Share
     close: Close
 et:
@@ -13,6 +13,6 @@ et:
     edit: Muuda
     duplicate: Dubleeri
     parent: Muuda kuuluvust
-    unlock: Muuda õiguseid
+    rights: Muuda õiguseid
     share: Jaga
     close: Sulge
