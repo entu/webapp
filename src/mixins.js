@@ -79,8 +79,8 @@ export default {
         this.$store.commit('setActiveRequests', -1)
 
         if (error.response.status === 401) {
-          localStorage.clear()
-          location.reload()
+          // localStorage.clear()
+          // location.reload()
         }
 
         let result
