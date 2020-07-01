@@ -8,7 +8,7 @@ const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 const VERSION = childProcess.execSync('git rev-parse HEAD').toString().substring(0, 7)
@@ -23,15 +23,11 @@ module.exports = {
   optimization: {
     minimize: true,
     minimizer: [
-      new UglifyJsPlugin({
+      new TerserPlugin({
         cache: true,
         parallel: true,
         sourceMap: true,
-        uglifyOptions: {
-          output: {
-            comments: false
-          }
-        }
+        extractComments: false
       }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorPluginOptions: {
@@ -60,10 +56,12 @@ module.exports = {
     overlay: true
   },
   plugins: [
-    new CopyWebpackPlugin([
-      './src/assets/robots.txt',
-      './src/assets/favicons/favicon.ico'
-    ]),
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: './src/assets/robots.txt', to: path.join(__dirname, 'dist') },
+        { from: './src/assets/favicons/favicon.ico', to: path.join(__dirname, 'dist') }
+      ]
+    }),
     new HtmlWebpackPlugin({
       template: './src/index.html',
       minify: {
