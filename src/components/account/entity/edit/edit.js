@@ -194,6 +194,15 @@ export default {
       this.entity = entity
       this.properties = properties
     },
+    async deleteEntity () {
+      if (!confirm(this.$t('deleteConfirm', { name: this.name }))) { return }
+
+      const { deleted } = await this.axios.delete(`/entity/${this.entityId}`)
+
+      if (deleted) {
+        this.$router.push({ name: 'entity', params: { entity: '_' }, query: this.$route.query })
+      }
+    },
     getType (value) {
       if (value.hasOwnProperty('date')) {
         return 'date'

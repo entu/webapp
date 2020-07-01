@@ -1,2 +1,6 @@
 en:
+    deleteButton: Delete object
+    deleteConfirm: Are you sure you want to delete object "{name}"? All sub-objects are deleted also.
 et:
+    deleteButton: Kustuta objekt
+    deleteConfirm: Kas oled kindel, et soovid kustutada objekti "{name}"? Kustutatakse ka kõik alamobjektid.
