@@ -68,19 +68,56 @@ export default {
       })
 
       a.interceptors.response.use(response => {
+        const method = response.config.method.toUpperCase()
         const endTime = new Date()
         const s = (endTime.getTime() - response.config.startTime.getTime()) / 1000
-        console.log(`${s.toFixed(3)} ${response.config.method.toUpperCase()} ${response.request.responseURL}`);
+
+        let color = 'black'
+        switch (method) {
+          case 'GET':
+            color = 'green'
+            break
+          case 'POST':
+            color = 'orange'
+            break
+          case 'PUT':
+            color = 'gold'
+            break
+          case 'DELETE':
+            color = 'red'
+            break
+          default:
+            color = 'black'
+            break
+        }
+
+        console.log(`%c${method} %c ${s.toFixed(3)} %c${response.request.responseURL}`, `font-weight:bold;color:${color}`, 'font-family:monospace', 'font-weight:regular')
 
         this.$store.commit('setActiveRequests', -1)
 
         return response.data
       }, error => {
-        this.$store.commit('setActiveRequests', -1)
+        const method = error.response.config.method.toUpperCase()
+        const endTime = new Date()
+        const s = (endTime.getTime() - error.response.config.startTime.getTime()) / 1000
 
-        if (error.response.status === 401) {
-          // localStorage.clear()
-          // location.reload()
+        let color = 'black'
+        switch (method) {
+          case 'GET':
+            color = 'green'
+            break
+          case 'POST':
+            color = 'orange'
+            break
+          case 'PUT':
+            color = 'gold'
+            break
+          case 'DELETE':
+            color = 'red'
+            break
+          default:
+            color = 'black'
+            break
         }
 
         let result
@@ -92,9 +129,14 @@ export default {
           result = error.response
         }
 
-        const endTime = new Date()
-        const s = (endTime.getTime() - error.response.config.startTime.getTime()) / 1000
-        console.log(`${s.toFixed(3)} ${response.config.method.toUpperCase()} ${error.request.responseURL} (${error.response.status}) ${result}`);
+        console.log(`%c${method}%c ${s.toFixed(3)} %c${error.request.responseURL} - %cERROR ${error.response.status} ${result}`, `font-weight:bold;color:${color}`, 'font-family:monospace;font-weight:regular;color:black', 'font-weight:regular', 'color:red')
+
+        if (error.response.status === 401) {
+          // localStorage.clear()
+          // location.reload()
+        }
+
+        this.$store.commit('setActiveRequests', -1)
 
         return Promise.reject(result)
       })
