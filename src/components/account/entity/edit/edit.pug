@@ -9,5 +9,5 @@
                 .row.mt-4.mb-3(v-if='entity')
                     .col-12
                         entity-property(v-for='p in properties', :key='p.name', :property='p')
-                    .col-12.col-md-8.col-xl-9.offset-md-4.offset-xl-3
+                    .col-12.col-md-8.col-xl-9.offset-md-4.offset-xl-3(v-if='entityId')
                         button.btn.btn-sm.btn-outline-danger.mt-2.px-3(@click='deleteEntity()') {{ $t('deleteButton') }}
