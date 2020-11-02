@@ -7,6 +7,7 @@
     "private": true,
     "scripts": {
         "start": "webpack-dev-server --mode development --open --hot --trace-deprecation --port 4000",
+        "test": "standard --fix",
         "build": "webpack --mode production --hide-modules"
     },
     "browserslist": [
@@ -37,6 +38,7 @@
         "optimize-css-assets-webpack-plugin": "5.0.4",
         "pug": "3.0.0",
         "pug-plain-loader": "1.0.0",
+        "standard": "16.0.1",
         "stylus": "0.54.8",
         "stylus-loader": "4.2.0",
         "terser-webpack-plugin": "5.0.3",
