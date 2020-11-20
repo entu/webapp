@@ -8,7 +8,7 @@
     "scripts": {
         "start": "webpack-dev-server --mode development --open --hot --trace-deprecation --port 4000",
         "test": "standard --fix",
-        "build": "webpack --mode production --hide-modules"
+        "build": "webpack --mode production"
     },
     "browserslist": [
         "> 1%",

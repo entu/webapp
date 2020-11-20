@@ -4,7 +4,7 @@ const path = require('path')
 const childProcess = require('child_process')
 
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
+// const FaviconsWebpackPlugin = require('favicons-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
@@ -17,17 +17,21 @@ module.exports = {
   entry: ['@babel/polyfill', './src/main.js'],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: `/`,
+    publicPath: '/',
     filename: `${VERSION}/scripts/[name].js`
   },
   optimization: {
     minimize: true,
     minimizer: [
       new TerserPlugin({
-        cache: true,
         parallel: true,
-        sourceMap: true,
-        extractComments: false
+        extractComments: false,
+        terserOptions: {
+          sourceMap: true,
+          format: {
+            comments: false,
+          }
+        }
       }),
       new OptimizeCSSAssetsPlugin({
         cssProcessorPluginOptions: {
@@ -84,23 +88,23 @@ module.exports = {
       filename: `${VERSION}/styles/[name].css`
     }),
     new VueLoaderPlugin(),
-    new FaviconsWebpackPlugin({
-      logo: './src/assets/favicons/favicon.png',
-      outputPath: `${VERSION}/favicons`,
-      prefix: `${VERSION}/favicons`,
-      favicons: {
-        icons: {
-          android: false,
-          appleIcon: true,
-          appleStartup: false,
-          coast: false,
-          favicons: true,
-          firefox: false,
-          windows: false,
-          yandex: false
-        }
-      }
-    })
+    // new FaviconsWebpackPlugin({
+    //   logo: './src/assets/favicons/favicon.png',
+    //   outputPath: `${VERSION}/favicons`,
+    //   prefix: `${VERSION}/favicons`,
+    //   favicons: {
+    //     icons: {
+    //       android: false,
+    //       appleIcon: true,
+    //       appleStartup: false,
+    //       coast: false,
+    //       favicons: true,
+    //       firefox: false,
+    //       windows: false,
+    //       yandex: false
+    //     }
+    //   }
+    // })
   ],
   module: {
     rules: [
