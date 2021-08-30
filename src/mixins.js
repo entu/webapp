@@ -31,12 +31,12 @@ export default {
       'newEntityId'
     ]),
     customHost () {
-      if (!['entu.app', 'localhost'].includes(window.location.hostname)) {
+      if (!['www.entu.ee', 'entu.app', 'localhost'].includes(window.location.hostname)) {
         return window.location.hostname.replace('.entu.app', '')
       }
     },
     account () {
-      if (['entu.app', 'localhost'].includes(window.location.hostname)) {
+      if (['www.entu.ee', 'entu.app', 'localhost'].includes(window.location.hostname)) {
         return this.$route.params.account
       } else {
         return this.customHost

@@ -17,7 +17,7 @@ Vue.use(VueRouter)
 
 let route = {}
 
-if (['entu.app', 'localhost'].includes(window.location.hostname)) {
+if (['www.entu.ee', 'localhost'].includes(window.location.hostname)) {
   route = {
     mode: 'history',
     routes: [
