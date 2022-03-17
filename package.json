@@ -17,7 +17,7 @@
     "dependencies": {
         "axios": "0.21.0",
         "bootstrap": "4.5.3",
-        "lodash": "4.17.20",
+        "lodash": "4.17.21",
         "vue": "2.6.12",
         "vue-i18n": "8.22.2",
         "vue-meta": "2.4.0",
