@@ -4,6 +4,7 @@ export default {
   name: 'Auth',
   data () {
     return {
+      apiUrl: process.env.VUE_APP_API_URL,
       authenticating: false,
       authenticators: [
         {
@@ -74,15 +75,15 @@ export default {
   methods: {
     authApple () {
       this.authenticating = true
-      window.location = `${process.env.VUE_APP_API_URL}/auth/apple?next=${window.location.origin}/auth/?key=`
+      window.location = `${this.apiUrl}/auth/apple?next=${window.location.origin}/auth/?key=`
     },
     authGoogle () {
       this.authenticating = true
-      window.location = `${process.env.VUE_APP_API_URL}/auth/google?next=${window.location.origin}/auth/?key=`
+      window.location = `${this.apiUrl}/auth/google?next=${window.location.origin}/auth/?key=`
     },
     authMicrosoft () {
       this.authenticating = true
-      window.location = `${process.env.VUE_APP_API_URL}/auth/microsoft?next=${window.location.origin}/auth/?key=`
+      window.location = `${this.apiUrl}/auth/microsoft?next=${window.location.origin}/auth/?key=`
     },
     async authLHV () {
       this.authenticating = true
