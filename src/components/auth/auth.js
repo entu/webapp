@@ -4,7 +4,7 @@ export default {
   name: 'Auth',
   data () {
     return {
-      apiUrl: process.env.VUE_APP_API_URL,
+      apiUrl: 'https://api.dev.entu.app',
       authenticating: false,
       authenticators: [
         {
