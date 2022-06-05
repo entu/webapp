@@ -53,7 +53,7 @@ export default {
       }
     },
     axios () {
-      const a = axios.create({ baseURL: 'https://api.entu.app' })
+      const a = axios.create({ baseURL: process.env.VUE_APP_API_URL })
 
       a.interceptors.request.use(config => {
         if (this.token) {

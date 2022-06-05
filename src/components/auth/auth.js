@@ -74,15 +74,15 @@ export default {
   methods: {
     authApple () {
       this.authenticating = true
-      window.location = `https://api.entu.app/auth/apple?next=${window.location.origin}/auth/?key=`
+      window.location = `${process.env.VUE_APP_API_URL}/auth/apple?next=${window.location.origin}/auth/?key=`
     },
     authGoogle () {
       this.authenticating = true
-      window.location = `https://api.entu.app/auth/google?next=${window.location.origin}/auth/?key=`
+      window.location = `${process.env.VUE_APP_API_URL}/auth/google?next=${window.location.origin}/auth/?key=`
     },
     authMicrosoft () {
       this.authenticating = true
-      window.location = `https://api.entu.app/auth/microsoft?next=${window.location.origin}/auth/?key=`
+      window.location = `${process.env.VUE_APP_API_URL}/auth/microsoft?next=${window.location.origin}/auth/?key=`
     },
     async authLHV () {
       this.authenticating = true
