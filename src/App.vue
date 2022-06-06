@@ -49,6 +49,8 @@ const themeOverrides = {
     itemIconColorActive: 'rgba(255, 255, 255, 1)',
     itemIconColorActiveHover: 'rgba(255, 255, 255, 1)',
     itemIconColorChildActive: 'rgba(255, 255, 255, 1)',
+    itemIconColorCollapsed: 'rgba(255, 255, 255, .7)',
+    itemIconColorCollapsedChildActive: 'rgba(255, 255, 255, 1)',
     itemIconColorHover: 'rgba(254, 255, 255, 1)'
   },
   Layout: {
@@ -67,18 +69,5 @@ const themeOverrides = {
 
 .n-menu-item-content.n-menu-item-content--child-active .n-menu-item-content-header{
   font-weight: bold;
-}
-
-.n-menu.n-menu--collapsed .n-menu-item-content {
-  padding: 0 !important;
-}
-
-.n-menu.n-menu--collapsed .n-menu-item-content .n-menu-item-content-header {
-  opacity: 1;
-  text-align: center;
-}
-
-.n-menu.n-menu--collapsed .n-menu-item-content.n-menu-item-content--collapsed .n-menu-item-content__arrow {
-  display: none;
 }
 </style>

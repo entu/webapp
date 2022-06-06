@@ -85,14 +85,6 @@ watch(() => store.apiIsLoading, (value) => {
   }
 }, { deep: true })
 
-function renderLabel (item) {
-  if (navCollapsed.value && item.children) {
-    return item.label.substring(0, 1).toUpperCase()
-  } else {
-    return item.label
-  }
-}
-
 function onMenuUpdate (key, item) {
   if (item.to) {
     router.push(item.to)
@@ -137,7 +129,6 @@ function onMenuUpdate (key, item) {
         :options="menu"
         :root-indent="18"
         :indent="32"
-        :render-label="renderLabel"
         @update:value="onMenuUpdate"
       />
     </n-layout-sider>
