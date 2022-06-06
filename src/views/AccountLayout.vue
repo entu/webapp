@@ -1,7 +1,8 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, h, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { NLayout, NLayoutContent, NLayoutSider, NMenu, NSpace, useLoadingBar, useNotification } from 'naive-ui'
+import { NIcon, NLayout, NLayoutContent, NLayoutSider, NMenu, NSpace, useLoadingBar, useNotification } from 'naive-ui'
+import { Home as HomeIcon, Data2 as FolderIcon, Login as LoginIcon, Logout as LogoutIcon, Error as ErrorIcon } from '@vicons/carbon'
 
 import { useStore } from '@/store'
 
@@ -24,12 +25,15 @@ const menu = computed(() => {
     to: { name: 'account', params: { account: x.account } }
   }))
 
-  const menu = store.menu.length ? store.menu : [{ key: 'no-menu', disabled: true, label: 'No public menu' }]
+  const menu = store.menu.length
+    ? store.menu.map(x => ({ ...x, icon: () => h(NIcon, null, () => h(FolderIcon)) }))
+    : [{ key: 'no-menu', disabled: true, label: 'No public menu', icon: () => h(NIcon, null, () => h(ErrorIcon)) }]
 
   return [
     {
       key: 'account',
       label: store.account.toUpperCase(),
+      icon: () => h(NIcon, null, () => h(HomeIcon)),
       to: { name: 'account', params: { account: store.account } },
       children: accounts.length ? accounts : null
     },
@@ -55,6 +59,7 @@ const menu = computed(() => {
     {
       key: 'auth',
       label: store.isAuthenticated ? 'Sign Out' : 'Sign In',
+      icon: () => h(NIcon, null, () => h(store.isAuthenticated ? LogoutIcon : LoginIcon)),
       to: {
         name: 'auth',
         params: { id: store.isAuthenticated ? 'exit' : null }
@@ -130,7 +135,7 @@ function onMenuUpdate (key, item) {
         :collapsed-width="60"
         :options="menu"
         :root-indent="18"
-        :indent="12"
+        :indent="32"
         :render-label="renderLabel"
         @update:value="onMenuUpdate"
       />

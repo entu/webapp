@@ -43,7 +43,13 @@ const themeOverrides = {
     itemTextColorActive: 'rgba(255, 255, 255, 1)',
     itemTextColorActiveHover: 'rgba(255, 255, 255, 1)',
     itemTextColorChildActive: 'rgba(255, 255, 255, 1)',
-    itemTextColorHover: 'rgba(254, 255, 255, 1)'
+    itemTextColorHover: 'rgba(254, 255, 255, 1)',
+
+    itemIconColor: 'rgba(255, 255, 255, .7)',
+    itemIconColorActive: 'rgba(255, 255, 255, 1)',
+    itemIconColorActiveHover: 'rgba(255, 255, 255, 1)',
+    itemIconColorChildActive: 'rgba(255, 255, 255, 1)',
+    itemIconColorHover: 'rgba(254, 255, 255, 1)'
   },
   Layout: {
     siderColor: 'rgba(30, 67, 76, 1)',
