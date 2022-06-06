@@ -1,0 +1,131 @@
+import { defineStore } from 'pinia'
+
+export const useStore = defineStore('main', {
+  state: () => ({
+    locale: 'et',
+    accounts: JSON.parse(sessionStorage.getItem('accounts')) || [],
+    account: null,
+    activeRequests: 0,
+    menu: []
+  }),
+  actions: {
+    async getAccounts (key) {
+      this.activeRequests++
+      this.accounts = await apiGet('auth', {}, { Authorization: `Bearer ${key}` })
+      this.activeRequests--
+
+      sessionStorage.setItem('accounts', JSON.stringify(this.accounts))
+    },
+    async getMenu (key) {
+      this.activeRequests++
+      const menu = {}
+      const { entities } = await apiGet('entity', {
+        '_type.string': 'menu',
+        props: [
+          'ordinal.integer',
+          'group.string',
+          'group.language',
+          'name.string',
+          'name.language',
+          'query.string'
+        ].join(',')
+      }, { Authorization: `Bearer ${this.token}` })
+      this.activeRequests--
+
+      if (!entities) { return }
+
+      entities.forEach(entity => {
+        const group = getValue(entity.group, this.locale).toLowerCase()
+        const ordinal = entity.ordinal ? entity.ordinal[0].integer : 0
+
+        if (!menu[group]) {
+          menu[group] = {
+            key: group,
+            label: getValue(entity.group, this.locale),
+            children: [],
+            ordinal: 0
+          }
+        }
+
+        menu[group].ordinal += ordinal
+        menu[group].children.push({
+          key: getValue(entity.query, this.locale),
+          label: getValue(entity.name, this.locale),
+          query: queryObj(getValue(entity.query, this.locale)),
+          ordinal
+        })
+      })
+
+      this.menu = Object.values(menu)
+
+      this.menu.forEach(m => {
+        m.ordinal = m.ordinal / m.children.length
+        m.children.sort(menuSorter)
+      })
+
+      this.menu.sort(menuSorter)
+    }
+
+  },
+  getters: {
+    token () {
+      const account = this.account
+      return this.accounts.find(a => a.account === account)?.token
+    }
+  }
+})
+
+async function apiGet (pathname, params, headers) {
+  const url = new URL(import.meta.env.VITE_APP_API_URL)
+
+  // params = {
+  //   account: 'roots',
+  //   ...params
+  // }
+
+  url.pathname = '/' + pathname
+  url.search = new URLSearchParams(params).toString()
+
+  return await fetch(url, { headers }).then(response => response.json())
+}
+
+function getValue (valueList, locale) {
+  if (!valueList) { return }
+
+  const values = []
+
+  valueList.forEach(v => {
+    if (!v.language || v.language === locale) {
+      values.push(v.string)
+    }
+  })
+
+  return values[0]
+}
+
+function queryObj (q) {
+  if (!q) { return {} }
+
+  const query = q.split('&')
+
+  const params = {}
+  for (const parameter of query) {
+    const p = parameter.split('=')
+    params[p[0]] = p[1]
+  }
+
+  return params
+}
+
+function menuSorter (a, b) {
+  if (a.ordinal && b.ordinal && a.ordinal < b.ordinal) { return -1 }
+  if (a.ordinal && b.ordinal && a.ordinal > b.ordinal) { return 1 }
+
+  if (!a.ordinal && b.ordinal) { return -1 }
+  if (a.ordinal && !b.ordinal) { return 1 }
+
+  if (!a.name || a.name < b.name) { return -1 }
+  if (!b.name || a.name > b.name) { return 1 }
+
+  return 0
+}
