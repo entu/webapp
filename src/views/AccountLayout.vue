@@ -18,6 +18,8 @@ const notification = useNotification()
 store.account = route.params.account
 store.getMenu()
 
+const toHome = computed(() => ({ name: route.name, params: route.params }))
+
 const menu = computed(() => {
   const accounts = store.accounts.filter(x => x.account !== store.account).map(x => ({
     key: x.account,
@@ -111,12 +113,13 @@ function onMenuUpdate (key, item) {
       @expand="navCollapsed = false"
     >
       <n-space justify="center">
-        <router-link to="/">
+        <router-link
+          v-if="!navCollapsed"
+          :to="toHome"
+        >
           <img
             src="@/assets/logo.png"
-            :style="{
-              height: navCollapsed ? '2rem' : '6rem'
-            }"
+            style="height:6rem"
           >
         </router-link>
       </n-space>
