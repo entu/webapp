@@ -73,7 +73,11 @@ const menu = computed(() => {
 watch(() => route.params.account, (value) => {
   store.account = route.params.account
   store.getMenu()
-}, { deep: true })
+})
+
+watch(() => route.query, (value) => {
+  activeMenu.value = location.search.substring(1)
+})
 
 watch(() => store.apiIsLoading, (value) => {
   if (value) {
@@ -104,7 +108,7 @@ function onMenuUpdate (key, item) {
     <n-layout-sider
       bordered
       show-trigger="bar"
-      content-style="padding:1rem 2px 0 0"
+      content-style="padding:.3rem 2px 0 0"
       collapse-mode="width"
       :collapsed-width="60"
       :collapsed="navCollapsed"
@@ -119,17 +123,17 @@ function onMenuUpdate (key, item) {
         >
           <img
             src="@/assets/logo.png"
-            style="height:6rem"
+            style="height:6rem;margin-top:1rem"
           >
         </router-link>
       </n-space>
       <n-menu
         v-model:value="activeMenu"
         collapse-mode="width"
+        :options="menu"
         :accordion="true"
         :collapsed="navCollapsed"
         :collapsed-width="60"
-        :options="menu"
         :root-indent="18"
         :indent="32"
         @update:value="onMenuUpdate"
