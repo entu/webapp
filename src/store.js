@@ -9,9 +9,26 @@ export const useStore = defineStore('main', {
     loadingBar: false,
     menu: []
   }),
+  getters: {
+    token (state) {
+      return state.accounts.find(a => a.account === state.account)?.token
+    },
+    isAuthenticated (state) {
+      return !!state.token
+    },
+    apiIsLoading (state) {
+      return state.activeRequests > 0
+    }
+  },
   actions: {
     addActiveRequests (value) {
       this.activeRequests = this.activeRequests + value
+    },
+    logOut () {
+      sessionStorage.clear()
+      this.accounts = []
+      this.account = null
+      console.log('EXIT')
     },
     async apiGet (pathname, params, headers) {
       this.addActiveRequests(1)
@@ -84,14 +101,6 @@ export const useStore = defineStore('main', {
       })
 
       this.menu.sort(menuSorter)
-    }
-  },
-  getters: {
-    token (state) {
-      return state.accounts.find(a => a.account === state.account)?.token
-    },
-    apiIsLoading (state) {
-      return state.activeRequests > 0
     }
   }
 })

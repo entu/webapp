@@ -1,14 +1,18 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 import { useStore } from '@/store'
 
 const router = useRouter()
+const route = useRoute()
 const store = useStore()
 
-if (router.currentRoute.value.query?.key) {
-  openAccount(router.currentRoute.value.query?.key)
+if (route.params.id === 'exit') {
+  store.logOut()
+  router.push({ name: 'home' })
+} else if (route.query?.key) {
+  openAccount(route.query?.key)
 } else {
   window.location = `${import.meta.env.VITE_APP_API_URL}/auth/google?next=${window.location.origin}/auth/?key=`
 }

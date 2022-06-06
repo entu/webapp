@@ -17,6 +17,57 @@ const notification = useNotification()
 store.account = route.params.account
 store.getMenu()
 
+const menu = computed(() => {
+  const accounts = store.accounts.filter(x => x.account !== store.account).map(x => ({
+    key: x.account,
+    label: x.account,
+    to: { name: 'account', params: { account: x.account } }
+  }))
+
+  const menu = store.menu.length ? store.menu : [{ key: 'no-menu', disabled: true, label: 'No public menu' }]
+
+  return [
+    {
+      key: 'account',
+      label: store.account.toUpperCase(),
+      to: { name: 'account', params: { account: store.account } },
+      children: accounts.length ? accounts : null
+    },
+    {
+      key: 'divider',
+      type: 'divider',
+      props: {
+        style: {
+          margin: '.7rem .5rem'
+        }
+      }
+    },
+    ...menu,
+    {
+      key: 'divider',
+      type: 'divider',
+      props: {
+        style: {
+          margin: '.7rem .5rem'
+        }
+      }
+    },
+    {
+      key: 'auth',
+      label: store.isAuthenticated ? 'Sign Out' : 'Sign In',
+      to: {
+        name: 'auth',
+        params: { id: store.isAuthenticated ? 'exit' : null }
+      }
+    }
+  ]
+})
+
+watch(() => route.params.account, (value) => {
+  store.account = route.params.account
+  store.getMenu()
+}, { deep: true })
+
 watch(() => store.apiIsLoading, (value) => {
   if (value) {
     if (!store.loadingBar) {
@@ -36,8 +87,13 @@ function renderLabel (item) {
     return item.label
   }
 }
+
 function onMenuUpdate (key, item) {
-  router.push({ name: 'entity', params: { account: store.account, entity: '_' }, query: item.query })
+  if (item.to) {
+    router.push(item.to)
+  } else {
+    router.push({ name: 'entity', params: { account: store.account, entity: '_' }, query: item.query })
+  }
 }
 </script>
 
@@ -49,10 +105,11 @@ function onMenuUpdate (key, item) {
     <n-layout-sider
       bordered
       show-trigger="bar"
-      content-style="padding-top:1rem;background:#fafafa"
+      content-style="padding:1rem 2px 0 0"
       collapse-mode="width"
-      :collapsed-width="42"
+      :collapsed-width="60"
       :collapsed="navCollapsed"
+      :native-scrollbar="false"
       @collapse="navCollapsed = true"
       @expand="navCollapsed = false"
     >
@@ -70,8 +127,8 @@ function onMenuUpdate (key, item) {
         v-model:value="activeMenu"
         collapse-mode="width"
         :collapsed="navCollapsed"
-        :collapsed-width="64"
-        :options="store.menu"
+        :collapsed-width="60"
+        :options="menu"
         :root-indent="18"
         :indent="12"
         :render-label="renderLabel"
