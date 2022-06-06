@@ -6,20 +6,39 @@ export const useStore = defineStore('main', {
     accounts: JSON.parse(sessionStorage.getItem('accounts')) || [],
     account: null,
     activeRequests: 0,
+    loadingBar: false,
     menu: []
   }),
   actions: {
+    addActiveRequests (value) {
+      this.activeRequests = this.activeRequests + value
+    },
+    async apiGet (pathname, params, headers) {
+      this.addActiveRequests(1)
+
+      if (this.token && !headers) {
+        headers = { Authorization: `Bearer ${this.token}` }
+      }
+
+      const url = new URL(import.meta.env.VITE_APP_API_URL)
+      url.pathname = '/' + pathname
+      url.search = new URLSearchParams(params).toString()
+
+      const result = await fetch(url, { headers }).then(response => response.json())
+
+      this.addActiveRequests(-1)
+
+      return result
+    },
     async getAccounts (key) {
-      this.activeRequests++
-      this.accounts = await apiGet('auth', {}, { Authorization: `Bearer ${key}` })
-      this.activeRequests--
+      this.accounts = await this.apiGet('auth', {}, { Authorization: `Bearer ${key}` })
 
       sessionStorage.setItem('accounts', JSON.stringify(this.accounts))
     },
     async getMenu (key) {
-      this.activeRequests++
       const menu = {}
-      const { entities } = await apiGet('entity', {
+      const { entities } = await this.apiGet('entity', {
+        account: this.account,
         '_type.string': 'menu',
         props: [
           'ordinal.integer',
@@ -29,10 +48,11 @@ export const useStore = defineStore('main', {
           'name.language',
           'query.string'
         ].join(',')
-      }, { Authorization: `Bearer ${this.token}` })
-      this.activeRequests--
+      })
 
-      if (!entities) { return }
+      if (!entities) {
+        return
+      }
 
       entities.forEach(entity => {
         const group = getValue(entity.group, this.locale).toLowerCase()
@@ -65,29 +85,16 @@ export const useStore = defineStore('main', {
 
       this.menu.sort(menuSorter)
     }
-
   },
   getters: {
-    token () {
-      const account = this.account
-      return this.accounts.find(a => a.account === account)?.token
+    token (state) {
+      return state.accounts.find(a => a.account === state.account)?.token
+    },
+    apiIsLoading (state) {
+      return state.activeRequests > 0
     }
   }
 })
-
-async function apiGet (pathname, params, headers) {
-  const url = new URL(import.meta.env.VITE_APP_API_URL)
-
-  // params = {
-  //   account: 'roots',
-  //   ...params
-  // }
-
-  url.pathname = '/' + pathname
-  url.search = new URLSearchParams(params).toString()
-
-  return await fetch(url, { headers }).then(response => response.json())
-}
 
 function getValue (valueList, locale) {
   if (!valueList) { return }

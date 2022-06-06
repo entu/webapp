@@ -1,15 +1,7 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import {
-  NLayout,
-  NLayoutContent,
-  NLayoutSider,
-  NMenu,
-  NSpace,
-  useLoadingBar,
-  useNotification
-} from 'naive-ui'
+import { NLayout, NLayoutContent, NLayoutSider, NMenu, NSpace, useLoadingBar, useNotification } from 'naive-ui'
 
 import { useStore } from '@/store'
 
@@ -25,22 +17,25 @@ const notification = useNotification()
 store.account = route.params.account
 store.getMenu()
 
-watch(() => route.query, (value) => {
-  activeMenu.value = location.search.substring(1)
-})
-
-watch(() => route.params.account, (value) => {
-  store.account = value
-})
-
-watch(() => store.activeRequests.value, (value) => {
-  if (value > 0) {
-    loadingBar.start()
+watch(() => store.apiIsLoading, (value) => {
+  if (value) {
+    if (!store.loadingBar) {
+      store.loadingBar = true
+      loadingBar.start()
+    }
   } else {
     loadingBar.finish()
+    store.loadingBar = false
   }
-})
+}, { deep: true })
 
+function renderLabel (item) {
+  if (navCollapsed.value && item.children) {
+    return item.label.substring(0, 1).toUpperCase()
+  } else {
+    return item.label
+  }
+}
 function onMenuUpdate (key, item) {
   router.push({ name: 'entity', params: { account: store.account, entity: '_' }, query: item.query })
 }
@@ -56,7 +51,7 @@ function onMenuUpdate (key, item) {
       show-trigger="bar"
       content-style="padding-top:1rem;background:#fafafa"
       collapse-mode="width"
-      :collapsed-width="64"
+      :collapsed-width="42"
       :collapsed="navCollapsed"
       @collapse="navCollapsed = true"
       @expand="navCollapsed = false"
@@ -72,11 +67,14 @@ function onMenuUpdate (key, item) {
         </router-link>
       </n-space>
       <n-menu
+        v-model:value="activeMenu"
         collapse-mode="width"
         :collapsed="navCollapsed"
         :collapsed-width="64"
         :options="store.menu"
-        :value="activeMenu"
+        :root-indent="18"
+        :indent="12"
+        :render-label="renderLabel"
         @update:value="onMenuUpdate"
       />
     </n-layout-sider>
@@ -91,8 +89,5 @@ function onMenuUpdate (key, item) {
   </n-layout>
 </template>
 
-<style>
-#app {
-
-}
+<style scoped>
 </style>
