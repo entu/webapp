@@ -131,6 +131,7 @@ function onMenuUpdate (key, item) {
       <n-menu
         v-model:value="activeMenu"
         collapse-mode="width"
+        :accordion="true"
         :collapsed="navCollapsed"
         :collapsed-width="60"
         :options="menu"
