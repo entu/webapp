@@ -31,7 +31,7 @@ const menu = computed(() => {
   const accounts = props.accounts.filter(x => x.account !== account).map(x => ({
     key: x.account,
     label: x.account,
-    to: { name: 'account', params: { account: x.account } }
+    to: { name: 'stats', params: { account: x.account } }
   }))
 
   const auth = props.isAuthenticated
@@ -90,7 +90,7 @@ watch(() => route.query, (value) => {
 })
 
 function onMenuUpdate (key, item) {
-  router.push(item.to || { name: 'entity', params: { account: route.params.account, entity: '_' }, query: item.query })
+  router.push(item.to || { name: 'stats', params: { account: route.params.account }, query: item.query })
 }
 </script>
 
@@ -130,3 +130,9 @@ function onMenuUpdate (key, item) {
     />
   </n-layout-sider>
 </template>
+
+<style scoped>
+.n-layout-sider {
+  background-color: rgba(30, 67, 76, 1);
+}
+</style>

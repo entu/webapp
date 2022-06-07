@@ -16,12 +16,19 @@ const routes = [
   {
     name: 'account',
     path: '/:account',
-    component: () => import('@/views/AccountLayout.vue')
-  },
-  {
-    name: 'entity',
-    path: '/:account/:entity',
-    component: () => import('@/views/AccountLayout.vue')
+    component: () => import('@/views/AccountLayout.vue'),
+    children: [
+      {
+        name: 'stats',
+        path: '',
+        component: () => import('@/views/AccountStats.vue')
+      },
+      {
+        name: 'entity',
+        path: ':entity',
+        component: () => import('@/views/AccountEntity.vue')
+      }
+    ]
   }
   // {
   //   name: 'rights',

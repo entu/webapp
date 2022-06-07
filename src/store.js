@@ -5,6 +5,7 @@ export const useStore = defineStore('main', {
     locale: 'et',
     accounts: JSON.parse(sessionStorage.getItem('accounts')) || [],
     account: null,
+    accountStats: {},
     activeRequests: 0,
     loadingBar: false,
     menu: []
@@ -51,6 +52,9 @@ export const useStore = defineStore('main', {
       this.accounts = await this.apiGet('auth', {}, { Authorization: `Bearer ${key}` })
 
       sessionStorage.setItem('accounts', JSON.stringify(this.accounts))
+    },
+    async getAccountStats (key) {
+      this.accountStats = await this.apiGet('account')
     },
     async getMenu (key) {
       const menu = {}

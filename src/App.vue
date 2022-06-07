@@ -12,11 +12,6 @@
 <script setup>
 import { NConfigProvider, NLoadingBarProvider, NNotificationProvider, NThemeEditor } from 'naive-ui'
 const themeOverrides = {
-  common: {
-    fontFamily: "Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif",
-    fontSize: '1rem',
-    fontSizeMini: '.75rem'
-  },
   Dropdown: {
     optionColorActive: 'rgba(0, 0, 0, .05)',
     optionTextColorActive: 'rgba(0, 0, 0, .8)'
@@ -52,9 +47,12 @@ const themeOverrides = {
     itemIconColorHover: 'rgba(254, 255, 255, 1)'
   },
   Layout: {
-    siderColor: 'rgba(30, 67, 76, 1)',
     siderToggleBarColor: 'rgba(30, 67, 76, 1)',
     siderToggleBarColorHover: 'rgba(30, 67, 76, 1)'
+  },
+  LoadingBar: {
+    colorLoading: 'rgb(14 165 233)',
+    height: '4px'
   }
 }
 </script>
