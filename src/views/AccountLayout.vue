@@ -1,7 +1,7 @@
 <script setup>
-import { watch } from 'vue'
+import { watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { NLayout, NLayoutContent, NLayoutHeader, useLoadingBar, useNotification } from 'naive-ui'
+import { NLayout, NLayoutContent, useLoadingBar, useNotification } from 'naive-ui'
 
 import { useStore } from '@/store'
 import LeftMenu from '@/components/LeftMenu.vue'
@@ -11,8 +11,10 @@ const route = useRoute()
 const loadingBar = useLoadingBar()
 const notification = useNotification()
 
-store.account = route.params.account
-store.getMenu()
+onMounted(async () => {
+  store.account = route.params.account
+  store.getMenu()
+})
 
 watch(() => route.params.account, (value) => {
   store.account = route.params.account
@@ -45,7 +47,7 @@ watch(() => store.apiIsLoading, (value) => {
     <n-layout>
       <n-layout-content
         position="absolute"
-        content-style="padding:1rem 1.3rem;height:100%;min-height:100%;display:flex;flex-direction:column;"
+        content-style="height:100%"
       >
         <router-view />
       </n-layout-content>
