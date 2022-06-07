@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    VITE_APP_GIT_SHA: $CODEBUILD_RESOLVED_SOURCE_VERSION
+    VITE_APP_GIT_SHA: "$CODEBUILD_RESOLVED_SOURCE_VERSION"
 
 phases:
   install:
