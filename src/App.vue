@@ -1,7 +1,5 @@
 <template>
-  <!-- <n-theme-editor>
-    <div />
-  </n-theme-editor> -->
+  <n-theme-editor v-if="location.hostname === 'localhost'" />
   <n-config-provider :theme-overrides="themeOverrides">
     <n-loading-bar-provider>
       <n-notification-provider>
