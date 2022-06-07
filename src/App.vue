@@ -1,5 +1,5 @@
 <template>
-  <n-theme-editor v-if="location.hostname === 'localhost'" />
+  <n-theme-editor v-if="isLocalhost" />
   <n-config-provider :theme-overrides="themeOverrides">
     <n-loading-bar-provider>
       <n-notification-provider>
@@ -11,6 +11,8 @@
 
 <script setup>
 import { NConfigProvider, NLoadingBarProvider, NNotificationProvider, NThemeEditor } from 'naive-ui'
+
+const isLocalhost = location.hostname === 'localhost'
 const themeOverrides = {
   Dropdown: {
     optionColorActive: 'rgba(0, 0, 0, .05)',
