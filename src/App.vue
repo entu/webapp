@@ -3,7 +3,7 @@
   <n-config-provider :theme-overrides="themeOverrides">
     <n-loading-bar-provider>
       <n-notification-provider>
-        <router-view />
+        <app-layout />
       </n-notification-provider>
     </n-loading-bar-provider>
   </n-config-provider>
@@ -11,6 +11,8 @@
 
 <script setup>
 import { NConfigProvider, NLoadingBarProvider, NNotificationProvider, NThemeEditor } from 'naive-ui'
+
+import AppLayout from '@/components/AppLayout.vue'
 
 const isLocalhost = location.hostname === 'localhost'
 const themeOverrides = {

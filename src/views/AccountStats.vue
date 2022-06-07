@@ -1,11 +1,9 @@
 <script setup>
 import { computed, watch } from 'vue'
-import { useRoute } from 'vue-router'
 import { NProgress, NSpace } from 'naive-ui'
 
 import { useStore } from '@/store'
 
-const route = useRoute()
 const store = useStore()
 
 const entities = computed(() => Math.round(store.accountStats?.entities * 100 / (store.accountStats?.entities + store.accountStats?.deletedEntities)))
