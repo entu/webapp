@@ -1,15 +1,17 @@
 <script setup>
-import { watch } from 'vue'
+import { ref, watch } from 'vue'
 
 import { useStore } from '@/store'
+import { apiGet } from '@/api'
 import StatsBar from '@/components/StatsBar.vue'
 
 const store = useStore()
+const stats = ref({})
 
-watch(() => store.account, (value) => {
+watch(() => store.account, async (value) => {
   if (!store.isAuthenticated) { return }
 
-  store.getAccountStats()
+  stats.value = await apiGet('account')
 }, { deep: true })
 </script>
 
@@ -25,8 +27,8 @@ watch(() => store.account, (value) => {
       rail-color="rgba(23,162,184,.3)"
       a-label="Entities"
       b-label="deleted"
-      :a-value="store.accountStats.entities"
-      :b-value="store.accountStats.deletedEntities"
+      :a-value="stats.entities"
+      :b-value="stats.deletedEntities"
     />
     <stats-bar
       class="my-3"
@@ -34,8 +36,8 @@ watch(() => store.account, (value) => {
       rail-color="rgba(255,193,7,.3)"
       a-label="Properties"
       b-label="deleted"
-      :a-value="store.accountStats.properties"
-      :b-value="store.accountStats.deletedProperties"
+      :a-value="stats.properties"
+      :b-value="stats.deletedProperties"
     />
     <stats-bar
       class="my-3"
@@ -43,8 +45,8 @@ watch(() => store.account, (value) => {
       rail-color="rgba(40,167,69,.3)"
       a-label="Files"
       b-label="deleted"
-      :a-value="store.accountStats.files"
-      :b-value="store.accountStats.deletedFiles"
+      :a-value="stats.files"
+      :b-value="stats.deletedFiles"
     />
     <stats-bar
       class="my-3"
@@ -54,8 +56,8 @@ watch(() => store.account, (value) => {
       rail-color="rgba(108,117,125,.3)"
       a-label="Database"
       b-label="total usage"
-      :a-value="store.accountStats.dbSize"
-      :b-value="store.accountStats.filesSize + store.accountStats.deletedFilesSize"
+      :a-value="stats.dbSize"
+      :b-value="stats.filesSize + stats.deletedFilesSize"
     />
   </div>
 </template>

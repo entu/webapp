@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { NLayout } from 'naive-ui'
 
 import { useStore } from '@/store'
+import { apiGetEntities } from '@/api'
 import LeftMenu from '@/components/LeftMenu.vue'
 import SearchInput from '@/components/SearchInput.vue'
 
@@ -12,31 +13,59 @@ const route = useRoute()
 const router = useRouter()
 
 const search = ref('')
+const menu = ref([])
 
-onMounted(async () => {
+onMounted(() => {
   store.account = route.params.account
   search.value = route.query.q
-  store.getMenu()
+
+  loadMenu()
+
+  if (Object.keys(route.query).length > 0) {
+    apiGetEntities(route.query)
+  }
 })
 
 watch(() => route.params.account, (value) => {
-  store.account = route.params.account
-  store.getMenu()
+  store.account = value
+
+  if (value) {
+    loadMenu()
+  }
 })
 
-watch(() => route.query.q, (value) => {
-  search.value = value
+watch(() => route.query, (value) => {
+  search.value = value.q
+
+  if (Object.keys(value).length > 0) {
+    apiGetEntities(value)
+  }
 })
 
 watch(() => search.value, (value) => {
-  if (!value) {
+  if (value) {
+    router.replace({ query: { ...route.query, q: value } })
+  } else {
     const newQuery = { ...route.query }
     delete newQuery.q
+
     router.replace({ query: newQuery })
-  } else {
-    router.replace({ query: { ...route.query, q: value } })
   }
 })
+
+async function loadMenu () {
+  menu.value = await apiGetEntities({
+    '_type.string': 'menu',
+    props: [
+      'ordinal.integer',
+      'group.string',
+      'group.language',
+      'name.string',
+      'name.language',
+      'query.string'
+    ].join(',')
+  })
+}
 </script>
 
 <template>
@@ -45,7 +74,7 @@ watch(() => search.value, (value) => {
     has-sider
   >
     <left-menu
-      :menu="store.menu"
+      :menu="menu"
       :accounts="store.accounts"
       :is-authenticated="store.isAuthenticated"
     />
