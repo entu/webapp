@@ -47,6 +47,7 @@ watch(() => store.account, (value) => {
     <stats-bar
       class="my-3"
       is-bytes
+      show-total
       color="rgb(108,117,125)"
       rail-color="rgba(108,117,125,.3)"
       a-label="Database"

@@ -23,6 +23,10 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  showTotal: {
+    type: Boolean,
+    default: false
+  },
   color: {
     type: String,
     default: null
@@ -34,8 +38,9 @@ const props = defineProps({
 })
 
 const percentage = computed(() => Math.round(props.aValue * 100 / (props.aValue + props.bValue)))
+const bTotal = computed(() => props.showTotal ? props.aValue + props.bValue : props.bValue)
 const aValueStr = computed(() => props.isBytes ? humanFileSize(props.aValue) : props.aValue?.toLocaleString('et'))
-const bValueStr = computed(() => props.isBytes ? humanFileSize(props.bValue) : props.bValue?.toLocaleString('et'))
+const bValueStr = computed(() => props.isBytes ? humanFileSize(bTotal.value) : bTotal.value?.toLocaleString('et'))
 
 function humanFileSize (bytes, si = true, dp = 2) {
   const thresh = si ? 1000 : 1024
