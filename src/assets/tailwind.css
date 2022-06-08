@@ -5,6 +5,11 @@
 html, body {
   font-family: Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-size: medium;
+  @apply h-full;
+}
+
+#app {
+  @apply h-full;
 }
 
 .n-menu {

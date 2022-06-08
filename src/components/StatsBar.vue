@@ -1,6 +1,6 @@
 <script setup>
 import { computed, defineProps } from 'vue'
-import { NProgress, NSpace } from 'naive-ui'
+import { NProgress } from 'naive-ui'
 
 const props = defineProps({
   aLabel: {
@@ -66,12 +66,12 @@ function humanFileSize (bytes, si = true, dp = 2) {
 
 <template>
   <div class="my-3">
-    <n-space justify="space-between">
+    <div class="flex justify-between">
       <div>{{ aLabel }}</div>
       <div class="text-stone-400">
         {{ bLabel }}
       </div>
-    </n-space>
+    </div>
     <n-progress
       class="my-1"
       :color="color"
@@ -82,11 +82,11 @@ function humanFileSize (bytes, si = true, dp = 2) {
       :show-indicator="false"
       :percentage="percentage"
     />
-    <n-space justify="space-between">
+    <div class="flex justify-between">
       <div>{{ aValueStr }}</div>
       <div class="text-stone-400">
         {{ bValueStr }}
       </div>
-    </n-space>
+    </div>
   </div>
 </template>

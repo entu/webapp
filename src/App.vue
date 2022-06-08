@@ -1,6 +1,9 @@
 <template>
   <n-theme-editor v-if="isLocalhost" />
-  <n-config-provider :theme-overrides="themeOverrides">
+  <n-config-provider
+    class="h-full"
+    :theme-overrides="themeOverrides"
+  >
     <n-loading-bar-provider>
       <n-notification-provider>
         <app-layout />

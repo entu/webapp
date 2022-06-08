@@ -1,7 +1,7 @@
 <script setup>
 import { computed, h, defineProps, ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { NIcon, NLayoutSider, NMenu, NSpace } from 'naive-ui'
+import { NIcon, NLayoutSider, NMenu } from 'naive-ui'
 import { Home as HomeIcon, Data2 as FolderIcon, Login as LoginIcon, Logout as LogoutIcon, Error as ErrorIcon } from '@vicons/carbon'
 
 const router = useRouter()
@@ -106,17 +106,17 @@ function onMenuUpdate (key, item) {
     @collapse="navCollapsed = true"
     @expand="navCollapsed = false"
   >
-    <n-space justify="center">
+    <div class="w-full">
       <router-link
         v-if="!navCollapsed"
         :to="toHome"
       >
         <img
           src="@/assets/logo.png"
-          style="height:6rem;margin-top:1rem"
+          class="mt-6 mb-4 mx-auto h-24 w-24"
         >
       </router-link>
-    </n-space>
+    </div>
     <n-menu
       v-model:value="activeMenu"
       collapse-mode="width"
