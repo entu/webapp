@@ -36,13 +36,12 @@ watch(() => store.account, (value) => {
     />
     <stats-bar
       class="my-3"
-      is-bytes
       color="rgb(40,167,69)"
       rail-color="rgba(40,167,69,.3)"
       a-label="Files"
       b-label="deleted"
-      :a-value="store.accountStats?.filesSize"
-      :b-value="store.accountStats?.deletedFilesSize"
+      :a-value="store.accountStats?.files"
+      :b-value="store.accountStats?.deletedFiles"
     />
     <stats-bar
       class="my-3"
