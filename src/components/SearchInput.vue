@@ -2,6 +2,8 @@
 import { computed, defineEmits, defineProps } from 'vue'
 import { Search as SearchIcon } from '@vicons/carbon'
 
+let debounce
+
 const emit = defineEmits(['update:modelValue'])
 
 const props = defineProps({
@@ -16,7 +18,8 @@ const searchText = computed({
     return props.modelValue
   },
   set (val) {
-    emit('update:modelValue', val)
+    clearTimeout(debounce)
+    debounce = setTimeout(() => { emit('update:modelValue', val) }, 500)
   }
 })
 </script>
