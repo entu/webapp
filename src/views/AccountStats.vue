@@ -7,13 +7,15 @@ import StatsBar from '@/components/StatsBar.vue'
 const store = useStore()
 
 watch(() => store.account, (value) => {
+  console.log(value)
   store.getAccountStats()
 }, { deep: true })
 </script>
 
 <template>
   <div
-    class="h-full w-1/3 min-w-fit mx-auto flex flex-col justify-center"
+    v-if="store.isAuthenticated"
+    class="h-full w-full lg:w-1/2 xl:w-1/3 md:min-w-fit px-8 md:mx-auto flex flex-col justify-center"
     vertical
   >
     <stats-bar
