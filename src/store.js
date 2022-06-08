@@ -29,7 +29,6 @@ export const useStore = defineStore('main', {
       sessionStorage.clear()
       this.accounts = []
       this.account = null
-      console.log('EXIT')
     },
     async apiGet (pathname, params, headers) {
       this.addActiveRequests(1)
