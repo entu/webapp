@@ -3,14 +3,14 @@ import { watch, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { useStore } from '@/store'
-import { apiGetEntity, apiGetEntities } from '@/api'
+import { apiGetEntity, apiGetEntities, getValue } from '@/api'
 import EntityList from '@/components/EntityList.vue'
 
 const route = useRoute()
 const store = useStore()
 
 const entities = ref([])
-const entity = ref([])
+const entity = ref({})
 const query = ref()
 
 onMounted(() => {
@@ -40,7 +40,7 @@ async function loadEntities (query) {
     return
   }
 
-  entities.value = await apiGetEntities({ ...query, props: ['name.string'] })
+  entities.value = await apiGetEntities({ ...query, props: ['_thumbnail', 'name.string'] })
 }
 
 async function loadEntity (eId) {
@@ -58,7 +58,10 @@ async function loadEntity (eId) {
     class="w-80"
     :entities="entities"
   />
-  <div class="grow overflow-y-auto">
-    <pre class=" p-4 text-xs ">{{ entity }}</pre>
+  <div class="p-4 grow overflow-y-auto overflow-hidden">
+    <h1 class="mb-4 text-2xl font-bold">
+      {{ getValue(entity.name) }}
+    </h1>
+    <pre class="text-xs max-w-0">{{ entity }}</pre>
   </div>
 </template>
