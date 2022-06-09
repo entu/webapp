@@ -14,7 +14,7 @@ defineProps({
 </script>
 
 <template>
-  <div class="w-80 overflow-y-auto border-r border-slate-300">
+  <div class="overflow-y-auto border-r border-slate-300">
     <router-link
       v-for="entity in entities"
       :key="entity._id"

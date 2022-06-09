@@ -180,7 +180,6 @@ function menuSorter (a, b) {
     collapse-mode="width"
     :collapsed-width="60"
     :collapsed="navCollapsed"
-    :native-scrollbar="false"
     @collapse="navCollapsed = true"
     @expand="navCollapsed = false"
   >

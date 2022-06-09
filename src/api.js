@@ -5,6 +5,11 @@ export async function apiGetEntities (params) {
   return entities
 }
 
+export async function apiGetEntity (entityId) {
+  const { entity } = await apiGet('entity/' + entityId)
+  return entity
+}
+
 export async function apiGet (pathname, params, headers) {
   const store = useStore()
 

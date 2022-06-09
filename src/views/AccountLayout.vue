@@ -78,9 +78,7 @@ async function loadMenu () {
       <div class="h-12 flex items-center justify-between border-b border-slate-300">
         <search-input v-model="search" />
       </div>
-      <div
-        class="grow flex overflow-y-auto"
-      >
+      <div class="grow w-full flex overflow-hidden">
         <router-view />
       </div>
     </div>
