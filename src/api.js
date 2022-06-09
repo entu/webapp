@@ -10,7 +10,7 @@ export async function apiGetEntity (entityId) {
   return entity
 }
 
-export async function apiGet (pathname, params, headers) {
+export async function apiGet (pathname, params = {}, headers) {
   const store = useStore()
 
   store.addActiveRequests(1)
