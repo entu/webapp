@@ -58,7 +58,10 @@ async function loadEntity (eId) {
     class="w-80"
     :entities="entities"
   />
-  <div class="p-4 grow overflow-y-auto overflow-hidden">
+  <div
+    v-if="entity"
+    class="p-4 grow overflow-y-auto overflow-hidden"
+  >
     <h1 class="mb-4 text-2xl font-bold">
       {{ getValue(entity.name) }}
     </h1>
