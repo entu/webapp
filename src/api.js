@@ -1,12 +1,11 @@
 import { useStore } from '@/store'
 
 export async function apiGetEntities (params) {
-  const { entities } = await apiGet('entity', params)
-  return entities
+  return await apiGet('entity', params)
 }
 
-export async function apiGetEntity (entityId) {
-  const { entity } = await apiGet('entity/' + entityId)
+export async function apiGetEntity (entityId, params) {
+  const { entity } = await apiGet('entity/' + entityId, params)
   return entity
 }
 

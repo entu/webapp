@@ -50,7 +50,7 @@ watch(() => search.value, (value) => {
 })
 
 async function loadMenu () {
-  menu.value = await apiGetEntities({
+  const { entities } = await apiGetEntities({
     '_type.string': 'menu',
     props: [
       'ordinal.integer',
@@ -61,6 +61,7 @@ async function loadMenu () {
       'query.string'
     ].join(',')
   })
+  menu.value = entities
 }
 </script>
 

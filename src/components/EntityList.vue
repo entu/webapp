@@ -24,8 +24,8 @@ defineProps({
       <img
         v-if="entity._thumbnail"
         :src="entity._thumbnail"
-        class="w-8 h-8 rounded-full"
-        alt=""
+        class="w-8 h-8 object-cover rounded"
+        alt="Entity thumbnail"
       >
       <div class="truncate whitespace-nowrap overflow-hidden ">
         {{ getValue(entity.name) }}
