@@ -1,12 +1,11 @@
 <script setup>
 import { computed, h, defineProps, ref, watch } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRoute, RouterLink } from 'vue-router'
 import { NIcon, NLayoutSider, NMenu } from 'naive-ui'
 import { Home as HomeIcon, Data2 as FolderIcon, Login as LoginIcon, Logout as LogoutIcon, Error as ErrorIcon } from '@vicons/carbon'
 
 import { getValue } from '@/api'
 
-const router = useRouter()
 const route = useRoute()
 
 const navCollapsed = ref(false)
@@ -31,9 +30,9 @@ const entityMenu = computed(() => {
   if (!props.menu || props.menu.length === 0) {
     return [{
       key: 'no-menu',
-      disabled: true,
+      icon: () => h(NIcon, null, () => h(ErrorIcon)),
       label: 'No public menu',
-      icon: () => h(NIcon, null, () => h(ErrorIcon))
+      disabled: true
     }]
   }
 
@@ -46,8 +45,8 @@ const entityMenu = computed(() => {
     if (!menuObject[group]) {
       menuObject[group] = {
         key: group,
-        label: getValue(entity.group),
         icon: () => h(NIcon, null, () => h(FolderIcon)),
+        label: getValue(entity.group),
         children: [],
         ordinal: 0
       }
@@ -56,8 +55,10 @@ const entityMenu = computed(() => {
     menuObject[group].ordinal += ordinal
     menuObject[group].children.push({
       key: getValue(entity.query),
-      label: getValue(entity.name),
-      to: { name: 'entity', params: { account: route.params.account, entity: '_' }, query: queryObj(getValue(entity.query)) },
+      label: () => h(RouterLink,
+        { to: { name: 'entity', params: { account: route.params.account, entity: '_' }, query: queryObj(getValue(entity.query)) } },
+        { default: () => getValue(entity.name) }
+      ),
       ordinal
     })
   })
@@ -80,14 +81,20 @@ const fullMenu = computed(() => {
 
   menu.push({
     key: 'account',
-    label: account.toUpperCase(),
     icon: () => h(NIcon, null, () => h(HomeIcon)),
-    to: { name: 'account', params: { account } },
+    label: props.accounts.length > 1
+      ? account.toUpperCase()
+      : () => h(RouterLink,
+          { to: { name: 'stats', params: { account } } },
+          { default: () => account.toUpperCase() }
+        ),
     children: props.accounts.length > 1
       ? props.accounts.filter(x => x.account !== account).map(x => ({
         key: x.account,
-        label: x.account,
-        to: { name: 'stats', params: { account: x.account } }
+        label: () => h(RouterLink,
+          { to: { name: 'stats', params: { account: x.account } } },
+          { default: () => x.account }
+        )
       }))
       : null
   })
@@ -111,16 +118,20 @@ const fullMenu = computed(() => {
   if (props.isAuthenticated) {
     menu.push({
       key: 'auth',
-      label: 'Sign Out',
       icon: () => h(NIcon, null, () => h(LogoutIcon)),
-      to: { name: 'auth', params: { id: 'exit' } }
+      label: () => h('a',
+        { href: '/auth/exit' },
+        { default: () => 'Sign Out' }
+      )
     })
   } else {
     menu.push({
       key: 'auth',
-      label: 'Sign In',
       icon: () => h(NIcon, null, () => h(LoginIcon)),
-      to: { name: 'auth' }
+      label: () => h('a',
+        { href: '/auth' },
+        { default: () => 'Sign In' }
+      )
     })
   }
 
@@ -159,10 +170,6 @@ function menuSorter (a, b) {
 
   return 0
 }
-
-function onMenuUpdate (key, item) {
-  router.push(item.to)
-}
 </script>
 
 <template>
@@ -197,7 +204,6 @@ function onMenuUpdate (key, item) {
       :collapsed-width="60"
       :root-indent="18"
       :indent="32"
-      @update:value="onMenuUpdate"
     />
   </n-layout-sider>
 </template>

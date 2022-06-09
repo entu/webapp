@@ -31,5 +31,5 @@ export async function apiGet (pathname, params, headers) {
 
 export function getValue (valueList) {
   const store = useStore()
-  return valueList.find(v => v.language === store.locale)?.string || valueList.find(v => !v.language)?.string
+  return valueList?.find(v => v.language === store.locale)?.string || valueList?.find(v => !v.language)?.string
 }
