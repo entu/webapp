@@ -4,10 +4,11 @@ import { useRouter, useRoute } from 'vue-router'
 import { NIcon, NLayoutSider, NMenu } from 'naive-ui'
 import { Home as HomeIcon, Data2 as FolderIcon, Login as LoginIcon, Logout as LogoutIcon, Error as ErrorIcon } from '@vicons/carbon'
 
+import { getValue } from '@/api'
+
 const router = useRouter()
 const route = useRoute()
 
-const locale = 'et'
 const navCollapsed = ref(false)
 const activeMenu = ref(location.search.substring(1))
 
@@ -39,13 +40,13 @@ const entityMenu = computed(() => {
   const menuObject = {}
 
   props.menu.forEach(entity => {
-    const group = getValue(entity.group, locale).toLowerCase()
+    const group = getValue(entity.group).toLowerCase()
     const ordinal = entity.ordinal ? entity.ordinal[0].integer : 0
 
     if (!menuObject[group]) {
       menuObject[group] = {
         key: group,
-        label: getValue(entity.group, locale),
+        label: getValue(entity.group),
         icon: () => h(NIcon, null, () => h(FolderIcon)),
         children: [],
         ordinal: 0
@@ -54,9 +55,9 @@ const entityMenu = computed(() => {
 
     menuObject[group].ordinal += ordinal
     menuObject[group].children.push({
-      key: getValue(entity.query, locale),
-      label: getValue(entity.name, locale),
-      query: queryObj(getValue(entity.query, locale)),
+      key: getValue(entity.query),
+      label: getValue(entity.name),
+      to: { name: 'entity', params: { account: route.params.account, entity: '_' }, query: queryObj(getValue(entity.query)) },
       ordinal
     })
   })
@@ -126,25 +127,11 @@ const fullMenu = computed(() => {
   return menu
 })
 
-const toHome = computed(() => ({ name: route.name, params: route.params }))
+const toHome = computed(() => ({ name: 'stats', params: route.params }))
 
 watch(() => route.query, (value) => {
   activeMenu.value = location.search.substring(1)
 })
-
-function getValue (valueList, locale) {
-  if (!valueList) { return }
-
-  const values = []
-
-  valueList.forEach(v => {
-    if (!v.language || v.language === locale) {
-      values.push(v.string)
-    }
-  })
-
-  return values[0]
-}
 
 function queryObj (q) {
   if (!q) { return {} }
@@ -174,7 +161,7 @@ function menuSorter (a, b) {
 }
 
 function onMenuUpdate (key, item) {
-  router.push(item.to || { name: 'stats', params: { account: route.params.account }, query: item.query })
+  router.push(item.to)
 }
 </script>
 

@@ -83,9 +83,9 @@ function humanFileSize (bytes, si = true, dp = 2) {
       :percentage="percentage"
     />
     <div class="flex justify-between">
-      <div>{{ aValueStr }}</div>
+      <div>{{ aValueStr || '' }}</div>
       <div class="text-stone-400">
-        {{ bValueStr }}
+        {{ bValueStr || '' }}
       </div>
     </div>
   </div>

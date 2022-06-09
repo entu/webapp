@@ -25,7 +25,7 @@ const searchText = computed({
 </script>
 
 <template>
-  <div class="flex items-center">
+  <div class="w-80 flex items-center">
     <label
       for="search"
       class="p-3"
@@ -36,7 +36,7 @@ const searchText = computed({
       id="search"
       v-model="searchText"
       placeholder="Search Entity"
-      class="w-full py-3 bg-transparent placeholder:italic placeholder:text-slate-400 focus:outline-none"
+      class="w-full py-3 pr-3 bg-transparent placeholder:italic placeholder:text-slate-400 focus:outline-none"
     >
   </div>
 </template>

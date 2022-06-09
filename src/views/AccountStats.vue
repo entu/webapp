@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 
 import { useStore } from '@/store'
 import { apiGet } from '@/api'
@@ -7,6 +7,12 @@ import StatsBar from '@/components/StatsBar.vue'
 
 const store = useStore()
 const stats = ref({})
+
+onMounted(async () => {
+  if (!store.isAuthenticated) { return }
+
+  stats.value = await apiGet('account')
+})
 
 watch(() => store.account, async (value) => {
   if (!store.isAuthenticated) { return }

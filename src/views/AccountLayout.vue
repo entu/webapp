@@ -8,9 +8,9 @@ import { apiGetEntities } from '@/api'
 import LeftMenu from '@/components/LeftMenu.vue'
 import SearchInput from '@/components/SearchInput.vue'
 
-const store = useStore()
 const route = useRoute()
 const router = useRouter()
+const store = useStore()
 
 const search = ref('')
 const menu = ref([])
@@ -20,10 +20,6 @@ onMounted(() => {
   search.value = route.query.q
 
   loadMenu()
-
-  if (Object.keys(route.query).length > 0) {
-    apiGetEntities(route.query)
-  }
 })
 
 watch(() => route.params.account, (value) => {
@@ -35,21 +31,21 @@ watch(() => route.params.account, (value) => {
 })
 
 watch(() => route.query, (value) => {
-  search.value = value.q
-
-  if (Object.keys(value).length > 0) {
-    apiGetEntities(value)
+  if (Object.keys(value).length === 0) {
+    router.replace({ name: 'stats', params: { account: route.params.account } })
+  } else {
+    search.value = value.q
   }
 })
 
 watch(() => search.value, (value) => {
   if (value) {
-    router.replace({ query: { ...route.query, q: value } })
+    router.replace({ name: 'entity', params: { entity: '_', ...route.params }, query: { ...route.query, q: value } })
   } else {
     const newQuery = { ...route.query }
     delete newQuery.q
 
-    router.replace({ query: newQuery })
+    router.replace({ name: route.name, params: route.params, query: newQuery })
   }
 })
 
@@ -80,13 +76,10 @@ async function loadMenu () {
     />
     <div class="w-full flex flex-col">
       <div class="h-12 flex items-center justify-between border-b border-slate-300">
-        <search-input
-          v-model="search"
-          class="w-64"
-        />
+        <search-input v-model="search" />
       </div>
       <div
-        class="grow  overflow-y-auto"
+        class="grow flex overflow-y-auto"
       >
         <router-view />
       </div>

@@ -28,3 +28,8 @@ export async function apiGet (pathname, params, headers) {
 
   return result
 }
+
+export function getValue (valueList) {
+  const store = useStore()
+  return valueList.find(v => v.language === store.locale)?.string || valueList.find(v => !v.language)?.string
+}
