@@ -70,13 +70,13 @@ async function loadEntity (eId) {
 }
 
 async function onEntitiesScroll (el) {
-  if (entitiesList.value.length > entitiesCount.value || isLoading.value || el.srcElement.scrollHeight - (el.srcElement.offsetHeight + el.srcElement.scrollTop) > 100) {
+  if (isLoading.value || entitiesList.value.length >= entitiesCount.value || el.srcElement.scrollHeight - (el.srcElement.offsetHeight + el.srcElement.scrollTop) > 100) {
     return
   }
 
   skip.value += limit.value
 
-  await loadEntities(route.query)
+  loadEntities(route.query)
 }
 </script>
 
