@@ -24,14 +24,15 @@ defineProps({
       <img
         v-if="entity._thumbnail"
         :src="entity._thumbnail"
-        class="w-8 h-8 object-cover rounded-full"
+        class="w-7 h-7 object-cover rounded-full"
         alt="Entity thumbnail"
       >
       <div
         v-else
-        class="w-8 h-8 block rounded-full bg-gray-50"
+        class="w-7 h-7 block rounded-full "
+        :class="entity.color"
       />
-      <div class="w-64 py-3 truncate whitespace-nowrap overflow-hidden border-b border-gray-200">
+      <div class="w-64 py-3 h-12 truncate whitespace-nowrap overflow-hidden border-b border-gray-200">
         {{ getValue(entity.name) }}
       </div>
     </router-link>

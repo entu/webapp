@@ -9,6 +9,8 @@ import EntityList from '@/components/EntityList.vue'
 const route = useRoute()
 const store = useStore()
 
+const colors = ['bg-amber-50', 'bg-blue-50', 'bg-cyan-50', 'bg-emerald-50', 'bg-fuchsia-50', 'bg-gray-50', 'bg-green-50', 'bg-indigo-50', 'bg-lime-50', 'bg-neutral-50', 'bg-orange-50', 'bg-pink-50', 'bg-purple-50', 'bg-red-50', 'bg-rose-50', 'bg-sky-50', 'bg-slate-50', 'bg-stone-50', 'bg-teal-50', 'bg-violet-50', 'bg-yellow-50', 'bg-zinc-50'
+]
 const entitiesList = ref([])
 const entitiesCount = ref(0)
 const limit = ref(Math.ceil(window.innerHeight / 50))
@@ -59,7 +61,7 @@ async function loadEntities (query) {
     skip: skip.value
   })
 
-  entitiesList.value = [...entitiesList.value, ...entities]
+  entitiesList.value = [...entitiesList.value, ...entities.map(e => ({ ...e, color: color() }))]
   entitiesCount.value = count
   isLoading.value = false
 }
@@ -174,6 +176,11 @@ async function onEntitiesScroll (el) {
   skip.value += limit.value
 
   loadEntities(route.query)
+}
+
+function color () {
+  const rnd = Math.floor(Math.random() * 21)
+  return colors[rnd]
 }
 </script>
 
