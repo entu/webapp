@@ -186,15 +186,16 @@ function color () {
 
 <template>
   <entity-list
+    class="w-80 flex-none"
     :entities="entitiesList"
     @scroll="onEntitiesScroll"
   />
   <transition>
     <div
       v-if="entity"
-      class="p-4 grow flex overflow-y-auto overflow-hidden"
+      class="p-4 flex overflow-y-auto overflow-hidden"
     >
-      <div class="grow">
+      <div class="">
         <h1 class="mb-4 text-2xl text-[#1E434C] font-bold">
           {{ entity.name }}
         </h1>
@@ -206,7 +207,7 @@ function color () {
           <div class="py-2 text-right text-[#1E434C] font-medium uppercase weig">
             {{ p.label||p.name }}
           </div>
-          <div class="grow col-span-2">
+          <div class="col-span-2">
             <div
               v-for="v in p.values"
               :key="v._id"
@@ -219,7 +220,7 @@ function color () {
       </div>
       <img
         v-if="entity._thumbnail"
-        class="h-32 w-32 mt-1 ml-16 object-cover rounded-lg"
+        class="h-32 w-32 flex-none mt-1 ml-16 object-cover rounded-lg"
         :src="entity._thumbnail"
         alt="Entity thumbnail"
       >
