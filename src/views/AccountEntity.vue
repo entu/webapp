@@ -14,6 +14,7 @@ const entitiesCount = ref(0)
 const limit = ref(Math.ceil(window.innerHeight / 50))
 const skip = ref(0)
 const entity = ref({})
+const entityType = ref({})
 const query = ref()
 const isLoading = ref(false)
 
@@ -31,6 +32,7 @@ watch(() => route.query, (value) => {
   }
 
   entitiesList.value = []
+  skip.value = 0
   loadEntities(value)
   query.value = location.search
 })
@@ -49,7 +51,9 @@ async function loadEntities (query) {
 
   const { entities, count } = await apiGetEntities({
     ...query,
-    props: ['_thumbnail', 'name.string'],
+    props: [
+      '_thumbnail', 'name.string'
+    ],
     limit: limit.value,
     skip: skip.value
   })
@@ -66,7 +70,91 @@ async function loadEntity (eId) {
     return
   }
 
-  entity.value = await apiGetEntity(eId)
+  const rawEntity = await apiGetEntity(eId)
+
+  const typeId = rawEntity._type?.[0]?.reference
+  if (typeId) {
+    const type = await apiGetEntity(typeId, {
+      props: [
+        'add_from_menu',
+        'allowed_child',
+        'default_parent',
+        'description',
+        'label_plural',
+        'label',
+        'name',
+        'open_after_add',
+        'optional_parent'
+      ]
+    })
+    const props = await apiGetEntities({
+      '_parent.reference': typeId,
+      props: [
+        'classifier',
+        'default',
+        'description',
+        'fieldset',
+        'formula',
+        'hidden',
+        'label_plural',
+        'label',
+        'list',
+        'mandatory',
+        'multilingual',
+        'name',
+        'ordinal',
+        'public',
+        'readonly',
+        'search',
+        'type'
+      ]
+    })
+
+    entity.value = {
+      _id: rawEntity._id,
+      type: {
+        _id: type._id,
+        name: getValue(type.name, 'string'),
+        label: getValue(type.label, 'string'),
+        labelPlural: getValue(type.label_plural, 'string'),
+        description: getValue(type.description, 'string'),
+        openAfterAdd: getValue(type.open_after_add, 'boolean'),
+        defaultParent: type.default_parent,
+        optionalParent: type.optional_parent,
+        addFromMenu: type.add_from_menu,
+        allowedChild: type.allowed_child
+      },
+      props: props.entities.map(p => ({
+        type: getValue(p.type, 'string'),
+        name: getValue(p.name, 'string'),
+        label: getValue(p.label, 'string'),
+        labelPlural: getValue(p.label_plural, 'string'),
+        description: getValue(p.description, 'string'),
+        fieldset: getValue(p.fieldset, 'string'),
+        default: getValue(p.default, 'string'),
+        formula: getValue(p.formula, 'string'),
+        classifier: p.classifier,
+        ordinal: getValue(p.ordinal, 'integer'),
+        list: getValue(p.list, 'boolean'),
+        multilingual: getValue(p.multilingual, 'boolean'),
+        hidden: getValue(p.hidden, 'boolean'),
+        readonly: getValue(p.readonly, 'boolean'),
+        mandatory: getValue(p.mandatory, 'boolean'),
+        public: getValue(p.public, 'boolean'),
+        search: getValue(p.search, 'boolean')
+      }))
+    }
+
+    for (const property in rawEntity) {
+      const existingProperty = entity.value.props.find(p => p.name === property)
+
+      if (existingProperty) {
+        existingProperty.values = rawEntity[property]
+      } else {
+        entity.value.props.push({ name: property, values: rawEntity[property] })
+      }
+    }
+  }
 }
 
 async function onEntitiesScroll (el) {
@@ -101,6 +189,7 @@ async function onEntitiesScroll (el) {
         {{ getValue(entity.name) }}
       </h1>
       <pre class="text-xs max-w-0">{{ entity }}</pre>
+      <pre class="text-xs max-w-0">{{ entityType }}</pre>
     </div>
   </transition>
 </template>
