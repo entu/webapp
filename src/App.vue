@@ -16,7 +16,6 @@ import { NConfigProvider, NLoadingBarProvider, NNotificationProvider } from 'nai
 
 import AppLayout from '@/components/AppLayout.vue'
 
-const isLocalhost = location.hostname === 'localhost'
 const themeOverrides = {
   Dropdown: {
     optionColorActive: 'rgba(0, 0, 0, .05)',
@@ -27,6 +26,7 @@ const themeOverrides = {
     arrowColorActive: 'rgba(255, 255, 255, 1)',
     arrowColorActiveHover: 'rgba(255, 255, 255, 1)',
     arrowColorChildActive: 'rgba(255, 255, 255, 1)',
+    arrowColorChildActiveHover: 'rgba(255, 255, 255, 1)',
     arrowColorHover: 'rgba(255, 255, 255, 1)',
 
     borderRadius: '0',
@@ -42,19 +42,17 @@ const themeOverrides = {
     itemTextColorActive: 'rgba(255, 255, 255, 1)',
     itemTextColorActiveHover: 'rgba(255, 255, 255, 1)',
     itemTextColorChildActive: 'rgba(255, 255, 255, 1)',
+    itemTextColorChildActiveHover: 'rgba(255, 255, 255, 1)',
     itemTextColorHover: 'rgba(254, 255, 255, 1)',
 
     itemIconColor: 'rgba(255, 255, 255, .7)',
     itemIconColorActive: 'rgba(255, 255, 255, 1)',
     itemIconColorActiveHover: 'rgba(255, 255, 255, 1)',
     itemIconColorChildActive: 'rgba(255, 255, 255, 1)',
+    itemIconColorChildActiveHover: 'rgba(255, 255, 255, 1)',
     itemIconColorCollapsed: 'rgba(255, 255, 255, .7)',
     itemIconColorCollapsedChildActive: 'rgba(255, 255, 255, 1)',
     itemIconColorHover: 'rgba(254, 255, 255, 1)'
-  },
-  Layout: {
-    siderToggleBarColor: 'rgba(30, 67, 76, 1)',
-    siderToggleBarColorHover: 'rgba(30, 67, 76, 1)'
   },
   LoadingBar: {
     colorLoading: 'rgb(14 165 233)',

@@ -9,11 +9,14 @@ import EntityList from '@/components/EntityList.vue'
 const route = useRoute()
 const store = useStore()
 
+const colors = ['bg-amber-50', 'bg-blue-50', 'bg-cyan-50', 'bg-emerald-50', 'bg-fuchsia-50', 'bg-gray-50', 'bg-green-50', 'bg-indigo-50', 'bg-lime-50', 'bg-neutral-50', 'bg-orange-50', 'bg-pink-50', 'bg-purple-50', 'bg-red-50', 'bg-rose-50', 'bg-sky-50', 'bg-slate-50', 'bg-stone-50', 'bg-teal-50', 'bg-violet-50', 'bg-yellow-50', 'bg-zinc-50'
+]
 const entitiesList = ref([])
 const entitiesCount = ref(0)
 const limit = ref(Math.ceil(window.innerHeight / 50))
 const skip = ref(0)
 const entity = ref({})
+const entityId = ref()
 const entityType = ref({})
 const entityProps = ref([])
 const query = ref()
@@ -59,7 +62,7 @@ async function loadEntities (query) {
     skip: skip.value
   })
 
-  entitiesList.value = [...entitiesList.value, ...entities]
+  entitiesList.value = [...entitiesList.value, ...entities.map(e => ({ ...e, color: color() }))]
   entitiesCount.value = count
   isLoading.value = false
 }
@@ -72,6 +75,7 @@ async function loadEntity (eId) {
   }
 
   const rawEntity = await apiGetEntity(eId)
+  entityId.value = rawEntity._id
 
   const typeId = rawEntity._type?.[0]?.reference
   if (typeId) {
@@ -175,32 +179,38 @@ async function onEntitiesScroll (el) {
 
   loadEntities(route.query)
 }
+
+function color () {
+  const rnd = Math.floor(Math.random() * 21)
+  return colors[rnd]
+}
 </script>
 
 <template>
   <entity-list
-    class="w-80"
+    v-model="entityId"
+    class="w-80 flex-none"
     :entities="entitiesList"
     @scroll="onEntitiesScroll"
   />
   <transition>
     <div
       v-if="entity"
-      class="p-4 grow flex overflow-y-auto overflow-hidden"
+      class="p-4 flex-auto flex overflow-y-auto overflow-hidden"
     >
-      <div class="grow">
+      <div class="flex-auto">
         <h1 class="mb-4 text-2xl text-[#1E434C] font-bold">
           {{ entity.name }}
         </h1>
         <div
           v-for="p in entity.props"
           :key="p.name"
-          class="grid grid-cols-3 gap-3 border-b border-slate-100"
+          class="grid grid-cols-3 gap-3 border-b border-gray-100"
         >
           <div class="py-2 text-right text-[#1E434C] font-medium uppercase weig">
             {{ p.label||p.name }}
           </div>
-          <div class="grow col-span-2">
+          <div class="col-span-2">
             <div
               v-for="v in p.values"
               :key="v._id"
@@ -213,9 +223,8 @@ async function onEntitiesScroll (el) {
       </div>
       <img
         v-if="entity._thumbnail"
-        class="h-32 w-32 mt-1 ml-16 object-cover rounded-lg"
+        class="h-32 w-32 flex-none mt-1 ml-16 object-cover rounded-lg"
         :src="entity._thumbnail"
-        alt="Entity thumbnail"
       >
     </div>
   </transition>

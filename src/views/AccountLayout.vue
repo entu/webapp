@@ -76,10 +76,10 @@ async function loadMenu () {
       :is-authenticated="store.isAuthenticated"
     />
     <div class="w-full flex flex-col">
-      <div class="h-12 flex items-center justify-between border-b border-slate-300">
+      <div class="h-12 flex items-center justify-between border-b border-gray-300">
         <search-input v-model="search" />
       </div>
-      <div class="grow w-full flex overflow-hidden">
+      <div class="w-full flex-auto flex overflow-hidden">
         <router-view />
       </div>
     </div>

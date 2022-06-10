@@ -1,33 +1,51 @@
 <script setup>
-import { defineProps } from 'vue'
+import { defineEmits, defineProps } from 'vue'
 import { useRoute } from 'vue-router'
 
 import { getValue } from '@/api'
 
 const route = useRoute()
-defineProps({
+
+const emit = defineEmits(['update:modelValue'])
+
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: null
+  },
   entities: {
     type: Array,
     default: null
   }
 })
+
 </script>
 
 <template>
-  <div class="overflow-y-auto border-r border-slate-300">
+  <div class="overflow-y-auto border-r border-gray-300">
     <router-link
       v-for="entity in entities"
       :key="entity._id"
-      class="h-12 mx-2 flex gap-2 items-center border-b border-slate-200"
+      class="h-12 px-3 flex items-center hover:bg-gray-50"
+      :class="{ 'font-bold bg-zinc-100 hover:bg-zinc-100': props.modelValue === entity._id }"
       :to="{ name: 'entity', params: { ...route.params, entity: entity._id }, query: route.query }"
+      @click="emit('update:modelValue', entity._id)"
     >
       <img
         v-if="entity._thumbnail"
         :src="entity._thumbnail"
-        class="w-9 h-9 object-cover rounded-full"
-        alt="Entity thumbnail"
+        :class="entity.color"
+        class="w-7 h-7 flex-none object-cover rounded-full"
       >
-      <div class="truncate whitespace-nowrap overflow-hidden ">
+      <div
+        v-else
+        class="w-7 h-7 flex-none rounded-full "
+        :class="entity.color"
+      />
+      <div
+        :class="{ 'border-b': props.modelValue === entity._id }"
+        class="py-3 ml-3 h-12 flex-auto truncate whitespace-nowrap overflow-hidden border-b border-gray-200"
+      >
         {{ getValue(entity.name) }}
       </div>
     </router-link>
