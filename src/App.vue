@@ -54,10 +54,6 @@ const themeOverrides = {
     itemIconColorCollapsedChildActive: 'rgba(255, 255, 255, 1)',
     itemIconColorHover: 'rgba(254, 255, 255, 1)'
   },
-  Layout: {
-    siderToggleBarColor: 'rgba(30, 67, 76, 1)',
-    siderToggleBarColorHover: 'rgba(30, 67, 76, 1)'
-  },
   LoadingBar: {
     colorLoading: 'rgb(14 165 233)',
     height: '4px'

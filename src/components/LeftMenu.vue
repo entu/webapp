@@ -174,6 +174,7 @@ function menuSorter (a, b) {
 
 <template>
   <n-layout-sider
+    class="bg-[#1E434C]"
     show-trigger="bar"
     content-style="padding:.3rem 2px 0 0"
     collapse-mode="width"
@@ -207,7 +208,4 @@ function menuSorter (a, b) {
 </template>
 
 <style scoped>
-.n-layout-sider {
-  background-color: rgba(30, 67, 76, 1);
-}
 </style>
