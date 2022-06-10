@@ -16,6 +16,7 @@ const entitiesCount = ref(0)
 const limit = ref(Math.ceil(window.innerHeight / 50))
 const skip = ref(0)
 const entity = ref({})
+const entityId = ref()
 const entityType = ref({})
 const entityProps = ref([])
 const query = ref()
@@ -74,6 +75,7 @@ async function loadEntity (eId) {
   }
 
   const rawEntity = await apiGetEntity(eId)
+  entityId.value = rawEntity._id
 
   const typeId = rawEntity._type?.[0]?.reference
   if (typeId) {
@@ -186,6 +188,7 @@ function color () {
 
 <template>
   <entity-list
+    v-model="entityId"
     class="w-80 flex-none"
     :entities="entitiesList"
     @scroll="onEntitiesScroll"
@@ -193,9 +196,9 @@ function color () {
   <transition>
     <div
       v-if="entity"
-      class="p-4 flex overflow-y-auto overflow-hidden"
+      class="p-4 flex-auto flex overflow-y-auto overflow-hidden"
     >
-      <div class="">
+      <div class="flex-auto">
         <h1 class="mb-4 text-2xl text-[#1E434C] font-bold">
           {{ entity.name }}
         </h1>
@@ -222,7 +225,6 @@ function color () {
         v-if="entity._thumbnail"
         class="h-32 w-32 flex-none mt-1 ml-16 object-cover rounded-lg"
         :src="entity._thumbnail"
-        alt="Entity thumbnail"
       >
     </div>
   </transition>
