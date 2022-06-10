@@ -15,6 +15,7 @@ const limit = ref(Math.ceil(window.innerHeight / 50))
 const skip = ref(0)
 const entity = ref({})
 const entityType = ref({})
+const entityProps = ref([])
 const query = ref()
 const isLoading = ref(false)
 
@@ -74,7 +75,7 @@ async function loadEntity (eId) {
 
   const typeId = rawEntity._type?.[0]?.reference
   if (typeId) {
-    const type = await apiGetEntity(typeId, {
+    entityType.value = await apiGetEntity(typeId, {
       props: [
         'add_from_menu',
         'allowed_child',
@@ -87,6 +88,7 @@ async function loadEntity (eId) {
         'optional_parent'
       ]
     })
+
     const props = await apiGetEntities({
       '_parent.reference': typeId,
       props: [
@@ -109,50 +111,57 @@ async function loadEntity (eId) {
         'type'
       ]
     })
+    entityProps.value = props.entities
+  }
 
-    entity.value = {
-      _id: rawEntity._id,
-      type: {
-        _id: type._id,
-        name: getValue(type.name, 'string'),
-        label: getValue(type.label, 'string'),
-        labelPlural: getValue(type.label_plural, 'string'),
-        description: getValue(type.description, 'string'),
-        openAfterAdd: getValue(type.open_after_add, 'boolean'),
-        defaultParent: type.default_parent,
-        optionalParent: type.optional_parent,
-        addFromMenu: type.add_from_menu,
-        allowedChild: type.allowed_child
-      },
-      props: props.entities.map(p => ({
-        type: getValue(p.type, 'string'),
-        name: getValue(p.name, 'string'),
-        label: getValue(p.label, 'string'),
-        labelPlural: getValue(p.label_plural, 'string'),
-        description: getValue(p.description, 'string'),
-        fieldset: getValue(p.fieldset, 'string'),
-        default: getValue(p.default, 'string'),
-        formula: getValue(p.formula, 'string'),
-        classifier: p.classifier,
-        ordinal: getValue(p.ordinal, 'integer'),
-        list: getValue(p.list, 'boolean'),
-        multilingual: getValue(p.multilingual, 'boolean'),
-        hidden: getValue(p.hidden, 'boolean'),
-        readonly: getValue(p.readonly, 'boolean'),
-        mandatory: getValue(p.mandatory, 'boolean'),
-        public: getValue(p.public, 'boolean'),
-        search: getValue(p.search, 'boolean')
-      }))
+  entity.value = {
+    _id: rawEntity._id,
+    _thumbnail: rawEntity._thumbnail,
+    name: getValue(rawEntity.name),
+    type: {
+      _id: entityType.value._id,
+      name: getValue(entityType.value.name),
+      label: getValue(entityType.value.label),
+      labelPlural: getValue(entityType.value.label_plural),
+      description: getValue(entityType.value.description),
+      openAfterAdd: getValue(entityType.value.open_after_add, 'boolean'),
+      defaultParent: entityType.value.default_parent,
+      optionalParent: entityType.value.optional_parent,
+      addFromMenu: entityType.value.add_from_menu,
+      allowedChild: entityType.value.allowed_child
+    },
+    props: entityProps.value.map(p => ({
+      type: getValue(p.type),
+      name: getValue(p.name),
+      label: getValue(p.label),
+      labelPlural: getValue(p.label_plural),
+      description: getValue(p.description),
+      fieldset: getValue(p.fieldset),
+      default: getValue(p.default),
+      formula: getValue(p.formula),
+      classifier: p.classifier,
+      ordinal: getValue(p.ordinal, 'integer'),
+      list: getValue(p.list, 'boolean'),
+      multilingual: getValue(p.multilingual, 'boolean'),
+      hidden: getValue(p.hidden, 'boolean'),
+      readonly: getValue(p.readonly, 'boolean'),
+      mandatory: getValue(p.mandatory, 'boolean'),
+      public: getValue(p.public, 'boolean'),
+      search: getValue(p.search, 'boolean')
+    }))
+  }
+
+  for (const property in rawEntity) {
+    if (['_id', '_thumbnail'].includes(property)) {
+      continue
     }
 
-    for (const property in rawEntity) {
-      const existingProperty = entity.value.props.find(p => p.name === property)
+    const existingProperty = entity.value.props.find(p => p.name === property)
 
-      if (existingProperty) {
-        existingProperty.values = rawEntity[property]
-      } else {
-        entity.value.props.push({ name: property, values: rawEntity[property] })
-      }
+    if (existingProperty) {
+      existingProperty.values = rawEntity[property]
+    } else {
+      entity.value.props.push({ name: property, values: rawEntity[property] })
     }
   }
 }
@@ -177,19 +186,37 @@ async function onEntitiesScroll (el) {
   <transition>
     <div
       v-if="entity"
-      class="p-4 grow overflow-y-auto overflow-hidden"
+      class="p-4 grow flex overflow-y-auto overflow-hidden"
     >
+      <div class="grow">
+        <h1 class="mb-4 text-2xl text-[#1E434C] font-bold">
+          {{ entity.name }}
+        </h1>
+        <div
+          v-for="p in entity.props"
+          :key="p.name"
+          class="grid grid-cols-3 gap-3 border-b border-slate-100"
+        >
+          <div class="py-2 text-right text-[#1E434C] font-medium uppercase weig">
+            {{ p.label||p.name }}
+          </div>
+          <div class="grow col-span-2">
+            <div
+              v-for="v in p.values"
+              :key="v._id"
+              class="my-2"
+            >
+              {{ v.string }}
+            </div>
+          </div>
+        </div>
+      </div>
       <img
         v-if="entity._thumbnail"
-        class="h-32 w-32 mt-1 object-cover float-right rounded-lg"
+        class="h-32 w-32 mt-1 ml-16 object-cover rounded-lg"
         :src="entity._thumbnail"
         alt="Entity thumbnail"
       >
-      <h1 class="mb-4 text-2xl font-bold">
-        {{ getValue(entity.name) }}
-      </h1>
-      <pre class="text-xs max-w-0">{{ entity }}</pre>
-      <pre class="text-xs max-w-0">{{ entityType }}</pre>
     </div>
   </transition>
 </template>

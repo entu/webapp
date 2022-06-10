@@ -174,7 +174,6 @@ function menuSorter (a, b) {
 
 <template>
   <n-layout-sider
-    bordered
     show-trigger="bar"
     content-style="padding:.3rem 2px 0 0"
     collapse-mode="width"

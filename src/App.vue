@@ -1,5 +1,4 @@
 <template>
-  <n-theme-editor v-if="isLocalhost" />
   <n-config-provider
     class="h-full"
     :theme-overrides="themeOverrides"
@@ -13,7 +12,7 @@
 </template>
 
 <script setup>
-import { NConfigProvider, NLoadingBarProvider, NNotificationProvider, NThemeEditor } from 'naive-ui'
+import { NConfigProvider, NLoadingBarProvider, NNotificationProvider } from 'naive-ui'
 
 import AppLayout from '@/components/AppLayout.vue'
 

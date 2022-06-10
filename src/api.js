@@ -39,7 +39,7 @@ export async function apiGet (pathname, params = {}, headers) {
   return result
 }
 
-export function getValue (valueList, type = 'string') {
+export function getValue (valueList = [], type = 'string') {
   const store = useStore()
-  return valueList?.find(v => v.language === store.locale)?.string || valueList?.find(v => !v.language || valueList?.[0])?.[type]
+  return valueList.find(v => v.language === store.locale)?.[type] || valueList.find(v => !v.language)?.[type] || valueList?.[0]?.[type]
 }
