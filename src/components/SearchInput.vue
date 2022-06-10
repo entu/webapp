@@ -30,13 +30,13 @@ const searchText = computed({
       for="search"
       class="p-3"
     >
-      <search-icon class="h-5 w-5 text-slate-400" />
+      <search-icon class="h-5 w-5 text-gray-400" />
     </label>
     <input
       id="search"
       v-model="searchText"
       placeholder="Search Entity"
-      class="w-full py-3 pr-3 bg-transparent placeholder:italic placeholder:text-slate-400 focus:outline-none"
+      class="w-full py-3 pr-3 bg-transparent placeholder:italic placeholder:text-gray-400 focus:outline-none"
     >
   </div>
 </template>

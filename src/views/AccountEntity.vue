@@ -179,7 +179,6 @@ async function onEntitiesScroll (el) {
 
 <template>
   <entity-list
-    class="w-80"
     :entities="entitiesList"
     @scroll="onEntitiesScroll"
   />
@@ -195,7 +194,7 @@ async function onEntitiesScroll (el) {
         <div
           v-for="p in entity.props"
           :key="p.name"
-          class="grid grid-cols-3 gap-3 border-b border-slate-100"
+          class="grid grid-cols-3 gap-3 border-b border-gray-100"
         >
           <div class="py-2 text-right text-[#1E434C] font-medium uppercase weig">
             {{ p.label||p.name }}
