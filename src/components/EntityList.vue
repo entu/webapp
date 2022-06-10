@@ -18,7 +18,7 @@ defineProps({
     <router-link
       v-for="entity in entities"
       :key="entity._id"
-      class="h-12 mx-2 flex gap-2 items-center border-b border-slate-100"
+      class="h-12 mx-2 flex gap-2 items-center border-b border-slate-200"
       :to="{ name: 'entity', params: { ...route.params, entity: entity._id }, query: route.query }"
     >
       <img
