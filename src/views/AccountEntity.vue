@@ -207,14 +207,14 @@ function color () {
           :key="p.name"
           class="grid grid-cols-3 gap-3 border-b border-gray-100"
         >
-          <div class="py-2 text-right text-[#1E434C] font-medium uppercase weig">
+          <div class="py-1 text-right text-[#1E434C] font-medium uppercase weig">
             {{ p.label||p.name }}
           </div>
           <div class="col-span-2">
             <div
               v-for="v in p.values"
               :key="v._id"
-              class="my-2"
+              class="my-1"
             >
               {{ v.string }}
             </div>
