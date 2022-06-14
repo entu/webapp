@@ -60,14 +60,3 @@ const themeOverrides = {
   }
 }
 </script>
-
-<style>
-#app {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.n-menu-item-content.n-menu-item-content--child-active .n-menu-item-content-header{
-  font-weight: bold;
-}
-</style>

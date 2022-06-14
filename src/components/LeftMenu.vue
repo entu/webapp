@@ -206,6 +206,3 @@ function menuSorter (a, b) {
     />
   </n-layout-sider>
 </template>
-
-<style scoped>
-</style>
