@@ -1,6 +1,7 @@
 <script setup>
 import { watch, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { NCollapse, NCollapseItem } from 'naive-ui'
 
 import { useStore } from '@/store'
 import { apiGetEntity, apiGetEntities, getValue } from '@/api'
@@ -19,6 +20,7 @@ const entity = ref({})
 const entityId = ref()
 const entityType = ref({})
 const entityProps = ref([])
+const properties = ref([])
 const query = ref()
 const isLoading = ref(false)
 
@@ -168,6 +170,34 @@ async function loadEntity (eId) {
       entity.value.props.push({ name: property, values: rawEntity[property] })
     }
   }
+
+  const propsObject = {}
+
+  entity.value.props.forEach(property => {
+    const fieldset = property.fieldset?.toLowerCase()
+    const group = !fieldset && property.name.startsWith('_') ? 'System properties' : fieldset
+    const ordinal = property.ordinal?.[0]?.integer || 0
+
+    if (!propsObject[group]) {
+      propsObject[group] = {
+        name: property.fieldset || group,
+        children: [],
+        ordinal: 0
+      }
+    }
+
+    propsObject[group].ordinal += ordinal
+    propsObject[group].children.push(property)
+  })
+
+  properties.value = Object.values(propsObject)
+
+  properties.value.forEach(m => {
+    m.ordinal = m.ordinal / m.children.length
+    m.children.sort(propsSorter)
+  })
+
+  properties.value.sort(propsSorter)
 }
 
 async function onEntitiesScroll (el) {
@@ -183,6 +213,19 @@ async function onEntitiesScroll (el) {
 function color () {
   const rnd = Math.floor(Math.random() * 21)
   return colors[rnd]
+}
+
+function propsSorter (a, b) {
+  if (a.ordinal && b.ordinal && a.ordinal < b.ordinal) { return -1 }
+  if (a.ordinal && b.ordinal && a.ordinal > b.ordinal) { return 1 }
+
+  if (!a.ordinal && b.ordinal) { return -1 }
+  if (a.ordinal && !b.ordinal) { return 1 }
+
+  if (!a.name || a.name < b.name) { return -1 }
+  if (!b.name || a.name > b.name) { return 1 }
+
+  return 0
 }
 </script>
 
@@ -202,24 +245,47 @@ function color () {
         <h1 class="mb-4 text-2xl text-[#1E434C] font-bold">
           {{ entity.name }}
         </h1>
-        <div
-          v-for="p in entity.props"
-          :key="p.name"
-          class="grid grid-cols-3 gap-3 border-b border-gray-100"
-        >
-          <div class="py-1 text-right text-[#1E434C] font-medium uppercase weig">
-            {{ p.label||p.name }}
-          </div>
-          <div class="col-span-2">
+        <!-- <n-collapse :default-expanded-names="Array.from(Array(properties.length).keys())"> -->
+        <n-collapse :default-expanded-names="[0]">
+          <n-collapse-item
+            v-for="(pg, idx) in properties"
+            :key="pg.name"
+            :name="idx"
+            :title="pg.name"
+          >
             <div
-              v-for="v in p.values"
-              :key="v._id"
-              class="my-1"
+              v-for="(p, pidx) in pg.children"
+              :key="p.name"
+              class="grid grid-cols-3 gap-3 border-gray-100"
+              :class="{'border-b': pidx < pg.children.length - 1 }"
             >
-              {{ v.string }}
+              <div class="py-1 text-right text-[#1E434C] font-medium uppercase">
+                {{ p.label || p.name }}
+              </div>
+              <div class="col-span-2">
+                <div
+                  v-for="v in p.values"
+                  :key="v._id"
+                  class="my-1"
+                >
+                  {{ v.string }}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </n-collapse-item>
+          <n-collapse-item
+            name="children"
+            title="Children entities"
+          >
+            <div />
+          </n-collapse-item>
+          <n-collapse-item
+            name="referrers"
+            title="Referrer entities"
+          >
+            <div />
+          </n-collapse-item>
+        </n-collapse>
       </div>
       <img
         v-if="entity._thumbnail"
