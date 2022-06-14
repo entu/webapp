@@ -234,6 +234,7 @@ function propsSorter (a, b) {
     v-model="entityId"
     class="w-80 flex-none"
     :entities="entitiesList"
+    :count="entitiesCount"
     @scroll="onEntitiesScroll"
   />
   <transition>
@@ -256,8 +257,8 @@ function propsSorter (a, b) {
             <div
               v-for="(p, pidx) in pg.children"
               :key="p.name"
-              class="grid grid-cols-3 gap-3 border-gray-100"
-              :class="{'border-b': pidx < pg.children.length - 1 }"
+              class="grid grid-cols-3 gap-3 border-t border-gray-100"
+              :class="{'border-t-0': pidx === 0 }"
             >
               <div class="py-1 text-right text-[#1E434C] font-medium uppercase">
                 {{ p.label || p.name }}
