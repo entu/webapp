@@ -57,17 +57,14 @@ const themeOverrides = {
   LoadingBar: {
     colorLoading: 'rgb(14 165 233)',
     height: '4px'
+  },
+  Collapse: {
+    arrowColor: '#1E434C',
+    dividerColor: 'transparent',
+    fontSize: '1rem',
+    titleFontSize: '1rem',
+    titleFontWeight: '500',
+    titleTextColor: '#1E434C'
   }
 }
 </script>
-
-<style>
-#app {
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.n-menu-item-content.n-menu-item-content--child-active .n-menu-item-content-header{
-  font-weight: bold;
-}
-</style>
