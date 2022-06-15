@@ -31,7 +31,7 @@ watch(() => route.params.account, (value) => {
 })
 
 watch(() => route.query, (value) => {
-  if (Object.keys(value).length === 0) {
+  if (Object.keys(value).length === 0 && (!route.params.entity || route.params.entity === '_')) {
     router.replace({ name: 'stats', params: { account: route.params.account } })
   } else {
     search.value = value.q
