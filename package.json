@@ -1,7 +1,10 @@
 {
   "name": "entu-web",
+  "version": "3.0.0",
   "private": true,
-  "version": "0.0.0",
+  "description": "Entu Web Application",
+  "author": "Argo Roots <argo@roots.ee>",
+  "license": "MIT",
   "scripts": {
     "lint": "eslint ./ --fix --ignore-path .gitignore --ext .js,.vue",
     "dev": "vite",
@@ -15,16 +18,16 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "3.0.1",
-    "autoprefixer": "10.4.7",
+    "autoprefixer": "10.4.8",
     "eslint-config-standard": "17.0.0",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-n": "15.2.4",
     "eslint-plugin-promise": "6.0.0",
     "eslint-plugin-vue": "9.3.0",
-    "eslint": "8.20.0",
-    "naive-ui": "2.31.0",
+    "eslint": "8.21.0",
+    "naive-ui": "2.32.1",
     "postcss": "8.4.14",
-    "tailwindcss": "3.1.6",
-    "vite": "3.0.3"
+    "tailwindcss": "3.1.7",
+    "vite": "3.0.4"
   }
 }
