@@ -1,5 +1,5 @@
 <script setup>
-import { watch, onMounted, ref } from 'vue'
+import { computed, watch, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { NCollapse, NCollapseItem } from 'naive-ui'
 
@@ -12,7 +12,7 @@ const store = useStore()
 
 const colors = ['bg-amber-50', 'bg-blue-50', 'bg-cyan-50', 'bg-emerald-50', 'bg-fuchsia-50', 'bg-gray-50', 'bg-green-50', 'bg-indigo-50', 'bg-lime-50', 'bg-neutral-50', 'bg-orange-50', 'bg-pink-50', 'bg-purple-50', 'bg-red-50', 'bg-rose-50', 'bg-sky-50', 'bg-slate-50', 'bg-stone-50', 'bg-teal-50', 'bg-violet-50', 'bg-yellow-50', 'bg-zinc-50'
 ]
-const entitiesList = ref([])
+const entitiesList = ref(null)
 const entitiesCount = ref(0)
 const limit = ref(Math.ceil(window.innerHeight / 50))
 const skip = ref(0)
@@ -32,12 +32,14 @@ onMounted(() => {
   loadEntity(route.params.entity)
 })
 
+const isQuery = computed(() => Object.keys(route.query).length > 0)
+
 watch(() => route.query, (value) => {
   if (query.value === location.search) {
     return
   }
 
-  entitiesList.value = []
+  entitiesList.value = null
   skip.value = 0
   loadEntities(value)
   query.value = location.search
@@ -64,7 +66,7 @@ async function loadEntities (query) {
     skip: skip.value
   })
 
-  entitiesList.value = [...entitiesList.value, ...entities.map(e => ({ ...e, color: color() }))]
+  entitiesList.value = [...entitiesList.value || [], ...entities.map(e => ({ ...e, color: color() }))]
   entitiesCount.value = count
   isLoading.value = false
 }
@@ -231,6 +233,7 @@ function propsSorter (a, b) {
 
 <template>
   <entity-list
+    v-if="isQuery"
     v-model="entityId"
     class="w-80 flex-none"
     :entities="entitiesList"
