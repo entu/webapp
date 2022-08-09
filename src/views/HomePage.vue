@@ -1,5 +1,5 @@
 <script setup>
-window.location.href = 'https://www.entu.app'
+window.location.href = 'https://www.entu.ee'
 </script>
 
 <template>
