@@ -27,7 +27,7 @@ export const useUserStore = defineStore('user', () => {
   }
 }, {
   persist: {
-    storage: persistedState.sessionStorage,
+    storage: persistedState.localStorage,
     paths: ['accounts']
   }
 })
