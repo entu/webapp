@@ -1,33 +1,29 @@
 <script setup>
-import { computed, h, defineProps, ref, watch } from 'vue'
-import { useRoute, RouterLink } from 'vue-router'
-import { NIcon, NLayoutSider, NMenu } from 'naive-ui'
+import { RouterLink } from 'vue-router'
+import { NIcon, NMenu } from 'naive-ui'
 import { Home as HomeIcon, Data2 as FolderIcon, Login as LoginIcon, Logout as LogoutIcon, Error as ErrorIcon } from '@vicons/carbon'
 
-import { getValue } from '@/api'
+import { useUserStore } from '~/stores/user.client'
 
-const route = useRoute()
-
-const navCollapsed = ref(false)
-const activeMenu = ref(location.search.substring(1))
-
-const props = defineProps({
-  menu: {
-    type: Array,
-    default: null
-  },
-  accounts: {
-    type: Array,
-    default: null
-  },
-  isAuthenticated: {
+defineProps({
+  collapsed: {
     type: Boolean,
     default: false
   }
 })
 
-const entityMenu = computed(() => {
-  if (!props.menu || props.menu.length === 0) {
+getMenu()
+
+const route = useRoute()
+const userStore = useUserStore()
+const { account, accounts, authenticated } = storeToRefs(userStore)
+
+const menuEntities = ref([])
+
+const activeMenu = computed(() => route.fullPath.split('?')[1])
+
+const accountMenu = computed(() => {
+  if (!menuEntities.value || menuEntities.value.length === 0) {
     return [{
       key: 'no-menu',
       icon: () => h(NIcon, null, () => h(ErrorIcon)),
@@ -38,7 +34,7 @@ const entityMenu = computed(() => {
 
   const menuObject = {}
 
-  props.menu.forEach(entity => {
+  menuEntities.value.forEach(entity => {
     const group = getValue(entity.group).toLowerCase()
     const ordinal = entity.ordinal ? entity.ordinal[0].integer : 0
 
@@ -56,7 +52,7 @@ const entityMenu = computed(() => {
     menuObject[group].children.push({
       key: getValue(entity.query),
       label: () => h(RouterLink,
-        { to: { name: 'entity', params: { account: route.params.account, entity: '_' }, query: queryObj(getValue(entity.query)) } },
+        { to: { path: account.value, query: queryObj(entity.query?.[0]?.string) } },
         { default: () => getValue(entity.name) }
       ),
       ordinal
@@ -77,27 +73,30 @@ const entityMenu = computed(() => {
 
 const fullMenu = computed(() => {
   const menu = []
-  const account = route.params.account
 
-  menu.push({
-    key: 'account',
-    icon: () => h(NIcon, null, () => h(HomeIcon)),
-    label: props.accounts.length > 1
-      ? account.toUpperCase()
-      : () => h(RouterLink,
-          { to: { name: 'stats', params: { account } } },
-          { default: () => account.toUpperCase() }
-        ),
-    children: props.accounts.length > 1
-      ? props.accounts.filter(x => x.account !== account).map(x => ({
+  if (accounts.value.length > 1) {
+    menu.push({
+      key: 'account',
+      icon: () => h(NIcon, null, () => h(HomeIcon)),
+      label: (account.value || '').toUpperCase(),
+      children: accounts.value.filter(x => x.account !== account.value).map(x => ({
         key: x.account,
         label: () => h(RouterLink,
-          { to: { name: 'stats', params: { account: x.account } } },
+          { to: x.account },
           { default: () => x.account }
         )
       }))
-      : null
-  })
+    })
+  } else {
+    menu.push({
+      key: 'account',
+      icon: () => h(NIcon, null, () => h(HomeIcon)),
+      label: () => h(RouterLink,
+        { to: account.value || '' },
+        { default: () => (account.value || '').toUpperCase() }
+      )
+    })
+  }
 
   menu.push({
     key: 'divider1',
@@ -105,7 +104,7 @@ const fullMenu = computed(() => {
     props: { style: { margin: '.7rem .5rem' } }
   })
 
-  entityMenu.value.forEach(m => {
+  accountMenu.value.forEach(m => {
     menu.push(m)
   })
 
@@ -115,12 +114,12 @@ const fullMenu = computed(() => {
     props: { style: { margin: '.7rem .5rem' } }
   })
 
-  if (props.isAuthenticated) {
+  if (authenticated.value) {
     menu.push({
       key: 'auth',
       icon: () => h(NIcon, null, () => h(LogoutIcon)),
-      label: () => h('a',
-        { href: '/auth/exit' },
+      label: () => h(RouterLink,
+        { to: 'auth/exit' },
         { default: () => 'Sign Out' }
       )
     })
@@ -128,8 +127,8 @@ const fullMenu = computed(() => {
     menu.push({
       key: 'auth',
       icon: () => h(NIcon, null, () => h(LoginIcon)),
-      label: () => h('a',
-        { href: '/auth' },
+      label: () => h(RouterLink,
+        { to: 'auth' },
         { default: () => 'Sign In' }
       )
     })
@@ -138,24 +137,22 @@ const fullMenu = computed(() => {
   return menu
 })
 
-const toHome = computed(() => ({ name: 'stats', params: route.params }))
+watch(() => account.value, getMenu)
 
-watch(() => route.query, (value) => {
-  activeMenu.value = location.search.substring(1)
-})
+async function getMenu () {
+  const { entities } = await apiGetEntities({
+    '_type.string': 'menu',
+    props: [
+      'ordinal.integer',
+      'group.string',
+      'group.language',
+      'name.string',
+      'name.language',
+      'query.string'
+    ].join(',')
+  })
 
-function queryObj (q) {
-  if (!q) { return {} }
-
-  const query = q.split('&')
-
-  const params = {}
-  for (const parameter of query) {
-    const p = parameter.split('=')
-    params[p[0]] = p[1]
-  }
-
-  return params
+  menuEntities.value = entities
 }
 
 function menuSorter (a, b) {
@@ -170,39 +167,43 @@ function menuSorter (a, b) {
 
   return 0
 }
+
+function queryObj (q) {
+  console.log('Q', q)
+  if (!q) { return {} }
+
+  const query = q.split('&')
+
+  const params = {}
+  for (const parameter of query) {
+    const p = parameter.split('=')
+    params[p[0]] = p[1]
+  }
+
+  return params
+}
 </script>
 
 <template>
-  <n-layout-sider
-    class="bg-[#1E434C]"
-    show-trigger="bar"
-    content-style="padding:.3rem 2px 0 0"
-    collapse-mode="width"
-    :collapsed-width="60"
-    :collapsed="navCollapsed"
-    @collapse="navCollapsed = true"
-    @expand="navCollapsed = false"
-  >
-    <div class="w-full">
-      <router-link
-        v-if="!navCollapsed"
-        :to="toHome"
+  <div class="w-full">
+    <router-link
+      v-if="!collapsed"
+      :to="{ path: account || '' }"
+    >
+      <img
+        class="mt-6 mb-4 mx-auto h-24 w-24"
+        src="~/assets/images/entu-logo.png"
       >
-        <img
-          src="@/assets/logo.png"
-          class="mt-6 mb-4 mx-auto h-24 w-24"
-        >
-      </router-link>
-    </div>
+    </router-link>
     <n-menu
       v-model:value="activeMenu"
       collapse-mode="width"
       :options="fullMenu"
       :accordion="true"
-      :collapsed="navCollapsed"
+      :collapsed="collapsed"
       :collapsed-width="60"
       :root-indent="18"
       :indent="32"
     />
-  </n-layout-sider>
+  </div>
 </template>

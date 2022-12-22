@@ -4,6 +4,7 @@ module.exports = {
     es2021: true
   },
   extends: [
+    'plugin:nuxt/recommended',
     'plugin:vue/vue3-recommended',
     'standard'
   ],
@@ -11,8 +12,5 @@ module.exports = {
     ecmaVersion: 'latest',
     sourceType: 'module'
   },
-  plugins: [
-    'vue'
-  ],
-  rules: {}
+  root: true
 }

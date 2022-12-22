@@ -1,7 +1,31 @@
-# Vue 3 + Vite
+# Entu Web Application
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Setup
 
-## Recommended IDE Setup
+Make sure to install the dependencies:
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+```bash
+npm install
+```
+
+Make **.env** file and configure required enviroment parameters. Example is in .env.example file:
+
+```
+NUXT_PUBLIC_API_URL=https://api.entu.app
+```
+
+## Development Server
+
+Start the development server on http://localhost:3000
+
+```bash
+npm run dev
+```
+
+## Production
+
+Build the application for production:
+
+```bash
+npm run generate
+```

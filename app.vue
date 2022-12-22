@@ -1,21 +1,7 @@
-<template>
-  <n-config-provider
-    class="h-full"
-    :theme-overrides="themeOverrides"
-  >
-    <n-loading-bar-provider>
-      <n-notification-provider>
-        <app-layout />
-      </n-notification-provider>
-    </n-loading-bar-provider>
-  </n-config-provider>
-</template>
-
 <script setup>
 import { NConfigProvider, NLoadingBarProvider, NNotificationProvider } from 'naive-ui'
 
-import AppLayout from '@/components/AppLayout.vue'
-
+const runtimeConfig = useRuntimeConfig()
 const themeOverrides = {
   Dropdown: {
     optionColorActive: 'rgba(0, 0, 0, .05)',
@@ -67,4 +53,22 @@ const themeOverrides = {
     titleTextColor: '#1E434C'
   }
 }
+
+console.log(`%cX-Entu-Version:%c ${runtimeConfig.public.gitSha}`, 'font-weight:bold;color:green;font-family:monospace', 'color:green;font-family:monospace')
+console.log(`%cX-Entu-API:%c ${runtimeConfig.public.apiUrl}`, 'font-weight:bold;color:green;font-family:monospace', 'color:green;font-family:monospace')
 </script>
+
+<template>
+  <n-config-provider
+    class="h-full"
+    :theme-overrides="themeOverrides"
+  >
+    <n-loading-bar-provider>
+      <n-notification-provider>
+        <NuxtLayout>
+          <NuxtPage />
+        </NuxtLayout>
+      </n-notification-provider>
+    </n-loading-bar-provider>
+  </n-config-provider>
+</template>
