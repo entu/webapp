@@ -31,7 +31,7 @@ const accountMenu = computed(() => {
       children: accounts.value.filter(x => x.account !== account.value).map(x => ({
         key: x.account,
         label: () => h(RouterLink,
-          { to: x.account },
+          { to: { path: `/${x.account}` } },
           { default: () => x.account }
         )
       }))
@@ -62,7 +62,7 @@ const accountMenu = computed(() => {
     menuObject[group].children.push({
       key: getValue(entity.query),
       label: () => h(RouterLink,
-        { to: { path: account.value, query: queryObj(entity.query?.[0]?.string) } },
+        { to: { path: `/${account.value}`, query: queryObj(entity.query?.[0]?.string) } },
         { default: () => getValue(entity.name) }
       ),
       ordinal
@@ -92,7 +92,7 @@ const signInMenu = computed(() => {
       key: 'auth',
       icon: () => h(NIcon, null, () => h(LogoutIcon)),
       label: () => h(RouterLink,
-        { to: 'auth/exit' },
+        { to: { path: '/auth/exit' } },
         { default: () => 'Sign Out' }
       )
     })
@@ -101,7 +101,7 @@ const signInMenu = computed(() => {
       key: 'auth',
       icon: () => h(NIcon, null, () => h(LoginIcon)),
       label: () => h(RouterLink,
-        { to: 'auth' },
+        { to: { path: '/auth' } },
         { default: () => 'Sign In' }
       )
     })
@@ -169,7 +169,7 @@ onMounted(() => {
     <div>
       <router-link
         v-if="!collapsed"
-        :to="{ path: account || '' }"
+        :to="{ path: `/${account}` }"
       >
         <img
           class="mt-6 mb-4 mx-auto h-24 w-24"

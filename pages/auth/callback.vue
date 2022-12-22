@@ -13,9 +13,9 @@ const { accounts } = storeToRefs(userStore)
 await userStore.getAccounts(route.query.key)
 
 if (accounts.value.length > 0) {
-  router.push('/' + accounts.value[1].account)
+  router.push({ path: `/${accounts.value[0].account}`, params: { _: '123' } })
 } else {
-  router.push('/')
+  router.push({ path: '/' })
 }
 </script>
 
