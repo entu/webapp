@@ -6,7 +6,7 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: 'en' },
       title: 'Entu',
       link: [
-        { rel: 'icon', type: 'image/png', href: '/entu-logo.png' }
+        { rel: 'icon', type: 'image/png', href: '/logo.png' }
       ]
     }
   },
@@ -22,7 +22,7 @@ export default defineNuxtConfig({
           // '@juggle/resize-observer'
         ]
   },
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/main.css'],
   modules: [
     ['@pinia/nuxt', { autoImports: ['defineStore', 'storeToRefs'] }],
     ['@pinia-plugin-persistedstate/nuxt']
