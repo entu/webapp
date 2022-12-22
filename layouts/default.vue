@@ -4,9 +4,7 @@ import { useMainStore } from '~/stores/main'
 
 const loadingBar = useLoadingBar()
 const mainStore = useMainStore()
-const { loading } = storeToRefs(mainStore)
-
-const navCollapsed = ref(false)
+const { loading, menuCollapsed } = storeToRefs(mainStore)
 
 watch(() => loading.value, (value) => {
   if (value) {
@@ -28,11 +26,11 @@ watch(() => loading.value, (value) => {
       content-style="padding:.3rem 2px 0 0"
       collapse-mode="width"
       :collapsed-width="60"
-      :collapsed="navCollapsed"
-      @collapse="navCollapsed = true"
-      @expand="navCollapsed = false"
+      :collapsed="menuCollapsed"
+      @collapse="menuCollapsed = true"
+      @expand="menuCollapsed = false"
     >
-      <left-menu :collapsed="navCollapsed" />
+      <left-menu :collapsed="menuCollapsed" />
     </n-layout-sider>
     <slot />
   </n-layout>
