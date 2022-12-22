@@ -38,5 +38,6 @@ export default defineNuxtConfig({
       apiUrl: '',
       gitSha: 'local'
     }
-  }
+  },
+  ssr: false
 })
