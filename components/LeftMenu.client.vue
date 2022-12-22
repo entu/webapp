@@ -19,20 +19,32 @@ const userStore = useUserStore()
 const { account, accounts, authenticated } = storeToRefs(userStore)
 
 const menuEntities = ref([])
-
-const activeMenu = computed(() => route.fullPath.split('?')[1])
+const activeMenu = ref(route.fullPath.split('?')[1])
 
 const accountMenu = computed(() => {
-  if (!menuEntities.value || menuEntities.value.length === 0) {
-    return [{
-      key: 'no-menu',
-      icon: () => h(NIcon, null, () => h(ErrorIcon)),
-      label: 'No public menu',
-      disabled: true
-    }]
-  }
-
+  const menu = []
   const menuObject = {}
+
+  if (accounts.value.length > 1) {
+    menu.push({
+      key: 'account',
+      icon: () => h(NIcon, null, () => h(HomeIcon)),
+      label: (account.value || '').toUpperCase(),
+      children: accounts.value.filter(x => x.account !== account.value).map(x => ({
+        key: x.account,
+        label: () => h(RouterLink,
+          { to: x.account },
+          { default: () => x.account }
+        )
+      }))
+    })
+
+    menu.push({
+      key: 'divider',
+      type: 'divider',
+      props: { style: { margin: '.5rem' } }
+    })
+  }
 
   menuEntities.value.forEach(entity => {
     const group = getValue(entity.group).toLowerCase()
@@ -59,59 +71,22 @@ const accountMenu = computed(() => {
     })
   })
 
-  const menuArray = Object.values(menuObject)
+  const menuArray = Object.values(menuObject).map(m => ({
+    ...m,
+    ordinal: m.ordinal / m.children.length,
+    children: m.children.sort(menuSorter)
+  })).sort(menuSorter)
 
-  menuArray.forEach(m => {
-    m.ordinal = m.ordinal / m.children.length
-    m.children.sort(menuSorter)
-  })
-
-  menuArray.sort(menuSorter)
-
-  return menuArray
+  return [...menu, ...menuArray]
 })
 
-const fullMenu = computed(() => {
+const signInMenu = computed(() => {
   const menu = []
 
-  if (accounts.value.length > 1) {
-    menu.push({
-      key: 'account',
-      icon: () => h(NIcon, null, () => h(HomeIcon)),
-      label: (account.value || '').toUpperCase(),
-      children: accounts.value.filter(x => x.account !== account.value).map(x => ({
-        key: x.account,
-        label: () => h(RouterLink,
-          { to: x.account },
-          { default: () => x.account }
-        )
-      }))
-    })
-  } else {
-    menu.push({
-      key: 'account',
-      icon: () => h(NIcon, null, () => h(HomeIcon)),
-      label: () => h(RouterLink,
-        { to: account.value || '' },
-        { default: () => (account.value || '').toUpperCase() }
-      )
-    })
-  }
-
   menu.push({
-    key: 'divider1',
+    key: 'divider',
     type: 'divider',
-    props: { style: { margin: '.7rem .5rem' } }
-  })
-
-  accountMenu.value.forEach(m => {
-    menu.push(m)
-  })
-
-  menu.push({
-    key: 'divider2',
-    type: 'divider',
-    props: { style: { margin: '.7rem .5rem' } }
+    props: { style: { margin: '.5rem' } }
   })
 
   if (authenticated.value) {
@@ -169,7 +144,6 @@ function menuSorter (a, b) {
 }
 
 function queryObj (q) {
-  console.log('Q', q)
   if (!q) { return {} }
 
   const query = q.split('&')
@@ -185,25 +159,38 @@ function queryObj (q) {
 </script>
 
 <template>
-  <div class="w-full">
-    <router-link
-      v-if="!collapsed"
-      :to="{ path: account || '' }"
-    >
-      <img
-        class="mt-6 mb-4 mx-auto h-24 w-24"
-        src="~/assets/images/entu-logo.png"
+  <div class="min-h-full w-full flex flex-col justify-between">
+    <div>
+      <router-link
+        v-if="!collapsed"
+        :to="{ path: account || '' }"
       >
-    </router-link>
+        <img
+          class="mt-6 mb-4 mx-auto h-24 w-24"
+          src="/logo.png"
+        >
+      </router-link>
+      <n-menu
+        v-model:value="activeMenu"
+        collapse-mode="width"
+        :accordion="true"
+        :collapsed-width="60"
+        :collapsed="collapsed"
+        :indent="32"
+        :options="accountMenu"
+        :root-indent="18"
+      />
+    </div>
+
     <n-menu
-      v-model:value="activeMenu"
+      class="justify-self-end"
       collapse-mode="width"
-      :options="fullMenu"
       :accordion="true"
-      :collapsed="collapsed"
       :collapsed-width="60"
-      :root-indent="18"
+      :collapsed="collapsed"
       :indent="32"
+      :options="signInMenu"
+      :root-indent="18"
     />
   </div>
 </template>
