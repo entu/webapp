@@ -10,6 +10,18 @@ export default defineNuxtConfig({
       ]
     }
   },
+  build: {
+    transpile: process.env.NODE_ENV === 'production'
+      ? [
+          'naive-ui',
+          'vueuc'
+          // '@css-render/vue3-ssr',
+          // '@juggle/resize-observer'
+        ]
+      : [
+          // '@juggle/resize-observer'
+        ]
+  },
   css: ['~/assets/css/main.css'],
   modules: [
     ['@pinia/nuxt', { autoImports: ['defineStore', 'storeToRefs'] }],
