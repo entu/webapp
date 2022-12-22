@@ -1,5 +1,5 @@
 import { useMainStore } from '~/stores/main'
-import { useUserStore } from '~/stores/user.client'
+import { useUserStore } from '~/stores/user'
 
 export async function apiGetEntities (params) {
   return await apiGet('entity', params)

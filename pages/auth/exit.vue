@@ -1,11 +1,16 @@
 <script setup>
-import { useUserStore } from '~/stores/user.client'
+import { useUserStore } from '~/stores/user'
+
+definePageMeta({ layout: 'no-menu' })
+useHead({ title: 'Entu · Exit' })
 
 const router = useRouter()
 const userStore = useUserStore()
 
-useHead({ title: 'Entu · Exit' })
-
 userStore.signOut()
 router.push({ path: '/' })
 </script>
+
+<template>
+  <div />
+</template>

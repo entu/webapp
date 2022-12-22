@@ -12,7 +12,9 @@ export const useUserStore = defineStore('user', () => {
   }
 
   async function getAccounts (key) {
-    accounts.value = await apiGet('auth', {}, { Authorization: `Bearer ${key}` })
+    const authResponse = await apiGet('auth', {}, { Authorization: `Bearer ${key}` })
+
+    accounts.value = Array.isArray(authResponse) ? authResponse : []
   }
 
   return {

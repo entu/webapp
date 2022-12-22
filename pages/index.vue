@@ -3,5 +3,9 @@ definePageMeta({ layout: 'no-menu' })
 
 const router = useRouter()
 
-router.push({ path: 'entu' })
+router.push('/entu')
 </script>
+
+<template>
+  <div />
+</template>

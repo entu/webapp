@@ -3,7 +3,7 @@ import { RouterLink } from 'vue-router'
 import { NIcon, NMenu } from 'naive-ui'
 import { Home as HomeIcon, Data2 as FolderIcon, Login as LoginIcon, Logout as LogoutIcon, Error as ErrorIcon } from '@vicons/carbon'
 
-import { useUserStore } from '~/stores/user.client'
+import { useUserStore } from '~/stores/user'
 
 defineProps({
   collapsed: {
@@ -11,8 +11,6 @@ defineProps({
     default: false
   }
 })
-
-getMenu()
 
 const route = useRoute()
 const userStore = useUserStore()
@@ -112,9 +110,13 @@ const signInMenu = computed(() => {
   return menu
 })
 
-watch(() => account.value, getMenu)
+watch(() => account.value, value => {
+  getMenu()
+})
 
 async function getMenu () {
+  if (!account.value) return
+
   const { entities } = await apiGetEntities({
     '_type.string': 'menu',
     props: [
@@ -156,6 +158,10 @@ function queryObj (q) {
 
   return params
 }
+
+onMounted(() => {
+  getMenu()
+})
 </script>
 
 <template>
