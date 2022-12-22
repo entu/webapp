@@ -8,6 +8,8 @@ const route = useRoute()
 const userStore = useUserStore()
 const { accounts } = storeToRefs(userStore)
 
+useHead({ title: 'Entu · Sign In' })
+
 onMounted(async () => {
   if (route.query.key) {
     await userStore.getAccounts(route.query.key)
@@ -18,7 +20,3 @@ onMounted(async () => {
   }
 })
 </script>
-
-<template>
-  <div />
-</template>
