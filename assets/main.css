@@ -2,8 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body,
+html, body {
+  font-family: Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: medium;
+  @apply h-full w-full;
+}
+
 #__nuxt {
-  @apply h-full w-full
+  @apply h-full w-full;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.n-menu {
+  font-size: medium;
+}
+
+.n-menu-item-content.n-menu-item-content--child-active .n-menu-item-content-header {
+  @apply font-bold
 }
