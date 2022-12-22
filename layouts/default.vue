@@ -23,8 +23,8 @@ watch(() => loading.value, (value) => {
     <n-layout-sider
       class="bg-[#1E434C]"
       show-trigger="bar"
-      content-style="padding:.3rem 2px 0 0"
       collapse-mode="width"
+      :class="{ 'm-2 rounded-md': !menuCollapsed }"
       :collapsed-width="60"
       :collapsed="menuCollapsed"
       @collapse="menuCollapsed = true"

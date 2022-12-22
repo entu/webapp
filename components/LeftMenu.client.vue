@@ -166,30 +166,28 @@ onMounted(() => {
 
 <template>
   <div class="min-h-full w-full flex flex-col justify-between">
-    <div>
-      <router-link
-        v-if="!collapsed"
-        :to="{ path: `/${account}` }"
+    <router-link
+      v-if="!collapsed"
+      :to="{ path: `/${account}` }"
+    >
+      <img
+        class="mt-6 mb-4 mx-auto h-24 w-24"
+        src="/logo.png"
       >
-        <img
-          class="mt-6 mb-4 mx-auto h-24 w-24"
-          src="/logo.png"
-        >
-      </router-link>
-      <n-menu
-        v-model:value="activeMenu"
-        collapse-mode="width"
-        :accordion="true"
-        :collapsed-width="60"
-        :collapsed="collapsed"
-        :indent="32"
-        :options="accountMenu"
-        :root-indent="18"
-      />
-    </div>
+    </router-link>
+    <n-menu
+      v-model:value="activeMenu"
+      class="grow"
+      collapse-mode="width"
+      :accordion="true"
+      :collapsed-width="60"
+      :collapsed="collapsed"
+      :indent="32"
+      :options="accountMenu"
+      :root-indent="18"
+    />
 
     <n-menu
-      class="justify-self-end"
       collapse-mode="width"
       :accordion="true"
       :collapsed-width="60"
