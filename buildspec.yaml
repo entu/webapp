@@ -13,6 +13,6 @@ phases:
       - npm run generate
   post_build:
     commands:
-      - aws --output text s3 sync --delete --sse AES256 --acl private --only-show-errors --cache-control max-age=2592000 .output/public/ s3://$S3_BUCKET
-      - aws --output text s3 cp --sse AES256 --acl private --only-show-errors --cache-control max-age=300 .output/public/index.html s3://$S3_BUCKET/index.html
+      - aws --output text s3 sync --delete --sse AES256 --acl private --only-show-errors .output/public/ s3://$S3_BUCKET
+      - aws --output text s3 sync --delete --sse AES256 --acl private --only-show-errors --cache-control max-age=300 .output/public/_nuxt/ s3://$S3_BUCKET/_nuxt/
       - aws --output text cloudfront create-invalidation --distribution-id $CLOUDFRONT_ID --paths /\*
