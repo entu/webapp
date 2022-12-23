@@ -2,13 +2,13 @@
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '~/stores/user'
 
-definePageMeta({ layout: 'no-menu' })
-useHead({ title: 'Entu · Sign In Callback' })
-
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const { accounts } = storeToRefs(userStore)
+
+definePageMeta({ layout: 'no-menu' })
+useHead({ title: 'Entu · Sign In Callback' })
 
 await userStore.getAccounts(route.query.key)
 

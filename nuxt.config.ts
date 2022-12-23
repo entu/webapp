@@ -1,6 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
+  alias: {
+    pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs' // https://stackoverflow.com/questions/74003458/cannot-find-module-pinia-dist-pinia-mjs-when-using-run-dev
+  },
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
@@ -25,7 +28,8 @@ export default defineNuxtConfig({
   css: ['~/assets/main.css'],
   modules: [
     ['@pinia/nuxt', { autoImports: ['defineStore', 'storeToRefs'] }],
-    ['@pinia-plugin-persistedstate/nuxt']
+    ['@pinia-plugin-persistedstate/nuxt'],
+    ['@vueuse/nuxt']
   ],
   postcss: {
     plugins: {
