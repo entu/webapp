@@ -31,12 +31,12 @@ watch(() => route.query, () => {
 
 watchDebounced(searchText, () => {
   if (searchText.value) {
-    router.replace({ path: route.path, query: { ...route.query, q: searchText.value } })
+    router.replace({ query: { ...route.query, q: searchText.value } })
   } else {
     const newQuery = { ...route.query }
     delete newQuery.q
 
-    router.replace({ path: route.path, query: newQuery })
+    router.replace({ query: newQuery })
   }
 }, { debounce: 500, maxWait: 5000 })
 

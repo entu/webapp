@@ -12,12 +12,11 @@ defineProps({
   }
 })
 
-const route = useRoute()
 const userStore = useUserStore()
 const { account, accounts, authenticated } = storeToRefs(userStore)
 
 const menuEntities = ref([])
-const activeMenu = ref(route.fullPath.split('?')[1])
+const activeMenu = ref(location.search.substring(1))
 
 const accountMenu = computed(() => {
   const menu = []
