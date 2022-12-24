@@ -1,5 +1,5 @@
 <script setup>
-import { NConfigProvider, NLoadingBarProvider, NNotificationProvider } from 'naive-ui'
+import { NConfigProvider, NLoadingBarProvider } from 'naive-ui'
 
 const runtimeConfig = useRuntimeConfig()
 const themeOverrides = {
@@ -66,11 +66,9 @@ console.log(`%cX-Entu-API:%c ${runtimeConfig.public.apiUrl}`, 'font-weight:bold;
     :theme-overrides="themeOverrides"
   >
     <n-loading-bar-provider>
-      <n-notification-provider>
-        <NuxtLayout>
-          <NuxtPage />
-        </NuxtLayout>
-      </n-notification-provider>
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
     </n-loading-bar-provider>
   </n-config-provider>
 </template>
