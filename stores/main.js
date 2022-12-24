@@ -1,6 +1,6 @@
 export const useMainStore = defineStore('main', () => {
-  const locale = ref('et')
-  const menuCollapsed = ref(false)
+  const locale = useLocalStorage('locale', 'et')
+  const menuCollapsed = useLocalStorage('menu', false)
   const requests = ref(0)
 
   const loading = computed(() => requests.value > 0)
@@ -10,10 +10,5 @@ export const useMainStore = defineStore('main', () => {
     locale,
     menuCollapsed,
     requests
-  }
-}, {
-  persist: {
-    storage: persistedState.localStorage,
-    paths: ['locale', 'menuCollapsed']
   }
 })

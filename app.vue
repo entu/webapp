@@ -42,7 +42,7 @@ const themeOverrides = {
   },
   LoadingBar: {
     colorLoading: 'rgb(14 165 233)',
-    height: '4px'
+    height: '2px'
   },
   Collapse: {
     arrowColor: '#1E434C',

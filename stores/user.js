@@ -1,7 +1,7 @@
 export const useUserStore = defineStore('user', () => {
   const route = useRoute()
 
-  const accounts = ref([])
+  const accounts = useLocalStorage('accounts', [])
 
   const account = computed(() => route.params.account)
   const authenticated = computed(() => accounts.value.some(a => a.account === route.params.account))
@@ -24,10 +24,5 @@ export const useUserStore = defineStore('user', () => {
     getAccounts,
     signOut,
     token
-  }
-}, {
-  persist: {
-    storage: persistedState.localStorage,
-    paths: ['accounts']
   }
 })

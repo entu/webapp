@@ -28,7 +28,6 @@ export default defineNuxtConfig({
   css: ['~/assets/main.css'],
   modules: [
     ['@pinia/nuxt', { autoImports: ['defineStore', 'storeToRefs'] }],
-    ['@pinia-plugin-persistedstate/nuxt'],
     ['@vueuse/nuxt']
   ],
   postcss: {
