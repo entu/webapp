@@ -1,5 +1,5 @@
 <script setup>
-import { useLoadingBar, useNotification } from 'naive-ui'
+import { useLoadingBar } from 'naive-ui'
 import { useMainStore } from '~/stores/main'
 
 const loadingBar = useLoadingBar()
@@ -16,5 +16,7 @@ watch(() => loading.value, (value) => {
 </script>
 
 <template>
-  <slot />
+  <div>
+    <slot />
+  </div>
 </template>

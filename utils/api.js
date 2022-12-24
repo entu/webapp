@@ -32,7 +32,7 @@ export async function apiGet (pathname, params = {}, headers) {
   url.pathname = '/' + pathname
   url.search = new URLSearchParams(params).toString()
 
-  const result = await fetch(url, { headers }).then(response => {
+  const result = await fetch(url, { headers }).then((response) => {
     if (!response.ok && response.status === 401) {
       userStore.signOut()
     }

@@ -4,13 +4,16 @@ module.exports = {
     es2021: true
   },
   extends: [
-    'plugin:nuxt/recommended',
     'plugin:vue/vue3-recommended',
+    '@nuxtjs',
     'standard'
   ],
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module'
   },
-  root: true
+  root: true,
+  rules: {
+    'no-undef': 'off'
+  }
 }

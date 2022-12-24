@@ -100,10 +100,7 @@ function color () {
       ref="el"
       class="h-full relative overflow-y-auto border-r border-gray-300"
     >
-      <div
-        v-if="!isLoading"
-        class="py-2 sticky top-0 text-center text-sm text-gray-500 italic bg-white"
-      >
+      <div class="py-2 sticky top-0 text-center text-sm text-gray-500 italic bg-white">
         {{ entitiesCount }} {{ entitiesCount === 1 ? 'entity' : 'entities' }}
       </div>
 

@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { NIcon, NMenu } from 'naive-ui'
-import { Home as HomeIcon, Data2 as FolderIcon, Login as LoginIcon, Logout as LogoutIcon, Error as ErrorIcon } from '@vicons/carbon'
+import { Home as HomeIcon, Data2 as FolderIcon, Login as LoginIcon, Logout as LogoutIcon } from '@vicons/carbon'
 
 import { useUserStore } from '~/stores/user'
 
@@ -44,7 +44,7 @@ const accountMenu = computed(() => {
     })
   }
 
-  menuEntities.value.forEach(entity => {
+  menuEntities.value.forEach((entity) => {
     const group = getValue(entity.group).toLowerCase()
     const ordinal = entity.ordinal ? entity.ordinal[0].integer : 0
 
@@ -112,7 +112,7 @@ const signInMenu = computed(() => {
 
 onMounted(getMenuEntities)
 
-watch(() => account.value, value => {
+watch(() => account.value, (value) => {
   getMenuEntities()
 })
 

@@ -54,7 +54,9 @@ const themeOverrides = {
   }
 }
 
+// eslint-disable-next-line no-console
 console.log(`%cX-Entu-Version:%c ${runtimeConfig.public.gitSha}`, 'font-weight:bold;color:green;font-family:monospace', 'color:green;font-family:monospace')
+// eslint-disable-next-line no-console
 console.log(`%cX-Entu-API:%c ${runtimeConfig.public.apiUrl}`, 'font-weight:bold;color:green;font-family:monospace', 'color:green;font-family:monospace')
 </script>
 
