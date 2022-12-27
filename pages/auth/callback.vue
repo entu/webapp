@@ -7,7 +7,6 @@ const router = useRouter()
 const userStore = useUserStore()
 const { accounts } = storeToRefs(userStore)
 
-definePageMeta({ layout: 'no-menu' })
 useHead({ title: 'Entu · Sign In Callback' })
 
 await userStore.getAccounts(route.query.key)

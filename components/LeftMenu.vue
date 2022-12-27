@@ -111,9 +111,7 @@ const signInMenu = computed(() => {
 
 onMounted(getMenuEntities)
 
-watch(() => account.value, (value) => {
-  getMenuEntities()
-})
+watch(() => account.value, () => getMenuEntities())
 
 async function getMenuEntities () {
   if (!account.value) return

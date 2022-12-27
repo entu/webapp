@@ -1,8 +1,11 @@
 <script setup>
 import { Search as SearchIcon } from '@vicons/carbon'
+import { useUserStore } from '~/stores/user'
 
 const route = useRoute()
 const router = useRouter()
+const userStore = useUserStore()
+const { account } = storeToRefs(userStore)
 
 const el = ref(null)
 const searchText = ref(route.query.q || '')
@@ -79,12 +82,12 @@ function color () {
 
 <template>
   <div
-    class="w-80 h-full flex flex-col"
+    class="h-full flex flex-col border-r border-gray-300"
   >
-    <div class="w-full flex items-center border-b border-gray-300">
+    <div class="mx-3 flex items-center gap-2 border-b border-gray-300">
       <label
         for="search"
-        class="p-3"
+        class="w-7 h-7 flex items-center justify-center"
       >
         <search-icon class="h-5 w-5 text-gray-400" />
       </label>
@@ -98,18 +101,14 @@ function color () {
 
     <div
       ref="el"
-      class="h-full relative overflow-y-auto border-r border-gray-300"
+      class="w-80 max-h-full pl-3 relative overflow-y-auto"
     >
-      <div class="py-2 sticky top-0 text-center text-sm text-gray-500 italic bg-white">
-        {{ entitiesCount }} {{ entitiesCount === 1 ? 'entity' : 'entities' }}
-      </div>
-
-      <router-link
+      <nuxt-link
         v-for="(entity, idx) in entitiesList"
         :key="entity._id"
-        class="h-12 px-3 flex items-center hover:bg-gray-50"
+        class="h-12 px-3 flex items-center gap-3 hover:bg-gray-50"
         :class="{ 'font-bold bg-zinc-100 hover:bg-zinc-100': false}"
-        :to="{ path: `${route.path}/${entity._id}`, query: route.query }"
+        :to="{ path: `/${account}/${entity._id}`, query: route.query }"
       >
         <img
           v-if="entity._thumbnail"
@@ -123,12 +122,15 @@ function color () {
           :class="entity.color"
         />
         <div
-          :class="{ 'border-t': idx === 0 }"
-          class="py-3 ml-3 h-12 flex-auto truncate whitespace-nowrap overflow-hidden border-b first-of-type:border-gray-200"
+          class="py-3 h-12 flex-auto truncate whitespace-nowrap overflow-hidden border-b first-of-type:border-gray-200"
         >
           {{ getValue(entity.name) }}
         </div>
-      </router-link>
+      </nuxt-link>
+    </div>
+
+    <div class="pt-3 pb-1 sticky bottom-0 text-center text-sm text-gray-500 italic bg-white">
+      {{ entitiesCount }} {{ entitiesCount === 1 ? 'entity' : 'entities' }}
     </div>
   </div>
 </template>
