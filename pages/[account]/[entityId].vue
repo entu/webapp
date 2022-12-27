@@ -12,12 +12,16 @@ const entityProps = ref([])
 const properties = ref([])
 const isLoading = ref(false)
 
-definePageMeta({ key: () => 'entu', layout: 'menu' })
-useHead({ title: `Entu · ${account.value}` })
+definePageMeta({ layout: 'menu' })
+useHead({ title: `${account.value} · Entu` })
 
-watch(() => account.value, () => useHead({ title: `Entu · ${account.value}` }))
-
-watch(() => route.params.entityId, loadEntity)
+watch(() => entity?.value?.name, (value) => {
+  if (value) {
+    useHead({ title: `${value} · ${account.value} · Entu` })
+  } else {
+    useHead({ title: `${account.value} · Entu` })
+  }
+})
 
 async function loadEntity () {
   entity.value = null

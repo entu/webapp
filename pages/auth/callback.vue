@@ -7,7 +7,7 @@ const router = useRouter()
 const userStore = useUserStore()
 const { accounts } = storeToRefs(userStore)
 
-useHead({ title: 'Entu · Sign In Callback' })
+useHead({ title: 'Sign In Callback · Entu' })
 
 await userStore.getAccounts(route.query.key)
 

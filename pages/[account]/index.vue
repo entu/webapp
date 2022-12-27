@@ -4,17 +4,12 @@ import { useUserStore } from '~/stores/user'
 const route = useRoute()
 const userStore = useUserStore()
 const { account } = storeToRefs(userStore)
-const stats = ref({})
+const stats = ref()
 
-definePageMeta({ key: () => 'entu', layout: 'menu' })
-useHead({ title: `Entu · ${account.value}` })
+definePageMeta({ layout: 'menu' })
+useHead({ title: `${account.value} · Entu` })
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
-
-watch(() => account.value, () => {
-  useHead({ title: `Entu · ${account.value}` })
-  getStats()
-})
 
 async function getStats () {
   stats.value = await apiGet('account')
@@ -28,7 +23,7 @@ onMounted(() => {
 
 <template>
   <div
-    v-if="!isQuery"
+    v-if="!isQuery && stats"
     class="h-full w-full lg:w-1/2 xl:w-1/2 md:min-w-fit px-8 md:mx-auto flex flex-col justify-center"
     vertical
   >
