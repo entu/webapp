@@ -18,8 +18,6 @@ const locationSearch = ref(null)
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
-onMounted(getEntities)
-
 useInfiniteScroll(el, getEntities, { distance: 100 })
 
 watch(() => route.query, () => {
@@ -78,6 +76,8 @@ function color () {
 
   return colors[rnd]
 }
+
+onMounted(getEntities)
 </script>
 
 <template>
@@ -101,13 +101,13 @@ function color () {
 
     <div
       ref="el"
-      class="w-80 max-h-full pl-3 relative overflow-y-auto"
+      class="w-80 max-h-full relative overflow-y-auto"
     >
       <nuxt-link
         v-for="(entity, idx) in entitiesList"
         :key="entity._id"
-        class="h-12 px-3 flex items-center gap-3 hover:bg-gray-50"
-        :class="{ 'font-bold bg-zinc-100 hover:bg-zinc-100': false}"
+        class="h-12 pl-6 pr-3 flex items-center gap-3 hover:bg-gray-50"
+        :class="{ 'font-bold bg-zinc-100 hover:bg-zinc-100': entity._id === route.params.entityId }"
         :to="{ path: `/${account}/${entity._id}`, query: route.query }"
       >
         <img

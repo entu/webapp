@@ -11,11 +11,6 @@ useHead({ title: `Entu · ${account.value}` })
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
-onMounted(() => {
-  !account.value && location.reload()
-  getStats()
-})
-
 watch(() => account.value, () => {
   useHead({ title: `Entu · ${account.value}` })
   getStats()
@@ -24,6 +19,11 @@ watch(() => account.value, () => {
 async function getStats () {
   stats.value = await apiGet('account')
 }
+
+onMounted(() => {
+  !account.value && location.reload()
+  getStats()
+})
 </script>
 
 <template>

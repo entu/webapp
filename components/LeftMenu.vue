@@ -109,8 +109,6 @@ const signInMenu = computed(() => {
   return menu
 })
 
-onMounted(getMenuEntities)
-
 watch(() => account.value, () => getMenuEntities())
 
 async function getMenuEntities () {
@@ -157,6 +155,8 @@ function queryObj (q) {
 
   return params
 }
+
+onMounted(getMenuEntities)
 </script>
 
 <template>
