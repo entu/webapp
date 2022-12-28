@@ -84,7 +84,7 @@ onMounted(getEntities)
   <div
     class="h-full flex flex-col border-r border-gray-300"
   >
-    <div class="mx-3 flex items-center gap-2 border-b border-gray-300">
+    <div class="h-12 mx-3 flex items-center gap-2 border-b border-gray-300">
       <label
         for="search"
         class="w-7 h-7 flex items-center justify-center"

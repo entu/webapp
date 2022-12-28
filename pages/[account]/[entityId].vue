@@ -176,47 +176,53 @@ onMounted(() => {
   <transition>
     <div
       v-if="entity"
-      class="p-4 flex-auto flex overflow-y-auto overflow-hidden"
+      class="h-full flex flex-col"
     >
-      <div class="flex-auto">
-        <h1 class="mb-4 text-2xl text-[#1E434C] font-bold">
-          {{ entity.name }}
-        </h1>
-        <n-collapse :default-expanded-names="[0]">
-          <template v-for="(pg, idx) in properties" :key="pg.name">
-            <n-collapse-item
-              v-if="pg.name"
-              :name="idx"
-              :title="pg.name"
-            >
-              <entity-properties :properties="pg.children" />
-            </n-collapse-item>
-            <div v-else>
-              <entity-properties :properties="pg.children" />
-            </div>
-          </template>
-
-          <n-collapse-item
-            name="children"
-            title="Children entities"
-          >
-            <div />
-          </n-collapse-item>
-
-          <n-collapse-item
-            name="referrers"
-            title="Referrer entities"
-          >
-            <div />
-          </n-collapse-item>
-        </n-collapse>
+      <div class="h-12">
+        <tools-menu />
       </div>
 
-      <img
-        v-if="entity._thumbnail"
-        class="h-32 w-32 flex-none mt-1 ml-16 object-cover rounded-lg"
-        :src="entity._thumbnail"
-      >
+      <div class="p-2 flex overflow-y-auto overflow-hidden">
+        <div class="grow">
+          <h1 class="mb-4 text-2xl text-[#1E434C] font-bold">
+            {{ entity.name }}
+          </h1>
+          <n-collapse :default-expanded-names="[0]">
+            <template v-for="(pg, idx) in properties" :key="pg.name">
+              <n-collapse-item
+                v-if="pg.name"
+                :name="idx"
+                :title="pg.name"
+              >
+                <entity-properties :properties="pg.children" />
+              </n-collapse-item>
+              <div v-else>
+                <entity-properties :properties="pg.children" />
+              </div>
+            </template>
+
+            <n-collapse-item
+              name="children"
+              title="Children entities"
+            >
+              <div />
+            </n-collapse-item>
+
+            <n-collapse-item
+              name="referrers"
+              title="Referrer entities"
+            >
+              <div />
+            </n-collapse-item>
+          </n-collapse>
+        </div>
+
+        <img
+          v-if="entity._thumbnail"
+          class="h-32 w-32 flex-none mt-1 ml-16 object-cover rounded-lg"
+          :src="entity._thumbnail"
+        >
+      </div>
     </div>
   </transition>
 </template>
