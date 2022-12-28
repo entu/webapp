@@ -13,13 +13,12 @@ const properties = ref([])
 const isLoading = ref(false)
 
 definePageMeta({ layout: 'menu' })
-useHead({ title: `${account.value} · Entu` })
 
 watch(() => entity?.value?.name, (value) => {
   if (value) {
-    useHead({ title: `${value} · ${account.value} · Entu` })
+    useHead({ title: `${value} · ${account.value}` })
   } else {
-    useHead({ title: `${account.value} · Entu` })
+    useHead({ title: account.value })
   }
 })
 

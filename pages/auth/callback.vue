@@ -7,9 +7,9 @@ const router = useRouter()
 const userStore = useUserStore()
 const { accounts } = storeToRefs(userStore)
 
-useHead({ title: 'Sign In Callback · Entu' })
-
 onMounted(async () => {
+  useHead({ title: 'Sign In' })
+
   await userStore.getAccounts(route.query.key)
 
   if (accounts.value.length > 0) {

@@ -4,9 +4,9 @@ import { useUserStore } from '~/stores/user'
 const router = useRouter()
 const userStore = useUserStore()
 
-useHead({ title: 'Exit · Entu' })
-
 onMounted(() => {
+  useHead({ title: 'Exit' })
+
   userStore.signOut()
   router.push({ path: '/', query: {} })
 })

@@ -1,9 +1,9 @@
 <script setup>
 const runtimeConfig = useRuntimeConfig()
 
-useHead({ title: 'Sign In · Entu' })
-
 onMounted(() => {
+  useHead({ title: 'Sign In' })
+
   window.location = `${runtimeConfig.public.apiUrl}/auth/google?next=${window.location.origin}/auth/callback?key=`
 })
 </script>

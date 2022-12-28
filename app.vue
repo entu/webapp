@@ -54,6 +54,12 @@ const themeOverrides = {
   }
 }
 
+useHead({
+  titleTemplate: (title) => {
+    return (!title || title === runtimeConfig.public.title) ? runtimeConfig.public.title : `${title} · ${runtimeConfig.public.title}`
+  }
+})
+
 // eslint-disable-next-line no-console
 console.log(
   `%cX-Entu-Version:%c ${runtimeConfig.public.gitSha}`,

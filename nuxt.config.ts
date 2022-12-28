@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
-      title: 'Entu',
+      title: process.env.NUXT_PUBLIC_TITLE || 'Entu',
       link: [
         { rel: 'icon', type: 'image/png', href: '/logo.png' }
       ]
@@ -39,7 +39,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: '',
-      gitSha: 'local'
+      gitSha: '',
+      title: ''
     }
   },
   ssr: false

@@ -7,12 +7,14 @@ const { account, authenticated } = storeToRefs(userStore)
 const stats = ref()
 
 definePageMeta({ layout: 'menu' })
-useHead({ title: `${account.value} · Entu` })
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
 onMounted(async () => {
   userStore.setAccount(route.params.account)
+
+  useHead({ title: account.value })
+
   stats.value = await apiGet('account')
 })
 </script>
