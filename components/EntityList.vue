@@ -46,6 +46,10 @@ watch(() => route.query, () => {
   getEntities(true)
 })
 
+watch(() => route.params.entityId, (value) => {
+  scrollIdx.value = entitiesList.value.findIndex(x => x._id === value) || 0
+})
+
 watchDebounced(searchText, () => {
   if (searchText.value) {
     router.replace({ query: { ...route.query, q: searchText.value } })
@@ -102,10 +106,10 @@ onMounted(getEntities)
   <div
     class="h-full flex flex-col border-r border-gray-300"
   >
-    <div class="h-12 mx-3 flex items-center gap-2 border-b border-gray-300">
+    <div class="h-12 ml-6 flex items-center gap-3">
       <label
         for="search"
-        class="w-7 h-7 flex items-center justify-center"
+        class="w-8 h-7 flex items-center justify-center"
       >
         <search-icon class="h-5 w-5 text-gray-400" />
       </label>
