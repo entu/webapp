@@ -11,6 +11,7 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "cleanup": "nuxt cleanup",
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
