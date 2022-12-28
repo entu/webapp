@@ -44,9 +44,7 @@ const bValueStr = computed(() => props.isBytes ? humanFileSize(bTotal.value) : b
 function humanFileSize (bytes, si = true, dp = 2) {
   const thresh = si ? 1000 : 1024
 
-  if (Math.abs(bytes) < thresh) {
-    return bytes + ' B'
-  }
+  if (Math.abs(bytes) < thresh) return bytes + ' B'
 
   const units = si
     ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']

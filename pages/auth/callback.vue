@@ -9,13 +9,15 @@ const { accounts } = storeToRefs(userStore)
 
 useHead({ title: 'Sign In Callback · Entu' })
 
-await userStore.getAccounts(route.query.key)
+onMounted(async () => {
+  await userStore.getAccounts(route.query.key)
 
-if (accounts.value.length > 0) {
-  router.push({ path: `/${accounts.value[0].account}`, params: { _: '123' } })
-} else {
-  router.push({ path: '/' })
-}
+  if (accounts.value.length > 0) {
+    router.push({ path: `/${accounts.value[0].account}`, query: {} })
+  } else {
+    router.push({ path: '/', query: {} })
+  }
+})
 </script>
 
 <template>

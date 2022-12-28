@@ -104,7 +104,7 @@ onMounted(getEntities)
       class="w-80 max-h-full relative overflow-y-auto"
     >
       <nuxt-link
-        v-for="(entity, idx) in entitiesList"
+        v-for="entity in entitiesList"
         :key="entity._id"
         class="h-12 pl-6 pr-3 flex items-center gap-3 hover:bg-gray-50"
         :class="{ 'font-bold bg-zinc-100 hover:bg-zinc-100': entity._id === route.params.entityId }"

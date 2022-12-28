@@ -1,20 +1,27 @@
 export const useUserStore = defineStore('user', () => {
-  const route = useRoute()
-
+  const account = useLocalStorage('account', null)
   const accounts = useLocalStorage('accounts', [])
 
-  const account = computed(() => route.params.account)
-  const authenticated = computed(() => accounts.value.some(a => a.account === route.params.account))
-  const token = computed(() => accounts.value.find(a => a.account === route.params.account)?.token)
+  const token = computed(() => accounts.value.find(x => x.account === account.value)?.token)
+  const authenticated = computed(() => !!token.value)
 
   function signOut () {
+    account.value = null
     accounts.value = []
   }
 
-  async function getAccounts (key) {
-    const authResponse = await apiGet('auth', {}, { Authorization: `Bearer ${key}` })
+  function setAccount (value) {
+    account.value = value
+  }
 
-    accounts.value = Array.isArray(authResponse) ? authResponse : []
+  async function getAccounts (key) {
+    const authResponse = await apiGet('auth', { account: '' }, { Authorization: `Bearer ${key}` })
+
+    if (!Array.isArray(authResponse)) return
+
+    setAccount(authResponse[0].account)
+
+    accounts.value = authResponse
   }
 
   return {
@@ -22,6 +29,7 @@ export const useUserStore = defineStore('user', () => {
     accounts,
     authenticated,
     getAccounts,
+    setAccount,
     signOut,
     token
   }

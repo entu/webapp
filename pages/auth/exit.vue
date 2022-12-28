@@ -6,8 +6,10 @@ const userStore = useUserStore()
 
 useHead({ title: 'Exit · Entu' })
 
-userStore.signOut()
-router.push({ path: '/' })
+onMounted(() => {
+  userStore.signOut()
+  router.push({ path: '/', query: {} })
+})
 </script>
 
 <template>

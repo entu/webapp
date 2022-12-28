@@ -20,12 +20,10 @@ export async function apiGet (pathname, params = {}, headers) {
 
   requests.value++
 
-  if (token.value && !headers) {
-    headers = { Authorization: `Bearer ${token.value}` }
-  }
-
-  if (!token.value && account.value) {
-    params.account = account.value
+  if (token.value) {
+    headers = { Authorization: `Bearer ${token.value}`, ...headers }
+  } else {
+    params = { account: account.value, ...params }
   }
 
   const url = new URL(runtimeConfig.public.apiUrl)
@@ -49,5 +47,5 @@ export function getValue (valueList = [], type = 'string') {
   const mainStore = useMainStore()
   const { locale } = storeToRefs(mainStore)
 
-  return valueList.find(v => v.language === locale)?.[type] || valueList.find(v => !v.language)?.[type] || valueList?.[0]?.[type]
+  return valueList.find(x => x.language === locale)?.[type] || valueList.find(x => !x.language)?.[type] || valueList?.[0]?.[type]
 }

@@ -3,7 +3,7 @@ import { useUserStore } from '~/stores/user'
 
 const route = useRoute()
 const userStore = useUserStore()
-const { account } = storeToRefs(userStore)
+const { account, authenticated } = storeToRefs(userStore)
 const stats = ref()
 
 definePageMeta({ layout: 'menu' })
@@ -11,19 +11,15 @@ useHead({ title: `${account.value} · Entu` })
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
-async function getStats () {
+onMounted(async () => {
+  userStore.setAccount(route.params.account)
   stats.value = await apiGet('account')
-}
-
-onMounted(() => {
-  !account.value && location.reload()
-  getStats()
 })
 </script>
 
 <template>
   <div
-    v-if="!isQuery && stats"
+    v-if="!isQuery && stats && authenticated"
     class="h-full w-full lg:w-1/2 xl:w-1/2 md:min-w-fit px-8 md:mx-auto flex flex-col justify-center"
     vertical
   >

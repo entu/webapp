@@ -25,6 +25,7 @@ watch(() => entity?.value?.name, (value) => {
 
 async function loadEntity () {
   entity.value = null
+  isLoading.value = true
 
   if (!route.params.entityId) return
 
@@ -111,11 +112,9 @@ async function loadEntity () {
   }
 
   for (const property in rawEntity) {
-    if (['_id', '_thumbnail'].includes(property)) {
-      continue
-    }
+    if (['_id', '_thumbnail'].includes(property)) continue
 
-    const existingProperty = entity.value.props.find(p => p.name === property)
+    const existingProperty = entity.value.props.find(x => x.name === property)
 
     if (existingProperty) {
       existingProperty.values = rawEntity[property]
@@ -151,24 +150,24 @@ async function loadEntity () {
   })
 
   properties.value.sort(propsSorter)
+
+  isLoading.value = false
 }
 
 function propsSorter (a, b) {
-  if (a.ordinal && b.ordinal && a.ordinal < b.ordinal) { return -1 }
-  if (a.ordinal && b.ordinal && a.ordinal > b.ordinal) { return 1 }
+  if (a.ordinal && b.ordinal && a.ordinal < b.ordinal) return -1
+  if (a.ordinal && b.ordinal && a.ordinal > b.ordinal) return 1
 
-  if (!a.ordinal && b.ordinal) { return -1 }
-  if (a.ordinal && !b.ordinal) { return 1 }
+  if (!a.ordinal && b.ordinal) return -1
+  if (a.ordinal && !b.ordinal) return 1
 
-  if (!a.name || a.name < b.name) { return -1 }
-  if (!b.name || a.name > b.name) { return 1 }
+  if (!a.name || a.name < b.name) return -1
+  if (!b.name || a.name > b.name) return 1
 
   return 0
 }
 
 onMounted(() => {
-  !account.value && location.reload()
-
   loadEntity(route.params.entity)
 })
 </script>
