@@ -5,7 +5,7 @@ import { Home as HomeIcon, Data2 as FolderIcon, Login as LoginIcon, Logout as Lo
 
 import { useUserStore } from '~/stores/user'
 
-defineProps({
+const props = defineProps({
   collapsed: {
     type: Boolean,
     default: false
@@ -27,18 +27,37 @@ const accountMenu = computed(() => {
       key: 'account',
       icon: () => h(NIcon, null, () => h(HomeIcon)),
       label: (account.value || '').toUpperCase(),
-      children: accounts.value.filter(x => x.account !== account.value).map(x => ({
-        key: x.account,
-        name: x.account,
-        label: () => h(RouterLink,
-          { to: { path: `/${x.account}` } },
-          { default: () => x.account }
-        )
-      }))
+      children: props.collapsed
+        ? [{
+            name: '            1',
+            label: () => h(RouterLink,
+              { to: { path: `/${account.value}` } },
+              () => h('strong', {}, { default: () => (account.value || '').toUpperCase() })
+            )
+          }, {
+            name: '            2',
+            type: 'divider'
+          },
+          ...accounts.value.filter(x => x.account !== account.value).map(x => ({
+            key: x.account,
+            name: x.account,
+            label: () => h(RouterLink,
+              { to: { path: `/${x.account}` } },
+              { default: () => x.account }
+            )
+          }))
+          ]
+        : accounts.value.filter(x => x.account !== account.value).map(x => ({
+          key: x.account,
+          name: x.account,
+          label: () => h(RouterLink,
+            { to: { path: `/${x.account}` } },
+            { default: () => x.account }
+          )
+        }))
     })
 
     menu.push({
-      key: 'divider',
       type: 'divider',
       props: { style: { margin: '.5rem' } }
     })
@@ -54,7 +73,15 @@ const accountMenu = computed(() => {
         icon: () => h(NIcon, null, () => h(FolderIcon)),
         name: getValue(entity.group),
         label: getValue(entity.group),
-        children: [],
+        children: props.collapsed
+          ? [{
+              name: '            1',
+              label: () => h('strong', { }, { default: () => getValue(entity.group).toUpperCase() })
+            }, {
+              name: '            2',
+              type: 'divider'
+            }]
+          : [],
         ordinal: 0
       }
     }
@@ -84,7 +111,6 @@ const signInMenu = computed(() => {
   const menu = []
 
   menu.push({
-    key: 'divider',
     type: 'divider',
     props: { style: { margin: '.5rem' } }
   })
