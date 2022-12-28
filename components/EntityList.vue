@@ -7,7 +7,7 @@ const router = useRouter()
 const userStore = useUserStore()
 const { account } = storeToRefs(userStore)
 
-const el = ref(null)
+const listElement = ref(null)
 const searchText = ref(route.query.q || '')
 const entitiesList = ref([])
 const entitiesCount = ref()
@@ -15,10 +15,26 @@ const limit = ref(Math.ceil(window.innerHeight / 50))
 const skip = ref(0)
 const isLoading = ref(false)
 const locationSearch = ref(null)
+const scrollIdx = ref(0)
+
+const { y: listElementScroll } = useScroll(listElement)
+
+const debouncedScroll = useDebounceFn(() => {
+  router.push({ path: `/${account.value}/${entitiesList.value[scrollIdx.value]._id}`, query: route.query })
+}, 300)
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
-useInfiniteScroll(el, getEntities, { distance: 100 })
+useInfiniteScroll(listElement, getEntities, { distance: 100 })
+
+onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
+  if (e.code === 'ArrowDown') scrollIdx.value < entitiesList.value.length - 1 && scrollIdx.value++
+  if (e.code === 'ArrowUp') scrollIdx.value > 0 && scrollIdx.value--
+
+  listElementScroll.value = scrollIdx.value * 48 - 148
+
+  debouncedScroll()
+})
 
 watch(() => route.query, () => {
   if (locationSearch.value === location.search) return
@@ -66,6 +82,8 @@ async function getEntities () {
   entitiesCount.value = count
   skip.value += limit.value
 
+  scrollIdx.value = entitiesList.value.findIndex(x => x._id === route.params.entityId) || 0
+
   isLoading.value = false
 }
 
@@ -100,14 +118,17 @@ onMounted(getEntities)
     </div>
 
     <div
-      ref="el"
+      ref="listElement"
       class="w-80 max-h-full relative overflow-y-auto"
     >
       <nuxt-link
-        v-for="entity in entitiesList"
+        v-for="(entity, idx) in entitiesList"
         :key="entity._id"
         class="h-12 pl-6 pr-3 flex items-center gap-3 hover:bg-gray-50"
-        :class="{ 'font-bold bg-zinc-100 hover:bg-zinc-100': entity._id === route.params.entityId }"
+        :class="{
+          'font-bold ': idx === scrollIdx,
+          'bg-zinc-100 hover:bg-zinc-100': entity._id === route.params.entityId
+        }"
         :to="{ path: `/${account}/${entity._id}`, query: route.query }"
       >
         <img
