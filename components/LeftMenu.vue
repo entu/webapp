@@ -29,6 +29,7 @@ const accountMenu = computed(() => {
       label: (account.value || '').toUpperCase(),
       children: accounts.value.filter(x => x.account !== account.value).map(x => ({
         key: x.account,
+        name: x.account,
         label: () => h(RouterLink,
           { to: { path: `/${x.account}` } },
           { default: () => x.account }
@@ -51,6 +52,7 @@ const accountMenu = computed(() => {
       menuObject[group] = {
         key: group,
         icon: () => h(NIcon, null, () => h(FolderIcon)),
+        name: getValue(entity.group),
         label: getValue(entity.group),
         children: [],
         ordinal: 0
@@ -60,6 +62,7 @@ const accountMenu = computed(() => {
     menuObject[group].ordinal += ordinal
     menuObject[group].children.push({
       key: getValue(entity.query),
+      name: getValue(entity.name),
       label: () => h(RouterLink,
         { to: { path: `/${account.value}`, query: queryObj(entity.query?.[0]?.string) } },
         { default: () => getValue(entity.name) }
