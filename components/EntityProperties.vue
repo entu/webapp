@@ -1,9 +1,6 @@
 <script setup>
 defineProps({
-  properties: {
-    type: Array,
-    default: null
-  }
+  properties: { type: Array, default: null }
 })
 </script>
 

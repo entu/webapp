@@ -6,10 +6,7 @@ import { Home as HomeIcon, Data2 as FolderIcon, Login as LoginIcon, Logout as Lo
 import { useUserStore } from '~/stores/user'
 
 const props = defineProps({
-  collapsed: {
-    type: Boolean,
-    default: false
-  }
+  collapsed: { type: Boolean, default: false }
 })
 
 const userStore = useUserStore()
@@ -190,7 +187,7 @@ onMounted(getMenuEntities)
 
 <template>
   <div class="min-h-full w-full flex flex-col justify-between">
-    <router-link
+    <nuxt-link
       v-if="!collapsed"
       :to="{ path: `/${account}` }"
     >
@@ -198,7 +195,8 @@ onMounted(getMenuEntities)
         class="mt-6 mb-4 mx-auto h-24 w-24"
         src="/logo.png"
       >
-    </router-link>
+    </nuxt-link>
+
     <n-menu
       v-model:value="activeMenu"
       class="grow"

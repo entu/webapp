@@ -2,38 +2,14 @@
 import { NProgress } from 'naive-ui'
 
 const props = defineProps({
-  aLabel: {
-    type: String,
-    default: null
-  },
-  aValue: {
-    type: Number,
-    default: null
-  },
-  bLabel: {
-    type: String,
-    default: null
-  },
-  bValue: {
-    type: Number,
-    default: null
-  },
-  isBytes: {
-    type: Boolean,
-    default: false
-  },
-  showTotal: {
-    type: Boolean,
-    default: false
-  },
-  color: {
-    type: String,
-    default: null
-  },
-  railColor: {
-    type: String,
-    default: null
-  }
+  aLabel: { type: String, default: null },
+  aValue: { type: Number, default: null },
+  bLabel: { type: String, default: null },
+  bValue: { type: Number, default: null },
+  isBytes: { type: Boolean, default: false },
+  showTotal: { type: Boolean, default: false },
+  color: { type: String, default: null },
+  railColor: { type: String, default: null }
 })
 
 const percentage = computed(() => Math.round(props.aValue * 100 / (props.aValue + props.bValue)))

@@ -5,6 +5,7 @@ import { useUserStore } from '~/stores/user'
 const route = useRoute()
 const userStore = useUserStore()
 const { account } = storeToRefs(userStore)
+const rawEntity = ref()
 const entity = ref({})
 const entityId = ref()
 const entityType = ref({})
@@ -28,10 +29,10 @@ async function loadEntity () {
 
   if (!route.params.entityId) return
 
-  const rawEntity = await apiGetEntity(route.params.entityId)
-  entityId.value = rawEntity._id
+  rawEntity.value = await apiGetEntity(route.params.entityId)
+  entityId.value = rawEntity.value._id
 
-  const typeId = rawEntity._type?.[0]?.reference
+  const typeId = rawEntity.value._type?.[0]?.reference
   if (typeId) {
     entityType.value = await apiGetEntity(typeId, {
       props: [
@@ -74,9 +75,9 @@ async function loadEntity () {
   }
 
   entity.value = {
-    _id: rawEntity._id,
-    _thumbnail: rawEntity._thumbnail,
-    name: getValue(rawEntity.name),
+    _id: rawEntity.value._id,
+    _thumbnail: rawEntity.value._thumbnail,
+    name: getValue(rawEntity.value.name),
     type: {
       _id: entityType.value._id,
       name: getValue(entityType.value.name),
@@ -181,46 +182,58 @@ onMounted(() => {
         <tools-menu />
       </div>
 
-      <div class="p-2 flex overflow-y-auto overflow-hidden">
-        <div class="grow">
-          <h1 class="mb-4 text-2xl text-[#1E434C] font-bold">
-            {{ entity.name }}
-          </h1>
-          <n-collapse :default-expanded-names="[0]">
-            <template v-for="(pg, idx) in properties" :key="pg.name">
-              <n-collapse-item
-                v-if="pg.name"
-                :name="idx"
-                :title="pg.name"
-              >
-                <entity-properties :properties="pg.children" />
-              </n-collapse-item>
-              <div v-else>
-                <entity-properties :properties="pg.children" />
-              </div>
-            </template>
-
-            <n-collapse-item
-              name="children"
-              title="Children entities"
-            >
-              <div />
-            </n-collapse-item>
-
-            <n-collapse-item
-              name="referrers"
-              title="Referrer entities"
-            >
-              <div />
-            </n-collapse-item>
-          </n-collapse>
+      <div class="px-2 pb-4 flex flex-col gap-4 overflow-y-auto overflow-hidden">
+        <div
+          v-if="rawEntity?._parent"
+          class="py-4 border-b border-gray-300"
+        >
+          <entity-parents
+            :account="account"
+            :parents="rawEntity._parent"
+          />
         </div>
 
-        <img
-          v-if="entity._thumbnail"
-          class="h-32 w-32 flex-none mt-1 ml-16 object-cover rounded-lg"
-          :src="entity._thumbnail"
-        >
+        <div class="flex gap-4">
+          <div class="grow">
+            <h1 class="mb-4 text-2xl text-[#1E434C] font-bold">
+              {{ entity.name }}
+            </h1>
+            <n-collapse :default-expanded-names="[0]">
+              <template v-for="(pg, idx) in properties" :key="pg.name">
+                <n-collapse-item
+                  v-if="pg.name"
+                  :name="idx"
+                  :title="pg.name"
+                >
+                  <entity-properties :properties="pg.children" />
+                </n-collapse-item>
+                <div v-else>
+                  <entity-properties :properties="pg.children" />
+                </div>
+              </template>
+
+              <n-collapse-item
+                name="children"
+                title="Children entities"
+              >
+                <div />
+              </n-collapse-item>
+
+              <n-collapse-item
+                name="referrers"
+                title="Referrer entities"
+              >
+                <div />
+              </n-collapse-item>
+            </n-collapse>
+          </div>
+
+          <img
+            v-if="entity._thumbnail"
+            class="h-32 w-32 flex-none object-cover rounded-lg"
+            :src="entity._thumbnail"
+          >
+        </div>
       </div>
     </div>
   </transition>
