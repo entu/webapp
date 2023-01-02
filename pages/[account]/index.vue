@@ -46,23 +46,23 @@ onMounted(async () => {
     />
     <stats-bar
       class="my-3"
+      is-bytes
       color="rgb(40,167,69)"
       rail-color="rgba(40,167,69,.3)"
       :a-label="t('files')"
       :b-label="t('deleted')"
-      :a-value="stats.files"
-      :b-value="stats.deletedFiles"
+      :a-value="stats.filesSize"
+      :b-value="stats.deletedFilesSize"
     />
     <stats-bar
       class="my-3"
-      is-bytes
-      show-total
       color="rgb(108,117,125)"
       rail-color="rgba(108,117,125,.3)"
-      :a-label="t('database')"
-      :b-label="t('total')"
+      show-total
+      :a-label="t('requests')"
+      :b-label="t('limit')"
       :a-value="stats.dbSize"
-      :b-value="stats.filesSize + stats.deletedFilesSize"
+      :b-value="Math.ceil(stats.dbSize / Math.pow(10, stats.dbSize.toString().length - 1)) * Math.pow(10, stats.dbSize.toString().length - 1) - stats.dbSize"
     />
   </div>
 </template>
@@ -72,14 +72,14 @@ onMounted(async () => {
     entities: Entities
     properties: Properties
     files: Files
-    database: Database
+    requests: Requests in day
     deleted: deleted
-    total: total usage
+    limit: limit
   et:
-    entities: Objektid
-    properties: Parameetrid
-    files: Failid
-    database: Andmebaas
+    entities: Objekte
+    properties: Parameetreid
+    files: Faile
+    requests: Päringuid päevas
     deleted: kustutatud
-    total: kokku
+    limit: limiit
 </i18n>

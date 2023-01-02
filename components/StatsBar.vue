@@ -1,9 +1,7 @@
 <script setup>
 import { NProgress } from 'naive-ui'
-import { useMainStore } from '~/stores/main'
 
-const mainStore = useMainStore()
-const { language } = storeToRefs(mainStore)
+const { n } = useI18n()
 
 const props = defineProps({
   aLabel: { type: String, default: null },
@@ -18,10 +16,11 @@ const props = defineProps({
 
 const percentage = computed(() => Math.round(props.aValue * 100 / (props.aValue + props.bValue)))
 const bTotal = computed(() => props.showTotal ? props.aValue + props.bValue : props.bValue)
-const aValueStr = computed(() => props.isBytes ? humanFileSize(props.aValue) : props.aValue?.toLocaleString(language.value))
-const bValueStr = computed(() => props.isBytes ? humanFileSize(bTotal.value) : bTotal.value?.toLocaleString(language.value))
+const aValueStr = computed(() => props.isBytes ? humanFileSize(props.aValue) : n(props.aValue))
+const bValueStr = computed(() => props.isBytes ? humanFileSize(bTotal.value) : n(bTotal.value))
 
 function humanFileSize (bytes, si = true, dp = 2) {
+  if (bytes === null) return
   const thresh = si ? 1000 : 1024
 
   if (Math.abs(bytes) < thresh) return bytes + ' B'
@@ -37,7 +36,7 @@ function humanFileSize (bytes, si = true, dp = 2) {
     ++u
   } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1)
 
-  return bytes.toLocaleString(language.value, { minimumFractionDigits: dp, maximumFractionDigits: dp }) + ' ' + units[u]
+  return n(Math.round(bytes * 10) / 10) + ' ' + units[u]
 }
 </script>
 
