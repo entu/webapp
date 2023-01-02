@@ -47,7 +47,7 @@ export default defineNuxtConfig({
     public: {
       apiUrl: '',
       gitSha: '',
-      title: ''
+      title: 'Entu'
     }
   },
   ssr: false
