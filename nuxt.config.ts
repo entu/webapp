@@ -26,7 +26,14 @@ export default defineNuxtConfig({
         ]
   },
   css: ['~/assets/main.css'],
+  i18n: {
+    vueI18n: {
+      legacy: false,
+      locale: 'en'
+    }
+  },
   modules: [
+    ['@nuxtjs/i18n'],
     ['@pinia/nuxt', { autoImports: ['defineStore', 'storeToRefs'] }],
     ['@vueuse/nuxt']
   ],

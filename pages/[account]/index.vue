@@ -1,6 +1,7 @@
 <script setup>
 import { useUserStore } from '~/stores/user'
 
+const { t } = useI18n()
 const route = useRoute()
 const userStore = useUserStore()
 const { account, authenticated } = storeToRefs(userStore)
@@ -29,8 +30,8 @@ onMounted(async () => {
       class="my-3"
       color="rgb(23,162,184)"
       rail-color="rgba(23,162,184,.3)"
-      a-label="Entities"
-      b-label="deleted"
+      :a-label="t('entities')"
+      :b-label="t('deleted')"
       :a-value="stats.entities"
       :b-value="stats.deletedEntities"
     />
@@ -38,8 +39,8 @@ onMounted(async () => {
       class="my-3"
       color="rgb(255,193,7)"
       rail-color="rgba(255,193,7,.3)"
-      a-label="Properties"
-      b-label="deleted"
+      :a-label="t('properties')"
+      :b-label="t('deleted')"
       :a-value="stats.properties"
       :b-value="stats.deletedProperties"
     />
@@ -47,8 +48,8 @@ onMounted(async () => {
       class="my-3"
       color="rgb(40,167,69)"
       rail-color="rgba(40,167,69,.3)"
-      a-label="Files"
-      b-label="deleted"
+      :a-label="t('files')"
+      :b-label="t('deleted')"
       :a-value="stats.files"
       :b-value="stats.deletedFiles"
     />
@@ -58,10 +59,27 @@ onMounted(async () => {
       show-total
       color="rgb(108,117,125)"
       rail-color="rgba(108,117,125,.3)"
-      a-label="Database"
-      b-label="total usage"
+      :a-label="t('database')"
+      :b-label="t('total')"
       :a-value="stats.dbSize"
       :b-value="stats.filesSize + stats.deletedFilesSize"
     />
   </div>
 </template>
+
+<i18n lang="yaml">
+  en:
+    entities: Entities
+    properties: Properties
+    files: Files
+    database: Database
+    deleted: deleted
+    total: total usage
+  et:
+    entities: Objektid
+    properties: Parameetrid
+    files: Failid
+    database: Andmebaas
+    deleted: kustutatud
+    total: kokku
+</i18n>

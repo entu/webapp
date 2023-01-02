@@ -1,11 +1,12 @@
 <script setup>
 import { useUserStore } from '~/stores/user'
 
+const { t } = useI18n()
 const router = useRouter()
 const userStore = useUserStore()
 
 onMounted(() => {
-  useHead({ title: 'Exit' })
+  useHead({ title: t('title') })
 
   userStore.signOut()
   router.push({ path: '/', query: {} })
@@ -15,3 +16,10 @@ onMounted(() => {
 <template>
   <div />
 </template>
+
+<i18n lang="yaml">
+  en:
+    title: Exit
+  et:
+    title: Välju
+</i18n>

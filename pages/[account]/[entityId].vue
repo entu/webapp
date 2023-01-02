@@ -2,18 +2,106 @@
 import { NCollapse, NCollapseItem } from 'naive-ui'
 import { useUserStore } from '~/stores/user'
 
+const { t } = useI18n()
 const route = useRoute()
 const userStore = useUserStore()
 const { account } = storeToRefs(userStore)
 const rawEntity = ref()
-const entity = ref({})
 const entityId = ref()
 const entityType = ref({})
 const entityProps = ref([])
-const properties = ref([])
 const isLoading = ref(false)
 
 definePageMeta({ layout: 'menu' })
+
+const entity = computed(() => {
+  if (!rawEntity.value) return {}
+
+  const result = {
+    _id: rawEntity.value._id,
+    _thumbnail: rawEntity.value._thumbnail,
+    name: getValue(rawEntity.value.name),
+    type: {
+      _id: entityType.value._id,
+      name: getValue(entityType.value.name),
+      label: getValue(entityType.value.label),
+      labelPlural: getValue(entityType.value.label_plural),
+      description: getValue(entityType.value.description),
+      openAfterAdd: getValue(entityType.value.open_after_add, 'boolean'),
+      defaultParent: entityType.value.default_parent,
+      optionalParent: entityType.value.optional_parent,
+      addFromMenu: entityType.value.add_from_menu,
+      allowedChild: entityType.value.allowed_child
+    },
+    props: entityProps.value.map(p => ({
+      type: getValue(p.type),
+      name: getValue(p.name),
+      label: getValue(p.label),
+      labelPlural: getValue(p.label_plural),
+      description: getValue(p.description),
+      fieldset: getValue(p.fieldset),
+      default: getValue(p.default),
+      formula: getValue(p.formula),
+      classifier: p.classifier,
+      ordinal: getValue(p.ordinal, 'integer'),
+      list: getValue(p.list, 'boolean'),
+      multilingual: getValue(p.multilingual, 'boolean'),
+      hidden: getValue(p.hidden, 'boolean'),
+      readonly: getValue(p.readonly, 'boolean'),
+      mandatory: getValue(p.mandatory, 'boolean'),
+      public: getValue(p.public, 'boolean'),
+      search: getValue(p.search, 'boolean')
+    }))
+  }
+
+  for (const property in rawEntity) {
+    if (['_id', '_thumbnail'].includes(property)) continue
+
+    const existingProperty = result.props.find(x => x.name === property)
+
+    if (existingProperty) {
+      existingProperty.values = rawEntity[property]
+    } else {
+      result.props.push({ name: property, values: rawEntity[property] })
+    }
+  }
+
+  return result
+})
+
+const properties = computed(() => {
+  if (!entity.value || !entity?.value?.props) return []
+
+  const propsObject = {}
+
+  entity.value.props.forEach((property) => {
+    const fieldset = property.fieldset?.toLowerCase()
+    const group = !fieldset && property.name.startsWith('_') ? t('system') : fieldset
+    const ordinal = property.ordinal?.[0]?.integer || 0
+
+    if (!propsObject[group]) {
+      propsObject[group] = {
+        name: property.fieldset || group,
+        children: [],
+        ordinal: 0
+      }
+    }
+
+    propsObject[group].ordinal += ordinal
+    propsObject[group].children.push(property)
+  })
+
+  const result = Object.values(propsObject)
+
+  result.forEach((m) => {
+    m.ordinal = m.ordinal / m.children.length
+    m.children.sort(propsSorter)
+  })
+
+  result.sort(propsSorter)
+
+  return result
+})
 
 watch(() => entity?.value?.name, (value) => {
   if (value) {
@@ -24,7 +112,6 @@ watch(() => entity?.value?.name, (value) => {
 })
 
 async function loadEntity () {
-  entity.value = null
   isLoading.value = true
 
   if (!route.params.entityId) return
@@ -72,86 +159,9 @@ async function loadEntity () {
     })
 
     entityProps.value = props.entities
+
+    isLoading.value = false
   }
-
-  entity.value = {
-    _id: rawEntity.value._id,
-    _thumbnail: rawEntity.value._thumbnail,
-    name: getValue(rawEntity.value.name),
-    type: {
-      _id: entityType.value._id,
-      name: getValue(entityType.value.name),
-      label: getValue(entityType.value.label),
-      labelPlural: getValue(entityType.value.label_plural),
-      description: getValue(entityType.value.description),
-      openAfterAdd: getValue(entityType.value.open_after_add, 'boolean'),
-      defaultParent: entityType.value.default_parent,
-      optionalParent: entityType.value.optional_parent,
-      addFromMenu: entityType.value.add_from_menu,
-      allowedChild: entityType.value.allowed_child
-    },
-    props: entityProps.value.map(p => ({
-      type: getValue(p.type),
-      name: getValue(p.name),
-      label: getValue(p.label),
-      labelPlural: getValue(p.label_plural),
-      description: getValue(p.description),
-      fieldset: getValue(p.fieldset),
-      default: getValue(p.default),
-      formula: getValue(p.formula),
-      classifier: p.classifier,
-      ordinal: getValue(p.ordinal, 'integer'),
-      list: getValue(p.list, 'boolean'),
-      multilingual: getValue(p.multilingual, 'boolean'),
-      hidden: getValue(p.hidden, 'boolean'),
-      readonly: getValue(p.readonly, 'boolean'),
-      mandatory: getValue(p.mandatory, 'boolean'),
-      public: getValue(p.public, 'boolean'),
-      search: getValue(p.search, 'boolean')
-    }))
-  }
-
-  for (const property in rawEntity) {
-    if (['_id', '_thumbnail'].includes(property)) continue
-
-    const existingProperty = entity.value.props.find(x => x.name === property)
-
-    if (existingProperty) {
-      existingProperty.values = rawEntity[property]
-    } else {
-      entity.value.props.push({ name: property, values: rawEntity[property] })
-    }
-  }
-
-  const propsObject = {}
-
-  entity.value.props.forEach((property) => {
-    const fieldset = property.fieldset?.toLowerCase()
-    const group = !fieldset && property.name.startsWith('_') ? 'System properties' : fieldset
-    const ordinal = property.ordinal?.[0]?.integer || 0
-
-    if (!propsObject[group]) {
-      propsObject[group] = {
-        name: property.fieldset || group,
-        children: [],
-        ordinal: 0
-      }
-    }
-
-    propsObject[group].ordinal += ordinal
-    propsObject[group].children.push(property)
-  })
-
-  properties.value = Object.values(propsObject)
-
-  properties.value.forEach((m) => {
-    m.ordinal = m.ordinal / m.children.length
-    m.children.sort(propsSorter)
-  })
-
-  properties.value.sort(propsSorter)
-
-  isLoading.value = false
 }
 
 function propsSorter (a, b) {
@@ -214,14 +224,14 @@ onMounted(() => {
 
               <n-collapse-item
                 name="children"
-                title="Children entities"
+                :title="t('childrens')"
               >
                 <div />
               </n-collapse-item>
 
               <n-collapse-item
                 name="referrers"
-                title="Referrer entities"
+                :title="t('referrers')"
               >
                 <div />
               </n-collapse-item>
@@ -238,6 +248,17 @@ onMounted(() => {
     </div>
   </transition>
 </template>
+
+<i18n lang="yaml">
+  en:
+    system: System properties
+    childrens: Children entities
+    referrers: Referrer entities
+  et:
+    system: Süsteemi parameetrid
+    childrens: Alamobjektid
+    referrers: Viitavad objektid
+</i18n>
 
 <style scoped>
 .v-enter-active,

@@ -2,6 +2,7 @@
 import { NIcon, NButton, NTooltip } from 'naive-ui'
 import { Add as AddIcon, TreeViewAlt as TreeViewAltIcon, Copy as CopyIcon, Edit as EditIcon, UserMultiple as UserMultipleIcon } from '@vicons/carbon'
 
+const { t } = useI18n()
 </script>
 
 <template>
@@ -16,7 +17,7 @@ import { Add as AddIcon, TreeViewAlt as TreeViewAltIcon, Copy as CopyIcon, Edit 
           </template>
         </n-button>
       </template>
-      Add
+      {{ t('add') }}
     </n-tooltip>
 
     <n-tooltip trigger="hover">
@@ -29,7 +30,7 @@ import { Add as AddIcon, TreeViewAlt as TreeViewAltIcon, Copy as CopyIcon, Edit 
           </template>
         </n-button>
       </template>
-      Edit
+      {{ t('edit') }}
     </n-tooltip>
 
     <n-tooltip trigger="hover">
@@ -42,7 +43,7 @@ import { Add as AddIcon, TreeViewAlt as TreeViewAltIcon, Copy as CopyIcon, Edit 
           </template>
         </n-button>
       </template>
-      Duplicate
+      {{ t('duplicate') }}
     </n-tooltip>
 
     <n-tooltip trigger="hover">
@@ -55,7 +56,7 @@ import { Add as AddIcon, TreeViewAlt as TreeViewAltIcon, Copy as CopyIcon, Edit 
           </template>
         </n-button>
       </template>
-      Parents
+      {{ t('parents') }}
     </n-tooltip>
 
     <n-tooltip trigger="hover">
@@ -68,7 +69,22 @@ import { Add as AddIcon, TreeViewAlt as TreeViewAltIcon, Copy as CopyIcon, Edit 
           </template>
         </n-button>
       </template>
-      User rights
+      {{ t('rights') }}
     </n-tooltip>
   </div>
 </template>
+
+<i18n lang="yaml">
+  en:
+    add: Add
+    edit: Edit
+    duplicate: Duplicate
+    parents: Parents
+    rights: User rights
+  et:
+    add: Lisa
+    edit: Muuda
+    duplicate: Dubleeri
+    parents: Peamised
+    rights: Õigused
+</i18n>

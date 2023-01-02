@@ -2,6 +2,7 @@
 import { Search as SearchIcon } from '@vicons/carbon'
 import { useUserStore } from '~/stores/user'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
@@ -116,7 +117,7 @@ onMounted(getEntities)
       <input
         id="search"
         v-model="searchText"
-        placeholder="Search Entity"
+        :placeholder="t('search')"
         class="w-full py-3 pr-3 bg-transparent placeholder:italic placeholder:text-gray-400 focus:outline-none"
       >
     </div>
@@ -155,7 +156,16 @@ onMounted(getEntities)
     </div>
 
     <div class="pt-3 pb-1 sticky bottom-0 text-center text-sm text-gray-500 italic bg-white">
-      {{ entitiesCount }} {{ entitiesCount === 1 ? 'entity' : 'entities' }}
+      {{ t('count',entitiesCount) }}
     </div>
   </div>
 </template>
+
+<i18n lang="yaml">
+  en:
+    search: Search Entity
+    count: 'no entities found | {n} entity | {n} entities'
+  et:
+    search: Otsi objekti
+    count: 'objekte ei leitud | {n} objekt | {n} objekti'
+</i18n>

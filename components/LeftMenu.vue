@@ -1,15 +1,19 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { NIcon, NMenu } from 'naive-ui'
-import { Home as HomeIcon, Data2 as FolderIcon, Login as LoginIcon, Logout as LogoutIcon } from '@vicons/carbon'
+import { Home as HomeIcon, Data2 as FolderIcon, Language as LanguageIcon, Login as LoginIcon, Logout as LogoutIcon } from '@vicons/carbon'
 
+import { useMainStore } from '~/stores/main'
 import { useUserStore } from '~/stores/user'
 
 const props = defineProps({
   collapsed: { type: Boolean, default: false }
 })
 
+const { t } = useI18n()
+const mainStore = useMainStore()
 const userStore = useUserStore()
+const { language } = storeToRefs(mainStore)
 const { account, accounts, authenticated } = storeToRefs(userStore)
 
 const menuEntities = ref([])
@@ -112,13 +116,22 @@ const signInMenu = computed(() => {
     props: { style: { margin: '.5rem' } }
   })
 
+  menu.push({
+    key: `language-${language.value}`,
+    icon: () => h(NIcon, null, () => h(LanguageIcon)),
+    label: () => h('a',
+      { onClick: () => { language.value = language.value === 'en' ? 'et' : 'en' } },
+      { default: () => t('language') }
+    )
+  })
+
   if (authenticated.value) {
     menu.push({
       key: 'auth',
       icon: () => h(NIcon, null, () => h(LogoutIcon)),
       label: () => h(RouterLink,
         { to: { path: '/auth/exit' } },
-        { default: () => 'Sign Out' }
+        { default: () => t('signOut') }
       )
     })
   } else {
@@ -127,7 +140,7 @@ const signInMenu = computed(() => {
       icon: () => h(NIcon, null, () => h(LoginIcon)),
       label: () => h(RouterLink,
         { to: { path: '/auth' } },
-        { default: () => 'Sign In' }
+        { default: () => t('signIn') }
       )
     })
   }
@@ -220,3 +233,14 @@ onMounted(getMenuEntities)
     />
   </div>
 </template>
+
+<i18n lang="yaml">
+  en:
+    signIn: Sign In
+    signOut: Sign Out
+    language: 'Eesti keel'
+  et:
+    signIn: Sisene
+    signOut: Välju
+    language: 'English'
+</i18n>

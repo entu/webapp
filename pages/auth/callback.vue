@@ -2,13 +2,14 @@
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '~/stores/user'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const { accounts } = storeToRefs(userStore)
 
 onMounted(async () => {
-  useHead({ title: 'Sign In' })
+  useHead({ title: t('title') })
 
   await userStore.getAccounts(route.query.key)
 
@@ -23,3 +24,10 @@ onMounted(async () => {
 <template>
   <div />
 </template>
+
+<i18n lang="yaml">
+  en:
+    title: Sign In
+  et:
+    title: Sisene
+</i18n>
