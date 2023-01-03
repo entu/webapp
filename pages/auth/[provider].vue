@@ -1,11 +1,12 @@
 <script setup>
 const runtimeConfig = useRuntimeConfig()
 const { t } = useI18n()
+const route = useRoute()
 
 onMounted(() => {
   useHead({ title: t('title') })
 
-  window.location = `${runtimeConfig.public.apiUrl}/auth/google?next=${window.location.origin}/auth/callback?key=`
+  window.location = `${runtimeConfig.public.apiUrl}/auth/${route.params.provider}?next=${window.location.origin}/auth/callback?key=`
 })
 </script>
 

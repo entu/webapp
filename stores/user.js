@@ -2,8 +2,10 @@ export const useUserStore = defineStore('user', () => {
   const account = useLocalStorage('account', null)
   const accounts = useLocalStorage('accounts', [])
 
+  const authenticated = computed(() => accounts.value.some(x => x.account === account.value))
+  const _id = computed(() => accounts.value.find(x => x.account === account.value)?._id)
+  const name = computed(() => accounts.value.find(x => x.account === account.value)?.name)
   const token = computed(() => accounts.value.find(x => x.account === account.value)?.token)
-  const authenticated = computed(() => !!token.value)
 
   function signOut () {
     account.value = null
@@ -25,10 +27,12 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return {
+    _id,
     account,
     accounts,
     authenticated,
     getAccounts,
+    name,
     setAccount,
     signOut,
     token

@@ -1,7 +1,8 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { NIcon, NMenu } from 'naive-ui'
-import { Home as HomeIcon, Data2 as FolderIcon, Language as LanguageIcon, Login as LoginIcon, Logout as LogoutIcon } from '@vicons/carbon'
+import { Identification as IdentificationIcon, Home as HomeIcon, Data2 as FolderIcon, Login as LoginIcon, Logout as LogoutIcon, SimCard as SimCardIcon, User as UserIcon } from '@vicons/carbon'
+import { LanguageOutline as LanguageOutlineIcon, LogoApple as LogoAppleIcon, LogoGoogle as LogoGoogleIcon, PhonePortraitOutline as PhonePortraitOutlineIcon } from '@vicons/ionicons5'
 
 import { useMainStore } from '~/stores/main'
 import { useUserStore } from '~/stores/user'
@@ -14,7 +15,7 @@ const { t } = useI18n()
 const mainStore = useMainStore()
 const userStore = useUserStore()
 const { language } = storeToRefs(mainStore)
-const { account, accounts, authenticated } = storeToRefs(userStore)
+const { _id, account, accounts, authenticated, name } = storeToRefs(userStore)
 
 const menuEntities = ref([])
 const activeMenu = ref(location.search.substring(1))
@@ -108,24 +109,69 @@ const accountMenu = computed(() => {
   return [...menu, ...menuArray]
 })
 
-const signInMenu = computed(() => {
+const authMenu = computed(() => [
+  {
+    key: 'auth-apple',
+    disabled: true,
+    icon: () => h(NIcon, null, () => h(LogoAppleIcon)),
+    label: () => h(RouterLink,
+      { to: { path: '' } },
+      // { to: { path: '/auth/mobile-id' } },
+      { default: () => 'Apple' }
+    )
+  },
+  {
+    key: 'auth-google',
+    icon: () => h(NIcon, null, () => h(LogoGoogleIcon)),
+    label: () => h(RouterLink,
+      { to: { path: '/auth/google' } },
+      { default: () => 'Google' }
+    )
+  },
+  {
+    key: 'auth-mid',
+    disabled: true,
+    icon: () => h(NIcon, null, () => h(SimCardIcon)),
+    label: () => h(RouterLink,
+      { to: { path: '' } },
+      // { to: { path: '/auth/mobile-id' } },
+      { default: () => t('mid') }
+    )
+  },
+  {
+    key: 'auth-sid',
+    disabled: true,
+    icon: () => h(NIcon, null, () => h(PhonePortraitOutlineIcon)),
+    label: () => h(RouterLink,
+      { to: { path: '' } },
+      // { to: { path: '/auth/smart-id' } },
+      { default: () => t('sid') }
+    )
+  },
+  {
+    key: 'auth-idc',
+    disabled: true,
+    icon: () => h(NIcon, null, () => h(IdentificationIcon)),
+    label: () => h(RouterLink,
+      { to: { path: '' } },
+      // { to: { path: '/auth/id-card' } },
+      { default: () => t('idc') }
+    )
+  }
+])
+
+const userMenu = computed(() => {
   const menu = []
 
-  menu.push({
-    type: 'divider',
-    props: { style: { margin: '.5rem' } }
-  })
-
-  menu.push({
-    key: `language-${language.value}`,
-    icon: () => h(NIcon, null, () => h(LanguageIcon)),
-    label: () => h('a',
-      { onClick: () => { language.value = language.value === 'en' ? 'et' : 'en' } },
-      { default: () => t('language') }
-    )
-  })
-
   if (authenticated.value) {
+    menu.push({
+      key: _id.value,
+      icon: () => h(NIcon, null, () => h(UserIcon)),
+      label: () => h(RouterLink,
+        { to: { path: `/${account.value}/${_id.value}` } },
+        { default: () => name.value }
+      )
+    })
     menu.push({
       key: 'auth',
       icon: () => h(NIcon, null, () => h(LogoutIcon)),
@@ -134,16 +180,21 @@ const signInMenu = computed(() => {
         { default: () => t('signOut') }
       )
     })
-  } else {
-    menu.push({
-      key: 'auth',
-      icon: () => h(NIcon, null, () => h(LoginIcon)),
-      label: () => h(RouterLink,
-        { to: { path: '/auth' } },
-        { default: () => t('signIn') }
-      )
-    })
   }
+
+  menu.push({
+    type: 'divider',
+    props: { style: { margin: '.5rem' } }
+  })
+
+  menu.push({
+    key: `language-${language.value}`,
+    icon: () => h(NIcon, null, () => h(LanguageOutlineIcon)),
+    label: () => h('a',
+      { onClick: () => { language.value = language.value === 'en' ? 'et' : 'en' } },
+      { default: () => t('language') }
+    )
+  })
 
   return menu
 })
@@ -199,7 +250,7 @@ onMounted(getMenuEntities)
 </script>
 
 <template>
-  <div class="min-h-full w-full flex flex-col justify-between">
+  <div class="py-2 min-h-full w-full flex flex-col justify-between">
     <nuxt-link
       v-if="!collapsed"
       :to="{ path: `/${account}` }"
@@ -212,7 +263,7 @@ onMounted(getMenuEntities)
 
     <n-menu
       v-model:value="activeMenu"
-      class="grow"
+      class="pb-0 grow"
       collapse-mode="width"
       :accordion="true"
       :collapsed-width="60"
@@ -221,14 +272,32 @@ onMounted(getMenuEntities)
       :options="accountMenu"
       :root-indent="18"
     />
-
+    <div
+      v-if="!authenticated && !collapsed"
+      class="mt-8 text-white font-bold text-center"
+    >
+      {{ t('signIn') }}
+    </div>
     <n-menu
+      v-if="!authenticated"
+      class="pb-0"
       collapse-mode="width"
       :accordion="true"
       :collapsed-width="60"
       :collapsed="collapsed"
       :indent="32"
-      :options="signInMenu"
+      :options="authMenu"
+      :root-indent="18"
+    />
+    <n-menu
+      v-model:value="activeMenu"
+      class="pb-0"
+      collapse-mode="width"
+      :accordion="true"
+      :collapsed-width="60"
+      :collapsed="collapsed"
+      :indent="32"
+      :options="userMenu"
       :root-indent="18"
     />
   </div>
@@ -236,11 +305,17 @@ onMounted(getMenuEntities)
 
 <i18n lang="yaml">
   en:
+    language: Eesti keel
     signIn: Sign In
     signOut: Sign Out
-    language: 'Eesti keel'
+    mid: Mobile-ID
+    sid: Smart-ID
+    idc: ID-Card
   et:
+    language: English
     signIn: Sisene
     signOut: Välju
-    language: 'English'
+    mid: Mobiil-ID
+    sid: Smart-ID
+    idc: ID-kaart
 </i18n>
