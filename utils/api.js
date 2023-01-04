@@ -10,6 +10,10 @@ export async function apiGetEntity (entityId, params) {
   return entity
 }
 
+export async function apiGetProperty (propertyId, params) {
+  return await apiGet('property/' + propertyId, params)
+}
+
 export async function apiGet (pathname, params = {}, headers) {
   const runtimeConfig = useRuntimeConfig()
 
