@@ -11,7 +11,7 @@ const { account } = storeToRefs(userStore)
 const listElement = ref(null)
 const searchText = ref(route.query.q || '')
 const entitiesList = ref([])
-const entitiesCount = ref()
+const entitiesCount = ref(null)
 const limit = ref(Math.ceil(window.innerHeight / 50))
 const skip = ref(0)
 const isLoading = ref(false)
@@ -155,7 +155,10 @@ onMounted(getEntities)
       </nuxt-link>
     </div>
 
-    <div class="pt-3 pb-1 sticky bottom-0 text-center text-sm text-gray-500 italic bg-white">
+    <div
+      v-if="entitiesCount !== null"
+      class="pt-3 pb-1 sticky bottom-0 text-center text-sm text-gray-500 italic bg-white"
+    >
       {{ t('count',entitiesCount) }}
     </div>
   </div>

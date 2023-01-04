@@ -7,12 +7,13 @@ const route = useRoute()
 const userStore = useUserStore()
 const { account } = storeToRefs(userStore)
 const rawEntity = ref()
-const entityId = ref()
 const entityType = ref({})
 const entityProps = ref([])
 const isLoading = ref(false)
 
 definePageMeta({ layout: 'menu' })
+
+const entityId = computed(() => route.params.entityId)
 
 const entity = computed(() => {
   if (!rawEntity.value) return {}
@@ -54,15 +55,15 @@ const entity = computed(() => {
     }))
   }
 
-  for (const property in rawEntity) {
+  for (const property in rawEntity.value) {
     if (['_id', '_thumbnail'].includes(property)) continue
 
     const existingProperty = result.props.find(x => x.name === property)
 
     if (existingProperty) {
-      existingProperty.values = rawEntity[property]
+      existingProperty.values = rawEntity.value[property]
     } else {
-      result.props.push({ name: property, values: rawEntity[property] })
+      result.props.push({ name: property, values: rawEntity.value[property] })
     }
   }
 
@@ -114,10 +115,9 @@ watch(() => entity?.value?.name, (value) => {
 async function loadEntity () {
   isLoading.value = true
 
-  if (!route.params.entityId) return
+  if (!entityId) return
 
-  rawEntity.value = await apiGetEntity(route.params.entityId)
-  entityId.value = rawEntity.value._id
+  rawEntity.value = await apiGetEntity(entityId.value)
 
   const typeId = rawEntity.value._type?.[0]?.reference
   if (typeId) {
