@@ -1,27 +1,28 @@
 <script setup>
-defineProps({
+const props = defineProps({
   properties: { type: Array, default: null }
 })
+
+const visibleProperties = computed(() => props.properties.filter(x => x.mandatory || x.values))
 </script>
 
 <template>
   <div
-    v-for="(p, pidx) in properties"
-    :key="p.name"
-    class="grid grid-cols-3 gap-3 border-t border-gray-100"
-    :class="{'border-t-0': pidx === 0 }"
+    v-for="property in visibleProperties"
+    :key="property.name"
+    class="grid grid-cols-3 gap-3 border-t peer-first-of-type:border-t-0 border-gray-100"
   >
-    <div class="py-1 text-right text-[#1E434C] font-medium uppercase">
-      {{ p.label || p.name }}
+    <div
+      class="py-1 text-right text-[#1E434C] font-medium"
+      :class="{ 'text-red-700' : property.mandatory && !property.values }"
+    >
+      {{ property.label || property.name }}
     </div>
+    <!-- <pre class="text-xs">{{ property }}</pre> -->
     <div class="col-span-2">
-      <div
-        v-for="v in p.values"
-        :key="v._id"
-        class="my-1"
-      >
-        {{ v.string }}
-      </div>
+      <property-view
+        :values="property.values"
+      />
     </div>
   </div>
 </template>

@@ -16,7 +16,7 @@ defineProps({
         v-for="parent in parents"
         :key="parent._id"
         :to="{ path: `/${account}/${parent.reference}` }"
-        class="grow text-center hover:text-green-800"
+        class="link grow text-center"
       >
         {{ parent.string }}
       </nuxt-link>

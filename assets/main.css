@@ -11,6 +11,11 @@ html, body {
   font-family: Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
+a.link {
+  @apply text-sky-800;
+  @apply hover:underline;
+}
+
 #__nuxt {
   @apply h-full;
   @apply w-full;
