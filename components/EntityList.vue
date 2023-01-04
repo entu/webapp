@@ -77,6 +77,7 @@ async function getEntities () {
     ...route.query,
     props: [
       '_thumbnail',
+      'name.language',
       'name.string'
     ],
     limit: limit.value,
