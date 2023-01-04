@@ -1,7 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { NIcon, NMenu } from 'naive-ui'
-import { Identification as IdentificationIcon, Home as HomeIcon, Data2 as FolderIcon, Login as LoginIcon, Logout as LogoutIcon, SimCard as SimCardIcon, User as UserIcon } from '@vicons/carbon'
+import { Identification as IdentificationIcon, Home as HomeIcon, Data2 as FolderIcon, Logout as LogoutIcon, SimCard as SimCardIcon, User as UserIcon } from '@vicons/carbon'
 import { LanguageOutline as LanguageOutlineIcon, LogoApple as LogoAppleIcon, LogoGoogle as LogoGoogleIcon, PhonePortraitOutline as PhonePortraitOutlineIcon } from '@vicons/ionicons5'
 
 import { useMainStore } from '~/stores/main'

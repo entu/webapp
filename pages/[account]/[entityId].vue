@@ -192,7 +192,7 @@ onMounted(() => {
         <tools-menu />
       </div>
 
-      <div class="px-2 pb-4 flex flex-col gap-4 overflow-y-auto overflow-hidden">
+      <div class="px-2 pb-4 flex flex-col overflow-y-auto overflow-hidden">
         <div
           v-if="rawEntity?._parent"
           class="py-4 border-b border-gray-300"
@@ -203,7 +203,7 @@ onMounted(() => {
           />
         </div>
 
-        <div class="flex gap-4">
+        <div class="pt-4 flex gap-4">
           <div class="grow">
             <h1 class="mb-4 text-2xl text-[#1E434C] font-bold">
               {{ entity.name }}
