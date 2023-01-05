@@ -111,7 +111,7 @@ onMounted(async () => {
     :title="t('childrens', { label: getValue(rawType.label_plural) })"
   >
     <template #header-extra>
-      <span class="text-gray-400">{{ n(total) }}</span>
+      <span class="mr-3 text-gray-400">{{ n(total) }}</span>
     </template>
     <n-data-table
       class="pl-6"

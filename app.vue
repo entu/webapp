@@ -59,7 +59,12 @@ const themeOverrides = {
     thColor: '#FFFFFF',
     thColorHover: '#FFFFFF'
   },
+  Input: {
+    borderHover: '1px solid #1E434C'
+  },
   Pagination: {
+    itemBorderActive: 'none',
+    itemColorActive: 'rgba(0, 0, 0, .05)',
     itemFontSizeMedium: '1rem',
     itemTextColorActive: '#1E434C',
     itemTextColorHover: '#1E434C'
