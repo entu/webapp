@@ -29,7 +29,7 @@ const columns = computed(() => [
   {
     title: '',
     key: '_thumbnail',
-    width: 30,
+    width: 52,
     render: row => h(RouterLink,
       {
         class: 'link',

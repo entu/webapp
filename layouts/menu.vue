@@ -39,7 +39,13 @@ watch(() => loading.value, (value) => {
     <div v-if="isQuery" :class="{ 'py-2': !menuCollapsed }">
       <entity-list />
     </div>
-    <div class="grow overflow-y-auto" :class="{ 'py-2': !menuCollapsed }">
+    <div
+      class="grow overflow-y-auto"
+      :class="{
+        'py-2': !menuCollapsed,
+        'pl-4': !isQuery
+      }"
+    >
       <slot />
     </div>
   </n-layout>

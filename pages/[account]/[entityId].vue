@@ -236,10 +236,16 @@ onMounted(() => {
                   :name="idx"
                   :title="pg.name"
                 >
-                  <entity-properties :properties="pg.children" />
+                  <entity-properties
+                    class="mt-6 first-of-type:mt-0 ml-6"
+                    :properties="pg.children"
+                  />
                 </n-collapse-item>
                 <div v-else>
-                  <entity-properties :properties="pg.children" />
+                  <entity-properties
+                    class="mt-6 first-of-type:mt-0 ml-6"
+                    :properties="pg.children"
+                  />
                 </div>
               </template>
 
