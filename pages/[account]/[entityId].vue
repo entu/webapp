@@ -232,18 +232,18 @@ onMounted(() => {
             <n-collapse :default-expanded-names="[0]">
               <template v-for="(pg, idx) in properties" :key="pg.name">
                 <n-collapse-item
-                  v-if="pg.name"
+                  v-if="pg.name && pg.children && pg.children.some(x => x.mandatory || x.values)"
                   :name="idx"
                   :title="pg.name"
                 >
                   <entity-properties
-                    class="mt-6 first-of-type:mt-0 ml-6"
+                    class="ml-6"
                     :properties="pg.children"
                   />
                 </n-collapse-item>
-                <div v-else>
+                <div v-if="!pg.name && pg.children && pg.children.some(x => x.mandatory || x.values)">
                   <entity-properties
-                    class="mt-6 first-of-type:mt-0 ml-6"
+                    class="ml-6"
                     :properties="pg.children"
                   />
                 </div>
@@ -253,7 +253,7 @@ onMounted(() => {
                 <entity-childs
                   v-for="child in rawChilds"
                   :key="child._type.reference"
-                  class="mt-6 first-of-type:mt-0 ml-6"
+                  class="ml-6"
                   :account="account"
                   :entity-id="entityId"
                   :type-id="child._type.reference"
