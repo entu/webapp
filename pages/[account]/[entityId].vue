@@ -5,8 +5,9 @@ import { useUserStore } from '~/stores/user'
 const { t } = useI18n()
 const route = useRoute()
 const userStore = useUserStore()
-const { account } = storeToRefs(userStore)
+const { _id: userId, account } = storeToRefs(userStore)
 const rawEntity = ref()
+const rawChilds = ref()
 const entityType = ref({})
 const entityProps = ref([])
 const isLoading = ref(false)
@@ -104,6 +105,15 @@ const properties = computed(() => {
   return result
 })
 
+const right = computed(() => {
+  if (!rawEntity.value) return null
+  if (rawEntity.value._owner?.some(x => x.reference === userId.value)) return 'owner'
+  if (rawEntity.value._editor?.some(x => x.reference === userId.value)) return 'editor'
+  if (rawEntity.value._expander?.some(x => x.reference === userId.value)) return 'expander'
+  if (rawEntity.value._viewer?.some(x => x.reference === userId.value)) return 'viewer'
+  return null
+})
+
 watch(() => entity?.value?.name, (value) => {
   if (value) {
     useHead({ title: `${value} · ${account.value}` })
@@ -164,6 +174,16 @@ async function loadEntity () {
   }
 }
 
+async function loadChilds () {
+  const { entities } = await apiGetEntities({
+    '_parent.reference': entityId.value,
+    group: '_type.string',
+    props: '_type'
+  })
+
+  rawChilds.value = entities
+}
+
 function propsSorter (a, b) {
   if (a.ordinal && b.ordinal && a.ordinal < b.ordinal) return -1
   if (a.ordinal && b.ordinal && a.ordinal > b.ordinal) return 1
@@ -178,18 +198,19 @@ function propsSorter (a, b) {
 }
 
 onMounted(() => {
-  loadEntity(route.params.entity)
+  loadEntity()
+  loadChilds()
 })
 </script>
 
 <template>
   <transition>
     <div
-      v-if="entity"
+      v-if="rawEntity"
       class="h-full flex flex-col"
     >
       <div class="h-12">
-        <tools-menu />
+        <tools-menu :right="right" />
       </div>
 
       <div class="px-2 pb-4 flex flex-col overflow-y-auto overflow-hidden">
@@ -222,12 +243,16 @@ onMounted(() => {
                 </div>
               </template>
 
-              <n-collapse-item
-                name="children"
-                :title="t('childrens')"
-              >
-                <div />
-              </n-collapse-item>
+              <template v-if="rawChilds && rawChilds.length">
+                <entity-childs
+                  v-for="child in rawChilds"
+                  :key="child._type.reference"
+                  class="mt-6 first-of-type:mt-0 ml-6"
+                  :account="account"
+                  :entity-id="entityId"
+                  :type-id="child._type.reference"
+                />
+              </template>
 
               <n-collapse-item
                 name="referrers"
@@ -252,11 +277,9 @@ onMounted(() => {
 <i18n lang="yaml">
   en:
     system: System properties
-    childrens: Children entities
     referrers: Referrer entities
   et:
     system: Süsteemi parameetrid
-    childrens: Alamobjektid
     referrers: Viitavad objektid
 </i18n>
 

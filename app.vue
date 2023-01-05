@@ -41,7 +41,7 @@ const themeOverrides = {
     itemIconColorHover: 'rgba(254, 255, 255, 1)'
   },
   LoadingBar: {
-    colorLoading: 'rgb(14 165 233)',
+    colorLoading: 'rgb(14, 165, 233)',
     height: '2px'
   },
   Collapse: {
@@ -51,6 +51,18 @@ const themeOverrides = {
     titleFontSize: '1rem',
     titleFontWeight: '500',
     titleTextColor: '#1E434C'
+  },
+  DataTable: {
+    fontSizeMedium: '1rem',
+    loadingColor: 'rgb(14, 165, 233)',
+    tdColorHover: '#FFFFFF',
+    thColor: '#FFFFFF',
+    thColorHover: '#FFFFFF'
+  },
+  Pagination: {
+    itemFontSizeMedium: '1rem',
+    itemTextColorActive: '#1E434C',
+    itemTextColorHover: '#1E434C'
   }
 }
 

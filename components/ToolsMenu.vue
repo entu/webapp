@@ -2,12 +2,20 @@
 import { NIcon, NButton, NTooltip } from 'naive-ui'
 import { Add as AddIcon, TreeViewAlt as TreeViewAltIcon, Copy as CopyIcon, Edit as EditIcon, UserMultiple as UserMultipleIcon } from '@vicons/carbon'
 
+defineProps({
+  right: { type: String, default: null }
+})
+
 const { t } = useI18n()
 </script>
 
 <template>
   <div class="h-12 mx-2 flex items-center justify-end border-b border-gray-300">
-    <n-tooltip trigger="hover">
+    {{ right }}
+    <n-tooltip
+      v-if="['owner', 'editor', 'expander'].includes(right)"
+      trigger="hover"
+    >
       <template #trigger>
         <n-button quaternary>
           <template #icon>
@@ -20,7 +28,10 @@ const { t } = useI18n()
       {{ t('add') }}
     </n-tooltip>
 
-    <n-tooltip trigger="hover">
+    <n-tooltip
+      v-if="['owner', 'editor'].includes(right)"
+      trigger="hover"
+    >
       <template #trigger>
         <n-button quaternary>
           <template #icon>

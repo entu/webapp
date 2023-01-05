@@ -158,7 +158,7 @@ onMounted(getEntities)
 
     <div
       v-if="entitiesCount !== null"
-      class="pt-3 pb-1 sticky bottom-0 text-center text-sm text-gray-500 italic bg-white"
+      class="pt-3 pb-1 sticky bottom-0 text-center text-sm text-gray-400 italic bg-white"
     >
       {{ t('count',entitiesCount) }}
     </div>

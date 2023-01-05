@@ -24,7 +24,7 @@ const bValueStr = computed(() => props.isBytes ? humanFileSize(bTotal.value) : n
   <div class="my-3">
     <div class="flex justify-between">
       <div>{{ aLabel }}</div>
-      <div class="text-stone-400">
+      <div class="text-gray-400">
         {{ bLabel }}
       </div>
     </div>
@@ -40,7 +40,7 @@ const bValueStr = computed(() => props.isBytes ? humanFileSize(bTotal.value) : n
     />
     <div class="flex justify-between">
       <div>{{ aValueStr || '' }}</div>
-      <div class="text-stone-400">
+      <div class="text-gray-400">
         {{ bValueStr || '' }}
       </div>
     </div>
