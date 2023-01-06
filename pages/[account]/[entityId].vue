@@ -1,5 +1,5 @@
 <script setup>
-import { NCollapse, NCollapseItem } from 'naive-ui'
+import { NCollapse, NCollapseItem, NImage } from 'naive-ui'
 import { useUserStore } from '~/stores/user'
 
 const { n, t } = useI18n()
@@ -269,11 +269,12 @@ onMounted(() => {
             </n-collapse>
           </div>
 
-          <img
+          <n-image
             v-if="entity._thumbnail"
-            class="h-32 w-32 flex-none object-cover rounded-lg"
+            class="h-32 w-32 flex-none rounded-lg"
+            object-fit="cover"
             :src="entity._thumbnail"
-          >
+          />
         </div>
 
         <n-collapse
