@@ -77,10 +77,10 @@ const properties = computed(() => {
   const propsObject = {}
 
   entity.value.props.forEach((property) => {
-    if (property.name.startsWith('_')) return
+    // if (property.name.startsWith('_')) return
 
-    const group = property.group || ''
-    const ordinal = property.ordinal || 0
+    const group = property.name.startsWith('_') ? '_' : property.group || ''
+    const ordinal = property.name.startsWith('_') ? 99999 : property.ordinal || 0
 
     if (!propsObject[group]) {
       propsObject[group] = {
@@ -220,7 +220,7 @@ onMounted(() => {
 <template>
   <transition>
     <div
-      v-if="rawEntity && rawEntityType"
+      v-if="rawEntity"
       class="h-full flex flex-col"
     >
       <div class="h-12">
