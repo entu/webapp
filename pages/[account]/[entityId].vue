@@ -2,12 +2,12 @@
 import { NCollapse, NCollapseItem } from 'naive-ui'
 import { useUserStore } from '~/stores/user'
 
-const { t } = useI18n()
+const { n, t } = useI18n()
 const route = useRoute()
 const userStore = useUserStore()
 const { _id: userId, account } = storeToRefs(userStore)
 const rawEntity = ref()
-const rawChilds = ref()
+const rawChilds = ref([])
 const entityType = ref({})
 const entityProps = ref([])
 const isLoading = ref(false)
@@ -181,7 +181,20 @@ async function loadChilds () {
     props: '_type'
   })
 
-  rawChilds.value = entities
+  entities.forEach(async (x) => {
+    const rawType = await apiGetEntity(x._type.reference, {
+      props: [
+        'label_plural',
+        'label',
+        'name'
+      ].join(',')
+    })
+
+    rawChilds.value.push({
+      ...rawType,
+      _count: x._count
+    })
+  })
 }
 
 function propsSorter (a, b) {
@@ -224,48 +237,34 @@ onMounted(() => {
           />
         </div>
 
-        <div class="pt-4 flex gap-4">
+        <div class="pt-5 pr-5 flex gap-5">
           <div class="grow">
-            <h1 class="mb-4 text-2xl text-[#1E434C] font-bold">
+            <h1 class="mb-4 pl-5 text-2xl text-[#1E434C] font-bold">
               {{ entity.name }}
             </h1>
+
             <n-collapse :default-expanded-names="[0]">
-              <template v-for="(pg, idx) in properties" :key="pg.name">
+              <template
+                v-for="(pg, idx) in properties"
+                :key="pg.name"
+              >
                 <n-collapse-item
                   v-if="pg.name && pg.children && pg.children.some(x => x.mandatory || x.values)"
                   :name="idx"
                   :title="pg.name"
                 >
                   <entity-properties
-                    class="ml-6"
+                    class="pl-5"
                     :properties="pg.children"
                   />
                 </n-collapse-item>
                 <div v-if="!pg.name && pg.children && pg.children.some(x => x.mandatory || x.values)">
                   <entity-properties
-                    class="ml-6"
+                    class="pl-5"
                     :properties="pg.children"
                   />
                 </div>
               </template>
-
-              <template v-if="rawChilds && rawChilds.length">
-                <entity-childs
-                  v-for="child in rawChilds"
-                  :key="child._type.reference"
-                  class="ml-6"
-                  :account="account"
-                  :entity-id="entityId"
-                  :type-id="child._type.reference"
-                />
-              </template>
-
-              <n-collapse-item
-                name="referrers"
-                :title="t('referrers')"
-              >
-                <div />
-              </n-collapse-item>
             </n-collapse>
           </div>
 
@@ -275,6 +274,35 @@ onMounted(() => {
             :src="entity._thumbnail"
           >
         </div>
+
+        <n-collapse
+          :default-expanded-names="[0]"
+          class="mt-8 pr-5"
+        >
+          <n-collapse-item
+            v-for="child in rawChilds"
+            :key="child._id"
+            :name="child._id"
+            :title="t('childrens', { label: getValue(child.label_plural) || getValue(child.label) || getValue(child.name) })"
+          >
+            <template #header-extra>
+              <span class="text-gray-400">{{ n(child._count) }}</span>
+            </template>
+            <entity-childs
+              class="w-full pl-5"
+              :account="account"
+              :entity-id="entityId"
+              :type-id="child._id"
+            />
+          </n-collapse-item>
+
+          <n-collapse-item
+            name="referrers"
+            :title="t('referrers')"
+          >
+            <div />
+          </n-collapse-item>
+        </n-collapse>
       </div>
     </div>
   </transition>
@@ -283,9 +311,11 @@ onMounted(() => {
 <i18n lang="yaml">
   en:
     system: System properties
+    childrens: Children entities - {label}
     referrers: Referrer entities
   et:
     system: Süsteemi parameetrid
+    childrens: Alamobjektid - {label}
     referrers: Viitavad objektid
 </i18n>
 

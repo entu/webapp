@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink } from 'vue-router'
-import { NCollapseItem, NDataTable } from 'naive-ui'
+import { NDataTable } from 'naive-ui'
 
 const props = defineProps({
   account: { type: String, required: true },
@@ -8,7 +8,7 @@ const props = defineProps({
   typeId: { type: String, required: true }
 })
 
-const { n, t } = useI18n()
+const { t } = useI18n()
 const rawType = ref()
 const rawEntities = ref()
 const isLoading = ref(false)
@@ -29,7 +29,7 @@ const columns = computed(() => [
   {
     title: '',
     key: '_thumbnail',
-    width: 52,
+    width: 42,
     render: row => h(RouterLink,
       {
         class: 'link',
@@ -92,51 +92,31 @@ function color () {
   return colors[rnd]
 }
 
-onMounted(async () => {
-  rawType.value = await apiGetEntity(props.typeId, {
-    props: [
-      'label',
-      'label_plural'
-    ].join(',')
-  })
-
-  getEntities()
-})
+onMounted(getEntities)
 </script>
 
 <template>
-  <n-collapse-item
-    v-if="rawType"
-    :name="typeId"
-    :title="t('childrens', { label: getValue(rawType.label_plural) })"
-  >
-    <template #header-extra>
-      <span class="mr-3 text-gray-400">{{ n(total) }}</span>
-    </template>
-    <n-data-table
-      class="pl-6"
-      remote
-      summary-placement="top"
-      :bordered="false"
-      :bottom-bordered="false"
-      :columns="columns"
-      :data="rawEntities"
-      :loading="isLoading"
-      :pagination="pagination"
-      :paginate-single-page="false"
-      :row-key="row => row._id"
-      @update:page="getEntities($event)"
-      @update:page-size="getEntities(1, $event)"
-      @update:sorter="getEntities(undefined, undefined, $event)"
-    />
-  </n-collapse-item>
+  <n-data-table
+    remote
+    size="small"
+    summary-placement="top"
+    :bordered="false"
+    :bottom-bordered="false"
+    :columns="columns"
+    :data="rawEntities"
+    :loading="isLoading"
+    :pagination="pagination"
+    :paginate-single-page="false"
+    :row-key="row => row._id"
+    @update:page="getEntities($event)"
+    @update:page-size="getEntities(1, $event)"
+    @update:sorter="getEntities(undefined, undefined, $event)"
+  />
 </template>
 
 <i18n lang="yaml">
   en:
-    childrens: Children entities - {label}
     perPage: '{n} / page'
   et:
-    childrens: Alamobjektid - {label}
     perPage: '{n} / leht'
 </i18n>
