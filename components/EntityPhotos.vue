@@ -42,7 +42,7 @@ async function loadImages () {
       size="medium"
     />
   </div>
-  <n-image-group>
+  <n-image-group v-if="photos.length > 1">
     <n-image
       ref="imageRef"
       class="hidden"
@@ -55,4 +55,10 @@ async function loadImages () {
       :src="url"
     />
   </n-image-group>
+  <n-image
+    v-else
+    ref="imageRef"
+    class="hidden"
+    :src="thumbnail"
+  />
 </template>
