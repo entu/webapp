@@ -77,7 +77,7 @@ const properties = computed(() => {
   const propsObject = {}
 
   entity.value.props.forEach((property) => {
-    const group = (property.group && !property.name.startsWith('_')) ? property.group : t('system')
+    const group = property.name.startsWith('_') ? t('system') : property.group || ''
     const ordinal = property.ordinal?.[0]?.integer || 0
 
     if (!propsObject[group]) {
