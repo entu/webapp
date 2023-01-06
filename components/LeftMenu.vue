@@ -67,7 +67,7 @@ const accountMenu = computed(() => {
 
   menuEntities.value.forEach((entity) => {
     const group = getValue(entity.group).toLowerCase()
-    const ordinal = entity.ordinal ? entity.ordinal[0].integer : 0
+    const ordinal = getValue(entity.ordinal, 'number') || 0
 
     if (!menuObject[group]) {
       menuObject[group] = {
@@ -93,7 +93,7 @@ const accountMenu = computed(() => {
       key: getValue(entity.query),
       name: getValue(entity.name),
       label: () => h(RouterLink,
-        { to: { path: `/${account.value}`, query: queryObj(entity.query?.[0]?.string) } },
+        { to: { path: `/${account.value}`, query: queryObj(getValue(entity.query)) } },
         { default: () => getValue(entity.name) }
       ),
       ordinal
@@ -207,7 +207,7 @@ async function getMenuEntities () {
   const { entities } = await apiGetEntities({
     '_type.string': 'menu',
     props: [
-      'ordinal.integer',
+      'ordinal.number',
       'group.string',
       'group.language',
       'name.string',

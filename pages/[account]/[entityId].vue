@@ -45,7 +45,7 @@ const entity = computed(() => {
       default: getValue(p.default),
       formula: getValue(p.formula),
       classifier: p.classifier,
-      ordinal: getValue(p.ordinal, 'integer'),
+      ordinal: getValue(p.ordinal, 'number'),
       list: getValue(p.list, 'boolean'),
       multilingual: getValue(p.multilingual, 'boolean'),
       hidden: getValue(p.hidden, 'boolean'),
@@ -78,7 +78,7 @@ const properties = computed(() => {
 
   entity.value.props.forEach((property) => {
     const group = property.name.startsWith('_') ? t('system') : property.group || ''
-    const ordinal = property.ordinal?.[0]?.integer || 0
+    const ordinal = getValue(property.ordinal, 'number') || 0
 
     if (!propsObject[group]) {
       propsObject[group] = {
@@ -128,7 +128,7 @@ async function loadEntity () {
 
   rawEntity.value = await apiGetEntity(entityId.value)
 
-  const typeId = rawEntity.value._type?.[0]?.reference
+  const typeId = getValue(rawEntity.value._type, 'reference')
   if (typeId) {
     entityType.value = await apiGetEntity(typeId, {
       props: [
