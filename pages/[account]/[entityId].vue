@@ -41,7 +41,7 @@ const entity = computed(() => {
       label: getValue(p.label),
       labelPlural: getValue(p.label_plural),
       description: getValue(p.description),
-      fieldset: getValue(p.fieldset),
+      group: getValue(p.group),
       default: getValue(p.default),
       formula: getValue(p.formula),
       classifier: p.classifier,
@@ -77,13 +77,12 @@ const properties = computed(() => {
   const propsObject = {}
 
   entity.value.props.forEach((property) => {
-    const fieldset = property.fieldset?.toLowerCase()
-    const group = !fieldset && property.name.startsWith('_') ? t('system') : fieldset
+    const group = (property.group && !property.name.startsWith('_')) ? property.group : t('system')
     const ordinal = property.ordinal?.[0]?.integer || 0
 
     if (!propsObject[group]) {
       propsObject[group] = {
-        name: property.fieldset || group,
+        name: group,
         children: [],
         ordinal: 0
       }
@@ -151,7 +150,7 @@ async function loadEntity () {
         'classifier',
         'default',
         'description',
-        'fieldset',
+        'group',
         'formula',
         'hidden',
         'label_plural',

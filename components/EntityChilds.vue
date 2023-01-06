@@ -9,7 +9,6 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
-const rawType = ref()
 const rawEntities = ref()
 const isLoading = ref(false)
 const total = ref(0)
