@@ -17,24 +17,26 @@ definePageMeta({ layout: 'menu' })
 const entityId = computed(() => route.params.entityId)
 
 const entity = computed(() => {
-  if (!rawEntity.value || !rawEntityType.value) return {}
+  if (!rawEntity.value) return {}
 
   const result = {
     _id: rawEntity.value._id,
     _thumbnail: rawEntity.value._thumbnail,
     name: getValue(rawEntity.value.name),
-    type: {
-      _id: rawEntityType.value._id,
-      name: getValue(rawEntityType.value.name),
-      label: getValue(rawEntityType.value.label),
-      labelPlural: getValue(rawEntityType.value.label_plural),
-      description: getValue(rawEntityType.value.description),
-      openAfterAdd: getValue(rawEntityType.value.open_after_add, 'boolean'),
-      defaultParent: rawEntityType.value.default_parent,
-      optionalParent: rawEntityType.value.optional_parent,
-      addFromMenu: rawEntityType.value.add_from_menu,
-      allowedChild: rawEntityType.value.allowed_child
-    },
+    type: rawEntityType.value
+      ? {
+          _id: rawEntityType.value._id,
+          name: getValue(rawEntityType.value.name),
+          label: getValue(rawEntityType.value.label),
+          labelPlural: getValue(rawEntityType.value.label_plural),
+          description: getValue(rawEntityType.value.description),
+          openAfterAdd: getValue(rawEntityType.value.open_after_add, 'boolean'),
+          defaultParent: rawEntityType.value.default_parent,
+          optionalParent: rawEntityType.value.optional_parent,
+          addFromMenu: rawEntityType.value.add_from_menu,
+          allowedChild: rawEntityType.value.allowed_child
+        }
+      : {},
     props: entityProps.value.map(p => ({
       type: getValue(p.type),
       name: getValue(p.name),
@@ -146,7 +148,7 @@ async function loadEntity () {
       ]
     })
 
-    const props = await apiGetEntities({
+    const { entities } = await apiGetEntities({
       '_parent.reference': typeId,
       props: [
         'classifier',
@@ -169,7 +171,7 @@ async function loadEntity () {
       ]
     })
 
-    entityProps.value = props.entities
+    entityProps.value = entities
 
     isLoading.value = false
   }
