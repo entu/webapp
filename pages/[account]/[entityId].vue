@@ -77,7 +77,9 @@ const properties = computed(() => {
   const propsObject = {}
 
   entity.value.props.forEach((property) => {
-    const group = property.name.startsWith('_') ? t('system') : property.group || ''
+    if (property.name.startsWith('_')) return
+
+    const group = property.group || ''
     const ordinal = property.ordinal || 0
 
     if (!propsObject[group]) {
@@ -95,7 +97,7 @@ const properties = computed(() => {
   const result = Object.values(propsObject)
 
   result.forEach((m) => {
-    m.ordinal = m.ordinal / m.children.length
+    m.ordinal = m.name ? m.ordinal / m.children.length : 0
     m.children.sort(propsSorter)
   })
 
@@ -309,11 +311,9 @@ onMounted(() => {
 
 <i18n lang="yaml">
   en:
-    system: System properties
     childrens: Children entities - {label}
     referrers: Referrer entities
   et:
-    system: Süsteemi parameetrid
     childrens: Alamobjektid - {label}
     referrers: Viitavad objektid
 </i18n>
