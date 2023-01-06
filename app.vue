@@ -68,6 +68,9 @@ const themeOverrides = {
     itemFontSizeMedium: '1rem',
     itemTextColorActive: '#1E434C',
     itemTextColorHover: '#1E434C'
+  },
+  Spin: {
+    color: 'rgb(14, 165, 233)'
   }
 }
 
