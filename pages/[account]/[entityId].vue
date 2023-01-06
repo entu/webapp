@@ -7,8 +7,8 @@ const route = useRoute()
 const userStore = useUserStore()
 const { _id: userId, account } = storeToRefs(userStore)
 const rawEntity = ref()
+const rawEntityType = ref()
 const rawChilds = ref([])
-const entityType = ref({})
 const entityProps = ref([])
 const isLoading = ref(false)
 
@@ -17,23 +17,23 @@ definePageMeta({ layout: 'menu' })
 const entityId = computed(() => route.params.entityId)
 
 const entity = computed(() => {
-  if (!rawEntity.value) return {}
+  if (!rawEntity.value || !rawEntityType.value) return {}
 
   const result = {
     _id: rawEntity.value._id,
     _thumbnail: rawEntity.value._thumbnail,
     name: getValue(rawEntity.value.name),
     type: {
-      _id: entityType.value._id,
-      name: getValue(entityType.value.name),
-      label: getValue(entityType.value.label),
-      labelPlural: getValue(entityType.value.label_plural),
-      description: getValue(entityType.value.description),
-      openAfterAdd: getValue(entityType.value.open_after_add, 'boolean'),
-      defaultParent: entityType.value.default_parent,
-      optionalParent: entityType.value.optional_parent,
-      addFromMenu: entityType.value.add_from_menu,
-      allowedChild: entityType.value.allowed_child
+      _id: rawEntityType.value._id,
+      name: getValue(rawEntityType.value.name),
+      label: getValue(rawEntityType.value.label),
+      labelPlural: getValue(rawEntityType.value.label_plural),
+      description: getValue(rawEntityType.value.description),
+      openAfterAdd: getValue(rawEntityType.value.open_after_add, 'boolean'),
+      defaultParent: rawEntityType.value.default_parent,
+      optionalParent: rawEntityType.value.optional_parent,
+      addFromMenu: rawEntityType.value.add_from_menu,
+      allowedChild: rawEntityType.value.allowed_child
     },
     props: entityProps.value.map(p => ({
       type: getValue(p.type),
@@ -132,7 +132,7 @@ async function loadEntity () {
 
   const typeId = getValue(rawEntity.value._type, 'reference')
   if (typeId) {
-    entityType.value = await apiGetEntity(typeId, {
+    rawEntityType.value = await apiGetEntity(typeId, {
       props: [
         'add_from_menu',
         'allowed_child',
@@ -220,7 +220,7 @@ onMounted(() => {
 <template>
   <transition>
     <div
-      v-if="rawEntity"
+      v-if="rawEntity && rawEntityType"
       class="h-full flex flex-col"
     >
       <div class="h-12">

@@ -1,4 +1,6 @@
 <script setup>
+import { Checkmark as CheckmarkIcon } from '@vicons/carbon'
+
 import { useMainStore } from '~/stores/main'
 import { useUserStore } from '~/stores/user'
 
@@ -39,12 +41,19 @@ const localeValues = computed(() => props.values?.filter(x => !x.language || x.l
       {{ n(v.number) }}
     </template>
 
+    <template v-else-if="v.boolean">
+      <checkmark-icon
+        v-if="v.boolean===true"
+        class="h-5 w-5"
+      />
+    </template>
+
     <template v-else-if="v.string">
       {{ v.string }}
     </template>
 
     <template v-else>
-      <pre class="text-xs" />
+      <pre class="text-xs">{{ v }}</pre>
     </template>
   </div>
 </template>
