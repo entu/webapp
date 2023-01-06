@@ -35,8 +35,8 @@ const localeValues = computed(() => props.values?.filter(x => !x.language || x.l
       <span class="ml-2 text-sm">{{ humanFileSize(v.filesize) }}</span>
     </template>
 
-    <template v-else-if="v.decimal">
-      {{ n(parseFloat(v.decimal)) }}
+    <template v-else-if="v.double">
+      {{ n(v.double) }}
     </template>
 
     <template v-else-if="v.string">
