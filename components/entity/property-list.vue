@@ -23,7 +23,7 @@ const visibleProperties = computed(() => props.properties?.filter(x => x.mandato
       </div>
       <!-- <pre class="text-xs">{{ property }}</pre> -->
       <div class="col-span-2">
-        <property-view
+        <entity-property-view
           :language="language"
           :account="account"
           :values="property.values"

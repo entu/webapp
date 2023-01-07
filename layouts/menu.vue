@@ -35,7 +35,7 @@ watch(() => loading.value, (value) => {
       @collapse="menuCollapsed = true"
       @expand="menuCollapsed = false"
     >
-      <left-menu
+      <layout-side-menu
         :collapsed="menuCollapsed"
         :account="account"
         :accounts="accounts"
@@ -46,7 +46,7 @@ watch(() => loading.value, (value) => {
     </n-layout-sider>
 
     <div v-if="isQuery" :class="{ 'py-2': !menuCollapsed }">
-      <entity-list :account="account" />
+      <layout-entity-list :account="account" />
     </div>
     <div
       class="grow overflow-y-auto"

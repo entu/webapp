@@ -228,7 +228,7 @@ onMounted(() => {
       class="h-full flex flex-col"
     >
       <div class="h-12">
-        <tools-menu :right="right" />
+        <entity-tools-menu :right="right" />
       </div>
 
       <div class="px-2 pb-4 flex flex-col overflow-y-auto overflow-hidden">
@@ -236,7 +236,7 @@ onMounted(() => {
           v-if="rawEntity?._parent"
           class="py-4 border-b border-gray-300"
         >
-          <entity-parents
+          <entity-parent-list
             :account="account"
             :parents="rawEntity._parent"
           />
@@ -258,7 +258,7 @@ onMounted(() => {
                   :name="idx"
                   :title="pg.name"
                 >
-                  <entity-properties
+                  <entity-property-list
                     class="pl-5"
                     :language="language"
                     :account="account"
@@ -266,7 +266,7 @@ onMounted(() => {
                   />
                 </n-collapse-item>
                 <div v-if="!pg.name && pg.children && pg.children.some(x => x.mandatory || x.values)">
-                  <entity-properties
+                  <entity-property-list
                     class="pl-5"
                     :language="language"
                     :account="account"
@@ -281,7 +281,7 @@ onMounted(() => {
             v-if="entity._thumbnail"
             class="w-32 h-32 flex-none flex object-cover"
           >
-            <entity-photos
+            <entity-thumbnail-photos
               :thumbnail="entity._thumbnail"
               :photos="rawEntity.photo"
             />
@@ -301,7 +301,7 @@ onMounted(() => {
             <template #header-extra>
               <span class="text-gray-400">{{ n(child._count) }}</span>
             </template>
-            <entity-childs
+            <entity-child-list
               class="w-full pl-5"
               :account="account"
               :entity-id="entityId"
