@@ -4,18 +4,20 @@ import { NIcon, NMenu } from 'naive-ui'
 import { Identification as IdentificationIcon, Home as HomeIcon, Data2 as FolderIcon, Logout as LogoutIcon, SimCard as SimCardIcon, User as UserIcon } from '@vicons/carbon'
 import { LanguageOutline as LanguageOutlineIcon, LogoApple as LogoAppleIcon, LogoGoogle as LogoGoogleIcon, PhonePortraitOutline as PhonePortraitOutlineIcon } from '@vicons/ionicons5'
 
-import { useMainStore } from '~/stores/main'
-import { useUserStore } from '~/stores/user'
+import { useMainStore } from '~/stores'
 
 const props = defineProps({
-  collapsed: { type: Boolean, default: false }
+  collapsed: { type: Boolean, default: false },
+  account: { type: String, required: true },
+  accounts: { type: Array, required: true },
+  authenticated: { type: Boolean, required: true },
+  userId: { type: String, required: true },
+  userName: { type: String, default: '' }
 })
 
 const { t } = useI18n()
 const mainStore = useMainStore()
-const userStore = useUserStore()
 const { language } = storeToRefs(mainStore)
-const { _id, account, accounts, authenticated, name } = storeToRefs(userStore)
 
 const menuEntities = ref([])
 const activeMenu = ref(location.search.substring(1))
@@ -24,23 +26,23 @@ const accountMenu = computed(() => {
   const menu = []
   const menuObject = {}
 
-  if (accounts.value.length > 1) {
+  if (props.accounts.length > 1) {
     menu.push({
       key: 'account',
       icon: () => h(NIcon, null, () => h(HomeIcon)),
-      label: (account.value || '').toUpperCase(),
+      label: (props.account || '').toUpperCase(),
       children: props.collapsed
         ? [{
             name: '            1',
             label: () => h(RouterLink,
-              { to: { path: `/${account.value}` } },
-              () => h('strong', {}, { default: () => (account.value || '').toUpperCase() })
+              { to: { path: `/${props.account}` } },
+              () => h('strong', {}, { default: () => (props.account || '').toUpperCase() })
             )
           }, {
             name: '            2',
             type: 'divider'
           },
-          ...accounts.value.filter(x => x.account !== account.value).map(x => ({
+          ...props.accounts.filter(x => x.account !== props.account).map(x => ({
             key: x.account,
             name: x.account,
             label: () => h(RouterLink,
@@ -49,7 +51,7 @@ const accountMenu = computed(() => {
             )
           }))
           ]
-        : accounts.value.filter(x => x.account !== account.value).map(x => ({
+        : props.accounts.filter(x => x.account !== props.account).map(x => ({
           key: x.account,
           name: x.account,
           label: () => h(RouterLink,
@@ -93,7 +95,7 @@ const accountMenu = computed(() => {
       key: getValue(entity.query),
       name: getValue(entity.name),
       label: () => h(RouterLink,
-        { to: { path: `/${account.value}`, query: queryObj(getValue(entity.query)) } },
+        { to: { path: `/${props.account}`, query: queryObj(getValue(entity.query)) } },
         { default: () => getValue(entity.name) }
       ),
       ordinal
@@ -163,13 +165,13 @@ const authMenu = computed(() => [
 const userMenu = computed(() => {
   const menu = []
 
-  if (authenticated.value) {
+  if (props.authenticated) {
     menu.push({
-      key: _id.value,
+      key: props.userId,
       icon: () => h(NIcon, null, () => h(UserIcon)),
       label: () => h(RouterLink,
-        { to: { path: `/${account.value}/${_id.value}` } },
-        { default: () => name.value }
+        { to: { path: `/${props.account}/${props.userId}` } },
+        { default: () => props.userName }
       )
     })
     menu.push({
@@ -199,10 +201,10 @@ const userMenu = computed(() => {
   return menu
 })
 
-watch(() => account.value, () => getMenuEntities())
+watch(() => props.account, () => getMenuEntities())
 
 async function getMenuEntities () {
-  if (!account.value) return
+  if (!props.account) return
 
   const { entities } = await apiGetEntities({
     '_type.string': 'menu',

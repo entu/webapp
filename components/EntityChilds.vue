@@ -57,7 +57,7 @@ const columns = computed(() => [
   }
 ])
 
-async function getEntities (page = pagination.value.page, pageSize = pagination.value.pageSize, sorter = undefined) {
+async function getEntities (page = pagination.value.page, pageSize = pagination.value.pageSize, sorter) {
   isLoading.value = true
 
   const sort = sorter ? `${sorter.order === 'descend' ? '-' : ''}${sorter.columnKey}.string` : 'name.string'

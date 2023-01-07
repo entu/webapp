@@ -1,20 +1,15 @@
 <script setup>
 import { Checkmark as CheckmarkIcon } from '@vicons/carbon'
 
-import { useMainStore } from '~/stores/main'
-import { useUserStore } from '~/stores/user'
-
 const props = defineProps({
+  language: { type: String, required: true },
+  account: { type: String, required: true },
   values: { type: Array, default: null }
 })
 
 const { n } = useI18n()
-const mainStore = useMainStore()
-const userStore = useUserStore()
-const { language } = storeToRefs(mainStore)
-const { account } = storeToRefs(userStore)
 
-const localeValues = computed(() => props.values?.filter(x => !x.language || x.language === language.value))
+const localeValues = computed(() => props.values?.filter(x => !x.language || x.language === props.language))
 </script>
 
 <template>

@@ -1,10 +1,12 @@
 <script setup>
 import { NCollapse, NCollapseItem } from 'naive-ui'
-import { useUserStore } from '~/stores/user'
+import { useMainStore, useUserStore } from '~/stores'
 
 const { n, t } = useI18n()
 const route = useRoute()
+const mainStore = useMainStore()
 const userStore = useUserStore()
+const { language } = storeToRefs(mainStore)
 const { _id: userId, account } = storeToRefs(userStore)
 const rawEntity = ref()
 const rawEntityType = ref()
@@ -258,12 +260,16 @@ onMounted(() => {
                 >
                   <entity-properties
                     class="pl-5"
+                    :language="language"
+                    :account="account"
                     :properties="pg.children"
                   />
                 </n-collapse-item>
                 <div v-if="!pg.name && pg.children && pg.children.some(x => x.mandatory || x.values)">
                   <entity-properties
                     class="pl-5"
+                    :language="language"
+                    :account="account"
                     :properties="pg.children"
                   />
                 </div>

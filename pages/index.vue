@@ -1,5 +1,5 @@
 <script setup>
-import { useUserStore } from '~/stores/user'
+import { useUserStore } from '~/stores'
 
 const router = useRouter()
 const userStore = useUserStore()

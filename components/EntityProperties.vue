@@ -1,9 +1,11 @@
 <script setup>
 const props = defineProps({
+  language: { type: String, required: true },
+  account: { type: String, required: true },
   properties: { type: Array, default: null }
 })
 
-const visibleProperties = computed(() => props.properties.filter(x => x.mandatory || x.values))
+const visibleProperties = computed(() => props.properties?.filter(x => x.mandatory || x.values))
 </script>
 
 <template>
@@ -22,6 +24,8 @@ const visibleProperties = computed(() => props.properties.filter(x => x.mandator
       <!-- <pre class="text-xs">{{ property }}</pre> -->
       <div class="col-span-2">
         <property-view
+          :language="language"
+          :account="account"
           :values="property.values"
         />
       </div>

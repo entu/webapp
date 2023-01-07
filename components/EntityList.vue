@@ -1,12 +1,13 @@
 <script setup>
 import { Search as SearchIcon } from '@vicons/carbon'
-import { useUserStore } from '~/stores/user'
+
+const props = defineProps({
+  account: { type: String, required: true }
+})
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
-const userStore = useUserStore()
-const { account } = storeToRefs(userStore)
 
 const listElement = ref(null)
 const searchText = ref(route.query.q || '')
@@ -21,7 +22,7 @@ const scrollIdx = ref(0)
 const { y: listElementScroll } = useScroll(listElement)
 
 const debouncedScroll = useDebounceFn(() => {
-  router.push({ path: `/${account.value}/${entitiesList.value[scrollIdx.value]._id}`, query: route.query })
+  router.push({ path: `/${props.account}/${entitiesList.value[scrollIdx.value]._id}`, query: route.query })
 }, 300)
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)

@@ -1,11 +1,13 @@
 <script setup>
 import { NLayout, NLayoutSider, useLoadingBar } from 'naive-ui'
-import { useMainStore } from '~/stores/main'
+import { useMainStore, useUserStore } from '~/stores'
 
 const route = useRoute()
 const loadingBar = useLoadingBar()
 const mainStore = useMainStore()
+const userStore = useUserStore()
 const { loading, menuCollapsed } = storeToRefs(mainStore)
+const { _id, account, accounts, authenticated, name } = storeToRefs(userStore)
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
@@ -33,11 +35,18 @@ watch(() => loading.value, (value) => {
       @collapse="menuCollapsed = true"
       @expand="menuCollapsed = false"
     >
-      <left-menu :collapsed="menuCollapsed" />
+      <left-menu
+        :collapsed="menuCollapsed"
+        :account="account"
+        :accounts="accounts"
+        :authenticated="authenticated"
+        :user-id="_id"
+        :user-name="name"
+      />
     </n-layout-sider>
 
     <div v-if="isQuery" :class="{ 'py-2': !menuCollapsed }">
-      <entity-list />
+      <entity-list :account="account" />
     </div>
     <div
       class="grow overflow-y-auto"

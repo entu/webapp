@@ -1,6 +1,6 @@
 <script setup>
 import { useLoadingBar } from 'naive-ui'
-import { useMainStore } from '~/stores/main'
+import { useMainStore } from '~/stores'
 
 const loadingBar = useLoadingBar()
 const mainStore = useMainStore()
