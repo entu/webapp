@@ -13,8 +13,8 @@ const { n, t } = useI18n()
 const sort = ref()
 const rawEntities = ref()
 const rawColumns = ref([{
-  title: 'Name',
-  key: 'name'
+  label: 'Name',
+  name: 'name'
 }])
 const isLoading = ref(false)
 const total = ref(0)
