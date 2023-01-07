@@ -12,10 +12,7 @@ const props = defineProps({
 const { n, t } = useI18n()
 const sort = ref()
 const rawEntities = ref()
-const rawColumns = ref([{
-  label: 'Name',
-  name: 'name'
-}])
+const rawColumns = ref([{ label: 'Name', name: 'name' }])
 const isLoading = ref(false)
 const total = ref(0)
 
@@ -130,7 +127,7 @@ onMounted(async () => {
     :data="rawEntities"
     :loading="isLoading"
     :pagination="pagination"
-    :paginate-single-page="false"
+    :paginate-single-page="total > 10"
     :row-key="row => row._id"
     @update:page="getEntities($event)"
     @update:page-size="getEntities(1, $event)"
