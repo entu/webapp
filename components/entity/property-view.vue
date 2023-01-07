@@ -4,12 +4,12 @@ import { Checkmark as CheckmarkIcon } from '@vicons/carbon'
 const props = defineProps({
   language: { type: String, required: true },
   account: { type: String, required: true },
-  values: { type: Array, default: null }
+  values: { type: Array, required: true }
 })
 
 const { n } = useI18n()
 
-const localeValues = computed(() => props.values?.filter(x => !x.language || x.language === props.language))
+const localeValues = computed(() => props.values.filter(x => !x.language || x.language === props.language))
 </script>
 
 <template>
@@ -20,27 +20,37 @@ const localeValues = computed(() => props.values?.filter(x => !x.language || x.l
   >
     <!-- <pre class="text-xs">{{ v }}</pre> -->
     <template v-if="v.reference">
-      <nuxt-link class="link" :to="{ path:`/${account}/${v.reference}`}">
+      <nuxt-link
+        class="link"
+        :to="{ path:`/${account}/${v.reference}`}"
+      >
         {{ v.string }}
       </nuxt-link>
     </template>
 
     <template v-else-if="v.s3 !== undefined">
-      <nuxt-link class="link" :to="{ path:`/${account}/file/${v._id}`}" target="_blank">
+      <nuxt-link
+        class="link"
+        target="_blank"
+        :to="{ path:`/${account}/file/${v._id}`}"
+      >
         {{ v.filename || v._id }}
       </nuxt-link>
-      <span class="ml-2 text-sm">{{ humanFileSize(v.filesize) }}</span>
+
+      <span
+        v-if="v.filesize"
+        class="ml-2 text-sm"
+      >
+        {{ humanFileSize(v.filesize) }}
+      </span>
     </template>
 
-    <template v-else-if="v.number !== undefined">
+    <template v-else-if="v.number !== undefined && v.number !== null">
       {{ n(v.number) }}
     </template>
 
-    <template v-else-if="v.boolean !== undefined">
-      <checkmark-icon
-        v-if="v.boolean === true"
-        class="h-5 w-5"
-      />
+    <template v-else-if="v.boolean !== undefined && v.boolean === true">
+      <checkmark-icon class="h-5 w-5" />
     </template>
 
     <template v-else-if="v.string !== undefined">
@@ -48,7 +58,7 @@ const localeValues = computed(() => props.values?.filter(x => !x.language || x.l
     </template>
 
     <template v-else>
-      <pre class="text-xs">{{ v }}</pre>
+      {{ v }}
     </template>
   </div>
 </template>

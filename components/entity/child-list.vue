@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink } from 'vue-router'
 import { NDataTable } from 'naive-ui'
+import { SortAscending as SortAscendingIcon, SortDescending as SortDescendingIcon } from '@vicons/carbon'
 
 const props = defineProps({
   account: { type: String, required: true },
@@ -8,8 +9,12 @@ const props = defineProps({
   typeId: { type: String, required: true }
 })
 
-const { t } = useI18n()
+const { n, t } = useI18n()
 const rawEntities = ref()
+const rawColumns = ref([{
+  title: 'Name',
+  key: 'name'
+}])
 const isLoading = ref(false)
 const total = ref(0)
 
@@ -26,49 +31,67 @@ const pagination = ref({
 
 const columns = computed(() => [
   {
-    title: '',
     key: '_thumbnail',
+    title: '',
     width: 42,
     render: row => h(RouterLink,
-      {
-        class: 'link',
-        to: { path: `/${props.account}/${row._id}` }
-      }, () => row._thumbnail
-        ? h('img', {
-          src: row._thumbnail,
-          class: `w-7 h-7 flex-none object-cover rounded-full ${color()}`
-        })
-        : h('div', {
-          class: `w-7 h-7 flex-none rounded-full ${color()}`
-        })
+      { class: 'link', to: { path: `/${props.account}/${row._id}` } },
+      () => row._thumbnail
+        ? h('img', { class: `w-7 h-7 flex-none object-cover rounded-full ${color()}`, src: row._thumbnail })
+        : h('div', { class: `w-7 h-7 flex-none rounded-full ${color()}` })
     )
-  },
-  {
-    title: 'Name',
-    key: 'name',
-    render: row => h(RouterLink,
-      {
-        class: 'link',
-        to: { path: `/${props.account}/${row._id}` }
-      },
-      { default: () => getValue(row.name) }
-    ),
+  }, ...rawColumns.value.map(c => ({
+    key: c.name,
+    title: c.label,
+    align: c.type === 'decimal' ? 'right' : 'left',
+    ellipsis: { tooltip: true },
+    render: (row) => {
+      if (c.type === 'number') return n(getValue(row[c.name], 'number'), 'number', '0,0')
+      if (c.type === 'date') return n(getValue(row[c.name], 'date'), 'date', 'short')
+      if (c.type === 'boolean') return getValue(row[c.name], 'boolean')
+
+      return getValue(row[c.name], c.type)
+    },
+    renderSorterIcon: ({ order }) => {
+      if (order === false) return null
+      if (order === 'ascend') return h(SortAscendingIcon, { class: 'text-sky-800' })
+      if (order === 'descend') return h(SortDescendingIcon, { class: 'text-sky-800' })
+    },
     sorter: true
-  }
+  }))
 ])
+
+async function getTypes () {
+  const { entities } = await apiGetEntities({
+    '_parent.reference': props.typeId,
+    'table._id.exists': true,
+    props: [
+      'name',
+      'label',
+      'type'
+    ].join(','),
+    sort: 'ordinal.number'
+  })
+
+  if (entities.length > 0) {
+    rawColumns.value = entities.map(e => ({
+      name: getValue(e.name),
+      label: getValue(e.label),
+      type: getValue(e.type)
+    }))
+  }
+}
 
 async function getEntities (page = pagination.value.page, pageSize = pagination.value.pageSize, sorter) {
   isLoading.value = true
 
-  const sort = sorter ? `${sorter.order === 'descend' ? '-' : ''}${sorter.columnKey}.string` : 'name.string'
+  const field = sorter ? rawColumns.value.find(c => c.name === sorter.columnKey).type : null
+  const sort = sorter ? `${sorter.order === 'descend' ? '-' : ''}${sorter.columnKey}.${field}` : null
 
   const { entities, count } = await apiGetEntities({
     '_parent.reference': props.entityId,
     '_type.reference': props.typeId,
-    props: [
-      'name',
-      '_thumbnail'
-    ].join(','),
+    props: ['_thumbnail', ...rawColumns.value.map(c => c.name)].join(','),
     sort,
     limit: pageSize,
     skip: pageSize * (page - 1)
@@ -91,7 +114,10 @@ function color () {
   return colors[rnd]
 }
 
-onMounted(getEntities)
+onMounted(async () => {
+  await getTypes()
+  await getEntities()
+})
 </script>
 
 <template>

@@ -2,10 +2,10 @@
 const props = defineProps({
   language: { type: String, required: true },
   account: { type: String, required: true },
-  properties: { type: Array, default: null }
+  properties: { type: Array, required: true }
 })
 
-const visibleProperties = computed(() => props.properties?.filter(x => x.mandatory || x.values))
+const visibleProperties = computed(() => props.properties.filter(x => x.mandatory || x.values))
 </script>
 
 <template>
@@ -24,6 +24,7 @@ const visibleProperties = computed(() => props.properties?.filter(x => x.mandato
       <!-- <pre class="text-xs">{{ property }}</pre> -->
       <div class="col-span-2">
         <entity-property-view
+          v-if="property.values"
           :language="language"
           :account="account"
           :values="property.values"
