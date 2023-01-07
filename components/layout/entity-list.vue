@@ -13,7 +13,7 @@ const listElement = ref(null)
 const searchText = ref(route.query.q || '')
 const entitiesList = ref([])
 const entitiesCount = ref(null)
-const limit = ref(Math.ceil(window.innerHeight / 50))
+const limit = ref(Math.ceil(window.innerHeight / 48) + 3)
 const skip = ref(0)
 const isLoading = ref(false)
 const locationSearch = ref(null)
@@ -27,7 +27,7 @@ const debouncedScroll = useDebounceFn(() => {
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
-useInfiniteScroll(listElement, getEntities, { distance: 100 })
+useInfiniteScroll(listElement, getEntities, { distance: 150 })
 
 onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
   if (e.code === 'ArrowDown') scrollIdx.value < entitiesList.value.length - 1 && scrollIdx.value++
