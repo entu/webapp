@@ -43,12 +43,10 @@ const columns = computed(() => [
   }, ...rawColumns.value.map(c => ({
     key: c.name,
     title: c.label,
-    align: c.type === 'decimal' ? 'right' : 'left',
+    align: c.type === 'number' ? 'right' : 'left',
     ellipsis: { tooltip: true },
     render: (row) => {
-      if (c.type === 'number') return n(getValue(row[c.name], 'number'), 'number', '0,0')
-      if (c.type === 'date') return n(getValue(row[c.name], 'date'), 'date', 'short')
-      if (c.type === 'boolean') return getValue(row[c.name], 'boolean')
+      if (c.type === 'number' && getValue(row[c.name], 'number')) return n(getValue(row[c.name], 'number'))
 
       return getValue(row[c.name], c.type)
     },
