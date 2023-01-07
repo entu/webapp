@@ -1,6 +1,4 @@
 <script setup>
-import { Search as SearchIcon } from '@vicons/carbon'
-
 const props = defineProps({
   account: { type: String, required: true }
 })
@@ -114,7 +112,10 @@ onMounted(getEntities)
         for="search"
         class="w-8 h-7 flex items-center justify-center"
       >
-        <search-icon class="h-5 w-5 text-gray-400" />
+        <nuxt-icon
+          class="text-xl text-gray-400"
+          name="carbon/Search"
+        />
       </label>
       <input
         id="search"

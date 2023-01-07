@@ -1,9 +1,6 @@
 <script setup>
-import { RouterLink } from 'vue-router'
-import { NIcon, NMenu } from 'naive-ui'
-import { Identification as IdentificationIcon, Home as HomeIcon, Data2 as FolderIcon, Logout as LogoutIcon, SimCard as SimCardIcon, User as UserIcon } from '@vicons/carbon'
-import { LanguageOutline as LanguageOutlineIcon, LogoApple as LogoAppleIcon, LogoGoogle as LogoGoogleIcon, PhonePortraitOutline as PhonePortraitOutlineIcon } from '@vicons/ionicons5'
-
+import { NMenu } from 'naive-ui'
+import { NuxtIcon, NuxtLink } from '#components'
 import { useMainStore } from '~/stores'
 
 const props = defineProps({
@@ -11,7 +8,7 @@ const props = defineProps({
   account: { type: String, required: true },
   accounts: { type: Array, required: true },
   authenticated: { type: Boolean, required: true },
-  userId: { type: String, required: true },
+  userId: { type: String, default: null },
   userName: { type: String, default: '' }
 })
 
@@ -29,12 +26,12 @@ const accountMenu = computed(() => {
   if (props.accounts.length > 1) {
     menu.push({
       key: 'account',
-      icon: () => h(NIcon, null, () => h(HomeIcon)),
+      icon: () => h(NuxtIcon, { name: 'carbon/Home' }),
       label: (props.account || '').toUpperCase(),
       children: props.collapsed
         ? [{
             name: '            1',
-            label: () => h(RouterLink,
+            label: () => h(NuxtLink,
               { to: { path: `/${props.account}` } },
               () => h('strong', {}, { default: () => (props.account || '').toUpperCase() })
             )
@@ -45,7 +42,7 @@ const accountMenu = computed(() => {
           ...props.accounts.filter(x => x.account !== props.account).map(x => ({
             key: x.account,
             name: x.account,
-            label: () => h(RouterLink,
+            label: () => h(NuxtLink,
               { to: { path: `/${x.account}` } },
               { default: () => x.account }
             )
@@ -54,7 +51,7 @@ const accountMenu = computed(() => {
         : props.accounts.filter(x => x.account !== props.account).map(x => ({
           key: x.account,
           name: x.account,
-          label: () => h(RouterLink,
+          label: () => h(NuxtLink,
             { to: { path: `/${x.account}` } },
             { default: () => x.account }
           )
@@ -74,7 +71,7 @@ const accountMenu = computed(() => {
     if (!menuObject[group]) {
       menuObject[group] = {
         key: group,
-        icon: () => h(NIcon, null, () => h(FolderIcon)),
+        icon: () => h(NuxtIcon, { name: 'carbon/Data2' }),
         name: getValue(entity.group),
         label: getValue(entity.group),
         children: props.collapsed
@@ -94,7 +91,7 @@ const accountMenu = computed(() => {
     menuObject[group].children.push({
       key: getValue(entity.query),
       name: getValue(entity.name),
-      label: () => h(RouterLink,
+      label: () => h(NuxtLink,
         { to: { path: `/${props.account}`, query: queryObj(getValue(entity.query)) } },
         { default: () => getValue(entity.name) }
       ),
@@ -115,8 +112,8 @@ const authMenu = computed(() => [
   {
     key: 'auth-apple',
     disabled: true,
-    icon: () => h(NIcon, null, () => h(LogoAppleIcon)),
-    label: () => h(RouterLink,
+    icon: () => h(NuxtIcon, { name: 'ionicons5/LogoApple' }),
+    label: () => h(NuxtLink,
       { to: { path: '' } },
       // { to: { path: '/auth/mobile-id' } },
       { default: () => 'Apple' }
@@ -124,8 +121,8 @@ const authMenu = computed(() => [
   },
   {
     key: 'auth-google',
-    icon: () => h(NIcon, null, () => h(LogoGoogleIcon)),
-    label: () => h(RouterLink,
+    icon: () => h(NuxtIcon, { name: 'ionicons5/LogoGoogle' }),
+    label: () => h(NuxtLink,
       { to: { path: '/auth/google' } },
       { default: () => 'Google' }
     )
@@ -133,8 +130,8 @@ const authMenu = computed(() => [
   {
     key: 'auth-mid',
     disabled: true,
-    icon: () => h(NIcon, null, () => h(SimCardIcon)),
-    label: () => h(RouterLink,
+    icon: () => h(NuxtIcon, { name: 'carbon/SimCard' }),
+    label: () => h(NuxtLink,
       { to: { path: '' } },
       // { to: { path: '/auth/mobile-id' } },
       { default: () => t('mid') }
@@ -143,8 +140,8 @@ const authMenu = computed(() => [
   {
     key: 'auth-sid',
     disabled: true,
-    icon: () => h(NIcon, null, () => h(PhonePortraitOutlineIcon)),
-    label: () => h(RouterLink,
+    icon: () => h(NuxtIcon, { name: 'ionicons5/PhonePortraitOutline', filled: true }),
+    label: () => h(NuxtLink,
       { to: { path: '' } },
       // { to: { path: '/auth/smart-id' } },
       { default: () => t('sid') }
@@ -153,8 +150,8 @@ const authMenu = computed(() => [
   {
     key: 'auth-idc',
     disabled: true,
-    icon: () => h(NIcon, null, () => h(IdentificationIcon)),
-    label: () => h(RouterLink,
+    icon: () => h(NuxtIcon, { name: 'carbon/Identification' }),
+    label: () => h(NuxtLink,
       { to: { path: '' } },
       // { to: { path: '/auth/id-card' } },
       { default: () => t('idc') }
@@ -168,16 +165,16 @@ const userMenu = computed(() => {
   if (props.authenticated) {
     menu.push({
       key: props.userId,
-      icon: () => h(NIcon, null, () => h(UserIcon)),
-      label: () => h(RouterLink,
+      icon: () => h(NuxtIcon, { name: 'carbon/User' }),
+      label: () => h(NuxtLink,
         { to: { path: `/${props.account}/${props.userId}` } },
         { default: () => props.userName }
       )
     })
     menu.push({
       key: 'auth',
-      icon: () => h(NIcon, null, () => h(LogoutIcon)),
-      label: () => h(RouterLink,
+      icon: () => h(NuxtIcon, { name: 'carbon/Logout' }),
+      label: () => h(NuxtLink,
         { to: { path: '/auth/exit' } },
         { default: () => t('signOut') }
       )
@@ -191,7 +188,7 @@ const userMenu = computed(() => {
 
   menu.push({
     key: `language-${language.value}`,
-    icon: () => h(NIcon, null, () => h(LanguageOutlineIcon)),
+    icon: () => h(NuxtIcon, { name: 'ionicons5/LanguageOutline', filled: true }),
     label: () => h('a',
       { onClick: () => { language.value = language.value === 'en' ? 'et' : 'en' } },
       { default: () => t('language') }

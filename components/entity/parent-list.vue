@@ -1,6 +1,4 @@
 <script setup>
-import { ArrowUp as ArrowUpIcon } from '@vicons/carbon'
-
 defineProps({
   account: { type: String, required: true },
   parents: { type: Array, required: true }
@@ -9,7 +7,10 @@ defineProps({
 
 <template>
   <div class="flex items-center">
-    <arrow-up-icon class="h-5 w-5 flex-none text-gray-400" />
+    <nuxt-icon
+      class="flex-none text-xl text-gray-400"
+      name="carbon/ArrowUp"
+    />
 
     <div class="grow flex flex-wrap gap-3">
       <nuxt-link
@@ -22,6 +23,9 @@ defineProps({
       </nuxt-link>
     </div>
 
-    <arrow-up-icon class="h-5 w-5 flex-none text-gray-400" />
+    <nuxt-icon
+      class="flex-none text-xl text-gray-400"
+      name="carbon/ArrowUp"
+    />
   </div>
 </template>

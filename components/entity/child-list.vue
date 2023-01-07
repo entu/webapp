@@ -1,7 +1,6 @@
 <script setup>
-import { RouterLink } from 'vue-router'
 import { NDataTable } from 'naive-ui'
-import { SortAscending as SortAscendingIcon, SortDescending as SortDescendingIcon } from '@vicons/carbon'
+import { NuxtIcon, NuxtLink } from '#components'
 
 const props = defineProps({
   account: { type: String, required: true },
@@ -36,7 +35,7 @@ const columns = computed(() => [
     key: '_thumbnail',
     title: '',
     width: 44,
-    render: row => h(RouterLink,
+    render: row => h(NuxtLink,
       { class: 'link', to: { path: `/${props.account}/${row._id}` } },
       () => row._thumbnail
         ? h('img', { class: `w-7 h-7 flex-none border border-white hover:border-sky-800 object-cover rounded-full ${color()}`, src: row._thumbnail })
@@ -54,8 +53,8 @@ const columns = computed(() => [
     },
     renderSorterIcon: ({ order }) => {
       if (order === false) return null
-      if (order === 'ascend') return h(SortAscendingIcon, { class: 'text-sky-800' })
-      if (order === 'descend') return h(SortDescendingIcon, { class: 'text-sky-800' })
+      if (order === 'ascend') return h(NuxtIcon, { class: 'text-sky-800', name: 'carbon/SortAscending' })
+      if (order === 'descend') return h(NuxtIcon, { class: 'text-sky-800', name: 'carbon/SortDescending' })
     },
     sorter: true
   }))

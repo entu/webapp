@@ -1,6 +1,5 @@
 <script setup>
-import { NIcon, NButton, NTooltip } from 'naive-ui'
-import { Add as AddIcon, TreeViewAlt as TreeViewAltIcon, Copy as CopyIcon, Edit as EditIcon, UserMultiple as UserMultipleIcon } from '@vicons/carbon'
+import { NButton, NTooltip } from 'naive-ui'
 
 defineProps({
   right: { type: String, default: null }
@@ -11,7 +10,6 @@ const { t } = useI18n()
 
 <template>
   <div class="h-12 mx-2 flex items-center justify-end border-b border-gray-300">
-    {{ right }}
     <n-tooltip
       v-if="['owner', 'editor', 'expander'].includes(right)"
       trigger="hover"
@@ -19,9 +17,10 @@ const { t } = useI18n()
       <template #trigger>
         <n-button quaternary>
           <template #icon>
-            <n-icon size="28">
-              <add-icon />
-            </n-icon>
+            <nuxt-icon
+              class="text-2xl"
+              name="ionicons5/Add"
+            />
           </template>
         </n-button>
       </template>
@@ -35,9 +34,7 @@ const { t } = useI18n()
       <template #trigger>
         <n-button quaternary>
           <template #icon>
-            <n-icon size="20">
-              <edit-icon />
-            </n-icon>
+            <nuxt-icon name="carbon/Edit" />
           </template>
         </n-button>
       </template>
@@ -48,9 +45,7 @@ const { t } = useI18n()
       <template #trigger>
         <n-button quaternary>
           <template #icon>
-            <n-icon size="20">
-              <copy-icon />
-            </n-icon>
+            <nuxt-icon name="carbon/Copy" />
           </template>
         </n-button>
       </template>
@@ -61,9 +56,7 @@ const { t } = useI18n()
       <template #trigger>
         <n-button quaternary>
           <template #icon>
-            <n-icon size="20">
-              <tree-view-alt-icon />
-            </n-icon>
+            <nuxt-icon name="carbon/TreeViewAlt" />
           </template>
         </n-button>
       </template>
@@ -74,9 +67,7 @@ const { t } = useI18n()
       <template #trigger>
         <n-button quaternary>
           <template #icon>
-            <n-icon size="20">
-              <user-multiple-icon />
-            </n-icon>
+            <nuxt-icon name="carbon/UserMultiple" />
           </template>
         </n-button>
       </template>

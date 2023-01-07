@@ -1,6 +1,4 @@
 <script setup>
-import { Checkmark as CheckmarkIcon } from '@vicons/carbon'
-
 const props = defineProps({
   language: { type: String, required: true },
   account: { type: String, required: true },
@@ -50,7 +48,10 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     </template>
 
     <template v-else-if="v.boolean !== undefined && v.boolean === true">
-      <checkmark-icon class="h-5 w-5" />
+      <nuxt-icon
+        class="text-xl"
+        name="carbon/Checkmark"
+      />
     </template>
 
     <template v-else-if="v.string !== undefined">

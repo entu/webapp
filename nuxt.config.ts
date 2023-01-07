@@ -25,7 +25,6 @@ export default defineNuxtConfig({
           // '@juggle/resize-observer'
         ]
   },
-  css: ['~/assets/main.css'],
   i18n: {
     vueI18n: {
       legacy: false,
@@ -33,15 +32,17 @@ export default defineNuxtConfig({
     }
   },
   modules: [
-    ['@nuxtjs/i18n'],
-    ['@pinia/nuxt', { autoImports: ['defineStore', 'storeToRefs'] }],
-    ['@vueuse/nuxt']
+    '@nuxtjs/i18n',
+    '@nuxtjs/tailwindcss',
+    '@pinia/nuxt',
+    '@vueuse/nuxt',
+    'nuxt-icons'
   ],
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {}
-    }
+  pinia: {
+    autoImports: [
+      'defineStore',
+      'storeToRefs'
+    ]
   },
   runtimeConfig: {
     public: {
