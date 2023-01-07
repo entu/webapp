@@ -12,7 +12,11 @@ const props = defineProps({
 const { n, t } = useI18n()
 const sort = ref()
 const rawEntities = ref()
-const rawColumns = ref([{ label: 'Name', name: 'name' }])
+const rawColumns = ref([{
+  name: 'name',
+  label: 'Name',
+  type: 'string'
+}])
 const isLoading = ref(false)
 const total = ref(0)
 
@@ -31,12 +35,12 @@ const columns = computed(() => [
   {
     key: '_thumbnail',
     title: '',
-    width: 42,
+    width: 44,
     render: row => h(RouterLink,
       { class: 'link', to: { path: `/${props.account}/${row._id}` } },
       () => row._thumbnail
-        ? h('img', { class: `w-7 h-7 flex-none object-cover rounded-full ${color()}`, src: row._thumbnail })
-        : h('div', { class: `w-7 h-7 flex-none rounded-full ${color()}` })
+        ? h('img', { class: `w-7 h-7 flex-none border border-white hover:border-sky-800 object-cover rounded-full ${color()}`, src: row._thumbnail })
+        : h('div', { class: `w-7 h-7 flex-none border border-white hover:border-sky-800 rounded-full ${color()}` })
     )
   }, ...rawColumns.value.map(c => ({
     key: c.name,
