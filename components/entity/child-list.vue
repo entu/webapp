@@ -10,6 +10,7 @@ const props = defineProps({
 })
 
 const { n, t } = useI18n()
+const sort = ref()
 const rawEntities = ref()
 const rawColumns = ref([{
   title: 'Name',
@@ -80,17 +81,16 @@ async function getTypes () {
   }
 }
 
-async function getEntities (page = pagination.value.page, pageSize = pagination.value.pageSize, sorter) {
+async function getEntities (page = pagination.value.page, pageSize = pagination.value.pageSize, sorter = sort.value) {
   isLoading.value = true
 
   const field = sorter ? rawColumns.value.find(c => c.name === sorter.columnKey).type : null
-  const sort = sorter ? `${sorter.order === 'descend' ? '-' : ''}${sorter.columnKey}.${field}` : null
 
   const { entities, count } = await apiGetEntities({
     '_parent.reference': props.entityId,
     '_type.reference': props.typeId,
     props: ['_thumbnail', ...rawColumns.value.map(c => c.name)].join(','),
-    sort,
+    sort: sorter ? `${sorter.order === 'descend' ? '-' : ''}${sorter.columnKey}.${field}` : null,
     limit: pageSize,
     skip: pageSize * (page - 1)
   })
@@ -100,6 +100,7 @@ async function getEntities (page = pagination.value.page, pageSize = pagination.
   pagination.value.page = page
   pagination.value.pageCount = Math.ceil(count / pageSize)
   pagination.value.pageSize = pageSize
+  sort.value = sorter
 
   isLoading.value = false
 }
