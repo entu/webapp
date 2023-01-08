@@ -14,7 +14,7 @@ const sort = ref()
 const rawEntities = ref()
 const rawColumns = ref([{
   name: 'name',
-  label: 'Name',
+  label: '',
   type: 'string',
   decimals: undefined
 }])
@@ -76,6 +76,24 @@ async function getTypes () {
   })
 
   if (entities.length > 0) {
+    rawColumns.value = entities.map(e => ({
+      name: getValue(e.name),
+      label: getValue(e.label),
+      type: getValue(e.type),
+      decimals: getValue(e.decimals, 'number')
+    }))
+  } else {
+    const { entities } = await apiGetEntities({
+      '_parent.reference': props.typeId,
+      'name.string': 'name',
+      props: [
+        'name',
+        'label',
+        'type',
+        'decimals'
+      ].join(',')
+    })
+
     rawColumns.value = entities.map(e => ({
       name: getValue(e.name),
       label: getValue(e.label),
