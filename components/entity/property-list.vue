@@ -1,7 +1,7 @@
 <script setup>
 const props = defineProps({
-  language: { type: String, required: true },
   account: { type: String, required: true },
+  language: { type: String, required: true },
   properties: { type: Array, required: true }
 })
 
@@ -25,8 +25,9 @@ const visibleProperties = computed(() => props.properties.filter(x => x.mandator
       <div class="col-span-2">
         <entity-property-view
           v-if="property.values"
-          :language="language"
           :account="account"
+          :decimals="property.decimals"
+          :language="language"
           :values="property.values"
         />
       </div>

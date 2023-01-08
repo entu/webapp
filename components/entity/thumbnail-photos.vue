@@ -2,8 +2,8 @@
 import { NImage, NImageGroup, NSpin } from 'naive-ui'
 
 const props = defineProps({
-  thumbnail: { type: String, required: true },
-  photos: { type: Array, default: null }
+  photos: { type: Array, default: null },
+  thumbnail: { type: String, required: true }
 })
 
 const imageRef = ref()

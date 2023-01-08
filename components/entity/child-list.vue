@@ -5,16 +5,18 @@ import { IconSortAscending, IconSortDescending, NuxtLink } from '#components'
 const props = defineProps({
   account: { type: String, required: true },
   entityId: { type: String, required: true },
+  language: { type: String, required: true },
   typeId: { type: String, required: true }
 })
 
-const { n, t } = useI18n()
+const { t } = useI18n()
 const sort = ref()
 const rawEntities = ref()
 const rawColumns = ref([{
   name: 'name',
   label: 'Name',
-  type: 'string'
+  type: 'string',
+  decimals: undefined
 }])
 const isLoading = ref(false)
 const total = ref(0)
@@ -47,7 +49,7 @@ const columns = computed(() => [
     align: c.type === 'number' ? 'right' : 'left',
     ellipsis: { tooltip: true },
     render: (row) => {
-      if (c.type === 'number' && getValue(row[c.name], 'number')) return n(getValue(row[c.name], 'number'))
+      if (c.type === 'number' && getValue(row[c.name], 'number')) return getValue(row[c.name], 'number').toLocaleString(props.language, { minimumFractionDigits: c.decimals, maximumFractionDigits: c.decimals })
 
       return getValue(row[c.name], c.type)
     },
@@ -67,7 +69,8 @@ async function getTypes () {
     props: [
       'name',
       'label',
-      'type'
+      'type',
+      'decimals'
     ].join(','),
     sort: 'ordinal.number'
   })
@@ -76,7 +79,8 @@ async function getTypes () {
     rawColumns.value = entities.map(e => ({
       name: getValue(e.name),
       label: getValue(e.label),
-      type: getValue(e.type)
+      type: getValue(e.type),
+      decimals: getValue(e.decimals, 'number')
     }))
   }
 }

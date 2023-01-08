@@ -47,6 +47,7 @@ const entity = computed(() => {
       description: getValue(p.description),
       group: getValue(p.group),
       default: getValue(p.default),
+      decimals: getValue(p.decimals, 'number'),
       formula: getValue(p.formula),
       classifier: p.classifier,
       ordinal: getValue(p.ordinal, 'number'),
@@ -157,6 +158,7 @@ async function loadEntity () {
         'default',
         'description',
         'group',
+        'decimals',
         'formula',
         'hidden',
         'label_plural',
@@ -260,16 +262,16 @@ onMounted(() => {
                 >
                   <entity-property-list
                     class="pl-5"
-                    :language="language"
                     :account="account"
+                    :language="language"
                     :properties="pg.children"
                   />
                 </n-collapse-item>
                 <div v-if="!pg.name && pg.children && pg.children.some(x => x.mandatory || x.values)">
                   <entity-property-list
                     class="pl-5"
-                    :language="language"
                     :account="account"
+                    :language="language"
                     :properties="pg.children"
                   />
                 </div>
@@ -305,6 +307,7 @@ onMounted(() => {
               class="w-full pl-5"
               :account="account"
               :entity-id="entityId"
+              :language="language"
               :type-id="child._id"
             />
           </n-collapse-item>
