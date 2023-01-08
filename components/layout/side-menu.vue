@@ -1,6 +1,6 @@
 <script setup>
 import { NMenu } from 'naive-ui'
-import { NuxtIcon, NuxtLink } from '#components'
+import { IconHome, IconData2, IconSimCard, IconIdentification, IconUser, IconLogout, IconLogoApple, IconLogoGoogle, IconPhonePortraitOutline, IconLanguageOutline, NuxtLink } from '#components'
 import { useMainStore } from '~/stores'
 
 const props = defineProps({
@@ -26,7 +26,7 @@ const accountMenu = computed(() => {
   if (props.accounts.length > 1) {
     menu.push({
       key: 'account',
-      icon: () => h(NuxtIcon, { name: 'carbon/Home' }),
+      icon: () => h(IconHome, { class: 'h-5 w-5' }),
       label: (props.account || '').toUpperCase(),
       children: props.collapsed
         ? [{
@@ -71,7 +71,7 @@ const accountMenu = computed(() => {
     if (!menuObject[group]) {
       menuObject[group] = {
         key: group,
-        icon: () => h(NuxtIcon, { name: 'carbon/Data2' }),
+        icon: () => h(IconData2, { class: 'h-5 w-5' }),
         name: getValue(entity.group),
         label: getValue(entity.group),
         children: props.collapsed
@@ -112,7 +112,7 @@ const authMenu = computed(() => [
   {
     key: 'auth-apple',
     disabled: true,
-    icon: () => h(NuxtIcon, { name: 'ionicons5/LogoApple' }),
+    icon: () => h(IconLogoApple, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
       { to: { path: '' } },
       // { to: { path: '/auth/mobile-id' } },
@@ -121,7 +121,7 @@ const authMenu = computed(() => [
   },
   {
     key: 'auth-google',
-    icon: () => h(NuxtIcon, { name: 'ionicons5/LogoGoogle' }),
+    icon: () => h(IconLogoGoogle, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
       { to: { path: '/auth/google' } },
       { default: () => 'Google' }
@@ -130,7 +130,7 @@ const authMenu = computed(() => [
   {
     key: 'auth-mid',
     disabled: true,
-    icon: () => h(NuxtIcon, { name: 'carbon/SimCard' }),
+    icon: () => h(IconSimCard, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
       { to: { path: '' } },
       // { to: { path: '/auth/mobile-id' } },
@@ -140,7 +140,7 @@ const authMenu = computed(() => [
   {
     key: 'auth-sid',
     disabled: true,
-    icon: () => h(NuxtIcon, { name: 'ionicons5/PhonePortraitOutline', filled: true }),
+    icon: () => h(IconPhonePortraitOutline, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
       { to: { path: '' } },
       // { to: { path: '/auth/smart-id' } },
@@ -150,7 +150,7 @@ const authMenu = computed(() => [
   {
     key: 'auth-idc',
     disabled: true,
-    icon: () => h(NuxtIcon, { name: 'carbon/Identification' }),
+    icon: () => h(IconIdentification, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
       { to: { path: '' } },
       // { to: { path: '/auth/id-card' } },
@@ -165,7 +165,7 @@ const userMenu = computed(() => {
   if (props.authenticated) {
     menu.push({
       key: props.userId,
-      icon: () => h(NuxtIcon, { name: 'carbon/User' }),
+      icon: () => h(IconUser, { class: 'h-5 w-5' }),
       label: () => h(NuxtLink,
         { to: { path: `/${props.account}/${props.userId}` } },
         { default: () => props.userName }
@@ -173,7 +173,7 @@ const userMenu = computed(() => {
     })
     menu.push({
       key: 'auth',
-      icon: () => h(NuxtIcon, { name: 'carbon/Logout' }),
+      icon: () => h(IconLogout, { class: 'h-5 w-5' }),
       label: () => h(NuxtLink,
         { to: { path: '/auth/exit' } },
         { default: () => t('signOut') }
@@ -188,7 +188,7 @@ const userMenu = computed(() => {
 
   menu.push({
     key: `language-${language.value}`,
-    icon: () => h(NuxtIcon, { name: 'ionicons5/LanguageOutline', filled: true }),
+    icon: () => h(IconLanguageOutline, { class: 'h-5 w-5' }),
     label: () => h('a',
       { onClick: () => { language.value = language.value === 'en' ? 'et' : 'en' } },
       { default: () => t('language') }

@@ -7,10 +7,7 @@ defineProps({
 
 <template>
   <div class="flex items-center">
-    <nuxt-icon
-      class="flex-none text-xl text-gray-400"
-      name="carbon/ArrowUp"
-    />
+    <icon-arrow-up class="h-5 w-5 flex-none text-gray-400" />
 
     <div class="grow flex flex-wrap gap-3">
       <nuxt-link
@@ -23,9 +20,6 @@ defineProps({
       </nuxt-link>
     </div>
 
-    <nuxt-icon
-      class="flex-none text-xl text-gray-400"
-      name="carbon/ArrowUp"
-    />
+    <icon-arrow-up class="h-5 w-5 flex-none text-gray-400" />
   </div>
 </template>

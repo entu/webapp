@@ -112,10 +112,7 @@ onMounted(getEntities)
         for="search"
         class="w-8 h-7 flex items-center justify-center"
       >
-        <nuxt-icon
-          class="text-xl text-gray-400"
-          name="carbon/Search"
-        />
+        <icon-search class="h-5 w-5 text-xl text-gray-400" />
       </label>
       <input
         id="search"

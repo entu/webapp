@@ -17,10 +17,7 @@ const { t } = useI18n()
       <template #trigger>
         <n-button quaternary>
           <template #icon>
-            <nuxt-icon
-              class="text-2xl"
-              name="ionicons5/Add"
-            />
+            <icon-add class="h-7 w-7" />
           </template>
         </n-button>
       </template>
@@ -34,7 +31,7 @@ const { t } = useI18n()
       <template #trigger>
         <n-button quaternary>
           <template #icon>
-            <nuxt-icon name="carbon/Edit" />
+            <icon-edit class="h-5 w-5" />
           </template>
         </n-button>
       </template>
@@ -45,7 +42,7 @@ const { t } = useI18n()
       <template #trigger>
         <n-button quaternary>
           <template #icon>
-            <nuxt-icon name="carbon/Copy" />
+            <icon-copy class="h-5 w-5" />
           </template>
         </n-button>
       </template>
@@ -56,7 +53,7 @@ const { t } = useI18n()
       <template #trigger>
         <n-button quaternary>
           <template #icon>
-            <nuxt-icon name="carbon/TreeViewAlt" />
+            <icon-tree-view-alt class="h-5 w-5" />
           </template>
         </n-button>
       </template>
@@ -67,7 +64,7 @@ const { t } = useI18n()
       <template #trigger>
         <n-button quaternary>
           <template #icon>
-            <nuxt-icon name="carbon/UserMultiple" />
+            <icon-user-multiple class="h-5 w-5" />
           </template>
         </n-button>
       </template>

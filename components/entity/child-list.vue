@@ -1,6 +1,6 @@
 <script setup>
 import { NDataTable } from 'naive-ui'
-import { NuxtIcon, NuxtLink } from '#components'
+import { IconSortAscending, IconSortDescending, NuxtLink } from '#components'
 
 const props = defineProps({
   account: { type: String, required: true },
@@ -53,8 +53,8 @@ const columns = computed(() => [
     },
     renderSorterIcon: ({ order }) => {
       if (order === false) return null
-      if (order === 'ascend') return h(NuxtIcon, { class: 'text-sky-800', name: 'carbon/SortAscending' })
-      if (order === 'descend') return h(NuxtIcon, { class: 'text-sky-800', name: 'carbon/SortDescending' })
+      if (order === 'ascend') return h(IconSortAscending, { class: 'text-sky-800' })
+      if (order === 'descend') return h(IconSortDescending, { class: 'text-sky-800' })
     },
     sorter: true
   }))

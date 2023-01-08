@@ -48,10 +48,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     </template>
 
     <template v-else-if="v.boolean !== undefined && v.boolean === true">
-      <nuxt-icon
-        class="text-xl"
-        name="carbon/Checkmark"
-      />
+      <icon-checkmark class="h-5 w-5" />
     </template>
 
     <template v-else-if="v.string !== undefined">
