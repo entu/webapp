@@ -6,6 +6,7 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+
 const { accounts } = storeToRefs(userStore)
 
 onMounted(async () => {

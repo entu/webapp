@@ -1,18 +1,46 @@
 <script setup>
-import { NButton, NTooltip } from 'naive-ui'
+import { NButton, NButtonGroup, NPopover, NTooltip } from 'naive-ui'
 
-defineProps({
-  right: { type: String, default: null }
+const props = defineProps({
+  entityId: { type: String, required: true },
+  right: { type: String, default: null },
+  typeId: { type: String, required: true }
 })
 
 const { t } = useI18n()
+
+const addChilds = ref([])
+
+const addOptions = computed(() => addChilds.value.map(x => ({
+  value: x._id,
+  label: getValue(x.label) || getValue(x.name)
+})))
+
+onMounted(async () => {
+  const { entities } = await apiGetEntities({
+    'add_from.reference': props.entityId,
+    props: 'name,label'
+  })
+
+  const { entities: types } = await apiGetEntities({
+    'add_from.reference': props.typeId,
+    props: 'name,label'
+  })
+
+  addChilds.value = [...entities, ...types.filter(x => !entities.some(y => y._id === x._id))]
+})
+
+function onAdd (e) {
+  console.log('add', e)
+}
 </script>
 
 <template>
   <div class="h-12 mx-2 flex items-center justify-end border-b border-gray-300">
-    <n-tooltip
-      v-if="['owner', 'editor', 'expander'].includes(right)"
-      trigger="hover"
+    <n-popover
+      v-if="['owner', 'editor', 'expander'].includes(right) && addOptions.length > 0"
+      content-style="padding:0"
+      header-style="padding:0"
     >
       <template #trigger>
         <n-button quaternary>
@@ -21,8 +49,26 @@ const { t } = useI18n()
           </template>
         </n-button>
       </template>
-      {{ t('add') }}
-    </n-tooltip>
+      <template #header>
+        <div class="py-2 px-4 font-bold">
+          {{ t('addUnderThis') }}
+        </div>
+      </template>
+
+      <div
+        class="w-full flex flex-col"
+        vertical
+      >
+        <div
+          v-for="child in addOptions"
+          :key="child.value"
+          class="py-2 px-4 hover:bg-gray-100 cursor-pointer"
+          @click="onAdd(child.value)"
+        >
+          {{ child.label }}
+        </div>
+      </div>
+    </n-popover>
 
     <n-tooltip
       v-if="['owner', 'editor'].includes(right)"
@@ -75,13 +121,13 @@ const { t } = useI18n()
 
 <i18n lang="yaml">
   en:
-    add: Add
+    addUnderThis: Add children
     edit: Edit
     duplicate: Duplicate
     parents: Parents
     rights: User rights
   et:
-    add: Lisa
+    addUnderThis: Lisa alamobjekt
     edit: Muuda
     duplicate: Dubleeri
     parents: Peamised

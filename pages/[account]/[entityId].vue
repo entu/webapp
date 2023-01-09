@@ -6,6 +6,7 @@ const { n, t } = useI18n()
 const route = useRoute()
 const mainStore = useMainStore()
 const userStore = useUserStore()
+
 const { language } = storeToRefs(mainStore)
 const { _id: userId, account } = storeToRefs(userStore)
 const rawEntity = ref()
@@ -17,6 +18,7 @@ const isLoading = ref(false)
 definePageMeta({ layout: 'menu' })
 
 const entityId = computed(() => route.params.entityId)
+const typeId = computed(() => getValue(rawEntity.value._type, 'reference'))
 
 const entity = computed(() => {
   if (!rawEntity.value) return {}
@@ -31,12 +33,7 @@ const entity = computed(() => {
           name: getValue(rawEntityType.value.name),
           label: getValue(rawEntityType.value.label),
           labelPlural: getValue(rawEntityType.value.label_plural),
-          description: getValue(rawEntityType.value.description),
-          openAfterAdd: getValue(rawEntityType.value.open_after_add, 'boolean'),
-          defaultParent: rawEntityType.value.default_parent,
-          optionalParent: rawEntityType.value.optional_parent,
-          addFromMenu: rawEntityType.value.add_from_menu,
-          allowedChild: rawEntityType.value.allowed_child
+          description: getValue(rawEntityType.value.description)
         }
       : {},
     props: entityProps.value.map(p => ({
@@ -136,24 +133,18 @@ async function loadEntity () {
 
   rawEntity.value = await apiGetEntity(entityId.value)
 
-  const typeId = getValue(rawEntity.value._type, 'reference')
-  if (typeId) {
-    rawEntityType.value = await apiGetEntity(typeId, {
+  if (typeId.value) {
+    rawEntityType.value = await apiGetEntity(typeId.value, {
       props: [
-        'add_from_menu',
-        'allowed_child',
-        'default_parent',
         'description',
         'label_plural',
         'label',
-        'name',
-        'open_after_add',
-        'optional_parent'
+        'name'
       ]
     })
 
     const { entities } = await apiGetEntities({
-      '_parent.reference': typeId,
+      '_parent.reference': typeId.value,
       props: [
         'classifier',
         'decimals',
@@ -232,7 +223,11 @@ onMounted(() => {
       class="h-full flex flex-col"
     >
       <div class="h-12">
-        <entity-tools-menu :right="right" />
+        <entity-tools-menu
+          :type-id="typeId"
+          :entity-id="entityId"
+          :right="right"
+        />
       </div>
 
       <div class="px-2 pb-4 flex flex-col overflow-y-auto overflow-hidden">

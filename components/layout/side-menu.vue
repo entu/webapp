@@ -14,8 +14,8 @@ const props = defineProps({
 
 const { t } = useI18n()
 const mainStore = useMainStore()
-const { language } = storeToRefs(mainStore)
 
+const { language } = storeToRefs(mainStore)
 const menuEntities = ref([])
 const activeMenu = ref(location.search.substring(1))
 

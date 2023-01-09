@@ -4,6 +4,7 @@ import { useUserStore } from '~/stores'
 const { t } = useI18n()
 const route = useRoute()
 const userStore = useUserStore()
+
 const { account, authenticated } = storeToRefs(userStore)
 const stats = ref()
 

@@ -15,6 +15,7 @@ const align = {
 }
 
 const { d, t } = useI18n()
+
 const sort = ref()
 const rawEntities = ref()
 const rawColumns = ref([{

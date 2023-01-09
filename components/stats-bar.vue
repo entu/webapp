@@ -1,8 +1,6 @@
 <script setup>
 import { NProgress } from 'naive-ui'
 
-const { n } = useI18n()
-
 const props = defineProps({
   aLabel: { type: String, default: null },
   aValue: { type: Number, default: null },
@@ -13,6 +11,8 @@ const props = defineProps({
   color: { type: String, default: null },
   railColor: { type: String, default: null }
 })
+
+const { n } = useI18n()
 
 const percentage = computed(() => Math.round(props.aValue * 100 / (props.aValue + props.bValue)))
 const bTotal = computed(() => props.showTotal ? props.aValue + props.bValue : props.bValue)
