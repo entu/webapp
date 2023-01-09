@@ -1,5 +1,5 @@
 <script setup>
-import { NButton, NButtonGroup, NPopover, NTooltip } from 'naive-ui'
+import { NButton, NPopover } from 'naive-ui'
 
 const props = defineProps({
   entityId: { type: String, required: true },
@@ -49,6 +49,7 @@ function onAdd (e) {
           </template>
         </n-button>
       </template>
+
       <template #header>
         <div class="py-2 px-4 font-bold">
           {{ t('addUnderThis') }}
@@ -70,10 +71,7 @@ function onAdd (e) {
       </div>
     </n-popover>
 
-    <n-tooltip
-      v-if="['owner', 'editor'].includes(right)"
-      trigger="hover"
-    >
+    <n-popover v-if="['owner', 'editor'].includes(right)">
       <template #trigger>
         <n-button quaternary>
           <template #icon>
@@ -82,9 +80,9 @@ function onAdd (e) {
         </n-button>
       </template>
       {{ t('edit') }}
-    </n-tooltip>
+    </n-popover>
 
-    <n-tooltip trigger="hover">
+    <n-popover>
       <template #trigger>
         <n-button quaternary>
           <template #icon>
@@ -93,9 +91,9 @@ function onAdd (e) {
         </n-button>
       </template>
       {{ t('duplicate') }}
-    </n-tooltip>
+    </n-popover>
 
-    <n-tooltip trigger="hover">
+    <n-popover>
       <template #trigger>
         <n-button quaternary>
           <template #icon>
@@ -104,9 +102,9 @@ function onAdd (e) {
         </n-button>
       </template>
       {{ t('parents') }}
-    </n-tooltip>
+    </n-popover>
 
-    <n-tooltip trigger="hover">
+    <n-popover>
       <template #trigger>
         <n-button quaternary>
           <template #icon>
@@ -115,7 +113,7 @@ function onAdd (e) {
         </n-button>
       </template>
       {{ t('rights') }}
-    </n-tooltip>
+    </n-popover>
   </div>
 </template>
 
