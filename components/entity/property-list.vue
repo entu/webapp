@@ -19,7 +19,7 @@ const visibleProperties = computed(() => props.properties.filter(x => x.mandator
         class="py-1 text-right text-[#1E434C] font-medium"
         :class="{ 'text-red-700' : property.mandatory && !property.values }"
       >
-        {{ property.label || property.name }}
+        {{ property.values && property.values.length > 1 ? (property.labelPlural || property.label || property.name) : (property.label || property.name) }}
       </div>
       <!-- <pre class="text-xs">{{ property }}</pre> -->
       <div class="col-span-2">
