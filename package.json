@@ -23,6 +23,7 @@
     "autoprefixer": "10.4.13",
     "eslint": "8.31.0",
     "eslint-config-standard": "17.0.0",
+    "marked": "4.2.5",
     "naive-ui": "2.34.3",
     "nuxt": "3.0.0",
     "postcss": "8.4.21",

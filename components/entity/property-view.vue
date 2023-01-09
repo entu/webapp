@@ -2,6 +2,7 @@
 const props = defineProps({
   account: { type: String, required: true },
   decimals: { type: Number, default: undefined },
+  isMarkdown: { type: Boolean, default: false },
   language: { type: String, required: true },
   values: { type: Array, required: true }
 })
@@ -17,9 +18,11 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     :key="v._id"
     class="my-1"
   >
-    <!-- <pre class="text-xs">{{ v }}</pre> -->
+    <template v-if="isMarkdown && v.string !== undefined">
+      <markdown :source="v.string" />
+    </template>
 
-    <template v-if="v.reference !== undefined && v.datetime !== undefined">
+    <template v-else-if="v.reference !== undefined && v.datetime !== undefined">
       <nuxt-link
         class="link"
         :to="{ path:`/${account}/${v.reference}`}"

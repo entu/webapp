@@ -29,6 +29,7 @@ const visibleProperties = computed(() => props.properties.filter(x => x.mandator
           :decimals="property.decimals"
           :language="language"
           :values="property.values"
+          :is-markdown="property.markdown"
         />
       </div>
     </div>
