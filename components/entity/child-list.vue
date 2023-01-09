@@ -1,6 +1,6 @@
 <script setup>
 import { NDataTable } from 'naive-ui'
-import { IconSortAscending, IconSortDescending, NuxtLink } from '#components'
+import { IconCheckmark, IconSortAscending, IconSortDescending, NuxtLink } from '#components'
 
 const props = defineProps({
   account: { type: String, required: true },
@@ -9,7 +9,12 @@ const props = defineProps({
   typeId: { type: String, required: true }
 })
 
-const { t } = useI18n()
+const align = {
+  number: 'right',
+  boolean: 'center'
+}
+
+const { d, t } = useI18n()
 const sort = ref()
 const rawEntities = ref()
 const rawColumns = ref([{
@@ -46,10 +51,16 @@ const columns = computed(() => [
   }, ...rawColumns.value.map(c => ({
     key: c.name,
     title: c.label,
-    align: c.type === 'number' ? 'right' : 'left',
+    align: align[c.type] || 'left',
     ellipsis: { tooltip: true },
     render: (row) => {
-      if (c.type === 'number' && getValue(row[c.name], 'number')) return getValue(row[c.name], 'number').toLocaleString(props.language, { minimumFractionDigits: c.decimals, maximumFractionDigits: c.decimals })
+      if (row.type === 'number' && getValue(row[c.name], 'number')) return getValue(row[c.name], 'number').toLocaleString(props.language, { minimumFractionDigits: c.decimals, maximumFractionDigits: c.decimals })
+
+      if (c.type === 'boolean' && getValue(row[c.name], 'boolean')) return h(IconCheckmark, { class: 'h-5 w-5' })
+
+      if (c.type === 'datetime' && getValue(row[c.name], 'datetime')) return d(getValue(row[c.name], 'datetime'), 'datetime')
+
+      if (c.type === 'date' && getValue(row[c.name], 'date')) return d(getValue(row[c.name], 'date'), 'date')
 
       return getValue(row[c.name], c.type)
     },

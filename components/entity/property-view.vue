@@ -6,6 +6,8 @@ const props = defineProps({
   values: { type: Array, required: true }
 })
 
+const { d } = useI18n()
+
 const localeValues = computed(() => props.values.filter(x => !x.language || x.language === props.language))
 </script>
 
@@ -16,7 +18,20 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     class="my-1"
   >
     <!-- <pre class="text-xs">{{ v }}</pre> -->
-    <template v-if="v.reference">
+
+    <template v-if="v.reference !== undefined && v.datetime !== undefined">
+      <nuxt-link
+        class="link"
+        :to="{ path:`/${account}/${v.reference}`}"
+      >
+        {{ v.string }}
+      </nuxt-link>
+      <span class="ml-4 text-gray-500">
+        {{ d(v.datetime, 'datetime') }}
+      </span>
+    </template>
+
+    <template v-else-if="v.reference !== undefined && v.datetime === undefined">
       <nuxt-link
         class="link"
         :to="{ path:`/${account}/${v.reference}`}"
@@ -48,6 +63,18 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
 
     <template v-else-if="v.boolean !== undefined && v.boolean === true">
       <icon-checkmark class="h-5 w-5" />
+    </template>
+
+    <template v-else-if="v.boolean !== undefined && v.boolean === false">
+      <div />
+    </template>
+
+    <template v-else-if="v.datetime !== undefined">
+      {{ d(v.datetime, 'datetime') }}
+    </template>
+
+    <template v-else-if="v.date !== undefined">
+      {{ d(v.date, 'date') }}<br>
     </template>
 
     <template v-else-if="v.string !== undefined">
