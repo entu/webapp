@@ -2,7 +2,7 @@
 import { NCollapse, NCollapseItem } from 'naive-ui'
 import { useMainStore, useUserStore } from '~/stores'
 
-const { n, t } = useI18n()
+const { t } = useI18n()
 const route = useRoute()
 const mainStore = useMainStore()
 const userStore = useUserStore()
@@ -110,6 +110,21 @@ const properties = computed(() => {
   return result
 })
 
+const childs = computed(() => [
+  ...rawChilds.value.map(x => ({
+    _id: x._id,
+    label: getValue(x.label_plural) || getValue(x.label) || getValue(x.name),
+    count: t('childsCount', x._count),
+    referenceField: '_parent.reference'
+  })),
+  ...rawReferences.value.map(x => ({
+    _id: x._id,
+    label: getValue(x.label_plural) || getValue(x.label) || getValue(x.name),
+    count: t('childsCount', x._count),
+    referenceField: '_reference.reference'
+  }))
+].sort((a, b) => a.label.localeCompare(b.label)))
+
 const right = computed(() => {
   if (!rawEntity.value) return null
   if (rawEntity.value._owner?.some(x => x.reference === userId.value)) return 'owner'
@@ -201,6 +216,7 @@ async function loadChilds () {
 async function loadReferences () {
   const { entities } = await apiGetEntities({
     '_reference.reference': entityId.value,
+    '_reference.property_type.ne': '_parent',
     group: '_type.string',
     props: '_type'
   })
@@ -318,13 +334,13 @@ onMounted(() => {
           class="mt-8 pr-5"
         >
           <n-collapse-item
-            v-for="child in rawChilds"
+            v-for="child in childs"
             :key="child._id"
             :name="child._id"
-            :title="t('childrens', { label: getValue(child.label_plural) || getValue(child.label) || getValue(child.name) })"
+            :title="child.label"
           >
             <template #header-extra>
-              <span class="text-gray-400">{{ n(child._count) }}</span>
+              <span class="text-gray-400">{{ child.count }}</span>
             </template>
             <entity-child-list
               class="w-full pl-5"
@@ -332,26 +348,7 @@ onMounted(() => {
               :entity-id="entityId"
               :language="language"
               :type-id="child._id"
-              reference-field="_parent.reference"
-            />
-          </n-collapse-item>
-
-          <n-collapse-item
-            v-for="child in rawReferences"
-            :key="child._id"
-            :name="child._id"
-            :title="t('referrers', { label: getValue(child.label_plural) || getValue(child.label) || getValue(child.name) })"
-          >
-            <template #header-extra>
-              <span class="text-gray-400">{{ n(child._count) }}</span>
-            </template>
-            <entity-child-list
-              class="w-full pl-5"
-              :account="account"
-              :entity-id="entityId"
-              :language="language"
-              :type-id="child._id"
-              reference-field="_reference.reference"
+              :reference-field="child.referenceField"
             />
           </n-collapse-item>
         </n-collapse>
@@ -362,11 +359,11 @@ onMounted(() => {
 
 <i18n lang="yaml">
   en:
-    childrens: Children entities - {label}
-    referrers: Referrer entities - {label}
+    childsCount: 'no childs | {n} child | {n} childs'
+    referrersCount: 'no referrers | {n} referrer | {n} referrers'
   et:
-    childrens: Alamobjektid - {label}
-    referrers: Viitavad objektid - {label}
+    childsCount: 'alamobjekte pole | {n} alamobjekt | {n} alamobjekti'
+    referrersCount: 'viitajaid pole | {n} viitaja | {n} viitajat'
 </i18n>
 
 <style scoped>
