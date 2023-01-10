@@ -6,7 +6,8 @@ const props = defineProps({
   account: { type: String, required: true },
   entityId: { type: String, required: true },
   language: { type: String, required: true },
-  typeId: { type: String, required: true }
+  typeId: { type: String, required: true },
+  referenceField: { type: String, required: true }
 })
 
 const align = {
@@ -121,7 +122,7 @@ async function getEntities (page = pagination.value.page, pageSize = pagination.
   const field = sorter ? rawColumns.value.find(c => c.name === sorter.columnKey).type : null
 
   const { entities, count } = await apiGetEntities({
-    '_parent.reference': props.entityId,
+    [props.referenceField]: props.entityId,
     '_type.reference': props.typeId,
     props: ['_thumbnail', ...rawColumns.value.map(c => c.name)].join(','),
     sort: sorter ? `${sorter.order === 'descend' ? '-' : ''}${sorter.columnKey}.${field}` : null,

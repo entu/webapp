@@ -12,6 +12,7 @@ const { _id: userId, account } = storeToRefs(userStore)
 const rawEntity = ref()
 const rawEntityType = ref()
 const rawChilds = ref([])
+const rawReferences = ref([])
 const entityProps = ref([])
 const isLoading = ref(false)
 
@@ -197,6 +198,29 @@ async function loadChilds () {
   })
 }
 
+async function loadReferences () {
+  const { entities } = await apiGetEntities({
+    '_reference.reference': entityId.value,
+    group: '_type.string',
+    props: '_type'
+  })
+
+  entities.forEach(async (x) => {
+    const rawType = await apiGetEntity(x._type.reference, {
+      props: [
+        'label_plural',
+        'label',
+        'name'
+      ].join(',')
+    })
+
+    rawReferences.value.push({
+      ...rawType,
+      _count: x._count
+    })
+  })
+}
+
 function propsSorter (a, b) {
   if (a.ordinal && b.ordinal && a.ordinal < b.ordinal) return -1
   if (a.ordinal && b.ordinal && a.ordinal > b.ordinal) return 1
@@ -213,6 +237,7 @@ function propsSorter (a, b) {
 onMounted(() => {
   loadEntity()
   loadChilds()
+  loadReferences()
 })
 </script>
 
@@ -224,9 +249,10 @@ onMounted(() => {
     >
       <div class="h-12">
         <entity-tools-menu
-          :type-id="typeId"
+          :account="account"
           :entity-id="entityId"
           :right="right"
+          :type-id="typeId"
         />
       </div>
 
@@ -306,14 +332,27 @@ onMounted(() => {
               :entity-id="entityId"
               :language="language"
               :type-id="child._id"
+              reference-field="_parent.reference"
             />
           </n-collapse-item>
 
           <n-collapse-item
-            name="referrers"
-            :title="t('referrers')"
+            v-for="child in rawReferences"
+            :key="child._id"
+            :name="child._id"
+            :title="t('referrers', { label: getValue(child.label_plural) || getValue(child.label) || getValue(child.name) })"
           >
-            <div />
+            <template #header-extra>
+              <span class="text-gray-400">{{ n(child._count) }}</span>
+            </template>
+            <entity-child-list
+              class="w-full pl-5"
+              :account="account"
+              :entity-id="entityId"
+              :language="language"
+              :type-id="child._id"
+              reference-field="_reference.reference"
+            />
           </n-collapse-item>
         </n-collapse>
       </div>
@@ -324,10 +363,10 @@ onMounted(() => {
 <i18n lang="yaml">
   en:
     childrens: Children entities - {label}
-    referrers: Referrer entities
+    referrers: Referrer entities - {label}
   et:
     childrens: Alamobjektid - {label}
-    referrers: Viitavad objektid
+    referrers: Viitavad objektid - {label}
 </i18n>
 
 <style scoped>
