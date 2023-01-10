@@ -2,6 +2,7 @@
 import { NButton, NPopover } from 'naive-ui'
 
 const props = defineProps({
+  account: { type: String, required: true },
   entityId: { type: String, required: true },
   right: { type: String, default: null },
   typeId: { type: String, required: true }
@@ -14,7 +15,7 @@ const addChilds = ref([])
 const addOptions = computed(() => addChilds.value.map(x => ({
   value: x._id,
   label: getValue(x.label) || getValue(x.name)
-})))
+})).sort((a, b) => a.label.localeCompare(b.label)))
 
 onMounted(async () => {
   const { entities } = await apiGetEntities({
@@ -29,10 +30,6 @@ onMounted(async () => {
 
   addChilds.value = [...entities, ...types.filter(x => !entities.some(y => y._id === x._id))]
 })
-
-function onAdd (e) {
-  console.log('add', e)
-}
 </script>
 
 <template>
@@ -60,14 +57,14 @@ function onAdd (e) {
         class="w-full flex flex-col"
         vertical
       >
-        <div
+        <nuxt-link
           v-for="child in addOptions"
           :key="child.value"
-          class="py-2 px-4 hover:bg-gray-100 cursor-pointer"
-          @click="onAdd(child.value)"
+          class="py-2 px-4 hover:bg-gray-50 cursor-pointer"
+          :to="{ path: `${account}/${entityId}/add/${child.value}` }"
         >
           {{ child.label }}
-        </div>
+        </nuxt-link>
       </div>
     </n-popover>
 
@@ -79,6 +76,7 @@ function onAdd (e) {
           </template>
         </n-button>
       </template>
+
       {{ t('edit') }}
     </n-popover>
 
@@ -90,6 +88,7 @@ function onAdd (e) {
           </template>
         </n-button>
       </template>
+
       {{ t('duplicate') }}
     </n-popover>
 
@@ -101,6 +100,7 @@ function onAdd (e) {
           </template>
         </n-button>
       </template>
+
       {{ t('parents') }}
     </n-popover>
 
@@ -112,6 +112,7 @@ function onAdd (e) {
           </template>
         </n-button>
       </template>
+
       {{ t('rights') }}
     </n-popover>
   </div>
