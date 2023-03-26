@@ -1,4 +1,4 @@
-<!-- eslint-disable vue/no-v-html -->
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { marked } from 'marked'
 
