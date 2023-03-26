@@ -61,7 +61,7 @@ onMounted(async () => {
           v-for="child in addOptions"
           :key="child.value"
           class="py-2 px-4 hover:bg-gray-50 cursor-pointer"
-          :to="{ path: `${account}/${entityId}/add/${child.value}` }"
+          :to="{ path: `/${account}/${entityId}/add/${child.value}` }"
         >
           {{ child.label }}
         </nuxt-link>
