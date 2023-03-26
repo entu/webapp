@@ -111,11 +111,9 @@ const accountMenu = computed(() => {
 const authMenu = computed(() => [
   {
     key: 'auth-apple',
-    disabled: true,
     icon: () => h(IconLogoApple, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
-      { to: { path: '' } },
-      // { to: { path: '/auth/mobile-id' } },
+      { to: { path: '/auth/apple' } },
       { default: () => 'Apple' }
     )
   },
@@ -129,31 +127,25 @@ const authMenu = computed(() => [
   },
   {
     key: 'auth-mid',
-    disabled: true,
     icon: () => h(IconSimCard, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
-      { to: { path: '' } },
-      // { to: { path: '/auth/mobile-id' } },
+      { to: { path: '/auth/mobile-id' } },
       { default: () => t('mid') }
     )
   },
   {
     key: 'auth-sid',
-    disabled: true,
     icon: () => h(IconPhonePortraitOutline, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
-      { to: { path: '' } },
-      // { to: { path: '/auth/smart-id' } },
+      { to: { path: '/auth/smart-id' } },
       { default: () => t('sid') }
     )
   },
   {
     key: 'auth-idc',
-    disabled: true,
     icon: () => h(IconIdentification, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
-      { to: { path: '' } },
-      // { to: { path: '/auth/id-card' } },
+      { to: { path: '/auth/id-card' } },
       { default: () => t('idc') }
     )
   }
