@@ -120,7 +120,7 @@ const childs = computed(() => [
   ...rawReferences.value.map(x => ({
     _id: x._id,
     label: getValue(x.label_plural) || getValue(x.label) || getValue(x.name),
-    count: t('childsCount', x._count),
+    count: t('referrersCount', x._count),
     referenceField: '_reference.reference'
   }))
 ].sort((a, b) => a.label.localeCompare(b.label)))
@@ -193,7 +193,7 @@ async function loadEntity () {
 async function loadChilds () {
   const { entities } = await apiGetEntities({
     '_parent.reference': entityId.value,
-    group: '_type.string',
+    group: '_type.reference',
     props: '_type'
   })
 
@@ -217,7 +217,7 @@ async function loadReferences () {
   const { entities } = await apiGetEntities({
     '_reference.reference': entityId.value,
     '_reference.property_type.ne': '_parent',
-    group: '_type.string',
+    group: '_type.reference',
     props: '_type'
   })
 
@@ -336,12 +336,13 @@ onMounted(() => {
           <n-collapse-item
             v-for="child in childs"
             :key="child._id"
-            :name="child._id"
+            :name="child._id + child.count"
             :title="child.label"
           >
             <template #header-extra>
               <span class="text-gray-400">{{ child.count }}</span>
             </template>
+
             <entity-child-list
               class="w-full pl-5"
               :account="account"
