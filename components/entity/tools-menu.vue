@@ -96,7 +96,7 @@ onMounted(async () => {
       <template #trigger>
         <n-button quaternary>
           <template #icon>
-            <icon-tree-view-alt class="h-5 w-5" />
+            <icon-tree-view class="h-5 w-5" />
           </template>
         </n-button>
       </template>
