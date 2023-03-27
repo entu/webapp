@@ -1,6 +1,5 @@
 <script setup>
 import { NLayout, NLayoutSider, useLoadingBar } from 'naive-ui'
-import { useMainStore, useUserStore } from '~/stores'
 
 const route = useRoute()
 const loadingBar = useLoadingBar()

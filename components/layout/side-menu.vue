@@ -1,7 +1,6 @@
 <script setup>
 import { NMenu } from 'naive-ui'
 import { IconApple, IconData, IconGoogle, IconHome, IconIdCard, IconLanguage, IconLogout, IconMobileId, IconSmartId, IconUser, NuxtLink } from '#components'
-import { useMainStore } from '~/stores'
 
 const props = defineProps({
   collapsed: { type: Boolean, default: false },

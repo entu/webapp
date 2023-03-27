@@ -42,6 +42,11 @@ export default defineNuxtConfig({
       locale: 'en'
     }
   },
+  imports: {
+    dirs: [
+      'stores'
+    ]
+  },
   modules: [
     '@nuxtjs/i18n',
     '@pinia/nuxt',

@@ -1,6 +1,4 @@
 <script setup>
-import { useUserStore } from '~/stores'
-
 const { t } = useI18n()
 const router = useRouter()
 const userStore = useUserStore()

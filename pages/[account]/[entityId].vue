@@ -1,6 +1,5 @@
 <script setup>
 import { NCollapse, NCollapseItem } from 'naive-ui'
-import { useMainStore, useUserStore } from '~/stores'
 
 const { t } = useI18n()
 const route = useRoute()

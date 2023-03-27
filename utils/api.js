@@ -1,5 +1,3 @@
-import { useMainStore, useUserStore } from '~/stores'
-
 export async function apiGetEntities (params) {
   return await apiGet('entity', params)
 }

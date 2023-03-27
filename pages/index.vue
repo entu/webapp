@@ -1,6 +1,4 @@
 <script setup>
-import { useUserStore } from '~/stores'
-
 const router = useRouter()
 const userStore = useUserStore()
 const { accounts } = storeToRefs(userStore)
