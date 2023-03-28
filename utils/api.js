@@ -17,9 +17,10 @@ export async function apiGetProperty (propertyId, params) {
 
 export async function apiGet (pathname, params = {}, headers) {
   const runtimeConfig = useRuntimeConfig()
+  const requests = useRequestCounter()
+
   const { accounts, accountId } = useAccount()
   const { token } = useUser()
-  const requests = useRequestCounter()
 
   requests.value++
 

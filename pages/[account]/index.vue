@@ -6,6 +6,7 @@ const stats = ref()
 
 const { accountId } = useAccount()
 const { userId } = useUser()
+
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
 onMounted(async () => {

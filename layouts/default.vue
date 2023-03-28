@@ -4,6 +4,7 @@ import { NLayout, NLayoutSider, useLoadingBar } from 'naive-ui'
 const route = useRoute()
 const loadingBar = useLoadingBar()
 const requests = useRequestCounter()
+
 const { accountId } = useAccount()
 const { menuCollapsed } = useUser()
 

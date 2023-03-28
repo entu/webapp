@@ -3,6 +3,7 @@ import { NCollapse, NCollapseItem } from 'naive-ui'
 
 const { t } = useI18n()
 const route = useRoute()
+
 const { accountId } = useAccount()
 const { userId } = useUser()
 

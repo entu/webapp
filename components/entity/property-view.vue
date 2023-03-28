@@ -5,10 +5,11 @@ const props = defineProps({
   values: { type: Array, required: true }
 })
 
-const { d, locale } = useI18n()
+const { d } = useI18n()
 const { accountId } = useAccount()
+const { language } = useUser()
 
-const localeValues = computed(() => props.values.filter(x => !x.language || x.language === locale.value))
+const localeValues = computed(() => props.values.filter(x => !x.language || x.language === language.value))
 </script>
 
 <template>
