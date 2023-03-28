@@ -6,6 +6,7 @@ const props = defineProps({
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const location = useBrowserLocation()
 
 const listElement = ref(null)
 const searchText = ref(route.query.q || '')
@@ -37,11 +38,11 @@ onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
 })
 
 watch(() => route.query, () => {
-  if (locationSearch.value === location.search) return
+  if (locationSearch.value === location.value.search) return
 
   skip.value = 0
   entitiesList.value = []
-  locationSearch.value = location.search
+  locationSearch.value = location.value.search
 
   getEntities(true)
 })
