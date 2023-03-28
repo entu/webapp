@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NButton, NButtonGroup, NPopover } from 'naive-ui'
 
@@ -86,7 +87,7 @@ onMounted(async () => {
 <template>
   <n-button-group
     v-if="entityId || addChildOptions.length > 0"
-    class="h-12 mx-2 flex items-center justify-end float-right"
+    class="mx-2 flex items-center justify-end float-right"
   >
     <n-popover
       v-if="addChildOptions.length > 0"
@@ -115,7 +116,7 @@ onMounted(async () => {
           v-for="child in addGroup.options"
           :key="child.value"
           class="py-2 px-4 hover:bg-gray-50 cursor-pointer"
-          :to="{ path: route.path, query:route.query, hash: `#add-${child.value}`}"
+          :to="{ path: route.path, query: route.query, hash: `#add-${child.value}`}"
         >
           {{ child.label }}
         </nuxt-link>
@@ -129,7 +130,7 @@ onMounted(async () => {
     <n-button
       v-if="['owner', 'editor'].includes(right)"
       tertiary
-      @click="navigateTo({ path: route.path, query:route.query, hash: `#edit`})"
+      @click="navigateTo({ path: route.path, query: route.query, hash: `#edit`})"
     >
       <template #icon>
         <icon-edit class="h-5 w-5" />
@@ -140,7 +141,7 @@ onMounted(async () => {
     <n-button
       v-if="entityId"
       tertiary
-      @click="navigateTo({ path: route.path, query:route.query, hash: `#duplicate`})"
+      @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`})"
     >
       <template #icon>
         <icon-copy class="h-5 w-5" />
@@ -151,7 +152,7 @@ onMounted(async () => {
     <n-button
       v-if="entityId"
       tertiary
-      @click="navigateTo({ path: route.path, query:route.query, hash: `#parents`})"
+      @click="navigateTo({ path: route.path, query: route.query, hash: `#parents`})"
     >
       <template #icon>
         <icon-tree-view class="h-5 w-5" />
@@ -162,7 +163,7 @@ onMounted(async () => {
     <n-button
       v-if="entityId"
       tertiary
-      @click="navigateTo({ path: route.path, query:route.query, hash: `#rights`})"
+      @click="navigateTo({ path: route.path, query: route.query, hash: `#rights`})"
     >
       <template #icon>
         <icon-user-multiple class="h-5 w-5" />

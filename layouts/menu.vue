@@ -48,10 +48,8 @@ watch(() => loading.value, (value) => {
     </div>
 
     <div
-      class="grow overflow-y-auto"
-      :class="{
-        'pl-4': !isQuery
-      }"
+      class="py-2 grow overflow-y-auto"
+      :class="{ 'pl-4': !isQuery }"
     >
       <slot />
     </div>

@@ -262,14 +262,12 @@ onMounted(() => {
       v-if="rawEntity"
       class="h-full flex flex-col"
     >
-      <div class="h-12">
-        <entity-tools-menu
-          :account="account"
-          :entity-id="entityId"
-          :right="right"
-          :type-id="typeId"
-        />
-      </div>
+      <entity-toolbar
+        :account="account"
+        :entity-id="entityId"
+        :right="right"
+        :type-id="typeId"
+      />
 
       <div class="px-2 pb-4 flex flex-col overflow-y-auto overflow-hidden">
         <div

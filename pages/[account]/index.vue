@@ -22,12 +22,11 @@ onMounted(async () => {
 <template>
   <transition>
     <div class="h-full flex flex-col">
-      <div
+      <entity-toolbar
         v-if="isQuery && authenticated"
-        class="h-12"
-      >
-        <entity-tools-menu :account="account" />
-      </div>
+        :account="account"
+      />
+
       <div
         v-if="!isQuery && stats && authenticated"
         class="h-full w-full lg:w-1/2 xl:w-1/2 md:min-w-fit px-8 md:mx-auto flex flex-col justify-center"
