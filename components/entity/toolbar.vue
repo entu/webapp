@@ -15,31 +15,18 @@ const route = useRoute()
 const addChilds = ref([])
 const addDefaults = ref([])
 
-const addChildOptions = computed(() => {
-  const result = []
+const addDefaultOptions = computed(() => addDefaults.value.map(x => ({
+  value: x._id,
+  label: getValue(x.label) || getValue(x.name)
+})).sort((a, b) => a.label.localeCompare(b.label)))
 
-  if (['owner', 'editor', 'expander'].includes(props.right) && addChilds.value.length > 0) {
-    result.push({
-      title: t('addUnderThis'),
-      options: addChilds.value.map(x => ({
-        value: x._id,
-        label: getValue(x.label) || getValue(x.name)
-      })).sort((a, b) => a.label.localeCompare(b.label))
-    })
-  }
-
-  if (addDefaults.value.length > 0) {
-    result.push({
-      title: t('addNew'),
-      options: addDefaults.value.map(x => ({
-        value: x._id,
-        label: getValue(x.label) || getValue(x.name)
-      })).sort((a, b) => a.label.localeCompare(b.label))
-    })
-  }
-
-  return result
-})
+const addChildOptions = computed(() => ['owner', 'editor', 'expander'].includes(props.right) && addChilds.value.length > 0
+  ? addChilds.value.map(x => ({
+    value: x._id,
+    label: getValue(x.label) || getValue(x.name)
+  })).sort((a, b) => a.label.localeCompare(b.label))
+  : []
+)
 
 async function loadAddDefaults () {
   const { entities: menuEntities } = await apiGetEntities({
@@ -85,107 +72,72 @@ onMounted(async () => {
 </script>
 
 <template>
-  <n-button-group
-    v-if="entityId || addChildOptions.length > 0"
-    class="mx-2 flex items-center justify-end float-right"
-  >
-    <n-popover
-      v-if="addChildOptions.length > 0"
-      content-style="padding:0;border:none"
-      footer-style="padding:0;border:none"
-    >
-      <template #trigger>
-        <n-button tertiary>
-          <template #icon>
-            <icon-add class="h-7 w-7" />
-          </template>
-          {{ t('add') }}
-        </n-button>
-      </template>
+  <div class="mx-2 flex gap-2 justify-end">
+    <entity-toolbar-add :options="addDefaultOptions" />
 
-      <div
-        v-for="addGroup in addChildOptions"
-        :key="addGroup.title"
-        class="w-full flex flex-col border-b last:border-b-0"
-        vertical
+    <n-button-group
+      v-if="entityId"
+      class="flex items-center justify-end float-right"
+    >
+      <entity-toolbar-add
+        :is-child="true"
+        :options="addChildOptions"
+      />
+
+      <n-button
+        v-if="['owner', 'editor'].includes(right)"
+        tertiary
+        @click="navigateTo({ path: route.path, query: route.query, hash: `#edit`})"
       >
-        <div class="py-2 px-4 font-bold text-[#1E434C]">
-          {{ addGroup.title }}
-        </div>
-        <nuxt-link
-          v-for="child in addGroup.options"
-          :key="child.value"
-          class="py-2 px-4 hover:bg-gray-50 cursor-pointer"
-          :to="{ path: route.path, query: route.query, hash: `#add-${child.value}`}"
-        >
-          {{ child.label }}
-        </nuxt-link>
-      </div>
+        <template #icon>
+          <icon-edit class="h-5 w-5" />
+        </template>
+        {{ t('edit') }}
+      </n-button>
 
-      <template #footer>
-        <div />
-      </template>
-    </n-popover>
+      <n-button
+        v-if="entityId"
+        tertiary
+        @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`})"
+      >
+        <template #icon>
+          <icon-copy class="h-5 w-5" />
+        </template>
+        {{ t('duplicate') }}
+      </n-button>
 
-    <n-button
-      v-if="['owner', 'editor'].includes(right)"
-      tertiary
-      @click="navigateTo({ path: route.path, query: route.query, hash: `#edit`})"
-    >
-      <template #icon>
-        <icon-edit class="h-5 w-5" />
-      </template>
-      {{ t('edit') }}
-    </n-button>
+      <n-button
+        v-if="entityId"
+        tertiary
+        @click="navigateTo({ path: route.path, query: route.query, hash: `#parents`})"
+      >
+        <template #icon>
+          <icon-tree-view class="h-5 w-5" />
+        </template>
+        {{ t('parents') }}
+      </n-button>
 
-    <n-button
-      v-if="entityId"
-      tertiary
-      @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`})"
-    >
-      <template #icon>
-        <icon-copy class="h-5 w-5" />
-      </template>
-      {{ t('duplicate') }}
-    </n-button>
-
-    <n-button
-      v-if="entityId"
-      tertiary
-      @click="navigateTo({ path: route.path, query: route.query, hash: `#parents`})"
-    >
-      <template #icon>
-        <icon-tree-view class="h-5 w-5" />
-      </template>
-      {{ t('parents') }}
-    </n-button>
-
-    <n-button
-      v-if="entityId"
-      tertiary
-      @click="navigateTo({ path: route.path, query: route.query, hash: `#rights`})"
-    >
-      <template #icon>
-        <icon-user-multiple class="h-5 w-5" />
-      </template>
-      {{ t('rights') }}
-    </n-button>
-  </n-button-group>
+      <n-button
+        v-if="entityId"
+        tertiary
+        @click="navigateTo({ path: route.path, query: route.query, hash: `#rights`})"
+      >
+        <template #icon>
+          <icon-user-multiple class="h-5 w-5" />
+        </template>
+        {{ t('rights') }}
+      </n-button>
+    </n-button-group>
+  </div>
 </template>
 
 <i18n lang="yaml">
   en:
-    add: Add
-    addNew: Add new object
-    addUnderThis: Add child object
     edit: Edit
     duplicate: Duplicate
     parents: Parents
     rights: User rights
   et:
-    add: Lisa
-    addNew: Lisa uus objekt
-    addUnderThis: Lisa alamobjekt
     edit: Muuda
     duplicate: Dubleeri
     parents: Kuuluvus
