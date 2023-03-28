@@ -1,76 +1,76 @@
 <script setup>
-import { NConfigProvider, NLoadingBarProvider } from 'naive-ui'
+import { NConfigProvider, NGlobalStyle, NLoadingBarProvider } from 'naive-ui'
 
 const runtimeConfig = useRuntimeConfig()
+
 const themeOverrides = {
-  Dropdown: {
-    optionColorActive: 'rgba(0, 0, 0, .05)',
-    optionTextColorActive: 'rgba(0, 0, 0, .8)'
-  },
-  Menu: {
-    arrowColor: 'rgba(255, 255, 255, .7)',
-    arrowColorActive: 'rgba(255, 255, 255, 1)',
-    arrowColorActiveHover: 'rgba(255, 255, 255, 1)',
-    arrowColorChildActive: 'rgba(255, 255, 255, 1)',
-    arrowColorChildActiveHover: 'rgba(255, 255, 255, 1)',
-    arrowColorHover: 'rgba(255, 255, 255, 1)',
-
-    borderRadius: '0',
-    dividerColor: 'rgba(255, 255, 255, .2)',
-
-    itemColorActive: 'rgba(255, 255, 255, 0.15)',
-    itemColorActiveCollapsed: 'rgba(24, 160, 88, 0.1)',
-    itemColorActiveHover: 'rgba(255, 255, 255, 0.15)',
-
-    itemColorHover: 'rgba(255, 255, 255, 0.05)',
-
-    itemTextColor: 'rgba(255, 255, 255, .7)',
-    itemTextColorActive: 'rgba(255, 255, 255, 1)',
-    itemTextColorActiveHover: 'rgba(255, 255, 255, 1)',
-    itemTextColorChildActive: 'rgba(255, 255, 255, 1)',
-    itemTextColorChildActiveHover: 'rgba(255, 255, 255, 1)',
-    itemTextColorHover: 'rgba(254, 255, 255, 1)',
-
-    itemIconColor: 'rgba(255, 255, 255, .7)',
-    itemIconColorActive: 'rgba(255, 255, 255, 1)',
-    itemIconColorActiveHover: 'rgba(255, 255, 255, 1)',
-    itemIconColorChildActive: 'rgba(255, 255, 255, 1)',
-    itemIconColorChildActiveHover: 'rgba(255, 255, 255, 1)',
-    itemIconColorCollapsed: 'rgba(255, 255, 255, .7)',
-    itemIconColorCollapsedChildActive: 'rgba(255, 255, 255, 1)',
-    itemIconColorHover: 'rgba(254, 255, 255, 1)'
-  },
-  LoadingBar: {
-    colorLoading: 'rgb(14, 165, 233)',
-    height: '2px'
-  },
-  Collapse: {
-    arrowColor: '#1E434C',
-    dividerColor: 'transparent',
-    fontSize: '1rem',
-    titleFontSize: '1rem',
-    titleFontWeight: '500',
-    titleTextColor: '#1E434C'
+  common: {
+    fontFamily: 'Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif',
+    fontSize: '16px',
+    primaryColor: '#1E434C'
   },
   DataTable: {
-    fontSizeMedium: '1rem',
-    loadingColor: 'rgb(14, 165, 233)',
     tdColorHover: '#FFFFFF',
     thColor: '#FFFFFF',
     thColorHover: '#FFFFFF'
   },
   Input: {
-    borderHover: '1px solid #1E434C'
+    borderFocus: '1px solid #1E434C',
+    borderHover: '1px solid #1E434C',
+    boxShadowFocus: '0 0 0 2px rgba(3, 117, 255, 0.2)'
   },
-  Pagination: {
-    itemBorderActive: 'none',
-    itemColorActive: 'rgba(0, 0, 0, .05)',
-    itemFontSizeMedium: '1rem',
-    itemTextColorActive: '#1E434C',
-    itemTextColorHover: '#1E434C'
+  Layout: {
+    siderColor: '#1E434C'
   },
-  Spin: {
-    color: 'rgb(14, 165, 233)'
+  LoadingBar: {
+    colorLoading: 'rgb(14, 165, 233)',
+    height: '2px'
+  },
+  Menu: {
+    arrowColor: 'rgba(255, 255, 255, 0.7)',
+    arrowColorActive: '#FFFFFF',
+    arrowColorActiveHover: '#FFFFFF',
+    arrowColorChildActive: '#FFFFFF',
+    arrowColorChildActiveHover: '#FFFFFF',
+    arrowColorHover: 'rgba(255, 255, 255, 0.7)',
+
+    dividerColor: 'rgba(255, 255, 255, .2)',
+
+    itemColorActive: 'rgba(255, 255, 255, 0.15)',
+    itemColorActiveCollapsed: 'rgba(255, 255, 255, 0.15)',
+    itemColorActiveHover: 'rgba(255, 255, 255, 0.15)',
+    itemColorHover: 'rgba(255, 255, 255, 0.15)',
+
+    itemIconColor: 'rgba(255, 255, 255, 0.7)',
+    itemIconColorActive: '#FFFFFF',
+    itemIconColorActiveHover: '#FFFFFF',
+    itemIconColorChildActive: '#FFFFFF',
+    itemIconColorChildActiveHover: '#FFFFFF',
+    itemIconColorCollapsed: 'rgba(255, 255, 255, 0.7)',
+    itemIconColorCollapsedChildActive: '#FFFFFF',
+    itemIconColorHover: 'rgba(255, 255, 255, 0.7)',
+
+    itemTextColor: 'rgba(255, 255, 255, 0.7)',
+    itemTextColorActive: '#FFFFFF',
+    itemTextColorActiveHover: '#FFFFFF',
+    itemTextColorChildActive: '#FFFFFF',
+    itemTextColorChildActiveHover: 'rgba(255, 255, 255, .5)',
+    itemTextColorHover: 'rgba(255, 255, 255, 0.7)'
+  },
+  Select: {
+    menuBoxShadow: '0 0 0 1px rgb(3, 117, 255)',
+    peers: {
+      InternalSelection: {
+        borderFocus: '1px solid #1E434C',
+        borderHover: '1px solid #1E434C'
+      }
+    }
+  },
+  Slider: {
+    dotBorder: '2px solid #1E434C',
+    dotBorderActive: '2px solid #1E434C',
+    fillColor: '#DBDBDF',
+    fillColorHover: '#DBDBDF'
   }
 }
 
@@ -93,6 +93,7 @@ console.log(
     class="h-full"
     :theme-overrides="themeOverrides"
   >
+    <n-global-style />
     <n-loading-bar-provider>
       <NuxtLayout>
         <NuxtPage />

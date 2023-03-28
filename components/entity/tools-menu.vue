@@ -1,5 +1,5 @@
 <script setup>
-import { NButton, NPopover } from 'naive-ui'
+import { NButton, NButtonGroup, NPopover } from 'naive-ui'
 
 const props = defineProps({
   account: { type: String, required: true },
@@ -84,9 +84,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div
+  <n-button-group
     v-if="entityId || addChildOptions.length > 0"
-    class="h-12 mx-2 flex items-center justify-end border-b border-gray-300"
+    class="h-12 mx-2 flex items-center justify-end float-right"
   >
     <n-popover
       v-if="addChildOptions.length > 0"
@@ -94,7 +94,7 @@ onMounted(async () => {
       footer-style="padding:0;border:none"
     >
       <template #trigger>
-        <n-button quaternary>
+        <n-button tertiary>
           <template #icon>
             <icon-add class="h-7 w-7" />
           </template>
@@ -128,7 +128,7 @@ onMounted(async () => {
 
     <n-button
       v-if="['owner', 'editor'].includes(right)"
-      quaternary
+      tertiary
       @click="navigateTo({ path: route.path, query:route.query, hash: `#edit`})"
     >
       <template #icon>
@@ -139,7 +139,7 @@ onMounted(async () => {
 
     <n-button
       v-if="entityId"
-      quaternary
+      tertiary
       @click="navigateTo({ path: route.path, query:route.query, hash: `#duplicate`})"
     >
       <template #icon>
@@ -150,7 +150,7 @@ onMounted(async () => {
 
     <n-button
       v-if="entityId"
-      quaternary
+      tertiary
       @click="navigateTo({ path: route.path, query:route.query, hash: `#parents`})"
     >
       <template #icon>
@@ -161,7 +161,7 @@ onMounted(async () => {
 
     <n-button
       v-if="entityId"
-      quaternary
+      tertiary
       @click="navigateTo({ path: route.path, query:route.query, hash: `#rights`})"
     >
       <template #icon>
@@ -169,7 +169,7 @@ onMounted(async () => {
       </template>
       {{ t('rights') }}
     </n-button>
-  </div>
+  </n-button-group>
 </template>
 
 <i18n lang="yaml">

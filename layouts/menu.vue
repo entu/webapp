@@ -25,7 +25,6 @@ watch(() => loading.value, (value) => {
     has-sider
   >
     <n-layout-sider
-      class="bg-[#1E434C]"
       show-trigger="bar"
       collapse-mode="width"
       :class="{ 'm-2 mr-0 rounded-md': !menuCollapsed }"
@@ -47,10 +46,10 @@ watch(() => loading.value, (value) => {
     <div v-if="isQuery" :class="{ 'py-2': !menuCollapsed }">
       <layout-entity-list :account="account" />
     </div>
+
     <div
       class="grow overflow-y-auto"
       :class="{
-        'py-2': !menuCollapsed,
         'pl-4': !isQuery
       }"
     >

@@ -112,7 +112,7 @@ onMounted(getEntities)
         for="search"
         class="w-8 h-7 flex items-center justify-center"
       >
-        <icon-search class="h-5 w-5 text-xl text-gray-400" />
+        <icon-search class="h-5 w-5 text-gray-400" />
       </label>
       <input
         id="search"
@@ -157,9 +157,9 @@ onMounted(getEntities)
 
     <div
       v-if="entitiesCount !== null"
-      class="pt-3 pb-1 sticky bottom-0 text-center text-sm text-gray-400 italic bg-white"
+      class="pt-3 pb-1 sticky bottom-0 text-center text-gray-400 italic bg-white"
     >
-      {{ t('count',entitiesCount) }}
+      {{ t('count', entitiesCount) }}
     </div>
   </div>
 </template>

@@ -240,7 +240,7 @@ onMounted(getMenuEntities)
 </script>
 
 <template>
-  <div class="py-2 min-h-full w-full flex flex-col justify-between">
+  <div class="py-1 min-h-full w-full flex flex-col justify-between">
     <nuxt-link
       v-if="!collapsed"
       :to="{ path: `/${account}` }"

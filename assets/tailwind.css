@@ -2,29 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body {
-  @apply h-full;
-  @apply w-full;
-  @apply text-base;
-  @apply antialiased;
-
-  font-family: Avenir, 'Helvetica Neue', Helvetica, Arial, sans-serif;
-}
-
-a.link {
-  @apply text-sky-800;
-  @apply hover:underline;
-}
-
+html,
+body,
 #__nuxt {
   @apply h-full;
   @apply w-full;
 }
 
-.n-menu {
-  @apply text-base;
-}
-
-.n-menu-item-content.n-menu-item-content--child-active .n-menu-item-content-header {
-  @apply font-bold;
+a.link {
+  @apply text-sky-800;
+  @apply hover:underline;
 }

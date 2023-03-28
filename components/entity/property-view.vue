@@ -54,7 +54,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
 
       <span
         v-if="v.filesize"
-        class="ml-2 text-sm"
+        class="ml-2"
       >
         {{ humanFileSize(v.filesize) }}
       </span>
