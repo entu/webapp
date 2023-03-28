@@ -6,7 +6,6 @@ const props = defineProps({
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
-const location = useBrowserLocation()
 
 const listElement = ref(null)
 const searchText = ref(route.query.q || '')
@@ -38,14 +37,14 @@ onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
 })
 
 watch(() => route.query, () => {
-  if (locationSearch.value === location.value.search) return
+  if (locationSearch.value === location.search) return
 
   skip.value = 0
   entitiesList.value = []
-  locationSearch.value = location.value.search
+  locationSearch.value = location.search
 
   getEntities(true)
-})
+}, { deep: true })
 
 watch(() => route.params.entityId, (value) => {
   scrollIdx.value = entitiesList.value.findIndex(x => x._id === value) || 0

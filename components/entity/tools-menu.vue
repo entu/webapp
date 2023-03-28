@@ -10,7 +10,6 @@ const props = defineProps({
 
 const { t } = useI18n()
 const route = useRoute()
-const location = useBrowserLocation()
 
 const addChilds = ref([])
 const addDefaults = ref([])
@@ -44,7 +43,7 @@ const addChildOptions = computed(() => {
 async function loadAddDefaults () {
   const { entities: menuEntities } = await apiGetEntities({
     '_type.string': 'menu',
-    'query.string': location.value.search.substring(1),
+    'query.string': location.search.substring(1),
     props: '_id'
   })
 
@@ -59,7 +58,7 @@ async function loadAddDefaults () {
   addDefaults.value = entities
 }
 
-watch(() => location.value.search, loadAddDefaults, { deep: true })
+watch(() => route.query, loadAddDefaults, { deep: true })
 
 onMounted(async () => {
   if (props.entityId) {
@@ -128,6 +127,7 @@ onMounted(async () => {
     </n-popover>
 
     <n-button
+      v-if="['owner', 'editor'].includes(right)"
       quaternary
       @click="navigateTo({ path: route.path, query:route.query, hash: `#edit`})"
     >
@@ -138,6 +138,7 @@ onMounted(async () => {
     </n-button>
 
     <n-button
+      v-if="entityId"
       quaternary
       @click="navigateTo({ path: route.path, query:route.query, hash: `#duplicate`})"
     >
@@ -148,6 +149,7 @@ onMounted(async () => {
     </n-button>
 
     <n-button
+      v-if="entityId"
       quaternary
       @click="navigateTo({ path: route.path, query:route.query, hash: `#parents`})"
     >
@@ -158,6 +160,7 @@ onMounted(async () => {
     </n-button>
 
     <n-button
+      v-if="entityId"
       quaternary
       @click="navigateTo({ path: route.path, query:route.query, hash: `#rights`})"
     >

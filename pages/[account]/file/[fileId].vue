@@ -6,7 +6,7 @@ onMounted(async () => {
 
   if (!url) return
 
-  window.location = url
+  location = url
 })
 </script>
 
