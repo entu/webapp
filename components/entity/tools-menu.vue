@@ -115,7 +115,7 @@ onMounted(async () => {
           v-for="child in addGroup.options"
           :key="child.value"
           class="py-2 px-4 hover:bg-gray-50 cursor-pointer"
-          :to="{ path: `/${account}/${entityId || '_'}/add/${child.value}` }"
+          :to="{ path: route.path, query:route.query, hash: `#add-${child.value}`}"
         >
           {{ child.label }}
         </nuxt-link>
@@ -128,7 +128,10 @@ onMounted(async () => {
 
     <n-popover v-if="['owner', 'editor'].includes(right)">
       <template #trigger>
-        <n-button quaternary>
+        <n-button
+          quaternary
+          @click="navigateTo({ path: route.path, query:route.query, hash: `#edit`})"
+        >
           <template #icon>
             <icon-edit class="h-5 w-5" />
           </template>
@@ -140,7 +143,10 @@ onMounted(async () => {
 
     <n-popover v-if="entityId">
       <template #trigger>
-        <n-button quaternary>
+        <n-button
+          quaternary
+          @click="navigateTo({ path: route.path, query:route.query, hash: `#duplicate`})"
+        >
           <template #icon>
             <icon-copy class="h-5 w-5" />
           </template>
@@ -152,7 +158,10 @@ onMounted(async () => {
 
     <n-popover v-if="entityId">
       <template #trigger>
-        <n-button quaternary>
+        <n-button
+          quaternary
+          @click="navigateTo({ path: route.path, query:route.query, hash: `#parents`})"
+        >
           <template #icon>
             <icon-tree-view class="h-5 w-5" />
           </template>
@@ -164,7 +173,10 @@ onMounted(async () => {
 
     <n-popover v-if="entityId">
       <template #trigger>
-        <n-button quaternary>
+        <n-button
+          quaternary
+          @click="navigateTo({ path: route.path, query:route.query, hash: `#rights`})"
+        >
           <template #icon>
             <icon-user-multiple class="h-5 w-5" />
           </template>
