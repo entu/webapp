@@ -6,7 +6,7 @@ const route = useRoute()
 onMounted(async () => {
   useHead({ title: t('title') })
 
-  await navigateTo(`${runtimeConfig.public.apiUrl}/auth/${route.params.provider}?next=${location.origin}/auth/callback?key=`, { external: true })
+  await navigateTo(`${runtimeConfig.public.apiUrl}/auth/${route.params.provider}?next=${window.location.origin}/auth/callback?key=`, { external: true })
 })
 </script>
 

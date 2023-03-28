@@ -16,7 +16,7 @@ const mainStore = useMainStore()
 
 const { language } = storeToRefs(mainStore)
 const menuEntities = ref([])
-const activeMenu = ref(location.search.substring(1))
+const activeMenu = ref(window.location.search.substring(1))
 
 const accountMenu = computed(() => {
   const menu = []

@@ -36,11 +36,11 @@ onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
 })
 
 watch(() => route.query, () => {
-  if (locationSearch.value === location.search) return
+  if (locationSearch.value === window.location.search) return
 
   skip.value = 0
   entitiesList.value = []
-  locationSearch.value = location.search
+  locationSearch.value = window.location.search
 
   getEntities(true)
 }, { deep: true })
