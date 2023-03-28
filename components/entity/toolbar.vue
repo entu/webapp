@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NButton, NButtonGroup, NPopover } from 'naive-ui'
+import { NButton, NButtonGroup } from 'naive-ui'
 
 const props = defineProps({
   account: { type: String, required: true },
@@ -31,7 +31,7 @@ const addChildOptions = computed(() => ['owner', 'editor', 'expander'].includes(
 async function loadAddDefaults () {
   const { entities: menuEntities } = await apiGetEntities({
     '_type.string': 'menu',
-    'query.string': location.search.substring(1),
+    'query.string': window.location.search.substring(1),
     props: '_id'
   })
 
@@ -87,7 +87,7 @@ onMounted(async () => {
       <n-button
         v-if="['owner', 'editor'].includes(right)"
         tertiary
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#edit`})"
+        @click="navigateTo({ ...route, hash: `#edit`})"
       >
         <template #icon>
           <icon-edit class="h-5 w-5" />
@@ -98,7 +98,7 @@ onMounted(async () => {
       <n-button
         v-if="entityId"
         tertiary
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`})"
+        @click="navigateTo({ ...route, hash: `#duplicate`})"
       >
         <template #icon>
           <icon-copy class="h-5 w-5" />
@@ -109,7 +109,7 @@ onMounted(async () => {
       <n-button
         v-if="entityId"
         tertiary
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#parents`})"
+        @click="navigateTo({ ...route, hash: `#parents`})"
       >
         <template #icon>
           <icon-tree-view class="h-5 w-5" />
@@ -120,7 +120,7 @@ onMounted(async () => {
       <n-button
         v-if="entityId"
         tertiary
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#rights`})"
+        @click="navigateTo({ ...route, hash: `#rights`})"
       >
         <template #icon>
           <icon-user-multiple class="h-5 w-5" />

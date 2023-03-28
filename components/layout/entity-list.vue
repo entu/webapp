@@ -5,7 +5,6 @@ const props = defineProps({
 
 const { t } = useI18n()
 const route = useRoute()
-const router = useRouter()
 
 const listElement = ref(null)
 const searchText = ref(route.query.q || '')
@@ -19,8 +18,8 @@ const scrollIdx = ref(0)
 
 const { y: listElementScroll } = useScroll(listElement)
 
-const debouncedScroll = useDebounceFn(() => {
-  router.push({ path: `/${props.account}/${entitiesList.value[scrollIdx.value]._id}`, query: route.query })
+const debouncedScroll = useDebounceFn(async () => {
+  await navigateTo({ path: `/${props.account}/${entitiesList.value[scrollIdx.value]._id}`, query: route.query })
 }, 300)
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
@@ -50,15 +49,12 @@ watch(() => route.params.entityId, (value) => {
   scrollIdx.value = entitiesList.value.findIndex(x => x._id === value) || 0
 })
 
-watchDebounced(searchText, () => {
-  if (searchText.value) {
-    router.replace({ query: { ...route.query, q: searchText.value } })
-  } else {
-    const newQuery = { ...route.query }
-    delete newQuery.q
+watchDebounced(searchText, async () => {
+  const routeConfig = { ...route, query: { ...route.query, q: searchText.value } }
 
-    router.replace({ query: newQuery })
-  }
+  if (!searchText.value) delete routeConfig.query.q
+
+  await navigateTo(routeConfig, { replace: true })
 }, { debounce: 500, maxWait: 5000 })
 
 async function getEntities () {

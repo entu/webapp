@@ -1,10 +1,9 @@
 <script setup>
-const router = useRouter()
 const userStore = useUserStore()
 const { accounts } = storeToRefs(userStore)
 
-onMounted(() => {
-  router.push({ path: `/${accounts.value?.[0]?.account || 'entu'}` })
+onMounted(async () => {
+  await navigateTo({ path: `/${accounts.value?.[0]?.account || 'entu'}` })
 })
 </script>
 

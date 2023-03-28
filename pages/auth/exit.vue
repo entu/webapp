@@ -1,13 +1,12 @@
 <script setup>
 const { t } = useI18n()
-const router = useRouter()
 const userStore = useUserStore()
 
-onMounted(() => {
+onMounted(async () => {
   useHead({ title: t('title') })
 
   userStore.signOut()
-  router.push({ path: '/', query: {} })
+  await navigateTo({ path: '/', query: {} })
 })
 </script>
 
