@@ -1,9 +1,8 @@
 <script setup>
-const userStore = useUserStore()
-const { accounts } = storeToRefs(userStore)
+const { accounts } = useAccount()
 
 onMounted(async () => {
-  await navigateTo({ path: `/${accounts.value?.[0]?.account || 'entu'}` })
+  await navigateTo({ path: `/${accounts.value?.at(0)?.account || 'entu'}` })
 })
 </script>
 

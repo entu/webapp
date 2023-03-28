@@ -1,12 +1,14 @@
 <script setup>
 const route = useRoute()
 
+definePageMeta({ layout: 'blank' })
+
 onMounted(async () => {
   const { url } = await apiGetProperty(route.params.fileId)
 
   if (!url) return
 
-  location = url
+  await navigateTo(url, { external: true })
 })
 </script>
 

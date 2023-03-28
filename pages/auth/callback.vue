@@ -1,18 +1,18 @@
 <script setup>
 const { t } = useI18n()
 const route = useRoute()
-const userStore = useUserStore()
-
-const { accounts } = storeToRefs(userStore)
+const { accounts } = useAccount()
 
 onMounted(async () => {
   useHead({ title: t('title') })
 
-  await userStore.getAccounts(route.query.key)
+  const authResponse = await apiGet('auth', { account: '' }, { Authorization: `Bearer ${route.query.key}` })
 
-  if (accounts.value.length > 0) {
-    await navigateTo({ path: `/${accounts.value[0].account}`, query: {} })
+  if (Array.isArray(authResponse) && authResponse.length > 0) {
+    accounts.value = authResponse
+    await navigateTo({ path: `/${authResponse.at(0).account}`, query: {} })
   } else {
+    accounts.value = []
     await navigateTo({ path: '/', query: {} })
   }
 })

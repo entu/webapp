@@ -1,10 +1,7 @@
 <script setup>
-const props = defineProps({
-  account: { type: String, required: true }
-})
-
 const { t } = useI18n()
 const route = useRoute()
+const { accountId } = useAccount()
 
 const listElement = ref(null)
 const searchText = ref(route.query.q || '')
@@ -19,7 +16,7 @@ const scrollIdx = ref(0)
 const { y: listElementScroll } = useScroll(listElement)
 
 const debouncedScroll = useDebounceFn(async () => {
-  await navigateTo({ path: `/${props.account}/${entitiesList.value[scrollIdx.value]._id}`, query: route.query })
+  await navigateTo({ path: `/${accountId.value}/${entitiesList.value[scrollIdx.value]._id}`, query: route.query })
 }, 300)
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
@@ -130,7 +127,7 @@ onMounted(getEntities)
           'font-bold ': idx === scrollIdx,
           'bg-zinc-100 hover:bg-zinc-100': entity._id === route.params.entityId
         }"
-        :to="{ path: `/${account}/${entity._id}`, query: route.query }"
+        :to="{ path: `/${accountId}/${entity._id}`, query: route.query }"
       >
         <img
           v-if="entity._thumbnail"

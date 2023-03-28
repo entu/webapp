@@ -1,8 +1,10 @@
 <script setup>
 defineProps({
-  account: { type: String, required: true },
   parents: { type: Array, required: true }
 })
+
+const { accountId } = useAccount()
+
 </script>
 
 <template>
@@ -13,7 +15,7 @@ defineProps({
       <nuxt-link
         v-for="parent in parents"
         :key="parent._id"
-        :to="{ path: `/${account}/${parent.reference}` }"
+        :to="{ path: `/${accountId}/${parent.reference}` }"
         class="link grow text-center"
       >
         {{ parent.string }}

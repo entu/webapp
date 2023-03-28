@@ -3,7 +3,6 @@
 import { NButton, NButtonGroup } from 'naive-ui'
 
 const props = defineProps({
-  account: { type: String, required: true },
   entityId: { type: String, default: null },
   right: { type: String, default: null },
   typeId: { type: String, default: null }
@@ -49,6 +48,8 @@ async function loadAddDefaults () {
 watch(() => route.query, loadAddDefaults, { deep: true })
 
 onMounted(async () => {
+  loadAddDefaults()
+
   if (props.entityId) {
     const { entities } = await apiGetEntities({
       'add_from.reference': props.entityId,
@@ -66,8 +67,6 @@ onMounted(async () => {
 
     addChilds.value = [...addChilds.value, ...entities.filter(x => !addChilds.value.some(y => y._id === x._id))]
   }
-
-  loadAddDefaults()
 })
 </script>
 

@@ -1,19 +1,15 @@
 <script setup>
 const { t } = useI18n()
 const route = useRoute()
-const userStore = useUserStore()
 
-const { account, authenticated } = storeToRefs(userStore)
 const stats = ref()
 
-definePageMeta({ layout: 'menu' })
-
+const { accountId } = useAccount()
+const { userId } = useUser()
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
 onMounted(async () => {
-  userStore.setAccount(route.params.account)
-
-  useHead({ title: account.value })
+  useHead({ title: accountId.value })
 
   stats.value = await apiGet('account')
 })
@@ -21,14 +17,14 @@ onMounted(async () => {
 
 <template>
   <transition>
-    <div class="h-full flex flex-col">
-      <entity-toolbar
-        v-if="isQuery && authenticated"
-        :account="account"
-      />
+    <div
+      v-if="userId"
+      class="h-full flex flex-col"
+    >
+      <entity-toolbar v-if="isQuery" />
 
       <div
-        v-if="!isQuery && stats && authenticated"
+        v-if="!isQuery && stats"
         class="h-full w-full lg:w-1/2 xl:w-1/2 md:min-w-fit px-8 md:mx-auto flex flex-col justify-center"
         vertical
       >

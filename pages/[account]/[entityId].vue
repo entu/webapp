@@ -3,19 +3,15 @@ import { NCollapse, NCollapseItem } from 'naive-ui'
 
 const { t } = useI18n()
 const route = useRoute()
-const mainStore = useMainStore()
-const userStore = useUserStore()
+const { accountId } = useAccount()
+const { userId } = useUser()
 
-const { language } = storeToRefs(mainStore)
-const { _id: userId, account } = storeToRefs(userStore)
 const rawEntity = ref()
 const rawEntityType = ref()
 const rawChilds = ref([])
 const rawReferences = ref([])
 const entityProps = ref([])
 const isLoading = ref(false)
-
-definePageMeta({ layout: 'menu' })
 
 const entityId = computed(() => route.params.entityId)
 const typeId = computed(() => getValue(rawEntity.value._type, 'reference'))
@@ -135,9 +131,9 @@ const right = computed(() => {
 
 watch(() => entity?.value?.name, (value) => {
   if (value) {
-    useHead({ title: `${value} · ${account.value}` })
+    useHead({ title: `${value} · ${accountId.value}` })
   } else {
-    useHead({ title: account.value })
+    useHead({ title: accountId.value })
   }
 })
 
@@ -263,7 +259,6 @@ onMounted(() => {
       class="h-full flex flex-col"
     >
       <entity-toolbar
-        :account="account"
         :entity-id="entityId"
         :right="right"
         :type-id="typeId"
@@ -274,10 +269,7 @@ onMounted(() => {
           v-if="rawEntity?._parent"
           class="py-4 border-b border-gray-300"
         >
-          <entity-parent-list
-            :account="account"
-            :parents="rawEntity._parent"
-          />
+          <entity-parent-list :parents="rawEntity._parent" />
         </div>
 
         <div class="pt-5 pr-5 flex gap-5">
@@ -298,16 +290,12 @@ onMounted(() => {
                 >
                   <entity-property-list
                     class="pl-5"
-                    :account="account"
-                    :language="language"
                     :properties="pg.children"
                   />
                 </n-collapse-item>
                 <div v-if="!pg.name && pg.children && pg.children.some(x => x.mandatory || x.values)">
                   <entity-property-list
                     class="pl-5"
-                    :account="account"
-                    :language="language"
                     :properties="pg.children"
                   />
                 </div>
@@ -342,9 +330,7 @@ onMounted(() => {
 
             <entity-child-list
               class="w-full pl-5"
-              :account="account"
               :entity-id="entityId"
-              :language="language"
               :type-id="child._id"
               :reference-field="child.referenceField"
             />

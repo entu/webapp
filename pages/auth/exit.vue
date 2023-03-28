@@ -1,11 +1,12 @@
 <script setup>
 const { t } = useI18n()
-const userStore = useUserStore()
+const { accounts } = useAccount()
 
 onMounted(async () => {
   useHead({ title: t('title') })
 
-  userStore.signOut()
+  accounts.value = []
+
   await navigateTo({ path: '/', query: {} })
 })
 </script>
