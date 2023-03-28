@@ -99,6 +99,7 @@ onMounted(async () => {
           <template #icon>
             <icon-add class="h-7 w-7" />
           </template>
+          {{ t('add') }}
         </n-button>
       </template>
 
@@ -126,70 +127,51 @@ onMounted(async () => {
       </template>
     </n-popover>
 
-    <n-popover v-if="['owner', 'editor'].includes(right)">
-      <template #trigger>
-        <n-button
-          quaternary
-          @click="navigateTo({ path: route.path, query:route.query, hash: `#edit`})"
-        >
-          <template #icon>
-            <icon-edit class="h-5 w-5" />
-          </template>
-        </n-button>
+    <n-button
+      quaternary
+      @click="navigateTo({ path: route.path, query:route.query, hash: `#edit`})"
+    >
+      <template #icon>
+        <icon-edit class="h-5 w-5" />
       </template>
-
       {{ t('edit') }}
-    </n-popover>
+    </n-button>
 
-    <n-popover v-if="entityId">
-      <template #trigger>
-        <n-button
-          quaternary
-          @click="navigateTo({ path: route.path, query:route.query, hash: `#duplicate`})"
-        >
-          <template #icon>
-            <icon-copy class="h-5 w-5" />
-          </template>
-        </n-button>
+    <n-button
+      quaternary
+      @click="navigateTo({ path: route.path, query:route.query, hash: `#duplicate`})"
+    >
+      <template #icon>
+        <icon-copy class="h-5 w-5" />
       </template>
-
       {{ t('duplicate') }}
-    </n-popover>
+    </n-button>
 
-    <n-popover v-if="entityId">
-      <template #trigger>
-        <n-button
-          quaternary
-          @click="navigateTo({ path: route.path, query:route.query, hash: `#parents`})"
-        >
-          <template #icon>
-            <icon-tree-view class="h-5 w-5" />
-          </template>
-        </n-button>
+    <n-button
+      quaternary
+      @click="navigateTo({ path: route.path, query:route.query, hash: `#parents`})"
+    >
+      <template #icon>
+        <icon-tree-view class="h-5 w-5" />
       </template>
-
       {{ t('parents') }}
-    </n-popover>
+    </n-button>
 
-    <n-popover v-if="entityId">
-      <template #trigger>
-        <n-button
-          quaternary
-          @click="navigateTo({ path: route.path, query:route.query, hash: `#rights`})"
-        >
-          <template #icon>
-            <icon-user-multiple class="h-5 w-5" />
-          </template>
-        </n-button>
+    <n-button
+      quaternary
+      @click="navigateTo({ path: route.path, query:route.query, hash: `#rights`})"
+    >
+      <template #icon>
+        <icon-user-multiple class="h-5 w-5" />
       </template>
-
       {{ t('rights') }}
-    </n-popover>
+    </n-button>
   </div>
 </template>
 
 <i18n lang="yaml">
   en:
+    add: Add
     addNew: Add new object
     addUnderThis: Add child object
     edit: Edit
@@ -197,10 +179,11 @@ onMounted(async () => {
     parents: Parents
     rights: User rights
   et:
+    add: Lisa
     addNew: Lisa uus objekt
     addUnderThis: Lisa alamobjekt
     edit: Muuda
     duplicate: Dubleeri
-    parents: Peamised
+    parents: Kuuluvus
     rights: Õigused
 </i18n>
