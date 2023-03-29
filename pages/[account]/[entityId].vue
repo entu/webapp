@@ -15,6 +15,7 @@ const entityProps = ref([])
 const isLoading = ref(false)
 
 const entityId = computed(() => route.params.entityId)
+
 const typeId = computed(() => getValue(rawEntity.value._type, 'reference'))
 
 const entity = computed(() => {
@@ -129,6 +130,10 @@ const right = computed(() => {
   if (rawEntity.value._viewer?.some(x => x.reference === userId.value)) return 'viewer'
   return null
 })
+
+const drawerType = computed(() => route.hash.replace('#', '').split('-').at(0))
+
+const addTypeId = computed(() => route.hash.split('-').at(1))
 
 watch(() => entity?.value?.name, (value) => {
   if (value) {
@@ -246,6 +251,10 @@ function propsSorter (a, b) {
   return 0
 }
 
+async function closeDrawer () {
+  await navigateTo({ ...route, hash: null }, { replace: true })
+}
+
 onMounted(() => {
   loadEntity()
   loadChilds()
@@ -308,7 +317,7 @@ onMounted(() => {
             v-if="entity._thumbnail"
             class="w-32 h-32 flex-none flex object-cover"
           >
-            <entity-thumbnail-photos
+            <entity-thumbnail
               :thumbnail="entity._thumbnail"
               :photos="rawEntity.photo"
             />
@@ -338,6 +347,13 @@ onMounted(() => {
           </n-collapse-item>
         </n-collapse>
       </div>
+
+      <entity-drawer
+        :add-type-id="addTypeId"
+        :entity-id="entityId"
+        :type="drawerType"
+        @close="closeDrawer"
+      />
     </div>
   </transition>
 </template>

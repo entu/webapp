@@ -9,10 +9,16 @@ const themeOverrides = {
     fontSize: '16px',
     primaryColor: '#1E434C'
   },
+  Collapse: {
+    dividerColor: '#FFFFFF'
+  },
   DataTable: {
     tdColorHover: '#FFFFFF',
     thColor: '#FFFFFF',
     thColorHover: '#FFFFFF'
+  },
+  Drawer: {
+    resizableTriggerColorHover: '#1E434C'
   },
   Input: {
     borderFocus: '1px solid #1E434C',
