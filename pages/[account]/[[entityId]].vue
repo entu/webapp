@@ -18,6 +18,8 @@ const drawerWidth = ref(window.innerWidth / 2)
 
 const entityId = computed(() => route.params.entityId)
 
+const rawEntityId = computed(() => rawEntity.value?._id)
+
 const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
 
 const entity = computed(() => {
@@ -151,51 +153,53 @@ watch(() => entity?.value?.name, (value) => {
 })
 
 async function loadEntity () {
-  isLoading.value = true
+  if (!entityId.value) return
 
-  if (!entityId) return
+  isLoading.value = true
 
   rawEntity.value = await apiGetEntity(entityId.value)
 
-  if (typeId.value) {
-    rawEntityType.value = await apiGetEntity(typeId.value, {
-      props: [
-        'description',
-        'label_plural',
-        'label',
-        'name'
-      ]
-    })
+  if (!rawEntity.value) return showError({ statusCode: 404, statusMessage: t('error404') })
 
-    const { entities } = await apiGetEntities({
-      '_parent.reference': typeId.value,
-      props: [
-        'classifier',
-        'decimals',
-        'default',
-        'description',
-        'formula',
-        'group',
-        'hidden',
-        'label_plural',
-        'label',
-        'list',
-        'mandatory',
-        'markdown',
-        'multilingual',
-        'name',
-        'ordinal',
-        'public',
-        'readonly',
-        'search',
-        'type'
-      ]
-    })
+  if (!typeId.value) return
 
-    entityProps.value = entities
+  rawEntityType.value = await apiGetEntity(typeId.value, {
+    props: [
+      'description',
+      'label_plural',
+      'label',
+      'name'
+    ]
+  })
 
-    isLoading.value = false
-  }
+  const { entities } = await apiGetEntities({
+    '_parent.reference': typeId.value,
+    props: [
+      'classifier',
+      'decimals',
+      'default',
+      'description',
+      'formula',
+      'group',
+      'hidden',
+      'label_plural',
+      'label',
+      'list',
+      'mandatory',
+      'markdown',
+      'multilingual',
+      'name',
+      'ordinal',
+      'public',
+      'readonly',
+      'search',
+      'type'
+    ]
+  })
+
+  entityProps.value = entities
+
+  isLoading.value = false
 }
 
 async function loadChilds () {
@@ -275,7 +279,7 @@ onMounted(() => {
   <transition>
     <div class="h-full flex flex-col">
       <entity-toolbar
-        :entity-id="entityId"
+        :entity-id="rawEntityId"
         :right="right"
         :type-id="typeId"
       />
@@ -349,7 +353,7 @@ onMounted(() => {
 
             <entity-child-list
               class="w-full pl-5"
-              :entity-id="entityId"
+              :entity-id="rawEntityId"
               :type-id="child._id"
               :reference-field="child.referenceField"
             />
@@ -374,28 +378,28 @@ onMounted(() => {
           />
           <entity-drawer-edit
             v-if="drawerType === 'child'"
-            :parent-id="entityId"
+            :parent-id="rawEntityId"
             :type-id="addTypeId"
             @update:title="(title) => { drawerTitle = title }"
           />
           <entity-drawer-edit
             v-if="drawerType === 'edit'"
-            :entity-id="entityId"
+            :entity-id="rawEntityId"
             @update:title="(title) => { drawerTitle = title }"
           />
           <entity-drawer-duplicate
             v-if="drawerType === 'duplicate'"
-            :entity-id="entityId"
+            :entity-id="rawEntityId"
             @update:title="(title) => { drawerTitle = title }"
           />
           <entity-drawer-parents
             v-if="drawerType === 'parents'"
-            :entity-id="entityId"
+            :entity-id="rawEntityId"
             @update:title="(title) => { drawerTitle = title }"
           />
           <entity-drawer-rights
             v-if="drawerType === 'rights'"
-            :entity-id="entityId"
+            :entity-id="rawEntityId"
             @update:title="(title) => { drawerTitle = title }"
           />
         </n-drawer-content>
@@ -408,9 +412,11 @@ onMounted(() => {
   en:
     childsCount: 'no childs | {n} child | {n} childs'
     referrersCount: 'no referrers | {n} referrer | {n} referrers'
+    error404: Entity not found
   et:
     childsCount: 'alamobjekte pole | {n} alamobjekt | {n} alamobjekti'
     referrersCount: 'viitajaid pole | {n} viitaja | {n} viitajat'
+    error404: Objekti ei leitud
 </i18n>
 
 <style scoped>

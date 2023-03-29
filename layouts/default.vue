@@ -22,7 +22,7 @@ watch(() => loading.value, (value) => {
 
 <template>
   <n-layout
-    class="h-full w-full"
+    class="w-full h-full"
     has-sider
   >
     <n-layout-sider
