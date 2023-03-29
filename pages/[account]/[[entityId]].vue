@@ -16,7 +16,7 @@ const isLoading = ref(false)
 
 const entityId = computed(() => route.params.entityId)
 
-const typeId = computed(() => getValue(rawEntity.value._type, 'reference'))
+const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
 
 const entity = computed(() => {
   if (!rawEntity.value) return {}
@@ -256,6 +256,8 @@ async function closeDrawer () {
 }
 
 onMounted(() => {
+  if (!entityId.value) return
+
   loadEntity()
   loadChilds()
   loadReferences()
@@ -264,17 +266,17 @@ onMounted(() => {
 
 <template>
   <transition>
-    <div
-      v-if="rawEntity"
-      class="h-full flex flex-col"
-    >
+    <div class="h-full flex flex-col">
       <entity-toolbar
         :entity-id="entityId"
         :right="right"
         :type-id="typeId"
       />
 
-      <div class="px-2 pb-4 flex flex-col overflow-y-auto overflow-hidden">
+      <div
+        v-if="rawEntity"
+        class="px-2 pb-4 flex flex-col overflow-y-auto overflow-hidden"
+      >
         <div
           v-if="rawEntity?._parent"
           class="py-4 border-b border-gray-300"
