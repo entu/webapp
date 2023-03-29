@@ -1,5 +1,5 @@
 <script setup>
-import { NCollapse, NCollapseItem } from 'naive-ui'
+import { NCollapse, NCollapseItem, NDrawer, NDrawerContent } from 'naive-ui'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -13,6 +13,8 @@ const rawChilds = ref([])
 const rawReferences = ref([])
 const entityProps = ref([])
 const isLoading = ref(false)
+const drawerTitle = ref('')
+const drawerWidth = ref(window.innerWidth / 2)
 
 const entityId = computed(() => route.params.entityId)
 
@@ -129,6 +131,11 @@ const right = computed(() => {
   if (rawEntity.value._expander?.some(x => x.reference === userId.value)) return 'expander'
   if (rawEntity.value._viewer?.some(x => x.reference === userId.value)) return 'viewer'
   return null
+})
+
+const drawer = computed({
+  get: () => !!drawerType.value,
+  set: (value) => { !value && closeDrawer() }
 })
 
 const drawerType = computed(() => route.hash.replace('#', '').split('-').at(0))
@@ -350,12 +357,49 @@ onMounted(() => {
         </n-collapse>
       </div>
 
-      <entity-drawer
-        :entity-id="entityId"
-        :type-id="addTypeId"
-        :type="drawerType"
-        @close="closeDrawer"
-      />
+      <n-drawer
+        v-model:show="drawer"
+        placement="right"
+        resizable
+        :default-width="drawerWidth"
+      >
+        <n-drawer-content
+          :closable="true"
+          :title="drawerTitle"
+        >
+          <entity-drawer-edit
+            v-if="drawerType === 'add'"
+            :type-id="addTypeId"
+            @update:title="(title) => { drawerTitle = title }"
+          />
+          <entity-drawer-edit
+            v-if="drawerType === 'child'"
+            :parent-id="entityId"
+            :type-id="addTypeId"
+            @update:title="(title) => { drawerTitle = title }"
+          />
+          <entity-drawer-edit
+            v-if="drawerType === 'edit'"
+            :entity-id="entityId"
+            @update:title="(title) => { drawerTitle = title }"
+          />
+          <entity-drawer-duplicate
+            v-if="drawerType === 'duplicate'"
+            :entity-id="entityId"
+            @update:title="(title) => { drawerTitle = title }"
+          />
+          <entity-drawer-parents
+            v-if="drawerType === 'parents'"
+            :entity-id="entityId"
+            @update:title="(title) => { drawerTitle = title }"
+          />
+          <entity-drawer-rights
+            v-if="drawerType === 'rights'"
+            :entity-id="entityId"
+            @update:title="(title) => { drawerTitle = title }"
+          />
+        </n-drawer-content>
+      </n-drawer>
     </div>
   </transition>
 </template>
