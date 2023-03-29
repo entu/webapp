@@ -15,7 +15,7 @@ const route = useRoute()
   <n-button
     v-if="options.length === 1"
     tertiary
-    @click="navigateTo({ ...route, hash: `#add-${options.at(0).value}`})"
+    @click="navigateTo({ ...route, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}`})"
   >
     <template #icon>
       <icon-add class="h-7 w-7" />
@@ -42,7 +42,7 @@ const route = useRoute()
         v-for="o in options"
         :key="o.value"
         class="py-2 px-4 hover:bg-gray-50 cursor-pointer"
-        :to="{ ...route, hash: `#add-${o.value}`}"
+        :to="{ ...route, hash: `#${isChild ? 'child' : 'add'}-${o.value}`}"
       >
         {{ o.label.toLowerCase() }}
       </nuxt-link>

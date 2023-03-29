@@ -349,8 +349,8 @@ onMounted(() => {
       </div>
 
       <entity-drawer
-        :add-type-id="addTypeId"
         :entity-id="entityId"
+        :type-id="addTypeId"
         :type="drawerType"
         @close="closeDrawer"
       />

@@ -3,9 +3,9 @@
 import { NDrawer, NDrawerContent } from 'naive-ui'
 
 const props = defineProps({
-  addTypeId: { type: String, default: null },
-  type: { type: String, default: null },
-  entityId: { type: String, default: null }
+  typeId: { type: String, default: null },
+  entityId: { type: String, default: null },
+  type: { type: String, default: null }
 })
 
 const emit = defineEmits(['open', 'close'])
@@ -31,28 +31,33 @@ const drawer = computed({
       :closable="true"
       :title="drawerTitle"
     >
-      <drawer-add
+      <entity-drawer-edit
         v-if="type === 'add'"
-        :entity-id="entityId"
-        :type-id="addTypeId"
+        :type-id="typeId"
         @update:title="(title) => { drawerTitle = title }"
       />
-      <drawer-edit
+      <entity-drawer-edit
+        v-if="type === 'child'"
+        :parent-id="entityId"
+        :type-id="typeId"
+        @update:title="(title) => { drawerTitle = title }"
+      />
+      <entity-drawer-edit
         v-if="type === 'edit'"
         :entity-id="entityId"
         @update:title="(title) => { drawerTitle = title }"
       />
-      <drawer-duplicate
+      <entity-drawer-duplicate
         v-if="type === 'duplicate'"
         :entity-id="entityId"
         @update:title="(title) => { drawerTitle = title }"
       />
-      <drawer-parents
+      <entity-drawer-parents
         v-if="type === 'parents'"
         :entity-id="entityId"
         @update:title="(title) => { drawerTitle = title }"
       />
-      <drawer-rights
+      <entity-drawer-rights
         v-if="type === 'rights'"
         :entity-id="entityId"
         @update:title="(title) => { drawerTitle = title }"

@@ -9,6 +9,14 @@ const { userId } = useUser()
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
+const drawerType = computed(() => route.hash.replace('#', '').split('-').at(0))
+
+const addTypeId = computed(() => route.hash.split('-').at(1))
+
+async function closeDrawer () {
+  await navigateTo({ ...route, hash: null }, { replace: true })
+}
+
 onMounted(async () => {
   useHead({ title: accountId.value })
 
@@ -23,6 +31,12 @@ onMounted(async () => {
       class="h-full flex flex-col"
     >
       <entity-toolbar v-if="isQuery" />
+
+      <entity-drawer
+        :type-id="addTypeId"
+        :type="drawerType"
+        @close="closeDrawer"
+      />
 
       <div
         v-if="!isQuery && stats"
