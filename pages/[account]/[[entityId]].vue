@@ -132,6 +132,7 @@ const right = computed(() => {
   if (rawEntity.value._editor?.some(x => x.reference === userId.value)) return 'editor'
   if (rawEntity.value._expander?.some(x => x.reference === userId.value)) return 'expander'
   if (rawEntity.value._viewer?.some(x => x.reference === userId.value)) return 'viewer'
+
   return null
 })
 

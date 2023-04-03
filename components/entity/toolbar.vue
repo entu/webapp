@@ -45,11 +45,7 @@ async function loadAddDefaults () {
   addDefaults.value = entities
 }
 
-watch(() => route.query, loadAddDefaults, { deep: true })
-
-onMounted(async () => {
-  loadAddDefaults()
-
+async function loadAddChilds () {
   if (props.entityId) {
     const { entities } = await apiGetEntities({
       'add_from.reference': props.entityId,
@@ -67,6 +63,14 @@ onMounted(async () => {
 
     addChilds.value = [...addChilds.value, ...entities.filter(x => !addChilds.value.some(y => y._id === x._id))]
   }
+}
+
+watch(() => route.query, loadAddDefaults, { deep: true })
+watch(() => props, loadAddChilds, { deep: true })
+
+onMounted(() => {
+  loadAddDefaults()
+  loadAddChilds()
 })
 </script>
 
