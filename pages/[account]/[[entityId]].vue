@@ -7,6 +7,7 @@ const route = useRoute()
 const { accountId } = useAccount()
 const { userId } = useUser()
 
+const stats = ref()
 const rawEntity = ref()
 const rawEntityType = ref()
 const rawChilds = ref([])
@@ -21,6 +22,8 @@ const entityId = computed(() => route.params.entityId)
 const rawEntityId = computed(() => rawEntity.value?._id)
 
 const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
+
+const isQuery = computed(() => Object.keys(route.query).length > 0)
 
 const entity = computed(() => {
   if (!rawEntity.value) return {}
@@ -267,12 +270,14 @@ async function closeDrawer () {
   await navigateTo({ ...route, hash: null }, { replace: true })
 }
 
-onMounted(() => {
-  if (!entityId.value) return
-
-  loadEntity()
-  loadChilds()
-  loadReferences()
+onMounted(async () => {
+  if (entityId.value) {
+    loadEntity()
+    loadChilds()
+    loadReferences()
+  } else {
+    stats.value = await apiGet('account')
+  }
 })
 </script>
 
@@ -360,6 +365,51 @@ onMounted(() => {
             />
           </n-collapse-item>
         </n-collapse>
+      </div>
+
+      <div
+        v-if="!isQuery && stats"
+        class="h-full w-full lg:w-1/2 xl:w-1/2 md:min-w-fit px-8 md:mx-auto flex flex-col justify-center"
+        vertical
+      >
+        <stats-bar
+          class="my-3"
+          color="rgb(23,162,184)"
+          rail-color="rgba(23,162,184,.3)"
+          :a-label="t('entities')"
+          :b-label="t('deleted')"
+          :a-value="stats.entities"
+          :b-value="stats.deletedEntities"
+        />
+        <stats-bar
+          class="my-3"
+          color="rgb(255,193,7)"
+          rail-color="rgba(255,193,7,.3)"
+          :a-label="t('properties')"
+          :b-label="t('deleted')"
+          :a-value="stats.properties"
+          :b-value="stats.deletedProperties"
+        />
+        <stats-bar
+          class="my-3"
+          is-bytes
+          color="rgb(40,167,69)"
+          rail-color="rgba(40,167,69,.3)"
+          :a-label="t('files')"
+          :b-label="t('deleted')"
+          :a-value="stats.filesSize"
+          :b-value="stats.deletedFilesSize"
+        />
+        <stats-bar
+          class="my-3"
+          color="rgb(108,117,125)"
+          rail-color="rgba(108,117,125,.3)"
+          show-total
+          :a-label="t('requests')"
+          :b-label="t('limit')"
+          :a-value="stats.dbSize"
+          :b-value="Math.ceil(stats.dbSize / Math.pow(10, stats.dbSize.toString().length - 1)) * Math.pow(10, stats.dbSize.toString().length - 1) - stats.dbSize"
+        />
       </div>
 
       <n-drawer
