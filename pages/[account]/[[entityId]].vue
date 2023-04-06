@@ -461,10 +461,22 @@ onMounted(async () => {
 
 <i18n lang="yaml">
   en:
+    entities: Entities
+    properties: Properties
+    files: Files
+    requests: Requests in day
+    deleted: deleted
+    limit: limit
     childsCount: 'no childs | {n} child | {n} childs'
     referrersCount: 'no referrers | {n} referrer | {n} referrers'
     error404: Entity not found
   et:
+    entities: Objekte
+    properties: Parameetreid
+    files: Faile
+    requests: Päringuid päevas
+    deleted: kustutatud
+    limit: limiit
     childsCount: 'alamobjekte pole | {n} alamobjekt | {n} alamobjekti'
     referrersCount: 'viitajaid pole | {n} viitaja | {n} viitajat'
     error404: Objekti ei leitud
