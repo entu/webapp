@@ -12,21 +12,7 @@ export default defineNuxtConfig({
   },
   css: ['~/assets/tailwind.css'],
   i18n: {
-    vueI18n: {
-      datetimeFormats: {
-        en: {
-          date: { year: 'numeric', month: '2-digit', day: '2-digit' },
-          datetime: { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true }
-        },
-        et: {
-          date: { year: 'numeric', month: '2-digit', day: '2-digit' },
-          datetime: { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }
-        }
-      },
-      legacy: false,
-      locale: 'en',
-      fallbackLocale: 'en'
-    }
+    vueI18n: './i18n.config.ts'
   },
   modules: [
     '@nuxtjs/i18n',
@@ -45,5 +31,6 @@ export default defineNuxtConfig({
       title: 'Entu'
     }
   },
+  spaLoadingTemplate: false,
   ssr: false
 })
