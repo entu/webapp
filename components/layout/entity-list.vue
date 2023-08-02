@@ -21,7 +21,12 @@ const debouncedScroll = useDebounceFn(async () => {
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
-useInfiniteScroll(listElement, getEntities, { distance: 150 })
+useInfiniteScroll(listElement, () => {
+  if (isLoading.value) return
+  if (limit.value === 0) return
+
+  getEntities()
+}, { distance: 150 })
 
 onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
   if (e.code === 'ArrowDown') scrollIdx.value < entitiesList.value.length - 1 && scrollIdx.value++
@@ -40,7 +45,7 @@ watch(() => route.query, () => {
   locationSearch.value = window.location.search
 
   getEntities(true)
-}, { deep: true })
+}, { deep: true, immediate: true })
 
 watch(() => route.params.entityId, (value) => {
   scrollIdx.value = entitiesList.value.findIndex(x => x._id === value) || 0
@@ -92,8 +97,6 @@ function color () {
 
   return colors[rnd]
 }
-
-onMounted(getEntities)
 </script>
 
 <template>
