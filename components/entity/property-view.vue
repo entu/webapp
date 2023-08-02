@@ -1,15 +1,15 @@
 <script setup>
 const props = defineProps({
-  account: { type: String, required: true },
   decimals: { type: Number, default: undefined },
   isMarkdown: { type: Boolean, default: false },
-  language: { type: String, required: true },
   values: { type: Array, required: true }
 })
 
 const { d } = useI18n()
+const { accountId } = useAccount()
+const { language } = useUser()
 
-const localeValues = computed(() => props.values.filter(x => !x.language || x.language === props.language))
+const localeValues = computed(() => props.values.filter(x => !x.language || x.language === language.value))
 </script>
 
 <template>
@@ -25,7 +25,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     <template v-else-if="v.reference !== undefined && v.datetime !== undefined">
       <nuxt-link
         class="link"
-        :to="{ path:`/${account}/${v.reference}`}"
+        :to="{ path:`/${accountId}/${v.reference}`}"
       >
         {{ v.string }}
       </nuxt-link>
@@ -37,7 +37,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     <template v-else-if="v.reference !== undefined && v.datetime === undefined">
       <nuxt-link
         class="link"
-        :to="{ path:`/${account}/${v.reference}`}"
+        :to="{ path:`/${accountId}/${v.reference}`}"
       >
         {{ v.string }}
       </nuxt-link>
@@ -47,14 +47,14 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
       <nuxt-link
         class="link"
         target="_blank"
-        :to="{ path:`/${account}/file/${v._id}`}"
+        :to="{ path:`/${accountId}/file/${v._id}`}"
       >
         {{ v.filename || v._id }}
       </nuxt-link>
 
       <span
         v-if="v.filesize"
-        class="ml-2 text-sm"
+        class="ml-2"
       >
         {{ humanFileSize(v.filesize) }}
       </span>

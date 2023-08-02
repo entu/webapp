@@ -3,9 +3,7 @@ import { NDataTable } from 'naive-ui'
 import { IconCheckmark, IconSortAscending, IconSortDescending, NuxtLink } from '#components'
 
 const props = defineProps({
-  account: { type: String, required: true },
   entityId: { type: String, required: true },
-  language: { type: String, required: true },
   typeId: { type: String, required: true },
   referenceField: { type: String, required: true }
 })
@@ -16,6 +14,8 @@ const align = {
 }
 
 const { d, t } = useI18n()
+const { accountId } = useAccount()
+const { language } = useUser()
 
 const sort = ref()
 const rawEntities = ref()
@@ -45,7 +45,7 @@ const columns = computed(() => [
     title: '',
     width: 44,
     render: row => h(NuxtLink,
-      { class: 'link', to: { path: `/${props.account}/${row._id}` } },
+      { class: 'link', to: { path: `/${accountId.value}/${row._id}` } },
       () => row._thumbnail
         ? h('img', { class: `w-7 h-7 flex-none border border-white hover:border-sky-800 object-cover rounded-full ${color()}`, src: row._thumbnail })
         : h('div', { class: `w-7 h-7 flex-none border border-white hover:border-sky-800 rounded-full ${color()}` })
@@ -56,7 +56,7 @@ const columns = computed(() => [
     align: align[c.type] || 'left',
     ellipsis: { tooltip: true },
     render: (row) => {
-      if (c.type === 'number' && getValue(row[c.name], 'number')) return getValue(row[c.name], 'number').toLocaleString(props.language, { minimumFractionDigits: c.decimals, maximumFractionDigits: c.decimals })
+      if (c.type === 'number' && getValue(row[c.name], 'number')) return getValue(row[c.name], 'number').toLocaleString(language.value, { minimumFractionDigits: c.decimals, maximumFractionDigits: c.decimals })
 
       if (c.type === 'boolean' && getValue(row[c.name], 'boolean')) return h(IconCheckmark, { class: 'h-5 w-5' })
 

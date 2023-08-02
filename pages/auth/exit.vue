@@ -1,15 +1,13 @@
 <script setup>
-import { useUserStore } from '~/stores'
-
 const { t } = useI18n()
-const router = useRouter()
-const userStore = useUserStore()
+const { accounts } = useAccount()
 
-onMounted(() => {
+onMounted(async () => {
   useHead({ title: t('title') })
 
-  userStore.signOut()
-  router.push({ path: '/', query: {} })
+  accounts.value = []
+
+  await navigateTo({ path: '/', query: {} })
 })
 </script>
 

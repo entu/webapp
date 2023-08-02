@@ -1,9 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
 export default defineNuxtConfig({
-  alias: {
-    pinia: '/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs' // https://stackoverflow.com/questions/74003458/cannot-find-module-pinia-dist-pinia-mjs-when-using-run-dev
-  },
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
@@ -13,46 +10,14 @@ export default defineNuxtConfig({
       ]
     }
   },
-  build: {
-    transpile: process.env.NODE_ENV === 'production'
-      ? [
-          'naive-ui',
-          'vueuc'
-          // '@css-render/vue3-ssr',
-          // '@juggle/resize-observer'
-        ]
-      : [
-          // '@juggle/resize-observer'
-        ]
-  },
   css: ['~/assets/tailwind.css'],
   i18n: {
-    vueI18n: {
-      datetimeFormats: {
-        en: {
-          date: { year: 'numeric', month: '2-digit', day: '2-digit' },
-          datetime: { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true }
-        },
-        et: {
-          date: { year: 'numeric', month: '2-digit', day: '2-digit' },
-          datetime: { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }
-        }
-      },
-      legacy: false,
-      locale: 'en'
-    }
+    vueI18n: './i18n.config.ts'
   },
   modules: [
     '@nuxtjs/i18n',
-    '@pinia/nuxt',
     '@vueuse/nuxt'
   ],
-  pinia: {
-    autoImports: [
-      'defineStore',
-      'storeToRefs'
-    ]
-  },
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -66,5 +31,6 @@ export default defineNuxtConfig({
       title: 'Entu'
     }
   },
+  spaLoadingTemplate: false,
   ssr: false
 })

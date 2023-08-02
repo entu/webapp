@@ -3,10 +3,10 @@ const runtimeConfig = useRuntimeConfig()
 const { t } = useI18n()
 const route = useRoute()
 
-onMounted(() => {
+onMounted(async () => {
   useHead({ title: t('title') })
 
-  window.location = `${runtimeConfig.public.apiUrl}/auth/${route.params.provider}?next=${window.location.origin}/auth/callback?key=`
+  await navigateTo(`${runtimeConfig.public.apiUrl}/auth/${route.params.provider}?next=${window.location.origin}/auth/callback?key=`, { external: true })
 })
 </script>
 

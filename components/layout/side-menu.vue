@@ -1,45 +1,37 @@
 <script setup>
 import { NMenu } from 'naive-ui'
-import { IconHome, IconData2, IconSimCard, IconIdentification, IconUser, IconLogout, IconLogoApple, IconLogoGoogle, IconPhonePortraitOutline, IconLanguageOutline, NuxtLink } from '#components'
-import { useMainStore } from '~/stores'
-
-const props = defineProps({
-  collapsed: { type: Boolean, default: false },
-  account: { type: String, required: true },
-  accounts: { type: Array, required: true },
-  authenticated: { type: Boolean, required: true },
-  userId: { type: String, default: null },
-  userName: { type: String, default: '' }
-})
+import { IconApple, IconData, IconGoogle, IconHome, IconIdCard, IconLanguage, IconLogout, IconMobileId, IconSmartId, IconUser, NuxtLink } from '#components'
 
 const { t } = useI18n()
-const mainStore = useMainStore()
+const { locale } = useI18n({ useScope: 'global' })
 
-const { language } = storeToRefs(mainStore)
+const { accountId, accounts } = useAccount()
+const { language, menuCollapsed, userId, userName } = useUser()
+
 const menuEntities = ref([])
-const activeMenu = ref(location.search.substring(1))
+const activeMenu = ref(window.location.search.substring(1))
 
 const accountMenu = computed(() => {
   const menu = []
   const menuObject = {}
 
-  if (props.accounts.length > 1) {
+  if (accounts.value.length > 1) {
     menu.push({
       key: 'account',
       icon: () => h(IconHome, { class: 'h-5 w-5' }),
-      label: (props.account || '').toUpperCase(),
-      children: props.collapsed
+      label: (accountId.value || '').toUpperCase(),
+      children: menuCollapsed.value
         ? [{
             name: '            1',
             label: () => h(NuxtLink,
-              { to: { path: `/${props.account}` } },
-              () => h('strong', {}, { default: () => (props.account || '').toUpperCase() })
+              { to: { path: `/${accountId.value}` } },
+              () => h('strong', {}, { default: () => (accountId.value || '').toUpperCase() })
             )
           }, {
             name: '            2',
             type: 'divider'
           },
-          ...props.accounts.filter(x => x.account !== props.account).map(x => ({
+          ...accounts.value.filter(x => x.account !== accountId.value).map(x => ({
             key: x.account,
             name: x.account,
             label: () => h(NuxtLink,
@@ -48,7 +40,7 @@ const accountMenu = computed(() => {
             )
           }))
           ]
-        : props.accounts.filter(x => x.account !== props.account).map(x => ({
+        : accounts.value.filter(x => x.account !== accountId.value).map(x => ({
           key: x.account,
           name: x.account,
           label: () => h(NuxtLink,
@@ -71,10 +63,10 @@ const accountMenu = computed(() => {
     if (!menuObject[group]) {
       menuObject[group] = {
         key: group,
-        icon: () => h(IconData2, { class: 'h-5 w-5' }),
+        icon: () => h(IconData, { class: 'h-5 w-5' }),
         name: getValue(entity.group),
         label: getValue(entity.group),
-        children: props.collapsed
+        children: menuCollapsed.value
           ? [{
               name: '            1',
               label: () => h('strong', { }, { default: () => getValue(entity.group).toUpperCase() })
@@ -92,7 +84,7 @@ const accountMenu = computed(() => {
       key: getValue(entity.query),
       name: getValue(entity.name),
       label: () => h(NuxtLink,
-        { to: { path: `/${props.account}`, query: queryObj(getValue(entity.query)) } },
+        { to: { path: `/${accountId.value}`, query: queryObj(getValue(entity.query)) } },
         { default: () => getValue(entity.name) }
       ),
       ordinal
@@ -111,7 +103,7 @@ const accountMenu = computed(() => {
 const authMenu = computed(() => [
   {
     key: 'auth-apple',
-    icon: () => h(IconLogoApple, { class: 'h-5 w-5' }),
+    icon: () => h(IconApple, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
       { to: { path: '/auth/apple' } },
       { default: () => 'Apple' }
@@ -119,7 +111,7 @@ const authMenu = computed(() => [
   },
   {
     key: 'auth-google',
-    icon: () => h(IconLogoGoogle, { class: 'h-5 w-5' }),
+    icon: () => h(IconGoogle, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
       { to: { path: '/auth/google' } },
       { default: () => 'Google' }
@@ -127,7 +119,7 @@ const authMenu = computed(() => [
   },
   {
     key: 'auth-mid',
-    icon: () => h(IconSimCard, { class: 'h-5 w-5' }),
+    icon: () => h(IconMobileId, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
       { to: { path: '/auth/mobile-id' } },
       { default: () => t('mid') }
@@ -135,7 +127,7 @@ const authMenu = computed(() => [
   },
   {
     key: 'auth-sid',
-    icon: () => h(IconPhonePortraitOutline, { class: 'h-5 w-5' }),
+    icon: () => h(IconSmartId, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
       { to: { path: '/auth/smart-id' } },
       { default: () => t('sid') }
@@ -143,7 +135,7 @@ const authMenu = computed(() => [
   },
   {
     key: 'auth-idc',
-    icon: () => h(IconIdentification, { class: 'h-5 w-5' }),
+    icon: () => h(IconIdCard, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
       { to: { path: '/auth/id-card' } },
       { default: () => t('idc') }
@@ -154,13 +146,13 @@ const authMenu = computed(() => [
 const userMenu = computed(() => {
   const menu = []
 
-  if (props.authenticated) {
+  if (accountId.value && userId.value) {
     menu.push({
-      key: props.userId,
+      key: userId.value,
       icon: () => h(IconUser, { class: 'h-5 w-5' }),
       label: () => h(NuxtLink,
-        { to: { path: `/${props.account}/${props.userId}` } },
-        { default: () => props.userName }
+        { to: { path: `/${accountId.value}/${userId.value}` } },
+        { default: () => userName.value }
       )
     })
     menu.push({
@@ -180,7 +172,7 @@ const userMenu = computed(() => {
 
   menu.push({
     key: `language-${language.value}`,
-    icon: () => h(IconLanguageOutline, { class: 'h-5 w-5' }),
+    icon: () => h(IconLanguage, { class: 'h-5 w-5' }),
     label: () => h('a',
       { onClick: () => { language.value = language.value === 'en' ? 'et' : 'en' } },
       { default: () => t('language') }
@@ -190,10 +182,11 @@ const userMenu = computed(() => {
   return menu
 })
 
-watch(() => props.account, () => getMenuEntities())
+watch(() => accountId.value, () => getMenuEntities())
+watch(() => language.value, (value) => { locale.value = value })
 
 async function getMenuEntities () {
-  if (!props.account) return
+  if (!accountId.value) return
 
   const { entities } = await apiGetEntities({
     '_type.string': 'menu',
@@ -237,14 +230,18 @@ function queryObj (q) {
   return params
 }
 
-onMounted(getMenuEntities)
+onMounted(() => {
+  locale.value = language.value
+
+  getMenuEntities()
+})
 </script>
 
 <template>
-  <div class="py-2 min-h-full w-full flex flex-col justify-between">
+  <div class="py-1 w-full min-h-full flex flex-col justify-between">
     <nuxt-link
-      v-if="!collapsed"
-      :to="{ path: `/${account}` }"
+      v-if="!menuCollapsed"
+      :to="{ path: `/${accountId}` }"
     >
       <img
         class="mt-6 mb-4 mx-auto h-24 w-24"
@@ -258,35 +255,38 @@ onMounted(getMenuEntities)
       collapse-mode="width"
       :accordion="true"
       :collapsed-width="60"
-      :collapsed="collapsed"
+      :collapsed="menuCollapsed"
       :indent="32"
       :options="accountMenu"
       :root-indent="18"
     />
+
     <div
-      v-if="!authenticated && !collapsed"
+      v-if="!userId && !menuCollapsed"
       class="mt-8 text-white font-bold text-center"
     >
       {{ t('signIn') }}
     </div>
+
     <n-menu
-      v-if="!authenticated"
+      v-if="!userId"
       class="pb-0"
       collapse-mode="width"
       :accordion="true"
       :collapsed-width="60"
-      :collapsed="collapsed"
+      :collapsed="menuCollapsed"
       :indent="32"
       :options="authMenu"
       :root-indent="18"
     />
+
     <n-menu
       v-model:value="activeMenu"
       class="pb-0"
       collapse-mode="width"
       :accordion="true"
       :collapsed-width="60"
-      :collapsed="collapsed"
+      :collapsed="menuCollapsed"
       :indent="32"
       :options="userMenu"
       :root-indent="18"

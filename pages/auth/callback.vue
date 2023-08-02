@@ -1,23 +1,19 @@
 <script setup>
-import { useRoute, useRouter } from 'vue-router'
-import { useUserStore } from '~/stores'
-
 const { t } = useI18n()
 const route = useRoute()
-const router = useRouter()
-const userStore = useUserStore()
-
-const { accounts } = storeToRefs(userStore)
+const { accounts } = useAccount()
 
 onMounted(async () => {
   useHead({ title: t('title') })
 
-  await userStore.getAccounts(route.query.key)
+  const authResponse = await apiGet('auth', { account: '' }, { Authorization: `Bearer ${route.query.key}` })
 
-  if (accounts.value.length > 0) {
-    router.push({ path: `/${accounts.value[0].account}`, query: {} })
+  if (Array.isArray(authResponse) && authResponse.length > 0) {
+    accounts.value = authResponse
+    await navigateTo({ path: `/${authResponse.at(0).account}`, query: {} })
   } else {
-    router.push({ path: '/', query: {} })
+    accounts.value = []
+    await navigateTo({ path: '/', query: {} })
   }
 })
 </script>

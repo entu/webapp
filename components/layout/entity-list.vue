@@ -1,11 +1,7 @@
 <script setup>
-const props = defineProps({
-  account: { type: String, required: true }
-})
-
 const { t } = useI18n()
 const route = useRoute()
-const router = useRouter()
+const { accountId } = useAccount()
 
 const listElement = ref(null)
 const searchText = ref(route.query.q || '')
@@ -19,13 +15,18 @@ const scrollIdx = ref(0)
 
 const { y: listElementScroll } = useScroll(listElement)
 
-const debouncedScroll = useDebounceFn(() => {
-  router.push({ path: `/${props.account}/${entitiesList.value[scrollIdx.value]._id}`, query: route.query })
+const debouncedScroll = useDebounceFn(async () => {
+  await navigateTo({ path: `/${accountId.value}/${entitiesList.value[scrollIdx.value]._id}`, query: route.query })
 }, 300)
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
-useInfiniteScroll(listElement, getEntities, { distance: 150 })
+useInfiniteScroll(listElement, () => {
+  if (isLoading.value) return
+  if (limit.value === 0) return
+
+  getEntities()
+}, { distance: 150 })
 
 onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
   if (e.code === 'ArrowDown') scrollIdx.value < entitiesList.value.length - 1 && scrollIdx.value++
@@ -37,28 +38,25 @@ onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
 })
 
 watch(() => route.query, () => {
-  if (locationSearch.value === location.search) return
+  if (locationSearch.value === window.location.search) return
 
   skip.value = 0
   entitiesList.value = []
-  locationSearch.value = location.search
+  locationSearch.value = window.location.search
 
   getEntities(true)
-})
+}, { deep: true, immediate: true })
 
 watch(() => route.params.entityId, (value) => {
   scrollIdx.value = entitiesList.value.findIndex(x => x._id === value) || 0
 })
 
-watchDebounced(searchText, () => {
-  if (searchText.value) {
-    router.replace({ query: { ...route.query, q: searchText.value } })
-  } else {
-    const newQuery = { ...route.query }
-    delete newQuery.q
+watchDebounced(searchText, async () => {
+  const routeConfig = { ...route, query: { ...route.query, q: searchText.value } }
 
-    router.replace({ query: newQuery })
-  }
+  if (!searchText.value) delete routeConfig.query.q
+
+  await navigateTo(routeConfig, { replace: true })
 }, { debounce: 500, maxWait: 5000 })
 
 async function getEntities () {
@@ -99,8 +97,6 @@ function color () {
 
   return colors[rnd]
 }
-
-onMounted(getEntities)
 </script>
 
 <template>
@@ -112,7 +108,7 @@ onMounted(getEntities)
         for="search"
         class="w-8 h-7 flex items-center justify-center"
       >
-        <icon-search class="h-5 w-5 text-xl text-gray-400" />
+        <icon-search class="h-5 w-5 text-gray-400" />
       </label>
       <input
         id="search"
@@ -134,7 +130,7 @@ onMounted(getEntities)
           'font-bold ': idx === scrollIdx,
           'bg-zinc-100 hover:bg-zinc-100': entity._id === route.params.entityId
         }"
-        :to="{ path: `/${account}/${entity._id}`, query: route.query }"
+        :to="{ path: `/${accountId}/${entity._id}`, query: route.query }"
       >
         <img
           v-if="entity._thumbnail"
@@ -157,9 +153,9 @@ onMounted(getEntities)
 
     <div
       v-if="entitiesCount !== null"
-      class="pt-3 pb-1 sticky bottom-0 text-center text-sm text-gray-400 italic bg-white"
+      class="pt-3 pb-1 sticky bottom-0 text-center text-gray-400 italic bg-white"
     >
-      {{ t('count',entitiesCount) }}
+      {{ t('count', entitiesCount) }}
     </div>
   </div>
 </template>

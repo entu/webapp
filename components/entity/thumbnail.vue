@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NImage, NImageGroup, NSpin } from 'naive-ui'
 
@@ -45,20 +46,20 @@ async function loadImages () {
   <n-image-group v-if="photos.length > 1">
     <n-image
       ref="imageRef"
-      class="hidden"
+      class="!hidden"
       :src="thumbnail"
     />
     <n-image
       v-for="url in urls"
       :key="url"
-      class="hidden"
+      class="!hidden"
       :src="url"
     />
   </n-image-group>
   <n-image
     v-else
     ref="imageRef"
-    class="hidden"
+    class="!hidden"
     :src="thumbnail"
   />
 </template>
