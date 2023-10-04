@@ -267,7 +267,7 @@ function propsSorter (a, b) {
 }
 
 async function closeDrawer () {
-  await navigateTo({ ...route, hash: null }, { replace: true })
+  await navigateTo({ path: route.path, query: route.query, hash: null }, { replace: true })
 }
 
 onMounted(async () => {

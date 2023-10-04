@@ -3,10 +3,10 @@ import { NMenu } from 'naive-ui'
 import { IconApple, IconData, IconGoogle, IconHome, IconIdCard, IconLanguage, IconLogout, IconMobileId, IconSmartId, IconUser, NuxtLink } from '#components'
 
 const { t } = useI18n()
-const { locale } = useI18n({ useScope: 'global' })
+const { locale, setLocale } = useI18n({ useScope: 'global' })
 
 const { accountId, accounts } = useAccount()
-const { language, menuCollapsed, userId, userName } = useUser()
+const { menuCollapsed, userId, userName } = useUser()
 
 const menuEntities = ref([])
 const activeMenu = ref(window.location.search.substring(1))
@@ -171,10 +171,10 @@ const userMenu = computed(() => {
   })
 
   menu.push({
-    key: `language-${language.value}`,
+    key: `language-${locale.value}`,
     icon: () => h(IconLanguage, { class: 'h-5 w-5' }),
     label: () => h('a',
-      { onClick: () => { language.value = language.value === 'en' ? 'et' : 'en' } },
+      { onClick: () => setLanguage() },
       { default: () => t('language') }
     )
   })
@@ -182,8 +182,12 @@ const userMenu = computed(() => {
   return menu
 })
 
-watch(() => accountId.value, () => getMenuEntities())
-watch(() => language.value, (value) => { locale.value = value })
+function setLanguage () {
+  setLocale(locale.value === 'en' ? 'et' : 'en')
+  reloadNuxtApp()
+}
+
+watch(accountId, () => getMenuEntities(), { immediate: true })
 
 async function getMenuEntities () {
   if (!accountId.value) return
@@ -229,12 +233,6 @@ function queryObj (q) {
 
   return params
 }
-
-onMounted(() => {
-  locale.value = language.value
-
-  getMenuEntities()
-})
 </script>
 
 <template>

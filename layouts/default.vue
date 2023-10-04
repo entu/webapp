@@ -11,7 +11,7 @@ const { menuCollapsed } = useUser()
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 const loading = computed(() => requests.value > 0)
 
-watch(() => loading.value, (value) => {
+watch(loading, (value) => {
   if (value) {
     loadingBar.start()
   } else {

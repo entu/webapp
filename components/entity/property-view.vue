@@ -5,11 +5,10 @@ const props = defineProps({
   values: { type: Array, required: true }
 })
 
-const { d } = useI18n()
+const { locale, d } = useI18n()
 const { accountId } = useAccount()
-const { language } = useUser()
 
-const localeValues = computed(() => props.values.filter(x => !x.language || x.language === language.value))
+const localeValues = computed(() => props.values.filter(x => !x.language || x.language === locale.value))
 </script>
 
 <template>
@@ -61,7 +60,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     </template>
 
     <template v-else-if="v.number !== undefined && v.number !== null">
-      {{ v.number.toLocaleString(language, { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) }}
+      {{ v.number.toLocaleString(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) }}
     </template>
 
     <template v-else-if="v.boolean !== undefined && v.boolean === true">

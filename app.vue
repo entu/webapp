@@ -3,6 +3,10 @@ import { NConfigProvider, NGlobalStyle, NLoadingBarProvider } from 'naive-ui'
 
 const runtimeConfig = useRuntimeConfig()
 
+const { setLocale } = useI18n({ useScope: 'global' })
+
+setLocale(localStorage.getItem('locale') || 'en')
+
 useHead({
   titleTemplate: (title) => {
     return (!title || title === runtimeConfig.public.title) ? runtimeConfig.public.title : `${title} · ${runtimeConfig.public.title}`

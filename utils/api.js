@@ -46,7 +46,7 @@ export async function apiGet (pathname, params = {}, headers) {
 }
 
 export function getValue (valueList = [], type = 'string') {
-  const { language } = useUser()
+  const locale = localStorage.getItem('locale')
 
-  return valueList.find(x => x.language === language.value)?.[type] || valueList.find(x => !x.language)?.[type] || valueList?.[0]?.[type]
+  return valueList.find(x => x.language === locale)?.[type] || valueList.find(x => !x.language)?.[type] || valueList?.[0]?.[type]
 }

@@ -9,7 +9,7 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
-const route = useRoute()
+const { path, query } = useRoute()
 
 const addChilds = ref([])
 const addDefaults = ref([])
@@ -65,13 +65,8 @@ async function loadAddChilds () {
   }
 }
 
-watch(() => route.query, loadAddDefaults, { deep: true })
-watch(() => props, loadAddChilds, { deep: true })
-
-onMounted(() => {
-  loadAddDefaults()
-  loadAddChilds()
-})
+watch(() => query, () => loadAddDefaults(), { deep: true, immediate: true })
+watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
 </script>
 
 <template>
@@ -90,7 +85,7 @@ onMounted(() => {
       <n-button
         v-if="['owner', 'editor'].includes(right)"
         tertiary
-        @click="navigateTo({ ...route, hash: `#edit`})"
+        @click="navigateTo({ path, query, hash: `#edit`}, { replace: true })"
       >
         <template #icon>
           <icon-edit class="h-5 w-5" />
@@ -101,7 +96,7 @@ onMounted(() => {
       <n-button
         v-if="entityId"
         tertiary
-        @click="navigateTo({ ...route, hash: `#duplicate`})"
+        @click="navigateTo({ path, query, hash: `#duplicate`}, { replace: true })"
       >
         <template #icon>
           <icon-copy class="h-5 w-5" />
@@ -112,7 +107,7 @@ onMounted(() => {
       <n-button
         v-if="entityId"
         tertiary
-        @click="navigateTo({ ...route, hash: `#parents`})"
+        @click="navigateTo({ path, query, hash: `#parents`}, { replace: true })"
       >
         <template #icon>
           <icon-tree-view class="h-5 w-5" />
@@ -123,7 +118,7 @@ onMounted(() => {
       <n-button
         v-if="entityId"
         tertiary
-        @click="navigateTo({ ...route, hash: `#rights`})"
+        @click="navigateTo({ path, query, hash: `#rights`}, { replace: true })"
       >
         <template #icon>
           <icon-user-multiple class="h-5 w-5" />

@@ -8,14 +8,14 @@ defineProps({
 })
 
 const { t } = useI18n()
-const route = useRoute()
+const { path, query } = useRoute()
 </script>
 
 <template>
   <n-button
     v-if="options.length === 1"
     tertiary
-    @click="navigateTo({ ...route, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}`})"
+    @click="navigateTo({ path, query, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}`}, { replace: true })"
   >
     <template #icon>
       <icon-add class="h-7 w-7" />
@@ -38,14 +38,14 @@ const route = useRoute()
     </template>
 
     <div class="w-full flex flex-col">
-      <nuxt-link
+      <div
         v-for="o in options"
         :key="o.value"
         class="py-2 px-4 hover:bg-gray-50 cursor-pointer"
-        :to="{ ...route, hash: `#${isChild ? 'child' : 'add'}-${o.value}`}"
+        @click="navigateTo({ path, query, hash: `#${isChild ? 'child' : 'add'}-${o.value}`}, { replace: true })"
       >
         {{ o.label.toLowerCase() }}
-      </nuxt-link>
+      </div>
     </div>
 
     <template #footer>
