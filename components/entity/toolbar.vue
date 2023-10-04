@@ -9,7 +9,7 @@ const props = defineProps({
 })
 
 const { t } = useI18n()
-const { path, query } = useRoute()
+const route = useRoute()
 
 const addChilds = ref([])
 const addDefaults = ref([])
@@ -31,15 +31,19 @@ async function loadAddDefaults () {
   const { entities: menuEntities } = await apiGetEntities({
     '_type.string': 'menu',
     'query.string': window.location.search.substring(1),
-    props: '_id'
+    props: '_id',
+    limit: 1
   })
 
   if (menuEntities.length === 0) return
 
   const { entities } = await apiGetEntities({
     '_type.string': 'entity',
-    'add_from.reference': menuEntities[0]._id,
-    props: 'name,label'
+    'add_from.reference': menuEntities.at(0)._id,
+    props: [
+      'name',
+      'label'
+    ].join(',')
   })
 
   addDefaults.value = entities
@@ -49,7 +53,10 @@ async function loadAddChilds () {
   if (props.entityId) {
     const { entities } = await apiGetEntities({
       'add_from.reference': props.entityId,
-      props: 'name,label'
+      props: [
+        'name',
+        'label'
+      ].join(',')
     })
 
     addChilds.value = [...addChilds.value, ...entities.filter(x => !addChilds.value.some(y => y._id === x._id))]
@@ -58,14 +65,17 @@ async function loadAddChilds () {
   if (props.typeId) {
     const { entities } = await apiGetEntities({
       'add_from.reference': props.typeId,
-      props: 'name,label'
+      props: [
+        'name',
+        'label'
+      ].join(',')
     })
 
     addChilds.value = [...addChilds.value, ...entities.filter(x => !addChilds.value.some(y => y._id === x._id))]
   }
 }
 
-watch(() => query, () => loadAddDefaults(), { deep: true, immediate: true })
+watch(() => route.query, () => loadAddDefaults(), { deep: true, immediate: true })
 watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
 </script>
 
@@ -85,7 +95,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
       <n-button
         v-if="['owner', 'editor'].includes(right)"
         tertiary
-        @click="navigateTo({ path, query, hash: `#edit`}, { replace: true })"
+        @click="navigateTo({ path: route.path, query: route.query, hash: `#edit`}, { replace: true })"
       >
         <template #icon>
           <icon-edit class="h-5 w-5" />
@@ -96,7 +106,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
       <n-button
         v-if="entityId"
         tertiary
-        @click="navigateTo({ path, query, hash: `#duplicate`}, { replace: true })"
+        @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`}, { replace: true })"
       >
         <template #icon>
           <icon-copy class="h-5 w-5" />
@@ -107,7 +117,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
       <n-button
         v-if="entityId"
         tertiary
-        @click="navigateTo({ path, query, hash: `#parents`}, { replace: true })"
+        @click="navigateTo({ path: route.path, query: route.query, hash: `#parents`}, { replace: true })"
       >
         <template #icon>
           <icon-tree-view class="h-5 w-5" />
@@ -118,7 +128,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
       <n-button
         v-if="entityId"
         tertiary
-        @click="navigateTo({ path, query, hash: `#rights`}, { replace: true })"
+        @click="navigateTo({ path: route.path, query: route.query, hash: `#rights`}, { replace: true })"
       >
         <template #icon>
           <icon-user-multiple class="h-5 w-5" />

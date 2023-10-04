@@ -196,10 +196,8 @@ async function getMenuEntities () {
     '_type.string': 'menu',
     props: [
       'ordinal.number',
-      'group.string',
-      'group.language',
-      'name.string',
-      'name.language',
+      'group',
+      'name',
       'query.string'
     ].join(',')
   })
@@ -227,8 +225,8 @@ function queryObj (q) {
 
   const params = {}
   for (const parameter of query) {
-    const p = parameter.split('=')
-    params[p[0]] = p[1]
+    const [key, value] = parameter.split('=')
+    params[key] = value
   }
 
   return params
