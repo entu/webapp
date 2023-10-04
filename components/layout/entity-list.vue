@@ -16,7 +16,7 @@ const scrollIdx = ref(0)
 const { y: listElementScroll } = useScroll(listElement)
 
 const debouncedScroll = useDebounceFn(async () => {
-  await navigateTo({ path: `/${accountId.value}/${entitiesList.value[scrollIdx.value]._id}`, query: route.query })
+  await navigateTo({ path: `/${accountId.value}/${entitiesList.value.at(scrollIdx.value)._id}`, query: route.query })
 }, 300)
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)

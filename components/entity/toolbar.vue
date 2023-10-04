@@ -38,8 +38,8 @@ async function loadAddDefaults () {
 
   const { entities } = await apiGetEntities({
     '_type.string': 'entity',
-    'add_from.reference': menuEntities[0]._id,
     props: 'name,label'
+    'add_from.reference': menuEntities.at(0)._id,
   })
 
   addDefaults.value = entities
