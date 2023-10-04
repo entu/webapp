@@ -1,5 +1,4 @@
 export default defineI18nConfig(() => ({
-  defaultLocale: 'en',
   datetimeFormats: {
     en: {
       date: { year: 'numeric', month: '2-digit', day: '2-digit' },
@@ -10,7 +9,8 @@ export default defineI18nConfig(() => ({
       datetime: { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }
     }
   },
+  defaultLocale: 'en',
   legacy: false,
   locale: 'en',
-  fallbackLocale: 'en'
+  strategy: 'no_prefix'
 }))

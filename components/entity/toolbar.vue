@@ -65,13 +65,8 @@ async function loadAddChilds () {
   }
 }
 
-watch(() => route.query, loadAddDefaults, { deep: true })
-watch(() => props, loadAddChilds, { deep: true })
-
-onMounted(() => {
-  loadAddDefaults()
-  loadAddChilds()
-})
+watch(() => route.query, () => loadAddDefaults(), { deep: true, immediate: true })
+watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
 </script>
 
 <template>

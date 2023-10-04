@@ -1,4 +1,3 @@
-
 export const useAccount = () => {
   const route = useRoute()
   const accounts = useLocalStorage('accounts', [])

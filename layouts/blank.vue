@@ -6,7 +6,7 @@ const requests = useRequestCounter()
 
 const loading = computed(() => requests.value > 0)
 
-watch(() => loading.value, (value) => {
+watch(loading, (value) => {
   if (value) {
     loadingBar.start()
   } else {
