@@ -196,10 +196,8 @@ async function getMenuEntities () {
     '_type.string': 'menu',
     props: [
       'ordinal.number',
-      'group.string',
-      'group.language',
-      'name.string',
-      'name.language',
+      'group',
+      'name',
       'query.string'
     ].join(',')
   })

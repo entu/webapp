@@ -31,15 +31,19 @@ async function loadAddDefaults () {
   const { entities: menuEntities } = await apiGetEntities({
     '_type.string': 'menu',
     'query.string': window.location.search.substring(1),
-    props: '_id'
+    props: '_id',
+    limit: 1
   })
 
   if (menuEntities.length === 0) return
 
   const { entities } = await apiGetEntities({
     '_type.string': 'entity',
-    props: 'name,label'
     'add_from.reference': menuEntities.at(0)._id,
+    props: [
+      'name',
+      'label'
+    ].join(',')
   })
 
   addDefaults.value = entities
@@ -49,7 +53,10 @@ async function loadAddChilds () {
   if (props.entityId) {
     const { entities } = await apiGetEntities({
       'add_from.reference': props.entityId,
-      props: 'name,label'
+      props: [
+        'name',
+        'label'
+      ].join(',')
     })
 
     addChilds.value = [...addChilds.value, ...entities.filter(x => !addChilds.value.some(y => y._id === x._id))]
@@ -58,7 +65,10 @@ async function loadAddChilds () {
   if (props.typeId) {
     const { entities } = await apiGetEntities({
       'add_from.reference': props.typeId,
-      props: 'name,label'
+      props: [
+        'name',
+        'label'
+      ].join(',')
     })
 
     addChilds.value = [...addChilds.value, ...entities.filter(x => !addChilds.value.some(y => y._id === x._id))]

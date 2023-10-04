@@ -123,7 +123,10 @@ async function getEntities (page = pagination.value.page, pageSize = pagination.
   const { entities, count } = await apiGetEntities({
     [props.referenceField]: props.entityId,
     '_type.reference': props.typeId,
-    props: ['_thumbnail', ...rawColumns.value.map(c => c.name)].join(','),
+    props: [
+      '_thumbnail',
+      ...rawColumns.value.map(c => c.name)
+    ].join(','),
     sort: sorter ? `${sorter.order === 'descend' ? '-' : ''}${sorter.columnKey}.${field}` : null,
     limit: pageSize,
     skip: pageSize * (page - 1)
