@@ -8,14 +8,14 @@ defineProps({
 })
 
 const { t } = useI18n()
-const { path, query } = useRoute()
+const route = useRoute()
 </script>
 
 <template>
   <n-button
     v-if="options.length === 1"
     tertiary
-    @click="navigateTo({ path, query, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}`}, { replace: true })"
+    @click="navigateTo({ path: route.path, query: route.query, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}`}, { replace: true })"
   >
     <template #icon>
       <icon-add class="h-7 w-7" />
@@ -42,7 +42,7 @@ const { path, query } = useRoute()
         v-for="o in options"
         :key="o.value"
         class="py-2 px-4 hover:bg-gray-50 cursor-pointer"
-        @click="navigateTo({ path, query, hash: `#${isChild ? 'child' : 'add'}-${o.value}`}, { replace: true })"
+        @click="navigateTo({ path: route.path, query: route.query, hash: `#${isChild ? 'child' : 'add'}-${o.value}`}, { replace: true })"
       >
         {{ o.label.toLowerCase() }}
       </div>
