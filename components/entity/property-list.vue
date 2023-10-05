@@ -1,4 +1,6 @@
 <script setup>
+import { NPopover } from 'naive-ui'
+
 const props = defineProps({
   properties: { type: Array, required: true },
   edit: { type: Boolean, default: false }
@@ -15,7 +17,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
       class="grid grid-cols-3 gap-3 border-t first-of-type:border-t-0 border-gray-100"
     >
       <div
-        class="py-1 text-right text-[#1E434C] font-medium"
+        class="py-1 flex items-center justify-end gap-1 text-[#1E434C] font-medium"
         :class="{ 'text-red-700' : property.mandatory && (edit || !property.values) }"
       >
         {{
@@ -23,6 +25,22 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
             ? (property.labelPlural || property.label || property.name)
             : (property.label || property.name)
         }}
+
+        <n-popover
+          v-if="property.description"
+          class="max-w-xs"
+          placement="top"
+        >
+          <template #trigger>
+            <span class="w-3 h-3 rounded-full bg-gray-200 text-gray-600 text-[.6rem] font-bold flex items-center justify-center cursor-pointer">i</span>
+          </template>
+          {{ property.description }}
+        </n-popover>
+
+        <div
+          v-else
+          class="w-3 h-3"
+        />
       </div>
 
       <div class="col-span-2">
