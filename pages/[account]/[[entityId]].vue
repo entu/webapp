@@ -253,19 +253,6 @@ async function loadReferences () {
   })
 }
 
-function propsSorter (a, b) {
-  if (a.ordinal && b.ordinal && a.ordinal < b.ordinal) return -1
-  if (a.ordinal && b.ordinal && a.ordinal > b.ordinal) return 1
-
-  if (!a.ordinal && b.ordinal) return -1
-  if (a.ordinal && !b.ordinal) return 1
-
-  if (!a.name || a.name < b.name) return -1
-  if (!b.name || a.name > b.name) return 1
-
-  return 0
-}
-
 async function closeDrawer () {
   await navigateTo({ path: route.path, query: route.query, hash: null }, { replace: true })
 }
