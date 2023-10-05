@@ -4,8 +4,8 @@ import { NButton, NButtonGroup } from 'naive-ui'
 
 const props = defineProps({
   entityId: { type: String, default: null },
-  right: { type: String, default: null },
-  typeId: { type: String, default: null }
+  typeId: { type: String, default: null },
+  right: { type: String, default: null }
 })
 
 const { t } = useI18n()
@@ -53,7 +53,7 @@ async function loadAddChilds () {
   if (props.entityId) {
     const { entities } = await apiGetEntities({
       'add_from.reference': props.entityId,
-      '_type.reference.ne': props.typeId,
+      '_type.string.ne': 'entity',
       props: [
         'name',
         'label'
