@@ -14,7 +14,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <pre>{{ props }}</pre>
+  <pre class="text-xs">{{ entityId }}</pre>
 </template>
 
 <i18n lang="yaml">

@@ -42,6 +42,7 @@ watch(() => route.query, () => {
   if (locationSearch.value === window.location.search) return
 
   skip.value = 0
+  entitiesCount.value = null
   entitiesList.value = []
   locationSearch.value = window.location.search
 
@@ -152,7 +153,7 @@ function color () {
     </div>
 
     <div
-      v-if="entitiesCount !== null"
+      v-if="!isLoading || entitiesCount !== null"
       class="pt-3 pb-1 sticky bottom-0 text-center text-gray-400 italic bg-white"
     >
       {{ t('count', entitiesCount) }}
