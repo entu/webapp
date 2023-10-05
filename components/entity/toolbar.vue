@@ -53,6 +53,7 @@ async function loadAddChilds () {
   if (props.entityId) {
     const { entities } = await apiGetEntities({
       'add_from.reference': props.entityId,
+      '_type.reference.ne': props.typeId,
       props: [
         'name',
         'label'
