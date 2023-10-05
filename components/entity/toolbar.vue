@@ -4,8 +4,8 @@ import { NButton, NButtonGroup } from 'naive-ui'
 
 const props = defineProps({
   entityId: { type: String, default: null },
-  right: { type: String, default: null },
-  typeId: { type: String, default: null }
+  typeId: { type: String, default: null },
+  right: { type: String, default: null }
 })
 
 const { t } = useI18n()
@@ -53,6 +53,7 @@ async function loadAddChilds () {
   if (props.entityId) {
     const { entities } = await apiGetEntities({
       'add_from.reference': props.entityId,
+      '_type.string.ne': 'entity',
       props: [
         'name',
         'label'
@@ -80,9 +81,9 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
 </script>
 
 <template>
-  <div class="mx-2 flex gap-2 justify-end">
+  <div class="mx-2 flex gap-2 justify-between">
     <entity-toolbar-add :options="addDefaultOptions" />
-
+    <div />
     <n-button-group
       v-if="entityId"
       class="flex items-center justify-end float-right"
