@@ -24,6 +24,7 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
 useInfiniteScroll(listElement, () => {
   if (isLoading.value) return
   if (limit.value === 0) return
+  if (entitiesCount.value === 0) return
 
   getEntities()
 }, { distance: 150 })
