@@ -25,7 +25,7 @@ export const themeOverrides = {
   },
   LoadingBar: {
     colorLoading: 'rgb(14, 165, 233)',
-    height: '2px'
+    height: '3px'
   },
   Menu: {
     arrowColor: 'rgba(255, 255, 255, 0.7)',
