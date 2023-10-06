@@ -262,7 +262,7 @@ onMounted(async () => {
     loadEntity()
     loadChilds()
     loadReferences()
-  } else {
+  } else if (userId.value) {
     stats.value = await apiGet('account')
   }
 })

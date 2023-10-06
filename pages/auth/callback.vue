@@ -1,4 +1,6 @@
 <script setup>
+import { NSpin } from 'naive-ui'
+
 const { t } = useI18n()
 const route = useRoute()
 const { accounts } = useAccount()
@@ -19,7 +21,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div />
+  <n-spin
+    class="h-full w-full"
+    :show="isLoading"
+    :delay="1000"
+  />
 </template>
 
 <i18n lang="yaml">
