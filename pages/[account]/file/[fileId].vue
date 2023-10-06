@@ -1,4 +1,6 @@
 <script setup>
+import { NSpin } from 'naive-ui'
+
 const route = useRoute()
 
 definePageMeta({ layout: 'blank' })
@@ -15,7 +17,11 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div />
+  <n-spin
+    class="h-full w-full"
+    :show="isLoading"
+    :delay="1000"
+  />
 </template>
 
 <i18n lang="yaml">
