@@ -9,6 +9,7 @@ const { accountId, accounts } = useAccount()
 const { menuCollapsed, userId, userName } = useUser()
 
 const menuEntities = ref([])
+const expandedMenus = ref([])
 const activeMenu = ref(window.location.search.substring(1))
 
 const accountMenu = computed(() => {
@@ -44,7 +45,10 @@ const accountMenu = computed(() => {
           key: x.account,
           name: x.account,
           label: () => h(NuxtLink,
-            { to: { path: `/${x.account}` } },
+            {
+              to: { path: `/${x.account}` },
+              onClick: () => { expandedMenus.value = [] }
+            },
             { default: () => x.account }
           )
         }))
@@ -252,9 +256,11 @@ function queryObj (q) {
       :accordion="true"
       :collapsed-width="60"
       :collapsed="menuCollapsed"
+      :expanded-keys="expandedMenus"
       :indent="32"
       :options="accountMenu"
       :root-indent="18"
+      @update:expanded-keys="(menus) => expandedMenus = menus"
     />
 
     <div
