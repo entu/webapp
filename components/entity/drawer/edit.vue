@@ -47,15 +47,13 @@ const entity = computed(() => {
         ordinal: getValue(p.ordinal, 'number'),
         public: getValue(p.public, 'boolean'),
         readonly: getValue(p.readonly, 'boolean'),
-        search: getValue(p.search, 'boolean'),
-        type: getValue(p.type)
+        type: getValue(p.type),
+        values: []
       }))
       : []
   }
 
   for (const property in rawEntity.value) {
-    if (['_id', '_thumbnail'].includes(property)) continue
-
     const existingProperty = result.props.find(x => x.name === property)
 
     if (existingProperty) {
@@ -75,6 +73,9 @@ const properties = computed(() => {
 
   entity.value.props.forEach((property) => {
     if (property.name.startsWith('_')) return
+    if (property.readonly) return
+    if (property.formula) return
+    if (property.hidden) return
 
     const group = property.group || ''
     const ordinal = property.ordinal || 0
@@ -85,6 +86,10 @@ const properties = computed(() => {
         children: [],
         ordinal: 0
       }
+    }
+
+    if (property.list || property.values?.length === 0) {
+      property.values.push({})
     }
 
     propsObject[group].ordinal += ordinal
@@ -116,14 +121,12 @@ async function loadEntity () {
 
   if (!typeId) return
 
-  rawEntityType.value = await apiGetEntity(typeId, {
-    props: [
-      'description',
-      'label_plural',
-      'label',
-      'name'
-    ]
-  })
+  rawEntityType.value = await apiGetEntity(typeId, [
+    'description',
+    'label_plural',
+    'label',
+    'name'
+  ])
 
   const { entities } = await apiGetEntities({
     '_parent.reference': typeId,
@@ -145,7 +148,6 @@ async function loadEntity () {
       'ordinal',
       'public',
       'readonly',
-      'search',
       'type'
     ]
   })
@@ -172,8 +174,8 @@ onMounted(() => {
     </h2>
 
     <entity-property-list
-      class="pl-5"
       edit
+      :entity-id="entity._id"
       :properties="pg.children"
     />
   </template>

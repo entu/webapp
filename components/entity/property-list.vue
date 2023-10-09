@@ -2,6 +2,7 @@
 import { NPopover } from 'naive-ui'
 
 const props = defineProps({
+  entityId: { type: String, default: undefined },
   properties: { type: Array, required: true },
   edit: { type: Boolean, default: false }
 })
@@ -17,7 +18,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
       class="grid grid-cols-3 gap-3 border-t first-of-type:border-t-0 border-gray-100"
     >
       <div
-        class="py-1 flex items-top justify-end gap-1 text-[#1E434C] font-medium"
+        class="py-2 flex items-top justify-end gap-1 text-[#1E434C] font-medium"
         :class="{ 'text-red-700' : property.mandatory && (edit || !property.values) }"
       >
         {{
@@ -32,7 +33,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
           placement="top"
         >
           <template #trigger>
-            <span class="w-3 h-3 text-gray-600 text-xs font-bold flex items-center justify-center cursor-pointer">i</span>
+            <span class="w-3 h-3 text-blue-500 text-xs font-bold flex items-center justify-center cursor-pointer">i</span>
           </template>
           {{ property.description }}
         </n-popover>
@@ -43,10 +44,12 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
         />
       </div>
 
-      <div class="col-span-2">
+      <div class="col-span-2 py-1 flex items-center justify-start">
         <entity-property-edit
           v-if="edit"
           :decimals="property.decimals"
+          :entity-id="entityId"
+          :property="property.name"
           :is-multilingual="property.multilingual"
           :type="property.type"
           :values="property.values"

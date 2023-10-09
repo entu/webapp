@@ -106,6 +106,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
 
       <n-button
         v-if="entityId"
+        disabled
         tertiary
         @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`}, { replace: true })"
       >
@@ -117,6 +118,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
 
       <n-button
         v-if="entityId"
+        disabled
         tertiary
         @click="navigateTo({ path: route.path, query: route.query, hash: `#parents`}, { replace: true })"
       >
@@ -128,6 +130,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
 
       <n-button
         v-if="entityId"
+        disabled
         tertiary
         @click="navigateTo({ path: route.path, query: route.query, hash: `#rights`}, { replace: true })"
       >

@@ -8,7 +8,7 @@ const { accounts } = useAccount()
 onMounted(async () => {
   useHead({ title: t('title') })
 
-  const authResponse = await apiGet('auth', { account: '' }, { Authorization: `Bearer ${route.query.key}` })
+  const authResponse = await apiRequest('auth', { account: '' }, { Authorization: `Bearer ${route.query.key}` })
 
   if (Array.isArray(authResponse) && authResponse.length > 0) {
     accounts.value = authResponse

@@ -73,7 +73,7 @@ const accountMenu = computed(() => {
         children: menuCollapsed.value
           ? [{
               name: '            1',
-              label: () => h('strong', { }, { default: () => getValue(entity.group).toUpperCase() })
+              label: () => h('strong', {}, { default: () => getValue(entity.group).toUpperCase() })
             }, {
               name: '            2',
               type: 'divider'
@@ -156,7 +156,7 @@ const userMenu = computed(() => {
       icon: () => h(IconUser, { class: 'h-5 w-5' }),
       label: () => h(NuxtLink,
         { to: { path: `/${accountId.value}/${userId.value}` } },
-        { default: () => userName.value }
+        { default: () => userName.value || t('userEntity') }
       )
     })
     menu.push({
@@ -304,6 +304,7 @@ function queryObj (q) {
     mid: Mobile-ID
     sid: Smart-ID
     idc: ID-Card
+    userEntity: User
   et:
     language: English
     signIn: Sisene
@@ -311,4 +312,5 @@ function queryObj (q) {
     mid: Mobiil-ID
     sid: Smart-ID
     idc: ID-kaart
+    userEntity: Kasutaja
 </i18n>
