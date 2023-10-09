@@ -44,7 +44,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
         />
       </div>
 
-      <div class="col-span-2 py-1 flex items-center justify-start">
+      <div class="col-span-2 py-1">
         <entity-property-edit
           v-if="edit"
           :decimals="property.decimals"
