@@ -400,6 +400,7 @@ onMounted(async () => {
         :default-width="drawerWidth"
       >
         <n-drawer-content
+          body-content-style="padding-top:0"
           :closable="true"
           :title="drawerTitle"
         >

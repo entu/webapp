@@ -73,7 +73,7 @@ const accountMenu = computed(() => {
         children: menuCollapsed.value
           ? [{
               name: '            1',
-              label: () => h('strong', { }, { default: () => getValue(entity.group).toUpperCase() })
+              label: () => h('strong', {}, { default: () => getValue(entity.group).toUpperCase() })
             }, {
               name: '            2',
               type: 'divider'
