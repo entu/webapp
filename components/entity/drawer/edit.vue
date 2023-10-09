@@ -116,14 +116,12 @@ async function loadEntity () {
 
   if (!typeId) return
 
-  rawEntityType.value = await apiGetEntity(typeId, {
-    props: [
-      'description',
-      'label_plural',
-      'label',
-      'name'
-    ]
-  })
+  rawEntityType.value = await apiGetEntity(typeId, [
+    'description',
+    'label_plural',
+    'label',
+    'name'
+  ])
 
   const { entities } = await apiGetEntities({
     '_parent.reference': typeId,

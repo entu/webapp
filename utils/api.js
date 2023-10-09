@@ -3,24 +3,29 @@ export function useRequestCounter () {
 }
 
 export async function apiGetEntities (params) {
-  return await apiGet('entity', params)
+  return await apiRequest('entity', params)
 }
 
-export async function apiGetEntity (entityId, params) {
-  const { entity } = await apiGet('entity/' + entityId, params)
+export async function apiGetEntity (entityId, props = []) {
+  const { entity } = await apiRequest('entity/' + entityId, { props: props?.join(',') })
   return entity
 }
 
-export async function apiGetProperty (propertyId, params) {
-  return await apiGet('property/' + propertyId, params)
+export async function apiGetProperty (propertyId) {
+  return await apiRequest('property/' + propertyId)
 }
 
-export async function apiGet (pathname, params = {}, headers) {
+export async function apiDeleteProperty (propertyId) {
+  return await apiRequest('property/' + propertyId, {}, {}, 'DELETE')
+}
+
+export async function apiRequest (pathname, params = {}, headers = {}, method = 'GET') {
   const runtimeConfig = useRuntimeConfig()
   const requests = useRequestCounter()
 
   const { accounts, accountId } = useAccount()
   const { token } = useUser()
+  let body = null
 
   requests.value++
 
@@ -32,9 +37,15 @@ export async function apiGet (pathname, params = {}, headers) {
 
   const url = new URL(runtimeConfig.public.apiUrl)
   url.pathname = '/' + pathname
-  url.search = new URLSearchParams(params).toString()
 
-  const result = await fetch(url, { headers }).then((response) => {
+  if (method === 'GET') {
+    url.search = new URLSearchParams(params).toString()
+  } else {
+    headers = { 'Content-Type': 'application/json', ...headers }
+    body = JSON.stringify(params)
+  }
+
+  const result = await fetch(url, { method, headers, body }).then((response) => {
     if (!response.ok && response.status === 401) accounts.value = []
 
     return response.json()

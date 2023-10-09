@@ -167,14 +167,12 @@ async function loadEntity () {
 
   if (!typeId.value) return
 
-  rawEntityType.value = await apiGetEntity(typeId.value, {
-    props: [
-      'description',
-      'label_plural',
-      'label',
-      'name'
-    ]
-  })
+  rawEntityType.value = await apiGetEntity(typeId.value, [
+    'description',
+    'label_plural',
+    'label',
+    'name'
+  ])
 
   const { entities } = await apiGetEntities({
     '_parent.reference': typeId.value,
@@ -214,13 +212,11 @@ async function loadChilds () {
   })
 
   entities.forEach(async (x) => {
-    const rawType = await apiGetEntity(x._type.reference, {
-      props: [
-        'label_plural',
-        'label',
-        'name'
-      ].join(',')
-    })
+    const rawType = await apiGetEntity(x._type.reference, [
+      'label_plural',
+      'label',
+      'name'
+    ])
 
     rawChilds.value.push({
       ...rawType,
@@ -238,13 +234,11 @@ async function loadReferences () {
   })
 
   entities.forEach(async (x) => {
-    const rawType = await apiGetEntity(x._type.reference, {
-      props: [
-        'label_plural',
-        'label',
-        'name'
-      ].join(',')
-    })
+    const rawType = await apiGetEntity(x._type.reference, [
+      'label_plural',
+      'label',
+      'name'
+    ])
 
     rawReferences.value.push({
       ...rawType,
@@ -263,7 +257,7 @@ onMounted(async () => {
     loadChilds()
     loadReferences()
   } else if (userId.value) {
-    stats.value = await apiGet('account')
+    stats.value = await apiRequest('account')
   }
 })
 </script>
