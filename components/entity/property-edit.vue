@@ -1,58 +1,118 @@
 <script setup>
-import { NInput, NInputNumber, NSelect, NSwitch } from 'naive-ui'
+import { NDatePicker, NInput, NInputNumber, NSelect, NSwitch } from 'naive-ui'
 
 const props = defineProps({
   entityId: { type: String, default: undefined },
   property: { type: String, default: undefined },
   type: { type: String, default: undefined },
+  classifiers: { type: Array, default: () => [] },
+  set: { type: Array, default: () => [] },
   decimals: { type: Number, default: 0 },
   isMultilingual: { type: Boolean, default: false },
   values: { type: Array, default: () => [] }
 })
 
-const oldValues = ref([])
-const newValues = ref([])
+const emit = defineEmits(['update'])
+
+const { t } = useI18n()
+
+const referenceSearch = ref('')
+const rawReferences = ref(null)
+const searchingReferences = ref(false)
+
+const { cloned: oldValues } = useCloned(props.values)
+const { cloned: newValues } = useCloned(props.values)
 
 const languageOptions = [
   { value: 'en', label: 'EN' },
   { value: 'et', label: 'ET' }
 ]
 
-watch(() => props.values, (values) => {
-  oldValues.value = structuredClone(toRaw(values))
-  newValues.value = structuredClone(toRaw(values))
+const setOptions = computed(() => props.set.map(x => ({ value: x, label: x })).sort())
+
+const referenceOptions = computed(() => {
+  if (rawReferences.value) {
+    return rawReferences.value?.map(x => ({ value: x._id, label: getValue(x.name) || x._id, type: getValue(x._type) })) || []
+  } else {
+    return props.values.filter(x => !!x._id).map(x => ({ value: x.reference, label: x.string })) || []
+  }
+})
+
+watch(newValues, (values) => {
+  values = values.map((x) => {
+    if (x.date) x.date = new Date(x.date).getTime()
+    if (x.datetime) x.datetime = new Date(x.datetime).getTime()
+
+    return x
+  })
 }, { deep: true, immediate: true })
 
+watchDebounced(referenceSearch, async (value = '') => {
+  rawReferences.value = null
+
+  if (value === '') return
+
+  searchingReferences.value = true
+
+  const filter = {
+    q: value,
+    props: [
+      '_type.string',
+      'name'
+    ],
+    sort: 'name',
+    limit: 20
+  }
+
+  if (props.classifiers.length > 0) {
+    filter['_type.reference'] = props.classifiers.at(0)
+  }
+
+  const { entities, count } = await apiGetEntities(filter)
+
+  rawReferences.value = entities
+
+  searchingReferences.value = false
+}, { debounce: 500, maxWait: 5000 })
+
+function searchReferences (query) {
+  referenceSearch.value = query
+}
+
+function renderReferenceOption (option) {
+  return h('div',
+    { class: 'flex gap-3 items-center' },
+    [
+      h('div', { }, option.label),
+      h('div', { class: 'px-2 rounded bg-blue-50 text-xs text-gray-500' }, option.type)
+    ]
+  )
+}
+
 function updateValue (newValue) {
+  const oldValue = oldValues.value.find(x => x._id === newValue._id) || {}
   const _id = newValue._id
   const language = newValue.language
+  let property = null
   let value = null
 
   switch (props.type) {
-    case 'string':
-      newValue.string = newValue.string?.trim() || ''
-      value = newValue.string || null
-      break
     case 'text':
-      newValue.string = newValue.string?.trim() || ''
-      value = newValue.string || null
+      property = 'string'
       break
-    case 'number':
-      value = newValue.number
-      break
-    case 'boolean':
-      value = newValue.boolean || null
-      break
-    case 'reference':
-      value = newValue.reference
-      break
-    case 'date':
-      value = newValue.date
-      break
-    case 'datetime':
-      value = newValue.datetime
+    default:
+      property = props.type
       break
   }
+
+  value = newValue[property]
+
+  // check if oldValue[property] is boolean
+
+  if (typeof value === 'string') value = value.trim() || null
+  if (oldValue[property] instanceof Date) value = new Date(value) || null
+
+  if (value === oldValue[property] && language === oldValue.language) return
 
   if (value !== null && !_id) {
     addValue(value, language)
@@ -84,15 +144,24 @@ function deleteValue (_id) {
       class="w-full flex flex-row items-center justify-between gap-1"
     >
       <n-input
-        v-if="type === 'string'"
+        v-if="type === 'string' && set.length === 0"
         v-model:value="value.string"
         clearable
         placeholder=""
         @blur="updateValue(value)"
       />
 
+      <n-select
+        v-else-if="type === 'string' && set.length > 0"
+        v-model:value="value.string"
+        clearable
+        placeholder=""
+        :options="setOptions"
+        @update:value="updateValue(value)"
+      />
+
       <n-input
-        v-if="type === 'text'"
+        v-else-if="type === 'text'"
         v-model:value="value.string"
         placeholder=""
         type="textarea"
@@ -104,7 +173,7 @@ function deleteValue (_id) {
       />
 
       <n-input-number
-        v-if="type === 'number'"
+        v-else-if="type === 'number'"
         v-model:value="value.number"
         class="w-full"
         clearable
@@ -114,24 +183,91 @@ function deleteValue (_id) {
       />
 
       <div
-        v-if="type === 'boolean'"
+        v-else-if="type === 'boolean'"
         class="w-full"
       >
         <n-switch
           v-model:value="value.boolean"
+          :unchecked-value="null"
           @update:value="updateValue(value)"
         />
       </div>
+
+      <n-date-picker
+        v-else-if="type === 'date'"
+        v-model:value="value.date"
+        class="w-full"
+        clearable
+        placeholder=""
+        type="date"
+        :first-day-of-week="0"
+        @update:value="updateValue(value)"
+      />
+
+      <n-date-picker
+        v-else-if="type === 'datetime'"
+        v-model:value="value.date"
+        class="w-full"
+        clearable
+        placeholder=""
+        type="datetime"
+        :first-day-of-week="0"
+        @update:value="updateValue(value)"
+      />
+
+      <n-select
+        v-else-if="type === 'reference'"
+        v-model:value="value.reference"
+        clearable
+        filterable
+        remote
+        :loading="searchingReferences"
+        :options="referenceOptions"
+        :placeholder="t('search')"
+        :render-label="renderReferenceOption"
+        @search="searchReferences"
+        @update:value="updateValue(value)"
+      >
+        <template
+          v-if="searchingReferences"
+          #empty
+        >
+          ...
+        </template>
+        <template
+          v-else-if="rawReferences?.length === 0"
+          #empty
+        >
+          {{ t('noResults') }}
+        </template>
+        <template
+          v-else
+          #empty
+        >
+          {{ t('doSearch') }}
+        </template>
+      </n-select>
 
       <n-select
         v-if="isMultilingual"
         v-model:value="value.language"
         class="!w-20 self-start"
-        clearable
         placeholder=""
         :options="languageOptions"
         @update:value="updateValue(value)"
       />
     </div>
   </div>
+  <!-- <pre class="text-xs">{{ props }}</pre> -->
 </template>
+
+<i18n lang="yaml">
+  en:
+    search: Search Entity
+    doSearch: Start typing to search
+    noResults: no entities found
+  et:
+    search: Otsi objekti
+    doSearch: Alusta otsimist
+    noResults: objekte ei leitud
+</i18n>

@@ -8,7 +8,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:title'])
 
-const { t } = useI18n()
+const { locale, t } = useI18n()
 
 const rawEntity = ref()
 const rawEntityType = ref()
@@ -47,6 +47,7 @@ const entity = computed(() => {
         ordinal: getValue(p.ordinal, 'number'),
         public: getValue(p.public, 'boolean'),
         readonly: getValue(p.readonly, 'boolean'),
+        set: p.set,
         type: getValue(p.type),
         values: []
       }))
@@ -89,7 +90,13 @@ const properties = computed(() => {
     }
 
     if (property.list || property.values?.length === 0) {
-      property.values.push({})
+      const empty = property.multilingual ? { language: locale.value } : {}
+
+      if (property.default) {
+        empty.string = property.default
+      }
+
+      property.values.push(empty)
     }
 
     propsObject[group].ordinal += ordinal
@@ -148,6 +155,7 @@ async function loadEntity () {
       'ordinal',
       'public',
       'readonly',
+      'set',
       'type'
     ]
   })
