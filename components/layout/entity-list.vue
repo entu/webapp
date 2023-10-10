@@ -30,6 +30,7 @@ useInfiniteScroll(listElement, () => {
 }, { distance: 150 })
 
 onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
+  if (route.hash) return
   if (e.code === 'ArrowDown') scrollIdx.value < entitiesList.value.length - 1 && scrollIdx.value++
   if (e.code === 'ArrowUp') scrollIdx.value > 0 && scrollIdx.value--
 
@@ -53,10 +54,10 @@ watch(() => route.params.entityId, (value) => {
   scrollIdx.value = entitiesList.value.findIndex(x => x._id === value) || 0
 })
 
-watchDebounced(searchText, async () => {
-  const routeConfig = { ...route, query: { ...route.query, q: searchText.value } }
+watchDebounced(searchText, async (value) => {
+  const routeConfig = { ...route, query: { ...route.query, q: value } }
 
-  if (!searchText.value) delete routeConfig.query.q
+  if (!value) delete routeConfig.query.q
 
   await navigateTo(routeConfig, { replace: true })
 }, { debounce: 500, maxWait: 5000 })
