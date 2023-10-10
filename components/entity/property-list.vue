@@ -44,9 +44,11 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
         />
       </div>
 
-      <div class="col-span-2 py-1 flex items-center justify-start">
+      <div class="col-span-2 py-1">
         <entity-property-edit
           v-if="edit"
+          :classifiers="property.classifier?.map(x => x.reference)"
+          :set="property.set?.map(x => x.string)"
           :decimals="property.decimals"
           :entity-id="entityId"
           :property="property.name"
