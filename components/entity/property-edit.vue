@@ -17,6 +17,8 @@ const emit = defineEmits(['update'])
 const { t } = useI18n()
 
 const referenceSearch = ref('')
+const referenceLimit = ref(100)
+const referenceCount = ref(null)
 const rawReferences = ref(null)
 const searchingReferences = ref(false)
 
@@ -53,6 +55,7 @@ watchDebounced(referenceSearch, async (value = '') => {
   if (value === '') return
 
   searchingReferences.value = true
+  referenceCount.value = null
 
   const filter = {
     q: value,
@@ -60,8 +63,8 @@ watchDebounced(referenceSearch, async (value = '') => {
       '_type.string',
       'name'
     ],
-    sort: 'name',
-    limit: 20
+    sort: 'name.string',
+    limit: referenceLimit.value
   }
 
   if (props.classifiers.length > 0) {
@@ -71,6 +74,7 @@ watchDebounced(referenceSearch, async (value = '') => {
   const { entities, count } = await apiGetEntities(filter)
 
   rawReferences.value = entities
+  referenceCount.value = count
 
   searchingReferences.value = false
 }, { debounce: 500, maxWait: 5000 })
@@ -220,14 +224,22 @@ function deleteValue (_id) {
         v-model:value="value.reference"
         clearable
         filterable
+        placeholder=""
         remote
         :loading="searchingReferences"
         :options="referenceOptions"
-        :placeholder="t('search')"
         :render-label="renderReferenceOption"
         @search="searchReferences"
         @update:value="updateValue(value)"
       >
+        <template
+          v-if="referenceCount > referenceLimit"
+          #action
+        >
+          <div class="text-center text-xs">
+            {{ t('count', referenceCount - referenceLimit) }}
+          </div>
+        </template>
         <template
           v-if="searchingReferences"
           #empty
@@ -263,11 +275,11 @@ function deleteValue (_id) {
 
 <i18n lang="yaml">
   en:
-    search: Search Entity
-    doSearch: Start typing to search
+    doSearch: Search Entity
     noResults: no entities found
+    count: 'no entities found | Found {n} more entity. Refine your search. | Found {n} more entities. Refine your search.'
   et:
-    search: Otsi objekti
-    doSearch: Alusta otsimist
+    doSearch: Otsi objekti
     noResults: objekte ei leitud
+    count: 'objekte ei leitud | Leiti veel {n} objekt. Täpsusta otsingut. | Leiti veel {n} objekti. Täpsusta otsingut.'
 </i18n>
