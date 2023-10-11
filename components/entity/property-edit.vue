@@ -3,12 +3,12 @@ import { NDatePicker, NInput, NInputNumber, NSelect, NSwitch } from 'naive-ui'
 
 const props = defineProps({
   entityId: { type: String, default: undefined },
-  property: { type: String, default: undefined },
-  type: { type: String, default: undefined },
-  classifiers: { type: Array, default: () => [] },
-  set: { type: Array, default: () => [] },
   decimals: { type: Number, default: 0 },
   isMultilingual: { type: Boolean, default: false },
+  property: { type: String, default: undefined },
+  referenceQuery: { type: String, default: undefined },
+  set: { type: Array, default: () => [] },
+  type: { type: String, default: undefined },
   values: { type: Array, default: () => [] }
 })
 
@@ -40,6 +40,16 @@ const referenceOptions = computed(() => {
   }
 })
 
+const fileList = computed(() => props.type === 'file'
+  ? props.values.map(x => ({
+    id: x._id,
+    name: x.filename,
+    url: `/${accountId.value}/file/${x._id}`,
+    status: 'finished'
+  }))
+  : []
+)
+
 watch(newValues, (values) => {
   values = values.map((x) => {
     if (x.date) x.date = new Date(x.date).getTime()
@@ -57,7 +67,7 @@ watchDebounced(referenceSearch, async (value = '') => {
   searchingReferences.value = true
   referenceCount.value = null
 
-  const filter = {
+  let filter = {
     q: value,
     props: [
       '_type.string',
@@ -67,8 +77,8 @@ watchDebounced(referenceSearch, async (value = '') => {
     limit: referenceLimit.value
   }
 
-  if (props.classifiers.length > 0) {
-    filter['_type.reference'] = props.classifiers.at(0)
+  if (props.referenceQuery) {
+    filter = { ...queryStringToObject(props.referenceQuery), ...filter }
   }
 
   const { entities, count } = await apiGetEntities(filter)
@@ -110,8 +120,6 @@ function updateValue (newValue) {
   }
 
   value = newValue[property]
-
-  // check if oldValue[property] is boolean
 
   if (typeof value === 'string') value = value.trim() || null
   if (oldValue[property] instanceof Date) value = new Date(value) || null

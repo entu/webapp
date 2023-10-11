@@ -30,7 +30,6 @@ const entity = computed(() => {
       : {},
     props: entityProps.value
       ? entityProps.value.map(p => ({
-        classifier: p.classifier,
         decimals: getValue(p.decimals, 'number'),
         default: getValue(p.default),
         description: getValue(p.description),
@@ -48,6 +47,7 @@ const entity = computed(() => {
         public: getValue(p.public, 'boolean'),
         readonly: getValue(p.readonly, 'boolean'),
         set: p.set,
+        referenceQuery: getValue(p.reference_query),
         type: getValue(p.type),
         values: []
       }))
@@ -138,7 +138,6 @@ async function loadEntity () {
   const { entities } = await apiGetEntities({
     '_parent.reference': typeId,
     props: [
-      'classifier',
       'decimals',
       'default',
       'description',
@@ -156,6 +155,7 @@ async function loadEntity () {
       'public',
       'readonly',
       'set',
+      'reference_query',
       'type'
     ]
   })
