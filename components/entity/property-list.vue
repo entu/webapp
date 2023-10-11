@@ -29,13 +29,15 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
 
         <n-popover
           v-if="property.description"
-          class="max-w-xs"
+          class="max-w-sm"
           placement="top"
         >
           <template #trigger>
-            <span class="w-3 h-3 text-blue-500 text-xs font-bold flex items-center justify-center cursor-pointer">i</span>
+            <span class="w-3 h-3 flex items-center justify-center text-blue-600 text-xs font-bold bg-blue-100 rounded cursor-pointer">i</span>
           </template>
-          {{ property.description }}
+          <div class="text-xs">
+            {{ property.description }}
+          </div>
         </n-popover>
 
         <div
@@ -47,12 +49,12 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
       <div class="col-span-2 py-1">
         <entity-property-edit
           v-if="edit"
-          :classifiers="property.classifier?.map(x => x.reference)"
-          :set="property.set?.map(x => x.string)"
           :decimals="property.decimals"
           :entity-id="entityId"
-          :property="property.name"
           :is-multilingual="property.multilingual"
+          :property="property.name"
+          :reference-query="property.referenceQuery"
+          :set="property.set?.map(x => x.string)"
           :type="property.type"
           :values="property.values"
         />

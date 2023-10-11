@@ -1,22 +1,25 @@
 <script setup>
-import { NDatePicker, NInput, NInputNumber, NSelect, NSwitch } from 'naive-ui'
+import { NButton, NDatePicker, NInput, NInputNumber, NSelect, NSwitch, NUpload, NUploadTrigger, NUploadFileList } from 'naive-ui'
 
 const props = defineProps({
   entityId: { type: String, default: undefined },
-  property: { type: String, default: undefined },
-  type: { type: String, default: undefined },
-  classifiers: { type: Array, default: () => [] },
-  set: { type: Array, default: () => [] },
   decimals: { type: Number, default: 0 },
   isMultilingual: { type: Boolean, default: false },
+  property: { type: String, default: undefined },
+  referenceQuery: { type: String, default: undefined },
+  set: { type: Array, default: () => [] },
+  type: { type: String, default: undefined },
   values: { type: Array, default: () => [] }
 })
 
 const emit = defineEmits(['update'])
 
 const { t } = useI18n()
+const { accountId } = useAccount()
 
 const referenceSearch = ref('')
+const referenceLimit = ref(100)
+const referenceCount = ref(null)
 const rawReferences = ref(null)
 const searchingReferences = ref(false)
 
@@ -38,6 +41,16 @@ const referenceOptions = computed(() => {
   }
 })
 
+const fileList = computed(() => props.type === 'file'
+  ? props.values.map(x => ({
+    id: x._id,
+    name: x.filename,
+    url: `/${accountId.value}/file/${x._id}`,
+    status: 'finished'
+  }))
+  : []
+)
+
 watch(newValues, (values) => {
   values = values.map((x) => {
     if (x.date) x.date = new Date(x.date).getTime()
@@ -53,24 +66,26 @@ watchDebounced(referenceSearch, async (value = '') => {
   if (value === '') return
 
   searchingReferences.value = true
+  referenceCount.value = null
 
-  const filter = {
+  let filter = {
     q: value,
     props: [
       '_type.string',
       'name'
     ],
-    sort: 'name',
-    limit: 20
+    sort: 'name.string',
+    limit: referenceLimit.value
   }
 
-  if (props.classifiers.length > 0) {
-    filter['_type.reference'] = props.classifiers.at(0)
+  if (props.referenceQuery) {
+    filter = { ...queryStringToObject(props.referenceQuery), ...filter }
   }
 
   const { entities, count } = await apiGetEntities(filter)
 
   rawReferences.value = entities
+  referenceCount.value = count
 
   searchingReferences.value = false
 }, { debounce: 500, maxWait: 5000 })
@@ -107,8 +122,6 @@ function updateValue (newValue) {
 
   value = newValue[property]
 
-  // check if oldValue[property] is boolean
-
   if (typeof value === 'string') value = value.trim() || null
   if (oldValue[property] instanceof Date) value = new Date(value) || null
 
@@ -133,6 +146,12 @@ function editValue (_id, value, language) {
 
 function deleteValue (_id) {
   console.log('delete', _id)
+}
+function fileUpload (file) {
+  console.log('upload', file)
+}
+function fileUploadChange (v) {
+  console.log('change', v)
 }
 </script>
 
@@ -220,14 +239,22 @@ function deleteValue (_id) {
         v-model:value="value.reference"
         clearable
         filterable
+        placeholder=""
         remote
         :loading="searchingReferences"
         :options="referenceOptions"
-        :placeholder="t('search')"
         :render-label="renderReferenceOption"
         @search="searchReferences"
         @update:value="updateValue(value)"
       >
+        <template
+          v-if="referenceCount > referenceLimit"
+          #action
+        >
+          <div class="text-center text-xs">
+            {{ t('count', referenceCount - referenceLimit) }}
+          </div>
+        </template>
         <template
           v-if="searchingReferences"
           #empty
@@ -248,6 +275,28 @@ function deleteValue (_id) {
         </template>
       </n-select>
 
+      <div
+        v-else-if="type === 'file'"
+        class="w-full"
+      >
+        <n-upload
+          abstract
+          multiple
+          :default-file-list="fileList"
+          :default-upload="false"
+          @before-upload="fileUpload"
+          @change="fileUploadChange"
+          @remove="({file}) => deleteValue(file.id)"
+        >
+          <n-upload-file-list class="w-full mb-2 text-sm" />
+          <n-upload-trigger #="{ handleClick }" abstract>
+            <n-button @click="handleClick">
+              {{ t('upload') }}
+            </n-button>
+          </n-upload-trigger>
+        </n-upload>
+      </div>
+
       <n-select
         v-if="isMultilingual"
         v-model:value="value.language"
@@ -263,11 +312,13 @@ function deleteValue (_id) {
 
 <i18n lang="yaml">
   en:
-    search: Search Entity
-    doSearch: Start typing to search
+    doSearch: Search Entity
     noResults: no entities found
+    count: 'no entities found | Found {n} more entity. Refine your search. | Found {n} more entities. Refine your search.'
+    upload: Upload
   et:
-    search: Otsi objekti
-    doSearch: Alusta otsimist
+    doSearch: Otsi objekti
     noResults: objekte ei leitud
+    count: 'objekte ei leitud | Leiti veel {n} objekt. Täpsusta otsingut. | Leiti veel {n} objekti. Täpsusta otsingut.'
+    upload: Laadi üles
 </i18n>

@@ -74,3 +74,17 @@ export function propsSorter (a, b) {
 
   return 0
 }
+
+export function queryStringToObject (q) {
+  if (!q) return {}
+
+  const query = q.split('&')
+
+  const params = {}
+  for (const parameter of query) {
+    const [key, value] = parameter.split('=')
+    params[key] = value
+  }
+
+  return params
+}

@@ -88,7 +88,7 @@ const accountMenu = computed(() => {
       key: getValue(entity.query),
       name: getValue(entity.name),
       label: () => h(NuxtLink,
-        { to: { path: `/${accountId.value}`, query: queryObj(getValue(entity.query)) } },
+        { to: { path: `/${accountId.value}`, query: queryStringToObject(getValue(entity.query)) } },
         { default: () => getValue(entity.name) }
       ),
       ordinal
@@ -220,20 +220,6 @@ function menuSorter (a, b) {
   if (!b.name || a.name > b.name) return 1
 
   return 0
-}
-
-function queryObj (q) {
-  if (!q) return {}
-
-  const query = q.split('&')
-
-  const params = {}
-  for (const parameter of query) {
-    const [key, value] = parameter.split('=')
-    params[key] = value
-  }
-
-  return params
 }
 </script>
 
