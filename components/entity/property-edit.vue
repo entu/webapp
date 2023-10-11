@@ -1,5 +1,5 @@
 <script setup>
-import { NDatePicker, NInput, NInputNumber, NSelect, NSwitch } from 'naive-ui'
+import { NButton, NDatePicker, NInput, NInputNumber, NSelect, NSwitch, NUpload, NUploadTrigger, NUploadFileList } from 'naive-ui'
 
 const props = defineProps({
   entityId: { type: String, default: undefined },
@@ -15,6 +15,7 @@ const props = defineProps({
 const emit = defineEmits(['update'])
 
 const { t } = useI18n()
+const { accountId } = useAccount()
 
 const referenceSearch = ref('')
 const referenceLimit = ref(100)
@@ -146,6 +147,12 @@ function editValue (_id, value, language) {
 function deleteValue (_id) {
   console.log('delete', _id)
 }
+function fileUpload (file) {
+  console.log('upload', file)
+}
+function fileUploadChange (v) {
+  console.log('change', v)
+}
 </script>
 
 <template>
@@ -268,6 +275,28 @@ function deleteValue (_id) {
         </template>
       </n-select>
 
+      <div
+        v-else-if="type === 'file'"
+        class="w-full"
+      >
+        <n-upload
+          abstract
+          multiple
+          :default-file-list="fileList"
+          :default-upload="false"
+          @before-upload="fileUpload"
+          @change="fileUploadChange"
+          @remove="({file}) => deleteValue(file.id)"
+        >
+          <n-upload-file-list class="w-full mb-2 text-sm" />
+          <n-upload-trigger #="{ handleClick }" abstract>
+            <n-button @click="handleClick">
+              {{ t('upload') }}
+            </n-button>
+          </n-upload-trigger>
+        </n-upload>
+      </div>
+
       <n-select
         v-if="isMultilingual"
         v-model:value="value.language"
@@ -286,8 +315,10 @@ function deleteValue (_id) {
     doSearch: Search Entity
     noResults: no entities found
     count: 'no entities found | Found {n} more entity. Refine your search. | Found {n} more entities. Refine your search.'
+    upload: Upload
   et:
     doSearch: Otsi objekti
     noResults: objekte ei leitud
     count: 'objekte ei leitud | Leiti veel {n} objekt. Täpsusta otsingut. | Leiti veel {n} objekti. Täpsusta otsingut.'
+    upload: Laadi üles
 </i18n>
