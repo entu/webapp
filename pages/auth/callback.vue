@@ -9,14 +9,18 @@ onMounted(async () => {
   useHead({ title: t('title') })
 
   const authResponse = await apiRequest('auth', { account: '' }, { Authorization: `Bearer ${route.query.key}` })
+  const nextPage = useLocalStorage('next', {})
+  const to = { path: nextPage.value?.path || '/', query: nextPage.value?.query }
 
   if (Array.isArray(authResponse) && authResponse.length > 0) {
     accounts.value = authResponse
-    await navigateTo({ path: `/${authResponse.at(0).account}`, query: {} })
   } else {
     accounts.value = []
-    await navigateTo({ path: '/', query: {} })
   }
+
+  nextPage.value = {}
+
+  await navigateTo(to)
 })
 </script>
 
