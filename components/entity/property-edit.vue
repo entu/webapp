@@ -42,7 +42,7 @@ const referenceOptions = computed(() => {
 })
 
 const fileList = computed(() => props.type === 'file'
-  ? props.values.map(x => ({
+  ? props.values.filter(x => !!x._id).map(x => ({
     id: x._id,
     name: x.filename,
     url: `/${accountId.value}/file/${x._id}`,
@@ -288,7 +288,10 @@ function fileUploadChange (v) {
           @change="fileUploadChange"
           @remove="({file}) => deleteValue(file.id)"
         >
-          <n-upload-file-list class="w-full mb-2 text-sm" />
+          <n-upload-file-list
+            v-if="fileList.length > 0"
+            class="w-full mb-2 text-sm"
+          />
           <n-upload-trigger #="{ handleClick }" abstract>
             <n-button @click="handleClick">
               {{ t('upload') }}

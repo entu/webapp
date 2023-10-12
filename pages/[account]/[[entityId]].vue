@@ -87,6 +87,7 @@ const properties = computed(() => {
 
   entity.value.props.forEach((property) => {
     // if (property.name.startsWith('_')) return
+    if (property.name === 'name') return
 
     const group = property.name.startsWith('_') ? '_' : property.group || ''
     const ordinal = property.name.startsWith('_') ? 99999 : property.ordinal || 0
