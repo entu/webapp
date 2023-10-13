@@ -1,5 +1,5 @@
 <script setup>
-import { NCollapse, NCollapseItem, NDrawer, NDrawerContent } from 'naive-ui'
+import { NCollapse, NCollapseItem, NDrawer, NDrawerContent, NPopover } from 'naive-ui'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -31,6 +31,7 @@ const entity = computed(() => {
   const result = {
     _id: rawEntity.value._id,
     _thumbnail: rawEntity.value._thumbnail,
+    _public: getValue(rawEntity.value._public, 'boolean'),
     name: getValue(rawEntity.value.name),
     type: rawEntityType.value
       ? {
@@ -85,8 +86,7 @@ const properties = computed(() => {
   const propsObject = {}
 
   entity.value.props.forEach((property) => {
-    // if (property.name.startsWith('_')) return
-    if (['_parent', '_type', 'name'].includes(property.name)) return
+    if (property.name.startsWith('_')) return
 
     const group = property.name.startsWith('_') ? '_' : property.group || ''
     const ordinal = property.name.startsWith('_') ? 99999 : property.ordinal || 0
@@ -308,20 +308,36 @@ onMounted(async () => {
             </n-collapse>
           </div>
 
-          <div class="flex flex-col gap-3">
+          <div class="min-w-[8rem] flex flex-col gap-3">
             <entity-thumbnail
               v-if="entity._thumbnail"
-              class="w-32 h-32 flex-none object-cover"
+              class="w-full flex-none object-cover"
               :thumbnail="entity._thumbnail"
               :photos="rawEntity.photo"
             />
+
             <nuxt-link
               v-if="entity.type.label"
-              class="py-1 px-2 text-xs text-center bg-slate-50 border rounded border-slate-300 hover:bg-slate-200 cursor-pointer"
+              class="py-1 px-2 text-xs text-center bg-slate-50 border rounded-md border-slate-300 hover:bg-slate-200 cursor-pointer"
               :to="{ path: `/${accountId}/${entity.type._id}` }"
             >
               {{ entity.type.label }}
             </nuxt-link>
+
+            <n-popover
+              v-if="entity._public"
+              class="max-w-sm"
+              placement="left"
+            >
+              <template #trigger>
+                <div class="py-1 px-2 text-xs text-center text-green-600 bg-green-50 border rounded-md border-green-300 cursor-default">
+                  {{ t('public') }}
+                </div>
+              </template>
+              <div class="text-xs">
+                {{ t('publicDescription') }}
+              </div>
+            </n-popover>
           </div>
         </div>
 
@@ -459,6 +475,8 @@ onMounted(async () => {
     requests: Requests in day
     deleted: deleted
     limit: limit
+    public: Entity is public
+    publicDescription: This entity is visible to anonymous users
     childsCount: 'no childs | {n} child | {n} childs'
     referrersCount: 'no referrers | {n} referrer | {n} referrers'
     error404: Entity not found
@@ -469,6 +487,8 @@ onMounted(async () => {
     requests: Päringuid päevas
     deleted: kustutatud
     limit: limiit
+    public: Objekt on avalik
+    publicDescription: Seda objekti näevad ka sisselogimata kasutajad
     childsCount: 'alamobjekte pole | {n} alamobjekt | {n} alamobjekti'
     referrersCount: 'viitajaid pole | {n} viitaja | {n} viitajat'
     error404: Objekti ei leitud
