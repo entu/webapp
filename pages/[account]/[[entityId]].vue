@@ -37,7 +37,6 @@ const entity = computed(() => {
           _id: rawEntityType.value._id,
           name: getValue(rawEntityType.value.name),
           label: getValue(rawEntityType.value.label),
-          labelPlural: getValue(rawEntityType.value.label_plural),
           description: getValue(rawEntityType.value.description)
         }
       : {},
@@ -87,7 +86,7 @@ const properties = computed(() => {
 
   entity.value.props.forEach((property) => {
     // if (property.name.startsWith('_')) return
-    if (property.name === 'name') return
+    if (['_parent', '_type', 'name'].includes(property.name)) return
 
     const group = property.name.startsWith('_') ? '_' : property.group || ''
     const ordinal = property.name.startsWith('_') ? 99999 : property.ordinal || 0
@@ -171,7 +170,6 @@ async function loadEntity () {
 
   rawEntityType.value = await apiGetEntity(typeId.value, [
     'description',
-    'label_plural',
     'label',
     'name'
   ])
@@ -310,14 +308,20 @@ onMounted(async () => {
             </n-collapse>
           </div>
 
-          <div
-            v-if="entity._thumbnail"
-            class="w-32 h-32 flex-none flex object-cover"
-          >
+          <div class="flex flex-col gap-3">
             <entity-thumbnail
+              v-if="entity._thumbnail"
+              class="w-32 h-32 flex-none object-cover"
               :thumbnail="entity._thumbnail"
               :photos="rawEntity.photo"
             />
+            <nuxt-link
+              v-if="entity.type.label"
+              class="py-1 px-2 text-xs text-center bg-slate-50 border rounded border-slate-300 hover:bg-slate-200 cursor-pointer"
+              :to="{ path: `/${accountId}/${entity.type._id}` }"
+            >
+              {{ entity.type.label }}
+            </nuxt-link>
           </div>
         </div>
 
