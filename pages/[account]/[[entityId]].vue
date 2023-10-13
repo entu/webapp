@@ -318,7 +318,7 @@ onMounted(async () => {
 
             <nuxt-link
               v-if="entity.type.label"
-              class="py-1 px-2 text-xs text-center bg-slate-50 border rounded-md border-slate-300 hover:bg-slate-200 cursor-pointer"
+              class="py-1 px-2 text-xs text-center bg-slate-50 border rounded-md border-slate-300 hover:bg-slate-200"
               :to="{ path: `/${accountId}/${entity.type._id}` }"
             >
               {{ entity.type.label }}
@@ -330,9 +330,12 @@ onMounted(async () => {
               placement="left"
             >
               <template #trigger>
-                <div class="py-1 px-2 text-xs text-center text-green-600 bg-green-50 border rounded-md border-green-300 cursor-default">
+                <nuxt-link
+                  class="py-1 px-2 text-xs text-center text-green-600 bg-green-50 border rounded-md border-green-300"
+                  :to="{ hash:'#rights' }"
+                >
                   {{ t('public') }}
-                </div>
+                </nuxt-link>
               </template>
               <div class="text-xs">
                 {{ t('publicDescription') }}
