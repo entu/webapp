@@ -110,7 +110,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
       </n-button>
 
       <n-button
-        v-if="entityId"
+        v-if="['owner', 'editor'].includes(right)"
         disabled
         tertiary
         @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`}, { replace: true })"
@@ -122,7 +122,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
       </n-button>
 
       <n-button
-        v-if="entityId"
+        v-if="['owner', 'editor'].includes(right)"
         disabled
         tertiary
         @click="navigateTo({ path: route.path, query: route.query, hash: `#parents`}, { replace: true })"
@@ -134,7 +134,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
       </n-button>
 
       <n-button
-        v-if="entityId"
+        v-if="['owner'].includes(right)"
         disabled
         tertiary
         @click="navigateTo({ path: route.path, query: route.query, hash: `#rights`}, { replace: true })"
@@ -147,7 +147,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
     </n-button-group>
 
     <n-button
-      v-if="entityId"
+      v-if="['owner', 'editor', 'expander', 'viewer'].includes(right)"
       quaternary
       @click="navigateTo({ path: route.path, query: route.query, hash: `#debug`}, { replace: true })"
     >
