@@ -81,12 +81,17 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
 </script>
 
 <template>
-  <div class="mx-2 flex gap-2 justify-between">
-    <entity-toolbar-add :options="addDefaultOptions" />
-    <div />
+  <div class="mx-2 flex gap-2">
+    <div class="grow">
+      <entity-toolbar-add
+        class="justify-self-start"
+        :options="addDefaultOptions"
+      />
+    </div>
+
     <n-button-group
       v-if="entityId"
-      class="flex items-center justify-end float-right"
+      class="flex items-center"
     >
       <entity-toolbar-add
         :is-child="true"
@@ -140,6 +145,16 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
         {{ t('rights') }}
       </n-button>
     </n-button-group>
+
+    <n-button
+      v-if="entityId"
+      quaternary
+      @click="navigateTo({ path: route.path, query: route.query, hash: `#debug`}, { replace: true })"
+    >
+      <template #icon>
+        <icon-debug class="h-5 w-5" />
+      </template>
+    </n-button>
   </div>
 </template>
 

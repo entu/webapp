@@ -432,6 +432,15 @@ onMounted(async () => {
             :entity-id="rawEntityId"
             @update:title="(title) => { drawerTitle = title }"
           />
+          <entity-drawer-debug
+            v-if="drawerType === 'debug'"
+            :entity="entity"
+            :properties="properties"
+            :raw-entity="rawEntity"
+            :raw-type="rawEntityType"
+            :raw-properties="entityProps"
+            @update:title="(title) => { drawerTitle = title }"
+          />
         </n-drawer-content>
       </n-drawer>
     </div>
