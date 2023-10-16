@@ -311,7 +311,7 @@ onMounted(async () => {
           <div class="min-w-[8rem] flex flex-col gap-3">
             <entity-thumbnail
               v-if="entity._thumbnail"
-              class="w-full flex-none object-cover"
+              class="w-full flex-none"
               :thumbnail="entity._thumbnail"
               :photos="rawEntity.photo"
             />

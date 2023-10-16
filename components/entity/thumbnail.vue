@@ -34,7 +34,7 @@ async function loadImages () {
 
 <template>
   <div
-    class="h-32 w-32 flex items-center justify-center bg-cover rounded-md cursor-pointer"
+    class="h-32 w-32 flex items-center justify-center bg-cover bg-center rounded-md cursor-pointer"
     :style="`background-image:url(${thumbnail})`"
     @click="loadImages()"
   >
