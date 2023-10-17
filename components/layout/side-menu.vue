@@ -122,19 +122,19 @@ const authMenu = computed(() => [
     )
   },
   {
-    key: 'auth-mid',
-    icon: () => h(IconMobileId, { class: 'h-5 w-5' }),
-    label: () => h(NuxtLink,
-      { to: { path: '/auth/mobile-id' } },
-      { default: () => t('mid') }
-    )
-  },
-  {
     key: 'auth-sid',
     icon: () => h(IconSmartId, { class: 'h-5 w-5' }),
     label: () => h(NuxtLink,
       { to: { path: '/auth/smart-id' } },
       { default: () => t('sid') }
+    )
+  },
+  {
+    key: 'auth-mid',
+    icon: () => h(IconMobileId, { class: 'h-5 w-5' }),
+    label: () => h(NuxtLink,
+      { to: { path: '/auth/mobile-id' } },
+      { default: () => t('mid') }
     )
   },
   {
