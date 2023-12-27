@@ -1,15 +1,24 @@
 <script setup>
-import { NConfigProvider, NGlobalStyle, NLoadingBarProvider } from 'naive-ui'
+import { NConfigProvider, NGlobalStyle, NLoadingBarProvider, enUS, dateEnUS } from 'naive-ui'
 
 const runtimeConfig = useRuntimeConfig()
-
-const { setLocale } = useI18n({ useScope: 'global' })
+const { locale, setLocale } = useI18n({ useScope: 'global' })
 
 setLocale(localStorage.getItem('locale') || 'en')
+
+const currentLocale = ref(enUS)
+const currentDateLocale = ref(dateEnUS)
 
 useHead({
   titleTemplate: (title) => {
     return (!title || title === runtimeConfig.public.title) ? runtimeConfig.public.title : `${title} · ${runtimeConfig.public.title}`
+  }
+})
+
+onMounted(() => {
+  if (locale.value === 'et') {
+    currentLocale.value = etLocale
+    currentDateLocale.value = etDateLocale
   }
 })
 
@@ -25,6 +34,8 @@ console.log(
   <n-config-provider
     class="h-full"
     inline-theme-disabled
+    :locale="currentLocale"
+    :date-locale="currentDateLocale"
     :theme-overrides="themeOverrides"
   >
     <n-loading-bar-provider>
