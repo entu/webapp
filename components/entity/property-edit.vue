@@ -158,7 +158,33 @@ function fileUploadChange (v) {
 <template>
   <div class="w-full flex flex-col items-start gap-1">
     <div
+      v-if="type === 'file'"
+      class="w-full"
+    >
+      <n-upload
+        abstract
+        multiple
+        :default-file-list="fileList"
+        :default-upload="false"
+        @before-upload="fileUpload"
+        @change="fileUploadChange"
+        @remove="({file}) => deleteValue(file.id)"
+      >
+        <n-upload-file-list
+          v-if="fileList.length > 0"
+          class="w-full mb-2 text-sm"
+        />
+        <n-upload-trigger #="{ handleClick }" abstract>
+          <n-button @click="handleClick">
+            {{ t('upload') }}
+          </n-button>
+        </n-upload-trigger>
+      </n-upload>
+    </div>
+
+    <div
       v-for="value in newValues"
+      v-else
       :key="value._id"
       class="w-full flex flex-row items-center justify-between gap-1"
     >
@@ -274,31 +300,6 @@ function fileUploadChange (v) {
           {{ t('doSearch') }}
         </template>
       </n-select>
-
-      <div
-        v-else-if="type === 'file'"
-        class="w-full"
-      >
-        <n-upload
-          abstract
-          multiple
-          :default-file-list="fileList"
-          :default-upload="false"
-          @before-upload="fileUpload"
-          @change="fileUploadChange"
-          @remove="({file}) => deleteValue(file.id)"
-        >
-          <n-upload-file-list
-            v-if="fileList.length > 0"
-            class="w-full mb-2 text-sm"
-          />
-          <n-upload-trigger #="{ handleClick }" abstract>
-            <n-button @click="handleClick">
-              {{ t('upload') }}
-            </n-button>
-          </n-upload-trigger>
-        </n-upload>
-      </div>
 
       <n-select
         v-if="isMultilingual"

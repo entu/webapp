@@ -78,6 +78,7 @@ export const themeOverrides = {
   }
 }
 
+// From https://github.com/tusen-ai/naive-ui/blob/main/src/locales/common/enUS.ts
 export const etLocale = createLocale({
   name: 'et-EE',
   global: {
