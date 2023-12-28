@@ -64,7 +64,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     </template>
 
     <template v-else-if="v.boolean !== undefined && v.boolean === true">
-      <icon-checkmark class="h-5 w-5" />
+      <icon-checkmark class="size-5" />
     </template>
 
     <template v-else-if="v.boolean !== undefined && v.boolean === false">

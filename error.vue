@@ -14,7 +14,7 @@ defineProps({
   >
     <n-loading-bar-provider>
       <nuxt-layout>
-        <div class="w-full h-full flex items-center justify-center text-xl">
+        <div class="size-full flex items-center justify-center text-xl">
           {{ error.message }}
         </div>
       </nuxt-layout>

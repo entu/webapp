@@ -5,8 +5,7 @@
 html,
 body,
 #__nuxt {
-  @apply h-full;
-  @apply w-full;
+  @apply size-full;
   @apply antialiased;
 }
 

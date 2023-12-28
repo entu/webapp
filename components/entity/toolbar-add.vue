@@ -18,7 +18,7 @@ const route = useRoute()
     @click="navigateTo({ path: route.path, query: route.query, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}`}, { replace: true })"
   >
     <template #icon>
-      <icon-add class="h-7 w-7" />
+      <icon-add class="size-7" />
     </template>
     {{ t(isChild ? 'addOneChild' : 'addOne', { type: options.at(0).label.toLowerCase() }) }}
   </n-button>
@@ -31,7 +31,7 @@ const route = useRoute()
     <template #trigger>
       <n-button tertiary>
         <template #icon>
-          <icon-add class="h-7 w-7" />
+          <icon-add class="size-7" />
         </template>
         {{ t(isChild ? 'addChild' : 'add') }}
       </n-button>

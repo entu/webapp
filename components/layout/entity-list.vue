@@ -110,7 +110,7 @@ function color () {
         for="search"
         class="w-8 h-7 flex items-center justify-center"
       >
-        <icon-search class="h-5 w-5 text-gray-400" />
+        <icon-search class="size-5 text-gray-400" />
       </label>
       <input
         id="search"
@@ -138,11 +138,11 @@ function color () {
           v-if="entity._thumbnail"
           :src="entity._thumbnail"
           :class="entity.color"
-          class="w-7 h-7 flex-none object-cover rounded-full"
+          class="size-7 flex-none object-cover rounded-full"
         >
         <div
           v-else
-          class="w-7 h-7 flex-none rounded-full "
+          class="size-7 flex-none rounded-full "
           :class="entity.color"
         />
         <div

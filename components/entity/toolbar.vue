@@ -101,7 +101,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
         @click="navigateTo({ path: route.path, query: route.query, hash: `#edit`}, { replace: true })"
       >
         <template #icon>
-          <icon-edit class="h-5 w-5" />
+          <icon-edit class="size-5" />
         </template>
         {{ t('edit') }}
       </n-button>
@@ -113,7 +113,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
         @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`}, { replace: true })"
       >
         <template #icon>
-          <icon-copy class="h-5 w-5" />
+          <icon-copy class="size-5" />
         </template>
         {{ t('duplicate') }}
       </n-button>
@@ -125,7 +125,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
         @click="navigateTo({ path: route.path, query: route.query, hash: `#parents`}, { replace: true })"
       >
         <template #icon>
-          <icon-tree-view class="h-5 w-5" />
+          <icon-tree-view class="size-5" />
         </template>
         {{ t('parents') }}
       </n-button>
@@ -137,7 +137,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
         @click="navigateTo({ path: route.path, query: route.query, hash: `#rights`}, { replace: true })"
       >
         <template #icon>
-          <icon-user-multiple class="h-5 w-5" />
+          <icon-user-multiple class="size-5" />
         </template>
         {{ t('rights') }}
       </n-button>
@@ -149,7 +149,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
       @click="navigateTo({ path: route.path, query: route.query, hash: `#debug`}, { replace: true })"
     >
       <template #icon>
-        <icon-debug class="h-5 w-5" />
+        <icon-debug class="size-5" />
       </template>
     </n-button>
   </div>

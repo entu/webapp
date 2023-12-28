@@ -46,8 +46,8 @@ const columns = computed(() => [
     render: row => h(NuxtLink,
       { class: 'link', to: { path: `/${accountId.value}/${row._id}` } },
       () => row._thumbnail
-        ? h('img', { class: `w-7 h-7 flex-none border border-white hover:border-sky-800 object-cover rounded-full ${color()}`, src: row._thumbnail })
-        : h('div', { class: `w-7 h-7 flex-none border border-white hover:border-sky-800 rounded-full ${color()}` })
+        ? h('img', { class: `size-7 flex-none border border-white hover:border-sky-800 object-cover rounded-full ${color()}`, src: row._thumbnail })
+        : h('div', { class: `size-7 flex-none border border-white hover:border-sky-800 rounded-full ${color()}` })
     )
   }, ...rawColumns.value.map(c => ({
     key: c.name,
@@ -57,7 +57,7 @@ const columns = computed(() => [
     render: (row) => {
       if (c.type === 'number' && getValue(row[c.name], 'number')) return getValue(row[c.name], 'number').toLocaleString(locale.value, { minimumFractionDigits: c.decimals, maximumFractionDigits: c.decimals })
 
-      if (c.type === 'boolean' && getValue(row[c.name], 'boolean')) return h(IconCheckmark, { class: 'h-5 w-5' })
+      if (c.type === 'boolean' && getValue(row[c.name], 'boolean')) return h(IconCheckmark, { class: 'size-5' })
 
       if (c.type === 'datetime' && getValue(row[c.name], 'datetime')) return d(getValue(row[c.name], 'datetime'), 'datetime')
 

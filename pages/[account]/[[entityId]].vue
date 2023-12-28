@@ -371,7 +371,7 @@ onMounted(async () => {
     <transition>
       <div
         v-if="!isQuery && stats"
-        class="h-full w-full lg:w-1/2 xl:w-1/2 md:min-w-fit px-8 md:mx-auto flex flex-col justify-center"
+        class="size-full lg:w-1/2 xl:w-1/2 md:min-w-fit px-8 md:mx-auto flex flex-col justify-center"
         vertical
       >
         <stats-bar

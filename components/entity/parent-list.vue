@@ -9,7 +9,7 @@ const { accountId } = useAccount()
 
 <template>
   <div class="flex items-center">
-    <icon-arrow-up class="h-5 w-5 flex-none text-gray-400" />
+    <icon-arrow-up class="size-5 flex-none text-gray-400" />
 
     <div class="grow flex flex-wrap gap-3">
       <nuxt-link
@@ -22,6 +22,6 @@ const { accountId } = useAccount()
       </nuxt-link>
     </div>
 
-    <icon-arrow-up class="h-5 w-5 flex-none text-gray-400" />
+    <icon-arrow-up class="size-5 flex-none text-gray-400" />
   </div>
 </template>

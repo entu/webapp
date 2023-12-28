@@ -33,7 +33,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
           placement="top"
         >
           <template #trigger>
-            <span class="w-3 h-3 flex items-center justify-center text-blue-600 text-xs font-bold bg-blue-100 rounded cursor-pointer">i</span>
+            <span class="size-3 flex items-center justify-center text-blue-600 text-xs font-bold bg-blue-100 rounded cursor-pointer">i</span>
           </template>
           <div class="text-xs">
             {{ property.description }}
@@ -42,7 +42,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
 
         <div
           v-else
-          class="w-3 h-3"
+          class="size-3"
         />
       </div>
 

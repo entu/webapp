@@ -16,7 +16,7 @@ watch(loading, (value) => {
 </script>
 
 <template>
-  <div class="w-full h-full">
+  <div class="size-full">
     <slot />
   </div>
 </template>
