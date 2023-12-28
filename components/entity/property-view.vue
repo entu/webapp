@@ -21,7 +21,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
       <markdown :source="v.string" />
     </template>
 
-    <template v-else-if="v.reference !== undefined && v.datetime !== undefined">
+    <template v-else-if="v.reference !== undefined && v.datetime !== undefined && v.datetime !== null">
       <nuxt-link
         class="link"
         :to="{ path:`/${accountId}/${v.reference}`}"
@@ -33,7 +33,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
       </span>
     </template>
 
-    <template v-else-if="v.reference !== undefined && v.datetime === undefined">
+    <template v-else-if="v.reference !== undefined && (v.datetime === undefined || v.datetime === null)">
       <nuxt-link
         class="link"
         :to="{ path:`/${accountId}/${v.reference}`}"
@@ -71,11 +71,11 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
       <div />
     </template>
 
-    <template v-else-if="v.datetime !== undefined">
+    <template v-else-if="v.datetime !== undefined && v.datetime !== null">
       {{ d(v.datetime, 'datetime') }}
     </template>
 
-    <template v-else-if="v.date !== undefined">
+    <template v-else-if="v.date !== undefined && v.date !== null">
       {{ d(v.date, 'date') }}<br>
     </template>
 
