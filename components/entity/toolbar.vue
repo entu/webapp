@@ -83,10 +83,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
 <template>
   <div class="mx-2 flex gap-2">
     <div class="grow">
-      <entity-toolbar-add
-        class="justify-self-start"
-        :options="addDefaultOptions"
-      />
+      <entity-toolbar-add :options="addDefaultOptions" />
     </div>
 
     <n-button-group

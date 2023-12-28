@@ -259,7 +259,10 @@ onMounted(async () => {
 
 <template>
   <transition>
-    <div class="h-full flex flex-col">
+    <div
+      v-if="rawEntityId"
+      class="h-full flex flex-col"
+    >
       <entity-toolbar
         :entity-id="rawEntityId"
         :right="right"
