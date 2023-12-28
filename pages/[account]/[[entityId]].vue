@@ -258,17 +258,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <transition>
-    <div
-      v-if="rawEntityId"
-      class="h-full flex flex-col"
-    >
-      <entity-toolbar
-        :entity-id="rawEntityId"
-        :right="right"
-        :type-id="typeId"
-      />
-
+  <div class="h-full flex flex-col">
+    <entity-toolbar
+      :entity-id="rawEntityId"
+      :right="right"
+      :type-id="typeId"
+    />
+    <transition>
       <div
         v-if="rawEntity"
         class="px-2 pb-4 flex flex-col overflow-y-auto overflow-hidden"
@@ -370,7 +366,9 @@ onMounted(async () => {
           </n-collapse-item>
         </n-collapse>
       </div>
+    </transition>
 
+    <transition>
       <div
         v-if="!isQuery && stats"
         class="h-full w-full lg:w-1/2 xl:w-1/2 md:min-w-fit px-8 md:mx-auto flex flex-col justify-center"
@@ -415,62 +413,62 @@ onMounted(async () => {
           :b-value="Math.ceil(stats.dbSize / Math.pow(10, stats.dbSize.toString().length - 1)) * Math.pow(10, stats.dbSize.toString().length - 1) - stats.dbSize"
         />
       </div>
+    </transition>
 
-      <n-drawer
-        v-model:show="drawer"
-        placement="right"
-        resizable
-        :default-width="drawerWidth"
+    <n-drawer
+      v-model:show="drawer"
+      placement="right"
+      resizable
+      :default-width="drawerWidth"
+    >
+      <n-drawer-content
+        body-content-style="padding-top:0"
+        :closable="true"
+        :title="drawerTitle"
       >
-        <n-drawer-content
-          body-content-style="padding-top:0"
-          :closable="true"
-          :title="drawerTitle"
-        >
-          <entity-drawer-edit
-            v-if="drawerType === 'add'"
-            :type-id="addTypeId"
-            @update:title="(title) => { drawerTitle = title }"
-          />
-          <entity-drawer-edit
-            v-if="drawerType === 'child'"
-            :parent-id="rawEntityId"
-            :type-id="addTypeId"
-            @update:title="(title) => { drawerTitle = title }"
-          />
-          <entity-drawer-edit
-            v-if="drawerType === 'edit'"
-            :entity-id="rawEntityId"
-            @update:title="(title) => { drawerTitle = title }"
-          />
-          <entity-drawer-duplicate
-            v-if="drawerType === 'duplicate'"
-            :entity-id="rawEntityId"
-            @update:title="(title) => { drawerTitle = title }"
-          />
-          <entity-drawer-parents
-            v-if="drawerType === 'parents'"
-            :entity-id="rawEntityId"
-            @update:title="(title) => { drawerTitle = title }"
-          />
-          <entity-drawer-rights
-            v-if="drawerType === 'rights'"
-            :entity-id="rawEntityId"
-            @update:title="(title) => { drawerTitle = title }"
-          />
-          <entity-drawer-debug
-            v-if="drawerType === 'debug'"
-            :entity="entity"
-            :properties="properties"
-            :raw-entity="rawEntity"
-            :raw-type="rawEntityType"
-            :raw-properties="entityProps"
-            @update:title="(title) => { drawerTitle = title }"
-          />
-        </n-drawer-content>
-      </n-drawer>
-    </div>
-  </transition>
+        <entity-drawer-edit
+          v-if="drawerType === 'add'"
+          :type-id="addTypeId"
+          @update:title="(title) => { drawerTitle = title }"
+        />
+        <entity-drawer-edit
+          v-if="drawerType === 'child'"
+          :parent-id="rawEntityId"
+          :type-id="addTypeId"
+          @update:title="(title) => { drawerTitle = title }"
+        />
+        <entity-drawer-edit
+          v-if="drawerType === 'edit'"
+          :entity-id="rawEntityId"
+          @update:title="(title) => { drawerTitle = title }"
+        />
+        <entity-drawer-duplicate
+          v-if="drawerType === 'duplicate'"
+          :entity-id="rawEntityId"
+          @update:title="(title) => { drawerTitle = title }"
+        />
+        <entity-drawer-parents
+          v-if="drawerType === 'parents'"
+          :entity-id="rawEntityId"
+          @update:title="(title) => { drawerTitle = title }"
+        />
+        <entity-drawer-rights
+          v-if="drawerType === 'rights'"
+          :entity-id="rawEntityId"
+          @update:title="(title) => { drawerTitle = title }"
+        />
+        <entity-drawer-debug
+          v-if="drawerType === 'debug'"
+          :entity="entity"
+          :properties="properties"
+          :raw-entity="rawEntity"
+          :raw-type="rawEntityType"
+          :raw-properties="entityProps"
+          @update:title="(title) => { drawerTitle = title }"
+        />
+      </n-drawer-content>
+    </n-drawer>
+  </div>
 </template>
 
 <i18n lang="yaml">
