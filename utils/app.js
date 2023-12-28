@@ -79,25 +79,25 @@ export const themeOverrides = {
 }
 
 export const etLocale = createLocale({
-  name: 'en-US',
+  name: 'et-EE',
   global: {
-    undo: 'Undo',
-    redo: 'Redo',
-    confirm: 'Confirm',
-    clear: 'Clear'
+    undo: 'Tühista',
+    redo: 'Tee uuesti',
+    confirm: 'Kinnita',
+    clear: 'Tühista'
   },
   Popconfirm: {
-    positiveText: 'Confirm',
-    negativeText: 'Cancel'
+    positiveText: 'Kinnita',
+    negativeText: 'Tühista'
   },
   Cascader: {
-    placeholder: 'Please Select',
-    loading: 'Loading',
-    loadingRequiredMessage: label => `Please load all ${label}'s descendants before checking it.`
+    placeholder: 'Palun valige',
+    loading: 'Laadimine',
+    loadingRequiredMessage: label => `Palun laadige kõik ${label} järglased enne selle kontrollimist.`
   },
   Time: {
-    dateFormat: 'yyyy-MM-dd',
-    dateTimeFormat: 'yyyy-MM-dd HH:mm:ss'
+    dateFormat: 'dd.MM.yyyy',
+    dateTimeFormat: 'dd.MM.yyyy HH:mm:ss'
   },
   DatePicker: {
     yearFormat: 'yyyy',
@@ -105,101 +105,100 @@ export const etLocale = createLocale({
     dayFormat: 'eeeeee',
     yearTypeFormat: 'yyyy',
     monthTypeFormat: 'yyyy-MM',
-    dateFormat: 'yyyy-MM-dd',
-    dateTimeFormat: 'yyyy-MM-dd HH:mm:ss',
+    dateFormat: 'dd.MM.yyyy',
+    dateTimeFormat: 'dd.MM.yyyy HH:mm:ss',
     quarterFormat: 'yyyy-qqq',
     weekFormat: 'yyyy-w',
-    clear: 'Clear',
-    now: 'Now',
-    confirm: 'Confirm',
-    selectTime: 'Select Time',
-    selectDate: 'Select Date',
-    datePlaceholder: 'Select Date',
-    datetimePlaceholder: 'Select Date and Time',
-    monthPlaceholder: 'Select Month',
-    yearPlaceholder: 'Select Year',
-    quarterPlaceholder: 'Select Quarter',
-    weekPlaceholder: 'Select Week',
-    startDatePlaceholder: 'Start Date',
-    endDatePlaceholder: 'End Date',
-    startDatetimePlaceholder: 'Start Date and Time',
-    endDatetimePlaceholder: 'End Date and Time',
-    startMonthPlaceholder: 'Start Month',
-    endMonthPlaceholder: 'End Month',
+    clear: 'Tühista',
+    now: 'Nüüd',
+    confirm: 'Kinnita',
+    selectTime: 'Valige aeg',
+    selectDate: 'Valige kuupäev',
+    datePlaceholder: 'Valige kuupäev',
+    datetimePlaceholder: 'Valige kuupäev ja aeg',
+    monthPlaceholder: 'Valige kuu',
+    yearPlaceholder: 'Valige aasta',
+    quarterPlaceholder: 'Valige kvartal',
+    weekPlaceholder: 'Valige nädal',
+    startDatePlaceholder: 'Alguskuupäev',
+    endDatePlaceholder: 'Lõppkuupäev',
+    startDatetimePlaceholder: 'Alguskuupäev ja aeg',
+    endDatetimePlaceholder: 'Lõppkuupäev ja aeg',
+    startMonthPlaceholder: 'Alguskuu',
+    endMonthPlaceholder: 'Lõppkuu',
     monthBeforeYear: true,
     firstDayOfWeek: 6,
-    today: 'Today'
+    today: 'Täna'
   },
   DataTable: {
-    checkTableAll: 'Select all in the table',
-    uncheckTableAll: 'Unselect all in the table',
-    confirm: 'Confirm',
-    clear: 'Clear'
+    checkTableAll: 'Valige kõik',
+    uncheckTableAll: 'Tühista valik',
+    confirm: 'Kinnita',
+    clear: 'Tühista'
   },
   LegacyTransfer: {
-    sourceTitle: 'Source',
-    targetTitle: 'Target'
+    sourceTitle: 'Allikas',
+    targetTitle: 'Siht'
   },
   Transfer: {
-    selectAll: 'Select all',
-    unselectAll: 'Unselect all',
-    clearAll: 'Clear',
-    total: () => `Total ${num} items`,
-    selected: () => `${num} items selected`
+    selectAll: 'Vali kõik',
+    unselectAll: 'Tühista kõik valikud',
+    clearAll: 'Tühista',
+    total: num => `Kokku ${num}`,
+    selected: num => `Valitud ${num}`
   },
   Empty: {
-    description: 'No Data'
+    description: 'Andmed puuduvad'
   },
   Select: {
-    placeholder: 'Please Select'
+    placeholder: 'Palun valige'
   },
   TimePicker: {
-    placeholder: 'Select Time',
+    placeholder: 'Valige aeg',
     positiveText: 'OK',
-    negativeText: 'Cancel',
-    now: 'Now',
-    clear: 'Clear'
+    negativeText: 'Tühista',
+    now: 'Nüüd',
+    clear: 'Tühista'
   },
   Pagination: {
-    goto: 'Goto',
-    selectionSuffix: 'page'
+    goto: 'Mine',
+    selectionSuffix: 'leht'
   },
   DynamicTags: {
-    add: 'Add'
+    add: 'Lisa'
   },
   Log: {
-    loading: 'Loading'
+    loading: 'Laadimine'
   },
   Input: {
-    placeholder: 'Please Input'
+    placeholder: 'Palun sisestage'
   },
   InputNumber: {
-    placeholder: 'Please Input'
+    placeholder: 'Palun sisestage'
   },
   DynamicInput: {
-    create: 'Create'
+    create: 'Loo'
   },
   ThemeEditor: {
-    title: 'Theme Editor',
-    clearAllVars: 'Clear All Variables',
-    clearSearch: 'Clear Search',
-    filterCompName: 'Filter Component Name',
-    filterVarName: 'Filter Variable Name',
-    import: 'Import',
-    export: 'Export',
-    restore: 'Reset to Default'
+    title: 'Teema redaktor',
+    clearAllVars: 'Tühjenda kõik muutujad',
+    clearSearch: 'Tühjenda otsing',
+    filterCompName: 'Filtreeri komponendi nime järgi',
+    filterVarName: 'Filtreeri muutuja nime järgi',
+    import: 'Impordi',
+    export: 'Ekspordi',
+    restore: 'Lähtesta'
   },
   Image: {
-    tipPrevious: 'Previous picture (←)',
-    tipNext: 'Next picture (→)',
-    tipCounterclockwise: 'Counterclockwise',
-    tipClockwise: 'Clockwise',
-    tipZoomOut: 'Zoom out',
-    tipZoomIn: 'Zoom in',
-    tipDownload: 'Download',
-    tipClose: 'Close (Esc)',
-    // TODO: translation
-    tipOriginalSize: 'Zoom to original size'
+    tipPrevious: 'Eelmine pilt (←)',
+    tipNext: 'Järgmine pilt (→)',
+    tipCounterclockwise: 'Vastupäeva',
+    tipClockwise: 'Päripäeva',
+    tipZoomOut: 'Vähenda',
+    tipZoomIn: 'Suurenda',
+    tipDownload: 'Laadi alla',
+    tipClose: 'Sulge (Esc)',
+    tipOriginalSize: 'Suurenda algmõõtmetesse'
   }
 }, enUS)
 
