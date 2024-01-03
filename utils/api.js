@@ -15,8 +15,15 @@ export async function apiGetProperty (propertyId) {
   return await apiRequest('property/' + propertyId)
 }
 
-export async function apiDeleteProperty (propertyId) {
-  return await apiRequest('property/' + propertyId, {}, {}, 'DELETE')
+export async function apiUpsertEntity (entityId, propertyId, properties) {
+  if (propertyId) {
+    await apiRequest(`property/${propertyId}`, {}, {}, 'DELETE')
+  }
+
+  if (!properties) return
+
+  const url = entityId ? `entity/${entityId}` : 'entity'
+  return await apiRequest(url, properties, {}, 'POST')
 }
 
 export async function apiRequest (pathname, params = {}, headers = {}, method = 'GET') {

@@ -36,6 +36,7 @@ async function loadImages () {
   <div
     class="size-32 flex items-center justify-center bg-cover bg-center rounded-md cursor-pointer"
     :style="`background-image:url(${thumbnail})`"
+    v-bind="$attrs"
     @click="loadImages()"
   >
     <n-spin
@@ -43,6 +44,7 @@ async function loadImages () {
       size="medium"
     />
   </div>
+
   <n-image-group v-if="photos.length > 1">
     <n-image
       ref="imageRef"

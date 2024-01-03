@@ -242,7 +242,16 @@ async function loadReferences () {
   })
 }
 
+async function entityAdded (entity) {
+  console.log('entityAdded', entity)
+  // await navigateTo({ path: route.path, query: route.query, hash: null }, { replace: true })
+}
+
 async function closeDrawer () {
+  setTimeout(() => {
+    loadEntity()
+  }, 500)
+
   await navigateTo({ path: route.path, query: route.query, hash: null }, { replace: true })
 }
 
@@ -264,6 +273,7 @@ onMounted(async () => {
       :right="right"
       :type-id="typeId"
     />
+
     <transition>
       <div
         v-if="rawEntity"
@@ -292,13 +302,13 @@ onMounted(async () => {
                   :name="idx"
                   :title="pg.name"
                 >
-                  <entity-property-list
+                  <property-list
                     class="pl-5"
                     :properties="pg.children"
                   />
                 </n-collapse-item>
                 <div v-if="!pg.name && pg.children && pg.children.some(x => x.mandatory || x.values)">
-                  <entity-property-list
+                  <property-list
                     class="pl-5"
                     :properties="pg.children"
                   />
@@ -428,14 +438,16 @@ onMounted(async () => {
       >
         <entity-drawer-edit
           v-if="drawerType === 'add'"
-          :type-id="addTypeId"
+          :entity-type-id="addTypeId"
           @update:title="(title) => { drawerTitle = title }"
+          @add:entity="entityAdded($event)"
         />
         <entity-drawer-edit
           v-if="drawerType === 'child'"
-          :parent-id="rawEntityId"
-          :type-id="addTypeId"
+          :entity-parent-id="rawEntityId"
+          :entity-type-id="addTypeId"
           @update:title="(title) => { drawerTitle = title }"
+          @add:entity="entityAdded($event)"
         />
         <entity-drawer-edit
           v-if="drawerType === 'edit'"

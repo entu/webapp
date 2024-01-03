@@ -3,11 +3,29 @@ import { NPopover } from 'naive-ui'
 
 const props = defineProps({
   entityId: { type: String, default: undefined },
+  entityParentId: { type: String, default: null },
+  entityTypeId: { type: String, default: null },
   properties: { type: Array, required: true },
   edit: { type: Boolean, default: false }
 })
 
+const emit = defineEmits(['update:entity', 'updating:entity', 'add:entity'])
+
+const updating = ref(false)
+
 const visibleProperties = computed(() => props.edit ? props.properties : props.properties.filter(x => x.mandatory || x.values))
+
+function onEntityUpdating (entity) {
+  console.log('onEntityUpdating', entity)
+  updating.value = true
+  emit('updating:entity', entity)
+}
+
+function onEntityUpdate (entity) {
+  console.log('onEntityUpdate', entity)
+  updating.value = false
+  emit('update:entity', entity)
+}
 </script>
 
 <template>
@@ -47,18 +65,24 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
       </div>
 
       <div class="col-span-2 py-1">
-        <entity-property-edit
+        <property-edit
           v-if="edit"
           :decimals="property.decimals"
           :entity-id="entityId"
+          :entity-parent-id="entityParentId"
+          :entity-type-id="entityTypeId"
           :is-multilingual="property.multilingual"
           :property="property.name"
           :reference-query="property.referenceQuery"
           :set="property.set?.map(x => x.string)"
           :type="property.type"
           :values="property.values"
+          :disabled="updating"
+          @updating:entity="onEntityUpdating($event)"
+          @update:entity="onEntityUpdate($event)"
+          @add:entity="emit('add:entity', $event)"
         />
-        <entity-property-view
+        <property-view
           v-else-if="!edit && property.values"
           :decimals="property.decimals"
           :is-markdown="property.markdown"

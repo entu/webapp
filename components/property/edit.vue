@@ -3,18 +3,22 @@ import { NButton, NDatePicker, NInput, NInputNumber, NSelect, NSwitch, NUpload, 
 
 const props = defineProps({
   entityId: { type: String, default: undefined },
+  entityParentId: { type: String, default: undefined },
+  entityTypeId: { type: String, default: undefined },
   decimals: { type: Number, default: 0 },
   isMultilingual: { type: Boolean, default: false },
   property: { type: String, default: undefined },
   referenceQuery: { type: String, default: undefined },
   set: { type: Array, default: () => [] },
   type: { type: String, default: undefined },
-  values: { type: Array, default: () => [] }
+  values: { type: Array, default: () => [] },
+  disabled: { type: Boolean, default: false }
 })
 
-const emit = defineEmits(['update'])
+const emit = defineEmits(['update:entity', 'updating:entity', 'add:entity'])
 
 const { t } = useI18n()
+const route = useRoute()
 const { accountId } = useAccount()
 
 const referenceSearch = ref('')
@@ -104,7 +108,7 @@ function renderReferenceOption (option) {
   )
 }
 
-function updateValue (newValue) {
+async function updateValue (newValue) {
   const oldValue = oldValues.value.find(x => x._id === newValue._id) || {}
   const _id = newValue._id
   const language = newValue.language
@@ -127,31 +131,97 @@ function updateValue (newValue) {
 
   if (value === oldValue[property] && language === oldValue.language) return
 
-  if (value !== null && !_id) {
-    addValue(value, language)
-  } else if (value !== null && _id) {
-    editValue(_id, value, language)
-  } else if (value === null && _id) {
-    deleteValue(_id)
+  emit('updating:entity')
+
+  if (!props.entityId && value !== null && !_id) {
+    await addEntity(value, language)
+  } else if (props.entityId && value !== null && !_id) {
+    await addValue(value, language)
+  } else if (props.entityId && value !== null && _id) {
+    await editValue(_id, value, language)
+  } else if (props.entityId && value === null && _id) {
+    await deleteValue(_id)
   }
+
+  emit('update:entity')
 }
 
-function addValue (value, language) {
-  console.log('add', value, language)
+async function addEntity (value, language) {
+  const properties = [{
+    type: props.property,
+    [props.type]: value,
+    language
+  }]
+
+  if (props.entityParentId) {
+    properties.push({
+      type: '_parent',
+      reference: props.entityParentId
+    })
+  }
+
+  if (props.entityTypeId) {
+    properties.push({
+      type: '_type',
+      reference: props.entityTypeId
+    })
+  }
+
+  const newEntity = await apiUpsertEntity(
+    props.entityId,
+    undefined,
+    properties
+  )
+
+  await navigateTo({ path: `/${accountId.value}/${newEntity._id}`, query: route.query, hash: '#edit' }, { replace: true })
 }
 
-function editValue (_id, value, language) {
-  console.log('edit', _id, value, language)
+async function addValue (value, language) {
+  await apiUpsertEntity(
+    props.entityId,
+    undefined,
+    [{
+      type: props.property,
+      [props.type]: value,
+      language
+    }]
+  )
 }
 
-function deleteValue (_id) {
-  console.log('delete', _id)
+async function editValue (_id, value, language) {
+  await apiUpsertEntity(
+    props.entityId,
+    _id,
+    [{
+      type: props.property,
+      [props.type]: value,
+      language
+    }]
+  )
 }
-function fileUpload (file) {
-  console.log('upload', file)
+
+async function deleteValue (_id) {
+  await apiUpsertEntity(
+    props.entityId,
+    _id
+  )
 }
-function fileUploadChange (v) {
-  console.log('change', v)
+
+async function uploadFile (value) {
+  await apiUpsertEntity(
+    props.entityId,
+    undefined,
+    [{
+      type: props.property,
+      filename: value.file?.name,
+      filesize: value.file?.file?.size,
+      filetype: value.file?.type
+    }]
+  )
+}
+
+function uploadFileChange (v) {
+  console.log(props.entityId, 'change', v)
 }
 </script>
 
@@ -166,16 +236,20 @@ function fileUploadChange (v) {
         multiple
         :default-file-list="fileList"
         :default-upload="false"
-        @before-upload="fileUpload"
-        @change="fileUploadChange"
+        @before-upload="uploadFile"
+        @change="uploadFileChange"
         @remove="({file}) => deleteValue(file.id)"
       >
         <n-upload-file-list
           v-if="fileList.length > 0"
           class="w-full mb-2 text-sm"
         />
+
         <n-upload-trigger #="{ handleClick }" abstract>
-          <n-button @click="handleClick">
+          <n-button
+            :disabled="disabled"
+            @click="handleClick"
+          >
             {{ t('upload') }}
           </n-button>
         </n-upload-trigger>
@@ -193,6 +267,7 @@ function fileUploadChange (v) {
         v-model:value="value.string"
         clearable
         placeholder=""
+        :readonly="disabled"
         @blur="updateValue(value)"
       />
 
@@ -202,6 +277,7 @@ function fileUploadChange (v) {
         clearable
         placeholder=""
         :options="setOptions"
+        :readonly="disabled"
         @update:value="updateValue(value)"
       />
 
@@ -214,6 +290,7 @@ function fileUploadChange (v) {
           minRows: 3,
           maxRows: 15
         }"
+        :readonly="disabled"
         @blur="updateValue(value)"
       />
 
@@ -223,6 +300,7 @@ function fileUploadChange (v) {
         class="w-full"
         clearable
         placeholder=""
+        :readonly="disabled"
         :precision="decimals"
         @blur="updateValue(value)"
       />
@@ -233,6 +311,7 @@ function fileUploadChange (v) {
       >
         <n-switch
           v-model:value="value.boolean"
+          :readonly="disabled"
           :unchecked-value="null"
           @update:value="updateValue(value)"
         />
@@ -245,7 +324,7 @@ function fileUploadChange (v) {
         clearable
         placeholder=""
         type="date"
-        :first-day-of-week="0"
+        :readonly="disabled"
         @update:value="updateValue(value)"
       />
 
@@ -256,7 +335,7 @@ function fileUploadChange (v) {
         clearable
         placeholder=""
         type="datetime"
-        :first-day-of-week="0"
+        :readonly="disabled"
         @update:value="updateValue(value)"
       />
 
@@ -267,6 +346,7 @@ function fileUploadChange (v) {
         filterable
         placeholder=""
         remote
+        :readonly="disabled"
         :loading="searchingReferences"
         :options="referenceOptions"
         :render-label="renderReferenceOption"
@@ -306,6 +386,7 @@ function fileUploadChange (v) {
         v-model:value="value.language"
         class="!w-20 self-start"
         placeholder=""
+        :readonly="disabled"
         :options="languageOptions"
         @update:value="updateValue(value)"
       />

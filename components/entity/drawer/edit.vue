@@ -2,11 +2,11 @@
 <script setup>
 const props = defineProps({
   entityId: { type: String, default: null },
-  parentId: { type: String, default: null },
-  typeId: { type: String, default: null }
+  entityParentId: { type: String, default: null },
+  entityTypeId: { type: String, default: null }
 })
 
-const emit = defineEmits(['update:title'])
+const emit = defineEmits(['update:title', 'update:entity', 'updating:entity', 'add:entity'])
 
 const { locale, t } = useI18n()
 
@@ -115,7 +115,7 @@ const properties = computed(() => {
   return result
 })
 
-watch([() => props.entityId, () => props.typeId], loadEntity, { immediate: true })
+watch([() => props.entityId, () => props.entityTypeId], loadEntity, { immediate: true })
 
 async function loadEntity () {
   isLoading.value = true
@@ -124,11 +124,11 @@ async function loadEntity () {
     rawEntity.value = await apiGetEntity(props.entityId)
   }
 
-  const typeId = props.typeId || getValue(rawEntity.value?._type, 'reference')
+  const entityTypeId = props.entityTypeId || getValue(rawEntity.value?._type, 'reference')
 
-  if (!typeId) return
+  if (!entityTypeId) return
 
-  rawEntityType.value = await apiGetEntity(typeId, [
+  rawEntityType.value = await apiGetEntity(entityTypeId, [
     'description',
     'label_plural',
     'label',
@@ -136,7 +136,7 @@ async function loadEntity () {
   ])
 
   const { entities } = await apiGetEntities({
-    '_parent.reference': typeId,
+    '_parent.reference': entityTypeId,
     props: [
       'decimals',
       'default',
@@ -166,9 +166,9 @@ async function loadEntity () {
 }
 
 onMounted(() => {
-  if (props.parentId && props.typeId) emit('update:title', t('titleChild'))
-  if (!props.parentId && props.typeId) emit('update:title', t('titleAdd'))
-  if (!props.parentId && props.entityId) emit('update:title', t('titleEdit'))
+  if (props.entityParentId && props.entityTypeId) emit('update:title', t('titleChild'))
+  if (!props.entityParentId && props.entityTypeId) emit('update:title', t('titleAdd'))
+  if (!props.entityParentId && props.entityId) emit('update:title', t('titleEdit'))
 })
 </script>
 
@@ -181,10 +181,15 @@ onMounted(() => {
       {{ pg.name }}
     </h2>
 
-    <entity-property-list
+    <property-list
       edit
       :entity-id="entity._id"
+      :entity-parent-id="entityParentId"
+      :entity-type-id="entityTypeId"
       :properties="pg.children"
+      @updating:entity="emit('updating:entity', $event)"
+      @entity:update="emit('entity:update', $event)"
+      @add:entity="emit('add:entity', $event)"
     />
   </template>
 </template>
