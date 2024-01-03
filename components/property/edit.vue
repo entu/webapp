@@ -26,6 +26,7 @@ const referenceLimit = ref(100)
 const referenceCount = ref(null)
 const rawReferences = ref(null)
 const searchingReferences = ref(false)
+const newFiles = ref({})
 
 const { cloned: oldValues } = useCloned(props.values)
 const { cloned: newValues } = useCloned(props.values)
@@ -207,21 +208,68 @@ async function deleteValue (_id) {
   )
 }
 
-async function uploadFile (value) {
-  await apiUpsertEntity(
+async function uploadFile ({ file, onProgress, onFinish, onError }) {
+  if (!file?.file) {
+    onError()
+    return
+  }
+
+  const newFileProperties = await apiUpsertEntity(
     props.entityId,
     undefined,
     [{
       type: props.property,
-      filename: value.file?.name,
-      filesize: value.file?.file?.size,
-      filetype: value.file?.type
+      filename: file.file.name,
+      filesize: file.file.size,
+      filetype: file.file.type || 'application/octet-stream'
     }]
   )
+
+  const newProperty = newFileProperties?.properties?.at(0)
+
+  if (!newProperty) {
+    onError()
+    return
+  }
+
+  const sendForm = newProperty.upload
+
+  const request = new XMLHttpRequest()
+  request.open(sendForm.method, sendForm.url)
+
+  for (const header in sendForm.headers) {
+    request.setRequestHeader(header, sendForm.headers[header])
+  }
+
+  request.upload.addEventListener('progress', function (e) {
+    const percent = (e.loaded / e.total) * 100
+    onProgress({ percent })
+  })
+
+  request.addEventListener('load', function (e) {
+    if (request.status === 200) {
+      file._id = newProperty._id
+      file.url = `/${accountId.value}/file/${newProperty._id}`
+
+      newFiles.value[file.id] = newProperty._id
+
+      onFinish()
+    } else {
+      onError()
+    }
+  })
+
+  request.send(file.file)
 }
 
-function uploadFileChange (v) {
-  console.log(props.entityId, 'change', v)
+async function deleteFile ({ file }) {
+  if (newFiles.value[file.id]) {
+    await deleteValue(newFiles.value[file.id])
+
+    delete newFiles.value[file.id]
+  } else {
+    await deleteValue(file.id)
+  }
 }
 </script>
 
@@ -235,10 +283,9 @@ function uploadFileChange (v) {
         abstract
         multiple
         :default-file-list="fileList"
-        :default-upload="false"
-        @before-upload="uploadFile"
-        @change="uploadFileChange"
-        @remove="({file}) => deleteValue(file.id)"
+        :show-cancel-button="false"
+        :custom-request="uploadFile"
+        @remove="deleteFile"
       >
         <n-upload-file-list
           v-if="fileList.length > 0"
@@ -392,7 +439,6 @@ function uploadFileChange (v) {
       />
     </div>
   </div>
-  <!-- <pre class="text-xs">{{ props }}</pre> -->
 </template>
 
 <i18n lang="yaml">
