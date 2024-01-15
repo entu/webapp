@@ -166,6 +166,7 @@ function color () {
   @apply h-12 pl-6 pr-3;
   @apply flex items-center gap-3;
   @apply hover:bg-zinc-50;
+  @apply hover:border-y border-zinc-50;
 }
 
 .list-item-img {
@@ -182,6 +183,7 @@ function color () {
 
 .list-item.active {
   @apply bg-zinc-100 hover:bg-zinc-100;
+  @apply hover:border-y border-zinc-100;
 }
 
 .list-item.active  > .list-item-text {
