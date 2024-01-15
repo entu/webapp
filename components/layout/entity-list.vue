@@ -93,7 +93,7 @@ async function getEntities () {
 }
 
 function color () {
-  const colors = ['bg-amber-50', 'bg-blue-50', 'bg-cyan-50', 'bg-emerald-50', 'bg-fuchsia-50', 'bg-gray-50', 'bg-green-50', 'bg-indigo-50', 'bg-lime-50', 'bg-neutral-50', 'bg-orange-50', 'bg-pink-50', 'bg-purple-50', 'bg-red-50', 'bg-rose-50', 'bg-sky-50', 'bg-slate-50', 'bg-stone-50', 'bg-teal-50', 'bg-violet-50', 'bg-yellow-50', 'bg-zinc-50'
+  const colors = ['!bg-amber-200', '!bg-blue-200', '!bg-cyan-200', '!bg-emerald-200', '!bg-fuchsia-200', '!bg-gray-200', '!bg-green-200', '!bg-indigo-200', '!bg-lime-200', '!bg-neutral-200', '!bg-orange-200', '!bg-pink-200', '!bg-purple-200', '!bg-red-200', '!bg-rose-200', '!bg-sky-200', '!bg-slate-200', '!bg-stone-200', '!bg-teal-200', '!bg-violet-200', '!bg-yellow-200', '!bg-zinc-200'
   ]
   const rnd = Math.floor(Math.random() * colors.length)
 
@@ -102,9 +102,7 @@ function color () {
 </script>
 
 <template>
-  <div
-    class="h-full flex flex-col border-r border-gray-300"
-  >
+  <div class="h-full flex flex-col border-r border-gray-300">
     <div class="h-12 ml-6 flex items-center gap-3">
       <label
         for="search"
@@ -115,8 +113,8 @@ function color () {
       <input
         id="search"
         v-model="searchText"
-        :placeholder="t('search')"
         class="w-full py-3 pr-3 bg-transparent placeholder:italic placeholder:text-gray-400 focus:outline-none"
+        :placeholder="t('search')"
       >
     </div>
 
@@ -127,10 +125,10 @@ function color () {
       <nuxt-link
         v-for="(entity, idx) in entitiesList"
         :key="entity._id"
-        class="h-12 pl-6 pr-3 flex items-center gap-3 hover:bg-gray-50"
+        class="list-item"
         :class="{
           'font-bold ': idx === scrollIdx,
-          'bg-zinc-100 hover:bg-zinc-100': entity._id === route.params.entityId
+          'active': entity._id === route.params.entityId
         }"
         :to="{ path: `/${accountId}/${entity._id}`, query: route.query }"
       >
@@ -138,16 +136,17 @@ function color () {
           v-if="entity._thumbnail"
           :src="entity._thumbnail"
           :class="entity.color"
-          class="size-7 flex-none object-cover rounded-full"
+          class="list-item-img"
         >
         <div
           v-else
-          class="size-7 flex-none rounded-full "
+          class="list-item-img"
           :class="entity.color"
-        />
-        <div
-          class="py-3 h-12 flex-auto truncate whitespace-nowrap overflow-hidden border-b first-of-type:border-gray-200"
         >
+          {{ `${getValue(entity.name)}`.at(0) }}
+        </div>
+
+        <div class="list-item-text">
           {{ getValue(entity.name) }}
         </div>
       </nuxt-link>
@@ -161,6 +160,46 @@ function color () {
     </div>
   </div>
 </template>
+
+<style scoped>
+.list-item {
+  @apply h-12 pl-6 pr-3;
+  @apply flex items-center gap-3;
+  @apply hover:bg-zinc-50;
+}
+
+.list-item-img {
+  @apply size-7 rounded-full object-cover;
+  @apply flex-none flex items-center justify-center;
+  @apply uppercase text-sm text-white font-bold;
+}
+
+.list-item-text {
+  @apply py-3;
+  @apply flex-auto truncate whitespace-nowrap overflow-hidden;
+  @apply border-t border-white;
+}
+
+.list-item.active {
+  @apply bg-zinc-100 hover:bg-zinc-100;
+}
+
+.list-item.active  > .list-item-text {
+  @apply !border-white;
+}
+
+.list-item:hover + .list-item > .list-item-text {
+  @apply !border-zinc-50;
+}
+
+.list-item.active + .list-item > .list-item-text {
+  @apply !border-zinc-100;
+}
+
+.list-item:not(:first-child):not(:hover) > .list-item-text {
+  @apply border-zinc-200;
+}
+</style>
 
 <i18n lang="yaml">
   en:
