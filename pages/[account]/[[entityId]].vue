@@ -1,5 +1,5 @@
 <script setup>
-import { NCollapse, NCollapseItem, NDrawer, NDrawerContent, NPopover } from 'naive-ui'
+import { NCollapse, NCollapseItem, NPopover } from 'naive-ui'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -8,18 +8,14 @@ const { accountId } = useAccount()
 const { userId } = useUser()
 
 const stats = ref()
+const entityId = ref(route.params.entityId)
+const newEntityId = ref()
 const rawEntity = ref()
 const rawEntityType = ref()
 const rawChilds = ref([])
 const rawReferences = ref([])
 const entityProps = ref([])
 const isLoading = ref(false)
-const drawerTitle = ref('')
-const drawerWidth = ref(window.innerWidth / 2)
-
-const entityId = computed(() => route.params.entityId)
-
-const rawEntityId = computed(() => rawEntity.value?._id)
 
 const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
 
@@ -140,11 +136,6 @@ const right = computed(() => {
   return null
 })
 
-const drawer = computed({
-  get: () => !!drawerType.value,
-  set: (value) => { !value && closeDrawer() }
-})
-
 const drawerType = computed(() => route.hash.replace('#', '').split('-').at(0))
 
 const addTypeId = computed(() => route.hash.split('-').at(1))
@@ -155,7 +146,7 @@ watch(() => entity?.value?.name, (value) => {
   } else {
     useHead({ title: accountId.value })
   }
-})
+}, { immediate: true })
 
 async function loadEntity () {
   if (!entityId.value) return
@@ -242,17 +233,12 @@ async function loadReferences () {
   })
 }
 
-async function entityAdded (entity) {
-  console.log('entityAdded', entity)
-  // await navigateTo({ path: route.path, query: route.query, hash: null }, { replace: true })
-}
-
 async function closeDrawer () {
-  setTimeout(() => {
-    loadEntity()
-  }, 500)
-
-  await navigateTo({ path: route.path, query: route.query, hash: null }, { replace: true })
+  if (newEntityId.value) {
+    await navigateTo({ path: `/${accountId.value}/${newEntityId.value}`, query: route.query, hash: undefined }, { replace: true })
+  } else {
+    await navigateTo({ path: route.path, query: route.query, hash: undefined }, { replace: true })
+  }
 }
 
 onMounted(async () => {
@@ -269,7 +255,7 @@ onMounted(async () => {
 <template>
   <div class="h-full flex flex-col">
     <entity-toolbar
-      :entity-id="rawEntityId"
+      :entity-id="entityId"
       :right="right"
       :type-id="typeId"
     />
@@ -369,7 +355,7 @@ onMounted(async () => {
 
             <entity-child-list
               class="w-full pl-5"
-              :entity-id="rawEntityId"
+              :entity-id="entityId"
               :type-id="child._id"
               :reference-field="child.referenceField"
             />
@@ -425,61 +411,48 @@ onMounted(async () => {
       </div>
     </transition>
 
-    <n-drawer
-      v-model:show="drawer"
-      placement="right"
-      resizable
-      :default-width="drawerWidth"
-    >
-      <n-drawer-content
-        body-content-style="padding-top:0"
-        :closable="true"
-        :title="drawerTitle"
-      >
-        <entity-drawer-edit
-          v-if="drawerType === 'add'"
-          :entity-type-id="addTypeId"
-          @update:title="(title) => { drawerTitle = title }"
-          @add:entity="entityAdded($event)"
-        />
-        <entity-drawer-edit
-          v-if="drawerType === 'child'"
-          :entity-parent-id="rawEntityId"
-          :entity-type-id="addTypeId"
-          @update:title="(title) => { drawerTitle = title }"
-          @add:entity="entityAdded($event)"
-        />
-        <entity-drawer-edit
-          v-if="drawerType === 'edit'"
-          :entity-id="rawEntityId"
-          @update:title="(title) => { drawerTitle = title }"
-        />
-        <entity-drawer-duplicate
-          v-if="drawerType === 'duplicate'"
-          :entity-id="rawEntityId"
-          @update:title="(title) => { drawerTitle = title }"
-        />
-        <entity-drawer-parents
-          v-if="drawerType === 'parents'"
-          :entity-id="rawEntityId"
-          @update:title="(title) => { drawerTitle = title }"
-        />
-        <entity-drawer-rights
-          v-if="drawerType === 'rights'"
-          :entity-id="rawEntityId"
-          @update:title="(title) => { drawerTitle = title }"
-        />
-        <entity-drawer-debug
-          v-if="drawerType === 'debug'"
-          :entity="entity"
-          :properties="properties"
-          :raw-entity="rawEntity"
-          :raw-type="rawEntityType"
-          :raw-properties="entityProps"
-          @update:title="(title) => { drawerTitle = title }"
-        />
-      </n-drawer-content>
-    </n-drawer>
+    <entity-drawer-edit
+      v-if="drawerType === 'add'"
+      v-model:entity-id="newEntityId"
+      :entity-type-id="addTypeId"
+      @close="closeDrawer()"
+    />
+    <entity-drawer-edit
+      v-if="drawerType === 'child'"
+      v-model:entity-id="newEntityId"
+      :entity-parent-id="entityId"
+      :entity-type-id="addTypeId"
+      @close="closeDrawer()"
+    />
+    <entity-drawer-edit
+      v-if="drawerType === 'edit'"
+      v-model:entity-id="entityId"
+      @close="closeDrawer()"
+    />
+    <entity-drawer-duplicate
+      v-if="drawerType === 'duplicate'"
+      v-model:entity-id="entityId"
+      @close="closeDrawer()"
+    />
+    <entity-drawer-parents
+      v-if="drawerType === 'parents'"
+      v-model:entity-id="entityId"
+      @close="closeDrawer()"
+    />
+    <entity-drawer-rights
+      v-if="drawerType === 'rights'"
+      v-model:entity-id="entityId"
+      @close="closeDrawer()"
+    />
+    <entity-drawer-debug
+      v-if="drawerType === 'debug'"
+      :entity="entity"
+      :properties="properties"
+      :raw-entity="rawEntity"
+      :raw-type="rawEntityType"
+      :raw-properties="entityProps"
+      @close="closeDrawer()"
+    />
   </div>
 </template>
 

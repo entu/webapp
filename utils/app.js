@@ -229,3 +229,7 @@ export function humanFileSize (bytes, si = true, dp = 2) {
 
   return n(Math.round(bytes * 10) / 10) + ' ' + units[u]
 }
+
+export function cloneArray (array) {
+  return JSON.parse(JSON.stringify(array))
+}

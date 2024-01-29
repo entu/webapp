@@ -1,24 +1,25 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NButton, NDatePicker, NInput, NInputNumber, NSelect, NSwitch, NUpload, NUploadTrigger, NUploadFileList } from 'naive-ui'
 
+const entityId = defineModel('entityId', { type: String, default: undefined })
+const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
+const entityTypeId = defineModel('entityTypeId', { type: String, default: undefined })
+const isUpdating = defineModel('updating', { type: Boolean, default: false })
+
 const props = defineProps({
-  entityId: { type: String, default: undefined },
-  entityParentId: { type: String, default: undefined },
-  entityTypeId: { type: String, default: undefined },
   decimals: { type: Number, default: 0 },
+  disabled: { type: Boolean, default: false },
+  isList: { type: Boolean, default: false },
   isMultilingual: { type: Boolean, default: false },
   property: { type: String, default: undefined },
   referenceQuery: { type: String, default: undefined },
   set: { type: Array, default: () => [] },
   type: { type: String, default: undefined },
-  values: { type: Array, default: () => [] },
-  disabled: { type: Boolean, default: false }
+  values: { type: Array, default: () => [] }
 })
 
-const emit = defineEmits(['update:entity', 'updating:entity', 'add:entity'])
-
 const { t } = useI18n()
-const route = useRoute()
 const { accountId } = useAccount()
 
 const referenceSearch = ref('')
@@ -28,8 +29,19 @@ const rawReferences = ref(null)
 const searchingReferences = ref(false)
 const newFiles = ref({})
 
-const { cloned: oldValues } = useCloned(props.values)
-const { cloned: newValues } = useCloned(props.values)
+const oldValues = ref()
+const newValues = ref()
+
+watch(() => props.values, () => {
+  oldValues.value = cloneArray(props.values.map((x) => {
+    if (x.date) x.date = new Date(x.date).getTime()
+    if (x.datetime) x.datetime = new Date(x.datetime).getTime()
+
+    return x
+  }))
+
+  newValues.value = cloneArray(oldValues.value)
+}, { immediate: true, deep: true })
 
 const languageOptions = [
   { value: 'en', label: 'EN' },
@@ -42,12 +54,12 @@ const referenceOptions = computed(() => {
   if (rawReferences.value) {
     return rawReferences.value?.map(x => ({ value: x._id, label: getValue(x.name) || x._id, type: getValue(x._type) })) || []
   } else {
-    return props.values.filter(x => !!x._id).map(x => ({ value: x.reference, label: x.string })) || []
+    return props.values.filter(x => x._id !== undefined).map(x => ({ value: x.reference, label: x.string })) || []
   }
 })
 
 const fileList = computed(() => props.type === 'file'
-  ? props.values.filter(x => !!x._id).map(x => ({
+  ? newValues.value.filter(x => x._id !== undefined).map(x => ({
     id: x._id,
     name: x.filename,
     url: `/${accountId.value}/file/${x._id}`,
@@ -55,15 +67,6 @@ const fileList = computed(() => props.type === 'file'
   }))
   : []
 )
-
-watch(newValues, (values) => {
-  values = values.map((x) => {
-    if (x.date) x.date = new Date(x.date).getTime()
-    if (x.datetime) x.datetime = new Date(x.datetime).getTime()
-
-    return x
-  })
-}, { deep: true, immediate: true })
 
 watchDebounced(referenceSearch, async (value = '') => {
   rawReferences.value = null
@@ -111,6 +114,7 @@ function renderReferenceOption (option) {
 
 async function updateValue (newValue) {
   const oldValue = oldValues.value.find(x => x._id === newValue._id) || {}
+
   const _id = newValue._id
   const language = newValue.language
   let property = null
@@ -132,19 +136,22 @@ async function updateValue (newValue) {
 
   if (value === oldValue[property] && language === oldValue.language) return
 
-  emit('updating:entity')
+  isUpdating.value = true
 
-  if (!props.entityId && value !== null && !_id) {
+  if (!entityId.value && value !== null && !_id) {
     await addEntity(value, language)
-  } else if (props.entityId && value !== null && !_id) {
+  } else if (entityId.value && value !== null && !_id) {
     await addValue(value, language)
-  } else if (props.entityId && value !== null && _id) {
+  } else if (entityId.value && value !== null && _id) {
     await editValue(_id, value, language)
-  } else if (props.entityId && value === null && _id) {
+  } else if (entityId.value && value === null && _id) {
     await deleteValue(_id)
   }
 
-  emit('update:entity')
+  syncValues()
+  addListValue(_id)
+
+  isUpdating.value = false
 }
 
 async function addEntity (value, language) {
@@ -154,32 +161,32 @@ async function addEntity (value, language) {
     language
   }]
 
-  if (props.entityParentId) {
+  if (entityParentId.value) {
     properties.push({
       type: '_parent',
-      reference: props.entityParentId
+      reference: entityParentId.value
     })
   }
 
-  if (props.entityTypeId) {
+  if (entityTypeId.value) {
     properties.push({
       type: '_type',
-      reference: props.entityTypeId
+      reference: entityTypeId.value
     })
   }
 
   const newEntity = await apiUpsertEntity(
-    props.entityId,
+    undefined,
     undefined,
     properties
   )
 
-  await navigateTo({ path: `/${accountId.value}/${newEntity._id}`, query: route.query, hash: '#edit' }, { replace: true })
+  entityId.value = newEntity._id
 }
 
 async function addValue (value, language) {
-  await apiUpsertEntity(
-    props.entityId,
+  const entity = await apiUpsertEntity(
+    entityId.value,
     undefined,
     [{
       type: props.property,
@@ -187,11 +194,16 @@ async function addValue (value, language) {
       language
     }]
   )
+
+  const property = entity.properties.find(x => x.type === props.property)
+  const newValue = newValues.value.find(x => x._id === undefined)
+
+  newValue._id = property._id
 }
 
 async function editValue (_id, value, language) {
-  await apiUpsertEntity(
-    props.entityId,
+  const entity = await apiUpsertEntity(
+    entityId.value,
     _id,
     [{
       type: props.property,
@@ -199,13 +211,34 @@ async function editValue (_id, value, language) {
       language
     }]
   )
+
+  if (entity?.properties) {
+    const property = entity.properties.find(x => x.type === props.property)
+    const newValue = newValues.value.find(x => x._id === _id)
+
+    newValue._id = property._id
+  } else {
+    newValues.value = newValues.value.filter(x => x._id !== _id)
+  }
+
+  if (newValues.value.length === 0) {
+    newValues.value = [{}]
+  }
 }
 
 async function deleteValue (_id) {
-  await apiUpsertEntity(
-    props.entityId,
+  const entity = await apiUpsertEntity(
+    entityId.value,
     _id
   )
+
+  if (entity?.properties) return
+
+  newValues.value = newValues.value.filter(x => x._id !== _id)
+
+  if (newValues.value.length === 0) {
+    newValues.value = [{}]
+  }
 }
 
 async function uploadFile ({ file, onProgress, onFinish, onError }) {
@@ -214,8 +247,8 @@ async function uploadFile ({ file, onProgress, onFinish, onError }) {
     return
   }
 
-  const newFileProperties = await apiUpsertEntity(
-    props.entityId,
+  const entity = await apiUpsertEntity(
+    entityId.value,
     undefined,
     [{
       type: props.property,
@@ -225,14 +258,24 @@ async function uploadFile ({ file, onProgress, onFinish, onError }) {
     }]
   )
 
-  const newProperty = newFileProperties?.properties?.at(0)
+  const property = entity.properties.find(x => x.type === props.property)
 
-  if (!newProperty) {
+  if (!property) {
     onError()
     return
   }
 
-  const sendForm = newProperty.upload
+  const newValue = newValues.value.find(x => x._id === undefined)
+
+  newValue._id = property._id
+  newValue.filename = property.filename
+  newValue.filesize = property.filesize
+  newValue.filetype = property.filetype
+
+  addListValue(property._id)
+  syncValues()
+
+  const sendForm = property.upload
 
   const request = new XMLHttpRequest()
   request.open(sendForm.method, sendForm.url)
@@ -248,10 +291,10 @@ async function uploadFile ({ file, onProgress, onFinish, onError }) {
 
   request.addEventListener('load', function (e) {
     if (request.status === 200) {
-      file._id = newProperty._id
-      file.url = `/${accountId.value}/file/${newProperty._id}`
+      file._id = property._id
+      file.url = `/${accountId.value}/file/${property._id}`
 
-      newFiles.value[file.id] = newProperty._id
+      newFiles.value[file.id] = property._id
 
       onFinish()
     } else {
@@ -262,13 +305,33 @@ async function uploadFile ({ file, onProgress, onFinish, onError }) {
   request.send(file.file)
 }
 
-async function deleteFile ({ file }) {
+async function deleteFile (file) {
   if (newFiles.value[file.id]) {
     await deleteValue(newFiles.value[file.id])
 
     delete newFiles.value[file.id]
   } else {
     await deleteValue(file.id)
+  }
+
+  syncValues()
+}
+
+function syncValues () {
+  oldValues.value = cloneArray(newValues.value)
+}
+
+function addListValue (_id) {
+  if (!props.isList) return
+
+  if (newValues.value.filter(x => x._id === undefined).length >= 2) return
+
+  if (!newValues.value.some(x => x._id === undefined)) {
+    newValues.value.push({})
+  }
+
+  if (_id === undefined) {
+    newValues.value.push({})
   }
 }
 </script>
@@ -281,19 +344,20 @@ async function deleteFile ({ file }) {
     >
       <n-upload
         abstract
-        multiple
+        :multiple="isList"
         :default-file-list="fileList"
         :show-cancel-button="false"
         :custom-request="uploadFile"
-        @remove="deleteFile"
+        @remove="({ file }) => deleteFile(file)"
       >
         <n-upload-file-list
           v-if="fileList.length > 0"
-          class="w-full mb-2 text-sm"
+          class="w-full text-sm"
         />
 
         <n-upload-trigger #="{ handleClick }" abstract>
           <n-button
+            v-if="isList || !isList && fileList.length === 0"
             :disabled="disabled"
             @click="handleClick"
           >
@@ -316,6 +380,8 @@ async function deleteFile ({ file }) {
         placeholder=""
         :readonly="disabled"
         @blur="updateValue(value)"
+        @clear="deleteValue(value._id)"
+        @focus="addListValue(value._id)"
       />
 
       <n-select
@@ -326,6 +392,8 @@ async function deleteFile ({ file }) {
         :options="setOptions"
         :readonly="disabled"
         @update:value="updateValue(value)"
+        @clear="deleteValue(value._id)"
+        @focus="addListValue(value._id)"
       />
 
       <n-input
@@ -339,6 +407,8 @@ async function deleteFile ({ file }) {
         }"
         :readonly="disabled"
         @blur="updateValue(value)"
+        @clear="deleteValue(value._id)"
+        @focus="addListValue(value._id)"
       />
 
       <n-input-number
@@ -350,6 +420,8 @@ async function deleteFile ({ file }) {
         :readonly="disabled"
         :precision="decimals"
         @blur="updateValue(value)"
+        @clear="deleteValue(value._id)"
+        @focus="addListValue(value._id)"
       />
 
       <div
@@ -373,6 +445,8 @@ async function deleteFile ({ file }) {
         type="date"
         :readonly="disabled"
         @update:value="updateValue(value)"
+        @clear="deleteValue(value._id)"
+        @focus="addListValue(value._id)"
       />
 
       <n-date-picker
@@ -384,6 +458,8 @@ async function deleteFile ({ file }) {
         type="datetime"
         :readonly="disabled"
         @update:value="updateValue(value)"
+        @clear="deleteValue(value._id)"
+        @focus="addListValue(value._id)"
       />
 
       <n-select
@@ -397,6 +473,8 @@ async function deleteFile ({ file }) {
         :loading="searchingReferences"
         :options="referenceOptions"
         :render-label="renderReferenceOption"
+        @clear="deleteValue(value._id)"
+        @focus="addListValue(value._id)"
         @search="searchReferences"
         @update:value="updateValue(value)"
       >

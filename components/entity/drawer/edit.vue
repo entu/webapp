@@ -1,19 +1,35 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-const props = defineProps({
-  entityId: { type: String, default: null },
-  entityParentId: { type: String, default: null },
-  entityTypeId: { type: String, default: null }
-})
-
-const emit = defineEmits(['update:title', 'update:entity', 'updating:entity', 'add:entity'])
+import { NSpin } from 'naive-ui'
 
 const { locale, t } = useI18n()
+
+const emit = defineEmits(['close'])
+
+const entityId = defineModel('entityId', { type: String, default: undefined })
+const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
+const entityTypeId = defineModel('entityTypeId', { type: String, default: undefined })
+
+const props = defineProps({
+})
 
 const rawEntity = ref()
 const rawEntityType = ref()
 const entityProps = ref([])
 const isLoading = ref(false)
+const isUpdating = ref(false)
+
+const title = computed(() => {
+  if (entityParentId.value) {
+    return t('titleChild')
+  }
+  if (!entityParentId.value && entityTypeId.value) {
+    return t('titleAdd')
+  }
+  if (!entityParentId.value && entityId.value) {
+    return t('titleEdit')
+  }
+})
 
 const entity = computed(() => {
   const result = {
@@ -90,7 +106,11 @@ const properties = computed(() => {
     }
 
     if (property.list || property.values?.length === 0) {
-      const empty = property.multilingual ? { language: locale.value } : {}
+      const empty = {}
+
+      if (property.multilingual) {
+        empty.language = locale.value
+      }
 
       if (property.default) {
         empty.string = property.default
@@ -115,13 +135,13 @@ const properties = computed(() => {
   return result
 })
 
-watch([() => props.entityId, () => props.entityTypeId], loadEntity, { immediate: true })
+watch([entityId, () => props.entityTypeId], loadEntity, { immediate: true })
 
 async function loadEntity () {
   isLoading.value = true
 
-  if (props.entityId) {
-    rawEntity.value = await apiGetEntity(props.entityId)
+  if (entityId.value) {
+    rawEntity.value = await apiGetEntity(entityId.value)
   }
 
   const entityTypeId = props.entityTypeId || getValue(rawEntity.value?._type, 'reference')
@@ -165,33 +185,38 @@ async function loadEntity () {
   isLoading.value = false
 }
 
-onMounted(() => {
-  if (props.entityParentId && props.entityTypeId) emit('update:title', t('titleChild'))
-  if (!props.entityParentId && props.entityTypeId) emit('update:title', t('titleAdd'))
-  if (!props.entityParentId && props.entityId) emit('update:title', t('titleEdit'))
-})
+async function onClose () {
+  await until(isUpdating).not.toBeTruthy()
+
+  emit('close')
+}
 </script>
 
 <template>
-  <template
-    v-for="pg in properties"
-    :key="pg.name"
+  <drawer
+    :title="title"
+    @close="onClose()"
   >
-    <h2 v-if="pg.name">
-      {{ pg.name }}
-    </h2>
+    <n-spin :show="isUpdating">
+      <template
+        v-for="pg in properties"
+        :key="pg.name"
+      >
+        <h2 v-if="pg.name">
+          {{ pg.name }}
+        </h2>
 
-    <property-list
-      edit
-      :entity-id="entity._id"
-      :entity-parent-id="entityParentId"
-      :entity-type-id="entityTypeId"
-      :properties="pg.children"
-      @updating:entity="emit('updating:entity', $event)"
-      @entity:update="emit('entity:update', $event)"
-      @add:entity="emit('add:entity', $event)"
-    />
-  </template>
+        <property-list
+          v-model:entity-id="entityId"
+          v-model:properties="pg.children"
+          v-model:entity-parent-id="entityParentId"
+          v-model:entity-type-id="entityTypeId"
+          v-model:is-updating="isUpdating"
+          edit
+        />
+      </template>
+    </n-spin>
+  </drawer>
 </template>
 
 <i18n lang="yaml">

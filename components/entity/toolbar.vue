@@ -98,7 +98,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
       <n-button
         v-if="['owner', 'editor'].includes(right)"
         tertiary
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#edit`}, { replace: true })"
+        @click.prevent="navigateTo({ path: route.path, query: route.query, hash: `#edit`}, { replace: true })"
       >
         <template #icon>
           <icon-edit class="size-5" />
@@ -108,9 +108,8 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
 
       <n-button
         v-if="['owner', 'editor'].includes(right)"
-        disabled
         tertiary
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`}, { replace: true })"
+        @click.prevent="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`}, { replace: true })"
       >
         <template #icon>
           <icon-copy class="size-5" />
@@ -120,9 +119,8 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
 
       <n-button
         v-if="['owner', 'editor'].includes(right)"
-        disabled
         tertiary
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#parents`}, { replace: true })"
+        @click.prevent="navigateTo({ path: route.path, query: route.query, hash: `#parents`}, { replace: true })"
       >
         <template #icon>
           <icon-tree-view class="size-5" />
@@ -132,9 +130,8 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
 
       <n-button
         v-if="['owner'].includes(right)"
-        disabled
         tertiary
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#rights`}, { replace: true })"
+        @click.prevent="navigateTo({ path: route.path, query: route.query, hash: `#rights`}, { replace: true })"
       >
         <template #icon>
           <icon-user-multiple class="size-5" />
@@ -146,7 +143,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
     <n-button
       v-if="['owner', 'editor', 'expander', 'viewer'].includes(right)"
       quaternary
-      @click="navigateTo({ path: route.path, query: route.query, hash: `#debug`}, { replace: true })"
+      @click.prevent="navigateTo({ path: route.path, query: route.query, hash: `#debug`}, { replace: true })"
     >
       <template #icon>
         <icon-debug class="size-5" />

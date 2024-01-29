@@ -1,20 +1,19 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-const props = defineProps({
-  entityId: { type: String, required: true }
-})
-
-const emit = defineEmits(['update:title'])
-
 const { t } = useI18n()
 
-onMounted(() => {
-  emit('update:title', t('title'))
-})
+const emit = defineEmits(['close'])
+
+const entityId = defineModel('entityId', { type: String, required: true })
 </script>
 
 <template>
-  <pre class="text-xs">{{ entityId }}</pre>
+  <drawer
+    :title="t('title')"
+    @close="emit('close')"
+  >
+    <pre class="text-xs">{{ entityId }}</pre>
+  </drawer>
 </template>
 
 <i18n lang="yaml">
