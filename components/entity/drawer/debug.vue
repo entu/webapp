@@ -89,6 +89,17 @@ function showYaml (value) {
 <i18n lang="yaml">
   en:
     title: API Debug
+    entity: Entity
+    properties: Properties
+    rawEntity: Raw Entity
+    rawType: Raw Type
+    rawPropertyTypes: Raw Property Types
+
   et:
     title: API Tõrkeotsing
+    entity: Objekt
+    properties: Parameetrid
+    rawEntity: Toorobjekt
+    rawType: Toorobjektitüüp
+    rawPropertyTypes: Toorparameetritüübid
 </i18n>
