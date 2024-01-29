@@ -238,6 +238,8 @@ async function closeDrawer () {
     await navigateTo({ path: `/${accountId.value}/${newEntityId.value}`, query: route.query, hash: undefined }, { replace: true })
   } else {
     await navigateTo({ path: route.path, query: route.query, hash: undefined }, { replace: true })
+
+    loadEntity()
   }
 }
 
