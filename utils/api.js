@@ -11,6 +11,11 @@ export async function apiGetEntity (entityId, props = []) {
   return entity
 }
 
+export async function apiDeleteEntity (entityId) {
+  const { entity } = await apiRequest('entity/' + entityId, {}, {}, 'DELETE')
+  return entity
+}
+
 export async function apiGetProperty (propertyId) {
   return await apiRequest('property/' + propertyId)
 }

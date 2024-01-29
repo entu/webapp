@@ -41,12 +41,18 @@ defineProps({
       <slot />
 
       <template #footer>
-        <n-button
-          tertiary
-          @click="emit('close')"
-        >
-          {{ t('close') }}
-        </n-button>
+        <div class="w-full flex justify-between items-center">
+          <slot name="footer" />
+
+          <div class="grow" />
+
+          <n-button
+            tertiary
+            @click="emit('close')"
+          >
+            {{ t('close') }}
+          </n-button>
+        </div>
       </template>
     </n-drawer-content>
   </n-drawer>

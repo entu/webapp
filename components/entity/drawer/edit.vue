@@ -1,16 +1,17 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NSpin } from 'naive-ui'
+import { NButton, NPopconfirm, NSpin } from 'naive-ui'
 
 const { locale, t } = useI18n()
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'delete'])
 
 const entityId = defineModel('entityId', { type: String, default: undefined })
 const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
 const entityTypeId = defineModel('entityTypeId', { type: String, default: undefined })
 
 const props = defineProps({
+  canDelete: { type: Boolean, default: false }
 })
 
 const rawEntity = ref()
@@ -190,6 +191,18 @@ async function onClose () {
 
   emit('close')
 }
+
+async function onDelete () {
+  if (!entityId.value) return
+
+  isUpdating.value = true
+
+  await apiDeleteEntity(entityId.value)
+
+  isUpdating.value = false
+
+  emit('delete')
+}
 </script>
 
 <template>
@@ -216,6 +229,35 @@ async function onClose () {
         />
       </template>
     </n-spin>
+
+    <template
+      v-if="canDelete && entityId"
+      #footer
+    >
+      <n-popconfirm
+        :negative-text="t('cancel')"
+        :positive-text="t('delete')"
+        :positive-button-props="{ type: 'error' }"
+        @positive-click="onDelete()"
+      >
+        <template #trigger>
+          <n-button
+            quaternary
+            type="error"
+            :disabled="isUpdating"
+            :focusable="false"
+          >
+            {{ t('deleteEntity') }}
+          </n-button>
+        </template>
+
+        <template #icon>
+          <icon-delete class="size-5 text-red-500" />
+        </template>
+
+        {{ t('confirmDelete') }}
+      </n-popconfirm>
+    </template>
   </drawer>
 </template>
 
@@ -224,8 +266,16 @@ async function onClose () {
     titleAdd: Add new {name}
     titleChild: Add {name} as a new child
     titleEdit: Edit {name}
+    deleteEntity: Delete entity
+    confirmDelete: Are you sure you want to delete this entity?
+    delete: Delete
+    cancel: Cancel
   et:
     titleAdd: Lisa uus {name}
     titleChild: Lisa {name} uue alamobjektina
     titleEdit: Muuda objekti {name}
+    deleteEntity: Kustuta objekt
+    confirmDelete: Kas oled kindel, et soovid selle objekti kustutada?
+    delete: Kustuta
+    cancel: Tühista
 </i18n>

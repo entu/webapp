@@ -233,7 +233,7 @@ async function loadReferences () {
   })
 }
 
-async function closeDrawer () {
+async function onDrawerClose () {
   if (newEntityId.value) {
     await navigateTo({ path: `/${accountId.value}/${newEntityId.value}`, query: route.query, hash: undefined }, { replace: true })
   } else {
@@ -241,6 +241,10 @@ async function closeDrawer () {
 
     loadEntity()
   }
+}
+
+async function onDelete () {
+  await navigateTo({ path: `/${accountId.value}`, query: route.query, hash: undefined }, { replace: true })
 }
 
 onMounted(async () => {
@@ -417,34 +421,36 @@ onMounted(async () => {
       v-if="drawerType === 'add'"
       v-model:entity-id="newEntityId"
       :entity-type-id="addTypeId"
-      @close="closeDrawer()"
+      @close="onDrawerClose()"
     />
     <entity-drawer-edit
       v-if="drawerType === 'child'"
       v-model:entity-id="newEntityId"
       :entity-parent-id="entityId"
       :entity-type-id="addTypeId"
-      @close="closeDrawer()"
+      @close="onDrawerClose()"
     />
     <entity-drawer-edit
       v-if="drawerType === 'edit'"
       v-model:entity-id="entityId"
-      @close="closeDrawer()"
+      :can-delete="right === 'owner'"
+      @close="onDrawerClose()"
+      @delete="onDelete()"
     />
     <entity-drawer-duplicate
       v-if="drawerType === 'duplicate'"
       v-model:entity-id="entityId"
-      @close="closeDrawer()"
+      @close="onDrawerClose()"
     />
     <entity-drawer-parents
       v-if="drawerType === 'parents'"
       v-model:entity-id="entityId"
-      @close="closeDrawer()"
+      @close="onDrawerClose()"
     />
     <entity-drawer-rights
       v-if="drawerType === 'rights'"
       v-model:entity-id="entityId"
-      @close="closeDrawer()"
+      @close="onDrawerClose()"
     />
     <entity-drawer-debug
       v-if="drawerType === 'debug'"
@@ -453,7 +459,7 @@ onMounted(async () => {
       :raw-entity="rawEntity"
       :raw-type="rawEntityType"
       :raw-properties="entityProps"
-      @close="closeDrawer()"
+      @close="onDrawerClose()"
     />
   </div>
 </template>
