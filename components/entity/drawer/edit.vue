@@ -21,13 +21,13 @@ const isUpdating = ref(false)
 
 const title = computed(() => {
   if (entityParentId.value) {
-    return t('titleChild')
+    return t('titleChild', { name: entity.value.type?.label?.toLowerCase() })
   }
   if (!entityParentId.value && entityTypeId.value) {
-    return t('titleAdd')
+    return t('titleAdd', { name: entity.value.type?.label?.toLowerCase() })
   }
   if (!entityParentId.value && entityId.value) {
-    return t('titleEdit')
+    return t('titleEdit', { name: entity.value.type?.label?.toLowerCase() })
   }
 })
 
@@ -221,11 +221,11 @@ async function onClose () {
 
 <i18n lang="yaml">
   en:
-    titleAdd: Add
-    titleChild: Add Child
-    titleEdit: Edit
+    titleAdd: Add new {name}
+    titleChild: Add {name} as a new child
+    titleEdit: Edit {name}
   et:
-    titleAdd: Lisa
-    titleChild: Lisa alamobjekt
-    titleEdit: Muuda
+    titleAdd: Lisa uus {name}
+    titleChild: Lisa {name} uue alamobjektina
+    titleEdit: Muuda objekti {name}
 </i18n>
