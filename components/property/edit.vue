@@ -117,12 +117,16 @@ async function updateValue (newValue) {
 
   const _id = newValue._id
   const language = newValue.language
+  const properties = []
   let property = null
   let value = null
 
   switch (props.type) {
     case 'text':
       property = 'string'
+      break
+    case 'file':
+      property = 'filename'
       break
     default:
       property = props.type
@@ -131,36 +135,54 @@ async function updateValue (newValue) {
 
   value = newValue[property]
 
-  if (typeof value === 'string') value = value.trim() || null
-  if (oldValue[property] instanceof Date) value = new Date(value) || null
+  if (typeof value === 'string') {
+    value = value.trim() || null
+  }
+  if (oldValue[property] instanceof Date) {
+    value = new Date(value) || null
+  }
 
   if (value === oldValue[property] && language === oldValue.language) return
 
   isUpdating.value = true
 
+  if (props.type === 'file') {
+    properties.push({
+      type: props.property,
+      filename: newValue.filename,
+      filesize: newValue.filesize,
+      filetype: newValue.filetype,
+      language
+    })
+  } else {
+    properties.push({
+      type: props.property,
+      [property]: value,
+      language
+    })
+  }
+
+  let entity
+
   if (!entityId.value && value !== null && !_id) {
-    await addEntity(value, language)
+    entity = await addEntity(properties)
   } else if (entityId.value && value !== null && !_id) {
-    await addValue(value, language)
+    entity = await addValue(properties)
   } else if (entityId.value && value !== null && _id) {
-    await editValue(_id, value, language)
+    entity = await editValue(_id, properties, language)
   } else if (entityId.value && value === null && _id) {
-    await deleteValue(_id)
+    entity = await deleteValue(_id)
   }
 
   syncValues()
   addListValue(_id)
 
   isUpdating.value = false
+
+  return entity
 }
 
-async function addEntity (value, language) {
-  const properties = [{
-    type: props.property,
-    [props.type]: value,
-    language
-  }]
-
+async function addEntity (properties) {
   if (entityParentId.value) {
     properties.push({
       type: '_parent',
@@ -175,41 +197,37 @@ async function addEntity (value, language) {
     })
   }
 
-  const newEntity = await apiUpsertEntity(
+  const entity = await apiUpsertEntity(
     undefined,
     undefined,
     properties
   )
 
-  entityId.value = newEntity._id
+  entityId.value = entity._id
+
+  return entity
 }
 
-async function addValue (value, language) {
+async function addValue (properties) {
   const entity = await apiUpsertEntity(
     entityId.value,
     undefined,
-    [{
-      type: props.property,
-      [props.type]: value,
-      language
-    }]
+    properties
   )
 
   const property = entity.properties.find(x => x.type === props.property)
   const newValue = newValues.value.find(x => x._id === undefined)
 
   newValue._id = property._id
+
+  return entity
 }
 
-async function editValue (_id, value, language) {
+async function editValue (_id, properties) {
   const entity = await apiUpsertEntity(
     entityId.value,
     _id,
-    [{
-      type: props.property,
-      [props.type]: value,
-      language
-    }]
+    properties
   )
 
   if (entity?.properties) {
@@ -224,6 +242,8 @@ async function editValue (_id, value, language) {
   if (newValues.value.length === 0) {
     newValues.value = [{}]
   }
+
+  return entity
 }
 
 async function deleteValue (_id) {
@@ -239,6 +259,8 @@ async function deleteValue (_id) {
   if (newValues.value.length === 0) {
     newValues.value = [{}]
   }
+
+  return entity
 }
 
 async function uploadFile ({ file, onProgress, onFinish, onError }) {
@@ -247,16 +269,11 @@ async function uploadFile ({ file, onProgress, onFinish, onError }) {
     return
   }
 
-  const entity = await apiUpsertEntity(
-    entityId.value,
-    undefined,
-    [{
-      type: props.property,
-      filename: file.file.name,
-      filesize: file.file.size,
-      filetype: file.file.type || 'application/octet-stream'
-    }]
-  )
+  const entity = await updateValue({
+    filename: file.file.name,
+    filesize: file.file.size,
+    filetype: file.file.type || 'application/octet-stream'
+  })
 
   const property = entity.properties.find(x => x.type === props.property)
 
@@ -264,16 +281,6 @@ async function uploadFile ({ file, onProgress, onFinish, onError }) {
     onError()
     return
   }
-
-  const newValue = newValues.value.find(x => x._id === undefined)
-
-  newValue._id = property._id
-  newValue.filename = property.filename
-  newValue.filesize = property.filesize
-  newValue.filetype = property.filetype
-
-  addListValue(property._id)
-  syncValues()
 
   const sendForm = property.upload
 
@@ -306,6 +313,8 @@ async function uploadFile ({ file, onProgress, onFinish, onError }) {
 }
 
 async function deleteFile (file) {
+  isUpdating.value = true
+
   if (newFiles.value[file.id]) {
     await deleteValue(newFiles.value[file.id])
 
@@ -313,6 +322,8 @@ async function deleteFile (file) {
   } else {
     await deleteValue(file.id)
   }
+
+  isUpdating.value = false
 
   syncValues()
 }
@@ -376,23 +387,19 @@ function addListValue (_id) {
       <n-input
         v-if="type === 'string' && set.length === 0"
         v-model:value="value.string"
-        clearable
         placeholder=""
         :readonly="disabled"
         @blur="updateValue(value)"
-        @clear="deleteValue(value._id)"
         @focus="addListValue(value._id)"
       />
 
       <n-select
         v-else-if="type === 'string' && set.length > 0"
         v-model:value="value.string"
-        clearable
         placeholder=""
         :options="setOptions"
         :readonly="disabled"
         @update:value="updateValue(value)"
-        @clear="deleteValue(value._id)"
         @focus="addListValue(value._id)"
       />
 
@@ -407,7 +414,6 @@ function addListValue (_id) {
         }"
         :readonly="disabled"
         @blur="updateValue(value)"
-        @clear="deleteValue(value._id)"
         @focus="addListValue(value._id)"
       />
 
@@ -415,12 +421,10 @@ function addListValue (_id) {
         v-else-if="type === 'number'"
         v-model:value="value.number"
         class="w-full"
-        clearable
         placeholder=""
         :readonly="disabled"
         :precision="decimals"
         @blur="updateValue(value)"
-        @clear="deleteValue(value._id)"
         @focus="addListValue(value._id)"
       />
 
@@ -440,32 +444,25 @@ function addListValue (_id) {
         v-else-if="type === 'date'"
         v-model:value="value.date"
         class="w-full"
-        clearable
         placeholder=""
         type="date"
         :readonly="disabled"
         @update:value="updateValue(value)"
-        @clear="deleteValue(value._id)"
-        @focus="addListValue(value._id)"
       />
 
       <n-date-picker
         v-else-if="type === 'datetime'"
         v-model:value="value.date"
         class="w-full"
-        clearable
         placeholder=""
         type="datetime"
         :readonly="disabled"
         @update:value="updateValue(value)"
-        @clear="deleteValue(value._id)"
-        @focus="addListValue(value._id)"
       />
 
       <n-select
         v-else-if="type === 'reference'"
         v-model:value="value.reference"
-        clearable
         filterable
         placeholder=""
         remote
@@ -473,7 +470,6 @@ function addListValue (_id) {
         :loading="searchingReferences"
         :options="referenceOptions"
         :render-label="renderReferenceOption"
-        @clear="deleteValue(value._id)"
         @focus="addListValue(value._id)"
         @search="searchReferences"
         @update:value="updateValue(value)"
