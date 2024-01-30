@@ -11,21 +11,28 @@ const emit = defineEmits(['close'])
 defineProps({
   title: { type: String, default: '' }
 })
+
+const closeRef = ref()
+useFocus(closeRef, { initialValue: true })
+
+onKeyStroke('Escape', () => {
+  emit('close')
+})
 </script>
 
 <template>
   <n-drawer
-    :show="true"
     placement="right"
     resizable
     :close-on-esc="false"
     :default-width="width"
     :mask-closable="false"
+    :show="true"
     @mask-click="emit('close')"
   >
     <n-drawer-content
-      header-class="w-full"
       body-content-class="pt-0"
+      header-class="w-full"
     >
       <template #header>
         <div class="w-full flex justify-between items-center">
@@ -47,6 +54,7 @@ defineProps({
           <div class="grow" />
 
           <n-button
+            ref="closeRef"
             tertiary
             @click="emit('close')"
           >
