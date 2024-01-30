@@ -1,6 +1,6 @@
 <script setup>
 import { NDataTable } from 'naive-ui'
-import { IconCheckmark, IconSortAscending, IconSortDescending, NuxtLink } from '#components'
+import { Icon, NuxtLink } from '#components'
 
 const props = defineProps({
   entityId: { type: String, required: true },
@@ -57,7 +57,7 @@ const columns = computed(() => [
     render: (row) => {
       if (c.type === 'number' && getValue(row[c.name], 'number')) return getValue(row[c.name], 'number').toLocaleString(locale.value, { minimumFractionDigits: c.decimals, maximumFractionDigits: c.decimals })
 
-      if (c.type === 'boolean' && getValue(row[c.name], 'boolean')) return h(IconCheckmark, { class: 'size-5' })
+      if (c.type === 'boolean' && getValue(row[c.name], 'boolean')) return h(Icon, { icon: 'checkmark' })
 
       if (c.type === 'datetime' && getValue(row[c.name], 'datetime')) return d(getValue(row[c.name], 'datetime'), 'datetime')
 
@@ -67,8 +67,8 @@ const columns = computed(() => [
     },
     renderSorterIcon: ({ order }) => {
       if (order === false) return null
-      if (order === 'ascend') return h(IconSortAscending, { class: 'text-sky-800' })
-      if (order === 'descend') return h(IconSortDescending, { class: 'text-sky-800' })
+      if (order === 'ascend') return h(Icon, { class: 'text-sky-800', icon: 'sort-ascending' })
+      if (order === 'descend') return h(Icon, { class: 'text-sky-800', icon: 'sort-aescending' })
     },
     sorter: true
   }))

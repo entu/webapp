@@ -252,7 +252,10 @@ async function onDelete () {
         </template>
 
         <template #icon>
-          <icon-delete class="size-5 text-red-500" />
+          <icon
+            class="text-red-500"
+            icon="delete"
+          />
         </template>
 
         {{ t('confirmDelete') }}

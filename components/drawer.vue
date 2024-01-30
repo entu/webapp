@@ -38,8 +38,9 @@ onKeyStroke('Escape', () => {
         <div class="w-full flex justify-between items-center">
           <h2>{{ title }}</h2>
 
-          <icon-close
-            class="size-5 cursor-pointer hover:bg-slate-100"
+          <icon
+            class="cursor-pointer hover:bg-slate-100"
+            icon="close"
             @click="emit('close')"
           />
         </div>

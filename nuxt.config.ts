@@ -16,7 +16,8 @@ export default defineNuxtConfig({
   },
   modules: [
     '@nuxtjs/i18n',
-    '@vueuse/nuxt'
+    '@vueuse/nuxt',
+    'nuxt-icons'
   ],
   postcss: {
     plugins: {

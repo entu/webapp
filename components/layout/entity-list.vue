@@ -108,7 +108,10 @@ function color () {
         for="search"
         class="w-8 h-7 flex items-center justify-center"
       >
-        <icon-search class="size-5 text-gray-400" />
+        <icon
+          class="text-gray-400"
+          icon="search"
+        />
       </label>
       <input
         id="search"
