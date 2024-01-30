@@ -68,7 +68,7 @@ const columns = computed(() => [
     renderSorterIcon: ({ order }) => {
       if (order === false) return null
       if (order === 'ascend') return h(Icon, { class: 'text-sky-800', icon: 'sort-ascending' })
-      if (order === 'descend') return h(Icon, { class: 'text-sky-800', icon: 'sort-aescending' })
+      if (order === 'descend') return h(Icon, { class: 'text-sky-800', icon: 'sort-descending' })
     },
     sorter: true
   }))
