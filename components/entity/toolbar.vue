@@ -109,7 +109,6 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
       <n-button
         v-if="['owner', 'editor'].includes(right)"
         tertiary
-        disabled
         @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`}, { replace: true })"
       >
         <template #icon>
@@ -121,7 +120,6 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
       <n-button
         v-if="['owner', 'editor'].includes(right)"
         tertiary
-        disabled
         @click="navigateTo({ path: route.path, query: route.query, hash: `#parents`}, { replace: true })"
       >
         <template #icon>

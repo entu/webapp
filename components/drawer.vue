@@ -15,9 +15,7 @@ defineProps({
 const closeRef = ref()
 useFocus(closeRef, { initialValue: true })
 
-onKeyStroke('Escape', () => {
-  emit('close')
-})
+onKeyStroke('Escape', () => emit('close'))
 </script>
 
 <template>
