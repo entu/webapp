@@ -58,7 +58,7 @@ async function updateIsPublic (value) {
   await apiUpsertEntity(
     entityId.value,
     getValue(rawEntity.value?._public, '_id'),
-    [{ type: '_public', boolean: value }]
+    value === true ? [{ type: '_public', boolean: value }] : undefined
   )
 
   isUpdatingPublic.value = false
