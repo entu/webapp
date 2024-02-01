@@ -14,7 +14,7 @@ defineProps({
 <template>
   <n-popover
     v-if="!!tooltip"
-    class="max-w-sm text-sm !text-slate-900 !bg-white"
+    class="max-w-sm text-sm !bg-white"
   >
     <template #trigger>
       <n-button
@@ -34,7 +34,7 @@ defineProps({
       </n-button>
     </template>
 
-    <div class="text-sm">
+    <div class="text-sm !text-slate-900">
       {{ tooltip }}
     </div>
   </n-popover>

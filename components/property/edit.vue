@@ -22,11 +22,6 @@ const props = defineProps({
 const { t } = useI18n()
 const { accountId } = useAccount()
 
-const referenceSearch = ref('')
-const referenceLimit = ref(100)
-const referenceCount = ref(null)
-const rawReferences = ref(null)
-const searchingReferences = ref(false)
 const newFiles = ref({})
 
 const oldValues = ref()
@@ -49,14 +44,7 @@ const languageOptions = [
 ]
 
 const setOptions = computed(() => props.set.map(x => ({ value: x, label: x })).sort())
-
-const referenceOptions = computed(() => {
-  if (rawReferences.value) {
-    return rawReferences.value?.map(x => ({ value: x._id, label: getValue(x.name) || x._id, type: getValue(x._type) })) || []
-  } else {
-    return props.values.filter(x => x._id !== undefined).map(x => ({ value: x.reference, label: x.string })) || []
-  }
-})
+const referenceOptions = computed(() => props.values.filter(x => x._id !== undefined).map(x => ({ value: x.reference, label: x.string })))
 
 const fileList = computed(() => props.type === 'file'
   ? newValues.value.filter(x => x._id !== undefined).map(x => ({
@@ -67,50 +55,6 @@ const fileList = computed(() => props.type === 'file'
   }))
   : []
 )
-
-watchDebounced(referenceSearch, async (value = '') => {
-  rawReferences.value = null
-
-  if (value === '') return
-
-  searchingReferences.value = true
-  referenceCount.value = null
-
-  let filter = {
-    q: value,
-    props: [
-      '_type.string',
-      'name'
-    ],
-    sort: 'name.string',
-    limit: referenceLimit.value
-  }
-
-  if (props.referenceQuery) {
-    filter = { ...queryStringToObject(props.referenceQuery), ...filter }
-  }
-
-  const { entities, count } = await apiGetEntities(filter)
-
-  rawReferences.value = entities
-  referenceCount.value = count
-
-  searchingReferences.value = false
-}, { debounce: 500, maxWait: 5000 })
-
-function searchReferences (query) {
-  referenceSearch.value = query
-}
-
-function renderReferenceOption (option) {
-  return h('div',
-    { class: 'flex gap-3 items-center' },
-    [
-      h('div', { }, option.label),
-      h('div', { class: 'px-2 rounded bg-blue-50 text-xs text-gray-500' }, option.type)
-    ]
-  )
-}
 
 async function updateValue (newValue) {
   const oldValue = oldValues.value.find(x => x._id === newValue._id) || {}
@@ -459,47 +403,16 @@ function addListValue (_id) {
         @update:value="updateValue(value)"
       />
 
-      <n-select
+      <my-select-reference
         v-else-if="type === 'reference'"
-        v-model:value="value.reference"
-        filterable
+        v-model="value.reference"
         placeholder=""
-        remote
         :readonly="disabled"
-        :loading="searchingReferences"
-        :options="referenceOptions"
-        :render-label="renderReferenceOption"
+        :query="referenceQuery"
+        :values="referenceOptions"
         @focus="addListValue(value._id)"
-        @search="searchReferences"
         @update:value="updateValue(value)"
-      >
-        <template
-          v-if="referenceCount > referenceLimit"
-          #action
-        >
-          <div class="text-center text-xs">
-            {{ t('count', referenceCount - referenceLimit) }}
-          </div>
-        </template>
-        <template
-          v-if="searchingReferences"
-          #empty
-        >
-          ...
-        </template>
-        <template
-          v-else-if="rawReferences?.length === 0"
-          #empty
-        >
-          {{ t('noResults') }}
-        </template>
-        <template
-          v-else
-          #empty
-        >
-          {{ t('doSearch') }}
-        </template>
-      </n-select>
+      />
 
       <n-select
         v-if="isMultilingual"
@@ -516,13 +429,7 @@ function addListValue (_id) {
 
 <i18n lang="yaml">
   en:
-    doSearch: Search Entity
-    noResults: no entities found
-    count: 'no entities found | Found {n} more entity. Refine your search. | Found {n} more entities. Refine your search.'
     upload: Upload
   et:
-    doSearch: Otsi objekti
-    noResults: objekte ei leitud
-    count: 'objekte ei leitud | Leiti veel {n} objekt. Täpsusta otsingut. | Leiti veel {n} objekti. Täpsusta otsingut.'
     upload: Laadi üles
 </i18n>

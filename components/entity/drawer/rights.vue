@@ -43,7 +43,7 @@ async function loadEntity () {
     ...rawEntity.value?._expander?.map(x => ({ ...x, type: 'expander' })) || [],
     ...rawEntity.value?._editor?.map(x => ({ ...x, type: 'editor' })) || [],
     ...rawEntity.value?._owner?.map(x => ({ ...x, type: 'owner' })) || []
-  ].sort((a, b) => a.string.localeCompare(b.string)))
+  ].sort((a, b) => a.string?.localeCompare(b.string)))
 
   isLoading.value = false
 }
