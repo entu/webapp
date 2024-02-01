@@ -2,6 +2,8 @@
 <script setup>
 import { NPopover } from 'naive-ui'
 
+const { t } = useI18n()
+
 const entityId = defineModel('entityId', { type: String, default: undefined })
 const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
 const entityTypeId = defineModel('entityTypeId', { type: String, default: undefined })
@@ -33,7 +35,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
         }}
 
         <n-popover
-          v-if="property.description"
+          v-if="property.public || property.description"
           class="max-w-sm"
           placement="top"
         >
@@ -41,7 +43,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
             <span class="size-3 flex items-center justify-center text-blue-600 text-xs font-bold bg-blue-100 rounded cursor-pointer">i</span>
           </template>
           <div class="text-sm">
-            {{ property.description }}
+            {{ t('publicProperty') }} {{ property.description }}
           </div>
         </n-popover>
 
@@ -78,3 +80,10 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
     </div>
   </div>
 </template>
+
+<i18n lang="yaml">
+  en:
+    publicProperty: Public property.
+  et:
+    publicProperty: Avalik parameeter.
+</i18n>
