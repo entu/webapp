@@ -1,5 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
+import { NEmpty } from 'naive-ui'
+
 const { t } = useI18n()
 const { accountId } = useAccount()
 
@@ -92,6 +94,10 @@ async function onClose () {
       />
     </div>
 
+    <n-empty
+      v-if="parents.length === 0"
+      :description="t('noParents')"
+    />
     <my-select-reference
       class="mt-6"
       :placeholder="t('selectNewParent')"
@@ -103,10 +109,12 @@ async function onClose () {
 <i18n lang="yaml">
   en:
     title: Parents - {name}
+    noParents: This entity has no parents
     delete: Delete parent
     selectNewParent: Select new parent
   et:
     title: Kuuluvus - {name}
+    noParents: See objekt ei kuulu ühegi objekti alla
     delete: Kustuta kuuluvus
     selectNewParent: Vali uus kuuluvus
 </i18n>
