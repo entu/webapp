@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NPopover } from 'naive-ui'
+import { NPopover, NDivider } from 'naive-ui'
 
 const { t } = useI18n()
 
@@ -36,18 +36,24 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
 
         <n-popover
           v-if="property.public || property.description"
-          class="max-w-sm"
+          class="max-w-sm text-sm"
           placement="top"
         >
           <template #trigger>
             <span class="size-3 flex items-center justify-center text-blue-600 text-xs font-bold bg-blue-100 rounded-full">i</span>
           </template>
+
           <div
             v-if="property.description"
-            class="text-sm mb-2 last:mb-0"
+            class="text-sm"
           >
             {{ property.description }}
           </div>
+          <n-divider
+            v-if="property.public && property.description"
+            class="!my-1.5"
+            dashed
+          />
           <div
             v-if="property.public"
             class="text-sm"
