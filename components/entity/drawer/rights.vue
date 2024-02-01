@@ -3,6 +3,7 @@
 import { NButtonGroup, NDivider, NSwitch } from 'naive-ui'
 
 const { t } = useI18n()
+const { userId } = useUser()
 
 const emit = defineEmits(['close'])
 
@@ -181,7 +182,10 @@ function railStyle ({ focused, checked }) {
       :key="user._id"
       class="mb-4 flex items-center justify-between gap-2"
     >
-      <div class="grow overflow-ellipsis">
+      <div
+        class="grow"
+        :class="{ 'text-gray-400': user.reference === userId }"
+      >
         {{ user.string?.trim() || user.reference }}
       </div>
 
@@ -190,6 +194,7 @@ function railStyle ({ focused, checked }) {
           v-for="r in rights"
           :key="r"
           :class="{ '!bg-blue-400 !text-white': user.type === r }"
+          :disabled="user.reference === userId"
           :icon="`rights/${r}`"
           :tooltip="t(`${r}Description`)"
           @click="onEditRight(user._id, user.reference, r)"
@@ -201,6 +206,7 @@ function railStyle ({ focused, checked }) {
         icon="delete"
         type="error"
         :bg="false"
+        :disabled="user.reference === userId"
         :tooltip="t('delete')"
         @click="onDeleteRight(user._id)"
       />
