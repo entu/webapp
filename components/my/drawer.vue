@@ -35,7 +35,9 @@ onKeyStroke('Escape', () => emit('close'))
     >
       <template #header>
         <div class="w-full flex justify-between items-center">
-          <h2>{{ title }}</h2>
+          <h2 class="truncate whitespace-nowrap overflow-hidden">
+            {{ title }}
+          </h2>
 
           <my-icon
             class="cursor-pointer hover:bg-slate-100"

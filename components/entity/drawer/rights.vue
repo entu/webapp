@@ -183,7 +183,7 @@ function railStyle ({ focused, checked }) {
       class="mb-4 flex items-center justify-between gap-2"
     >
       <div
-        class="grow"
+        class="grow truncate whitespace-nowrap overflow-hidden"
         :class="{ 'text-gray-400': user.reference === userId }"
       >
         {{ user.string?.trim() || user.reference }}
