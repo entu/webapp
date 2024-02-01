@@ -332,10 +332,12 @@ onMounted(async () => {
             >
               <template #trigger>
                 <nuxt-link
-                  class="py-1 px-2 text-xs text-center text-orange-600 bg-orange-50 border rounded-md border-orange-300"
+                  class="py-1 px-2 flex items-center justify-between gap-1 text-xs text-center text-orange-600 bg-orange-50 border rounded-md border-orange-300"
                   :to="{ path: route.path, query: route.query, hash:'#rights' }"
                 >
                   {{ t('public') }}
+
+                  <my-icon icon="public/true" />
                 </nuxt-link>
               </template>
               <div class="text-sm">
