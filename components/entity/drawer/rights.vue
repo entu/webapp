@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NButtonGroup } from 'naive-ui'
+import { NButtonGroup, NDivider, NSwitch } from 'naive-ui'
 
 const { t } = useI18n()
 
@@ -9,13 +9,7 @@ const emit = defineEmits(['close'])
 const entityId = defineModel('entityId', { type: String, required: true })
 
 const rawEntity = ref()
-const isLoading = ref(false)
-const isUpdating = ref(false)
-
-watch(entityId, loadEntity, { immediate: true })
-
-const entityName = computed(() => getValue(rawEntity.value?.name))
-const isPublic = computed(() => getValue(rawEntity.value?._public, 'boolean') || false)
+const isPublic = ref(false)
 const users = ref([])
 const rights = ref([
   'viewer',
@@ -23,6 +17,13 @@ const rights = ref([
   'editor',
   'owner'
 ])
+const isLoading = ref(false)
+const isUpdating = ref(false)
+const isUpdatingPublic = ref(false)
+
+watch(entityId, loadEntity, { immediate: true })
+
+const entityName = computed(() => getValue(rawEntity.value?.name))
 
 async function loadEntity () {
   isLoading.value = true
@@ -38,6 +39,8 @@ async function loadEntity () {
     ])
   }
 
+  isPublic.value = rawEntity.value?._public || false
+
   users.value = cloneArray([
     ...rawEntity.value?._viewer?.map(x => ({ ...x, type: 'viewer' })) || [],
     ...rawEntity.value?._expander?.map(x => ({ ...x, type: 'expander' })) || [],
@@ -48,14 +51,83 @@ async function loadEntity () {
   isLoading.value = false
 }
 
-function onUpdateRight (right) {
-  console.log(right)
+async function updateIsPublic (value) {
+  isUpdatingPublic.value = true
+
+  await apiUpsertEntity(
+    entityId.value,
+    undefined,
+    [{ type: '_public', boolean: value }]
+  )
+
+  isUpdatingPublic.value = false
+}
+
+async function onAddRight (_id) {
+  isUpdating.value = true
+
+  await apiUpsertEntity(
+    entityId.value,
+    undefined,
+    [{ type: '_viewer', reference: _id }]
+  )
+
+  await loadEntity()
+
+  isUpdating.value = false
+}
+
+async function onEditRight (_id, right) {
+  isUpdating.value = true
+
+  await apiUpsertEntity(
+    entityId.value,
+    _id,
+    [{ type: `_${right}`, reference: _id }]
+  )
+
+  await loadEntity()
+
+  isUpdating.value = false
+}
+
+async function onDeleteRight (_id) {
+  isUpdating.value = true
+
+  await apiUpsertEntity(
+    entityId.value,
+    _id
+  )
+
+  await loadEntity()
+
+  isUpdating.value = false
 }
 
 async function onClose () {
   await until(isUpdating).not.toBeTruthy()
 
   emit('close')
+}
+
+function railStyle ({ focused, checked }) {
+  const style = {}
+
+  if (checked) {
+    style.background = 'rgb(249, 115, 22)'
+
+    if (focused) {
+      style.boxShadow = '0 0 0 2px rgba(249, 115, 22, 0.4)'
+    }
+  } else {
+    style.background = 'rgb(22, 163, 74)'
+
+    if (focused) {
+      style.boxShadow = '0 0 0 2px rgba(22, 163, 74, 0.4)'
+    }
+  }
+
+  return style
 }
 </script>
 
@@ -66,13 +138,51 @@ async function onClose () {
     :width="550"
     @close="onClose()"
   >
+    <div class="w-full mt-12 flex flex-col justify-center items-center gap-4">
+      <n-switch
+        v-model:value="isPublic"
+        size="large"
+        :loading="isUpdatingPublic"
+        :rail-style="railStyle"
+        @update:value="updateIsPublic($event)"
+      >
+        <template #unchecked-icon>
+          <my-icon
+            class="text-green-600"
+            icon="public/false"
+          />
+        </template>
+        <template #unchecked>
+          {{ t('isNotPublic') }}
+        </template>
+
+        <template #checked-icon>
+          <my-icon
+            class="text-orange-500"
+            icon="public/true"
+          />
+        </template>
+        <template #checked>
+          {{ t('isPublic') }}
+        </template>
+      </n-switch>
+
+      <div class="max-w-80 text-center text-sm text-gray-500">
+        {{ isPublic === true ? t('isPublicDescription') : t('isNotPublicDescription') }}
+      </div>
+    </div>
+
+    <n-divider class="!mt-16 !text-gray-500">
+      {{ t('userRights') }}
+    </n-divider>
+
     <div
       v-for="user in users"
       :key="user._id"
       class="mb-4 flex items-center justify-between gap-2"
     >
       <div class="grow overflow-ellipsis">
-        {{ user.string.trim() || user.reference }}
+        {{ user.string?.trim() || user.reference }}
       </div>
 
       <n-button-group>
@@ -82,7 +192,7 @@ async function onClose () {
           :class="{ '!bg-blue-400 !text-white': user.type === r }"
           :icon="`rights/${r}`"
           :tooltip="t(`${r}Description`)"
-          @click="user.type = r"
+          @click="onEditRight(useRequestCounter._id, user.type)"
         />
       </n-button-group>
 
@@ -92,15 +202,27 @@ async function onClose () {
         type="error"
         :bg="false"
         :tooltip="t('delete')"
-        @click="user.type = undefined"
+        @click="onDeleteRight(user._id)"
       />
     </div>
+
+    <my-select-reference
+      class="mt-6"
+      query="_type.string=person"
+      :placeholder="t('selectNewUser')"
+      @update:value="onAddRight($event)"
+    />
   </my-drawer>
 </template>
 
 <i18n lang="yaml">
   en:
     title: Rights - {name}
+    isPublic: Entity is Public
+    isPublicDescription: Anyone on the Internet can view the public parameters of this entity. No login required.
+    isNotPublic: Entity is not Public
+    isNotPublicDescription: Only authorized users (below) can view this entity. Login is required.
+    userRights: Users rights
     none: No rights
     viewer: Viewer
     viewerDescription: User can see this entity
@@ -111,8 +233,15 @@ async function onClose () {
     owner: Owner
     ownerDescription: User can edit, delete, add children and change rights
     delete: Delete right from user
+    selectNewUser: Add new user
+    searchUser: Search user
   et:
     title: Õigused - {name}
+    isPublic: Objekt on avalik
+    isPublicDescription: Igaüks Internetis saab vaadata selle objekti avalikke parameetreid. Sisselogimine pole vajalik.
+    isNotPublic: Objekt ei ole avalik
+    isNotPublicDescription: Seda objekti saavad vaadata ainult volitatud kasutajad. Sisselogimine on vajalik.
+    userRights: Kasutajate õigused
     none: Pole õigusi
     viewer: Vaataja
     viewerDescription: Kasutaja näeb seda objekti
@@ -123,4 +252,6 @@ async function onClose () {
     owner: Omanik
     ownerDescription: Kasutaja saab objekti muuta, kustutada, lisada sellele alamosi ja muuta õigusi
     delete: Kustuta kasutajalt õigus
+    selectNewUser: Lisa uus kasutaja
+    searchUser: Otsi kasutajat
 </i18n>
