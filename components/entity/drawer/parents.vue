@@ -98,6 +98,7 @@ async function onClose () {
       v-if="parents.length === 0"
       :description="t('noParents')"
     />
+
     <my-select-reference
       class="mt-6"
       :placeholder="t('selectNewParent')"

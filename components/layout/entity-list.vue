@@ -1,4 +1,6 @@
 <script setup>
+import { NEmpty } from 'naive-ui'
+
 const { t } = useI18n()
 const route = useRoute()
 const { accountId } = useAccount()
@@ -156,10 +158,17 @@ function color () {
     </div>
 
     <div
-      v-if="!isLoading || entitiesCount !== null"
+      v-if="!isLoading && entitiesCount > 0"
       class="pt-3 pb-1 sticky bottom-0 text-center text-gray-400 italic bg-white"
     >
       {{ t('count', entitiesCount) }}
+    </div>
+
+    <div
+      v-if="!isLoading && entitiesCount === 0"
+      class="size-full flex items-center justify-center"
+    >
+      <n-empty :description="t('noResults')" />
     </div>
   </div>
 </template>
@@ -209,8 +218,10 @@ function color () {
 <i18n lang="yaml">
   en:
     search: Search Entity
-    count: 'no entities found | {n} entity | {n} entities'
+    count: 'No entities found | {n} entity | {n} entities'
+    noResults: No entities found
   et:
     search: Otsi objekti
-    count: 'objekte ei leitud | {n} objekt | {n} objekti'
+    count: 'Objekte ei leitud | {n} objekt | {n} objekti'
+    noResults: Objekte ei leitud
 </i18n>

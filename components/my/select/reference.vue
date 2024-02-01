@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NSelect } from 'naive-ui'
+import { NEmpty, NSelect } from 'naive-ui'
 
 const { t } = useI18n()
 
@@ -100,7 +100,7 @@ function renderReferenceOption (option) {
       v-else-if="rawReferences?.length === 0"
       #empty
     >
-      {{ t('noResults') }}
+      <n-empty :description="t('noResults')" />
     </template>
 
     <template
@@ -115,10 +115,10 @@ function renderReferenceOption (option) {
 <i18n lang="yaml">
   en:
     doSearch: Search Entity
-    noResults: no entities found
-    count: 'no entities found | Found {n} more entity. Refine your search. | Found {n} more entities. Refine your search.'
+    count: 'No entities found | Found {n} more entity. Refine your search. | Found {n} more entities. Refine your search.'
+    noResults: No entities found
   et:
     doSearch: Otsi objekti
-    noResults: objekte ei leitud
-    count: 'objekte ei leitud | Lisaks leiti veel {n} objekt. Täpsusta otsingut. | Leiti veel {n} objekti. Täpsusta otsingut.'
+    count: 'Objekte ei leitud | Lisaks leiti veel {n} objekt. Täpsusta otsingut. | Leiti veel {n} objekti. Täpsusta otsingut.'
+    noResults: Objekte ei leitud
 </i18n>
