@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NButton, NPopconfirm, NSpin } from 'naive-ui'
+import { NPopconfirm } from 'naive-ui'
 
 const { locale, t } = useI18n()
 
@@ -206,29 +206,28 @@ async function onDelete () {
 </script>
 
 <template>
-  <drawer
+  <my-drawer
+    :is-loading="isLoading || isUpdating"
     :title="title"
     @close="onClose()"
   >
-    <n-spin :show="isUpdating">
-      <template
-        v-for="pg in properties"
-        :key="pg.name"
-      >
-        <h2 v-if="pg.name">
-          {{ pg.name }}
-        </h2>
+    <template
+      v-for="pg in properties"
+      :key="pg.name"
+    >
+      <h2 v-if="pg.name">
+        {{ pg.name }}
+      </h2>
 
-        <property-list
-          v-model:entity-id="entityId"
-          v-model:properties="pg.children"
-          v-model:entity-parent-id="entityParentId"
-          v-model:entity-type-id="entityTypeId"
-          v-model:is-updating="isUpdating"
-          edit
-        />
-      </template>
-    </n-spin>
+      <property-list
+        v-model:entity-id="entityId"
+        v-model:properties="pg.children"
+        v-model:entity-parent-id="entityParentId"
+        v-model:entity-type-id="entityTypeId"
+        v-model:is-updating="isUpdating"
+        edit
+      />
+    </template>
 
     <template
       v-if="canDelete && entityId"
@@ -237,22 +236,21 @@ async function onDelete () {
       <n-popconfirm
         :negative-text="t('cancel')"
         :positive-text="t('delete')"
-        :positive-button-props="{ type: 'error' }"
+        :positivmy-button-props="{ type: 'error' }"
         @positive-click="onDelete()"
       >
         <template #trigger>
-          <n-button
-            quaternary
+          <my-button
+            :bg="false"
             type="error"
             :disabled="isUpdating"
             :focusable="false"
-          >
-            {{ t('deleteEntity') }}
-          </n-button>
+            :label="t('deleteEntity')"
+          />
         </template>
 
         <template #icon>
-          <icon
+          <my-icon
             class="text-red-500"
             icon="delete"
           />
@@ -261,7 +259,7 @@ async function onDelete () {
         {{ t('confirmDelete') }}
       </n-popconfirm>
     </template>
-  </drawer>
+  </my-drawer>
 </template>
 
 <i18n lang="yaml">

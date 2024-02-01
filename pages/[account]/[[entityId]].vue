@@ -338,7 +338,7 @@ onMounted(async () => {
                   {{ t('public') }}
                 </nuxt-link>
               </template>
-              <div class="text-xs">
+              <div class="text-sm">
                 {{ t('publicDescription') }}
               </div>
             </n-popover>
@@ -376,7 +376,7 @@ onMounted(async () => {
         class="size-full lg:w-1/2 xl:w-1/2 md:min-w-fit px-8 md:mx-auto flex flex-col justify-center"
         vertical
       >
-        <stats-bar
+        <my-stats-bar
           class="my-3"
           color="rgb(23,162,184)"
           rail-color="rgba(23,162,184,.3)"
@@ -385,7 +385,7 @@ onMounted(async () => {
           :a-value="stats.entities"
           :b-value="stats.deletedEntities"
         />
-        <stats-bar
+        <my-stats-bar
           class="my-3"
           color="rgb(255,193,7)"
           rail-color="rgba(255,193,7,.3)"
@@ -394,7 +394,7 @@ onMounted(async () => {
           :a-value="stats.properties"
           :b-value="stats.deletedProperties"
         />
-        <stats-bar
+        <my-stats-bar
           class="my-3"
           is-bytes
           color="rgb(40,167,69)"
@@ -404,7 +404,7 @@ onMounted(async () => {
           :a-value="stats.filesSize"
           :b-value="stats.deletedFilesSize"
         />
-        <stats-bar
+        <my-stats-bar
           class="my-3"
           color="rgb(108,117,125)"
           rail-color="rgba(108,117,125,.3)"

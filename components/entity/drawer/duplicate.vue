@@ -34,14 +34,15 @@ async function onClose () {
 </script>
 
 <template>
-  <drawer
+  <my-drawer
+    :is-loading="isLoading || isUpdating"
     :resizable="false"
     :title="t('title', { name: entityName })"
     :width="500"
     @close="onClose()"
   >
     <pre class="text-xs">{{ '' }}</pre>
-  </drawer>
+  </my-drawer>
 </template>
 
 <i18n lang="yaml">

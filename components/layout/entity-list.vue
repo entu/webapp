@@ -108,7 +108,7 @@ function color () {
         for="search"
         class="w-8 h-7 flex items-center justify-center"
       >
-        <icon
+        <my-icon
           class="text-gray-400"
           icon="search"
         />

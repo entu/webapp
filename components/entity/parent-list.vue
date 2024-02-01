@@ -4,12 +4,11 @@ defineProps({
 })
 
 const { accountId } = useAccount()
-
 </script>
 
 <template>
   <div class="flex items-center">
-    <icon
+    <my-icon
       class="flex-none text-gray-400"
       icon="arrow-up"
     />
@@ -25,7 +24,7 @@ const { accountId } = useAccount()
       </nuxt-link>
     </div>
 
-    <icon
+    <my-icon
       class="flex-none text-gray-400"
       icon="arrow-up"
     />

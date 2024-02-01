@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NButton, NButtonGroup } from 'naive-ui'
+import { NButtonGroup } from 'naive-ui'
 
 const props = defineProps({
   entityId: { type: String, default: null },
@@ -95,60 +95,41 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
         :options="addChildOptions"
       />
 
-      <n-button
+      <my-button
         v-if="['owner', 'editor'].includes(right)"
-        tertiary
+        icon="edit"
+        :label="t('edit')"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#edit`}, { replace: true })"
-      >
-        <template #icon>
-          <icon icon="edit" />
-        </template>
-        {{ t('edit') }}
-      </n-button>
+      />
 
-      <n-button
+      <my-button
         v-if="['owner', 'editor'].includes(right)"
-        tertiary
+        icon="copy"
+        :label="t('duplicate')"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`}, { replace: true })"
-      >
-        <template #icon>
-          <icon icon="copy" />
-        </template>
-        {{ t('duplicate') }}
-      </n-button>
+      />
 
-      <n-button
+      <my-button
         v-if="['owner', 'editor'].includes(right)"
-        tertiary
+        icon="tree-view"
+        :label="t('parents')"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#parents`}, { replace: true })"
-      >
-        <template #icon>
-          <icon icon="tree-view" />
-        </template>
-        {{ t('parents') }}
-      </n-button>
+      />
 
-      <n-button
+      <my-button
         v-if="['owner'].includes(right)"
-        tertiary
+        icon="user-multiple"
+        :label="t('rights')"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#rights`}, { replace: true })"
-      >
-        <template #icon>
-          <icon icon="user-multiple" />
-        </template>
-        {{ t('rights') }}
-      </n-button>
+      />
     </n-button-group>
 
-    <n-button
+    <my-button
       v-if="['owner', 'editor', 'expander', 'viewer'].includes(right)"
-      quaternary
+      icon="debug"
+      :bg="false"
       @click="navigateTo({ path: route.path, query: route.query, hash: `#debug`}, { replace: true })"
-    >
-      <template #icon>
-        <icon icon="debug" />
-      </template>
-    </n-button>
+    />
   </div>
 </template>
 

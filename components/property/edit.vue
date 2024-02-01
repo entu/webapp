@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NButton, NDatePicker, NInput, NInputNumber, NSelect, NSwitch, NUpload, NUploadTrigger, NUploadFileList } from 'naive-ui'
+import { NDatePicker, NInput, NInputNumber, NSelect, NSwitch, NUpload, NUploadTrigger, NUploadFileList } from 'naive-ui'
 
 const entityId = defineModel('entityId', { type: String, default: undefined })
 const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
@@ -367,13 +367,12 @@ function addListValue (_id) {
         />
 
         <n-upload-trigger #="{ handleClick }" abstract>
-          <n-button
+          <my-button
             v-if="isList || !isList && fileList.length === 0"
             :disabled="disabled"
+            :label="t('upload')"
             @click="handleClick"
-          >
-            {{ t('upload') }}
-          </n-button>
+          />
         </n-upload-trigger>
       </n-upload>
     </div>

@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NButton, NPopover } from 'naive-ui'
+import { NPopover } from 'naive-ui'
 
 defineProps({
   options: { type: Array, required: true },
@@ -12,16 +12,12 @@ const route = useRoute()
 </script>
 
 <template>
-  <n-button
+  <my-button
     v-if="options.length === 1"
-    tertiary
+    icon="add"
+    :label="t(isChild ? 'addOneChild' : 'addOne', { type: options.at(0).label.toLowerCase() })"
     @click="navigateTo({ path: route.path, query: route.query, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}`}, { replace: true })"
-  >
-    <template #icon>
-      <icon icon="add" />
-    </template>
-    {{ t(isChild ? 'addOneChild' : 'addOne', { type: options.at(0).label.toLowerCase() }) }}
-  </n-button>
+  />
 
   <n-popover
     v-if="options.length > 1"
@@ -29,12 +25,10 @@ const route = useRoute()
     footer-style="padding:0;border:none"
   >
     <template #trigger>
-      <n-button tertiary>
-        <template #icon>
-          <icon icon="add" />
-        </template>
-        {{ t(isChild ? 'addChild' : 'add') }}
-      </n-button>
+      <my-button
+        icon="add"
+        :label="t(isChild ? 'addChild' : 'add')"
+      />
     </template>
 
     <div class="w-full flex flex-col">

@@ -40,7 +40,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
           <template #trigger>
             <span class="size-3 flex items-center justify-center text-blue-600 text-xs font-bold bg-blue-100 rounded cursor-pointer">i</span>
           </template>
-          <div class="text-xs">
+          <div class="text-sm">
             {{ property.description }}
           </div>
         </n-popover>

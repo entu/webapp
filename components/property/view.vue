@@ -19,7 +19,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     class="my-1"
   >
     <template v-if="isMarkdown && v.string !== undefined">
-      <markdown :source="v.string" />
+      <my-markdown :source="v.string" />
     </template>
 
     <template v-else-if="v.reference !== undefined && v.datetime !== undefined">
@@ -65,7 +65,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     </template>
 
     <template v-else-if="v.boolean !== undefined && v.boolean === true">
-      <icon icon="checkmark" />
+      <my-icon icon="checkmark" />
     </template>
 
     <template v-else-if="v.boolean !== undefined && v.boolean === false">

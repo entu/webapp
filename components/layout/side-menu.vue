@@ -1,6 +1,6 @@
 <script setup>
 import { NMenu } from 'naive-ui'
-import { Icon, NuxtLink } from '#components'
+import { MyIcon, NuxtLink } from '#components'
 
 const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
@@ -19,7 +19,7 @@ const accountMenu = computed(() => {
   if (accounts.value.length > 1) {
     menu.push({
       key: 'account',
-      icon: () => h(Icon, { icon: 'home' }),
+      icon: () => h(MyIcon, { icon: 'home' }),
       label: (accountId.value || '').toUpperCase(),
       children: menuCollapsed.value
         ? [{
@@ -67,7 +67,7 @@ const accountMenu = computed(() => {
     if (!menuObject[group]) {
       menuObject[group] = {
         key: group,
-        icon: () => h(Icon, { icon: 'data' }),
+        icon: () => h(MyIcon, { icon: 'data' }),
         name: getValue(entity.group),
         label: getValue(entity.group),
         children: menuCollapsed.value
@@ -107,7 +107,7 @@ const accountMenu = computed(() => {
 const authMenu = computed(() => [
   {
     key: 'auth-apple',
-    icon: () => h(Icon, { icon: 'apple' }),
+    icon: () => h(MyIcon, { icon: 'apple' }),
     label: () => h(NuxtLink,
       { to: { path: '/auth/apple' } },
       { default: () => 'Apple' }
@@ -115,7 +115,7 @@ const authMenu = computed(() => [
   },
   {
     key: 'auth-google',
-    icon: () => h(Icon, { icon: 'google' }),
+    icon: () => h(MyIcon, { icon: 'google' }),
     label: () => h(NuxtLink,
       { to: { path: '/auth/google' } },
       { default: () => 'Google' }
@@ -123,7 +123,7 @@ const authMenu = computed(() => [
   },
   {
     key: 'auth-sid',
-    icon: () => h(Icon, { icon: 'smart-id' }),
+    icon: () => h(MyIcon, { icon: 'smart-id' }),
     label: () => h(NuxtLink,
       { to: { path: '/auth/smart-id' } },
       { default: () => t('sid') }
@@ -131,7 +131,7 @@ const authMenu = computed(() => [
   },
   {
     key: 'auth-mid',
-    icon: () => h(Icon, { icon: 'mobile-id' }),
+    icon: () => h(MyIcon, { icon: 'mobile-id' }),
     label: () => h(NuxtLink,
       { to: { path: '/auth/mobile-id' } },
       { default: () => t('mid') }
@@ -139,7 +139,7 @@ const authMenu = computed(() => [
   },
   {
     key: 'auth-idc',
-    icon: () => h(Icon, { icon: 'id-card' }),
+    icon: () => h(MyIcon, { icon: 'id-card' }),
     label: () => h(NuxtLink,
       { to: { path: '/auth/id-card' } },
       { default: () => t('idc') }
@@ -153,7 +153,7 @@ const userMenu = computed(() => {
   if (accountId.value && userId.value) {
     menu.push({
       key: userId.value,
-      icon: () => h(Icon, { icon: 'user' }),
+      icon: () => h(MyIcon, { icon: 'user' }),
       label: () => h(NuxtLink,
         { to: { path: `/${accountId.value}/${userId.value}` } },
         { default: () => userName.value || t('userEntity') }
@@ -161,7 +161,7 @@ const userMenu = computed(() => {
     })
     menu.push({
       key: 'auth',
-      icon: () => h(Icon, { icon: 'logout' }),
+      icon: () => h(MyIcon, { icon: 'logout' }),
       label: () => h(NuxtLink,
         { to: { path: '/auth/exit' } },
         { default: () => t('signOut') }
@@ -176,7 +176,7 @@ const userMenu = computed(() => {
 
   menu.push({
     key: `language-${locale.value}`,
-    icon: () => h(Icon, { icon: 'language' }),
+    icon: () => h(MyIcon, { icon: 'language' }),
     label: () => h('a',
       { onClick: () => setLanguage() },
       { default: () => t('language') }

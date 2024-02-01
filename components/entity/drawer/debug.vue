@@ -26,7 +26,7 @@ function showYaml (value) {
 </script>
 
 <template>
-  <drawer
+  <my-drawer
     :title="t('title')"
     @close="emit('close')"
   >
@@ -83,7 +83,7 @@ function showYaml (value) {
         />
       </n-collapse-item>
     </n-collapse>
-  </drawer>
+  </my-drawer>
 </template>
 
 <i18n lang="yaml">

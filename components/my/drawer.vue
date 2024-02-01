@@ -1,10 +1,11 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NButton, NDrawer, NDrawerContent } from 'naive-ui'
+import { NDrawer, NDrawerContent, NSpin } from 'naive-ui'
 
 const { t } = useI18n()
 
 const width = defineModel('width', { type: Number, default: window.innerWidth / 2 })
+const isLoading = defineModel('isLoading', { type: Boolean, default: false })
 
 const emit = defineEmits(['close'])
 
@@ -36,7 +37,7 @@ onKeyStroke('Escape', () => emit('close'))
         <div class="w-full flex justify-between items-center">
           <h2>{{ title }}</h2>
 
-          <icon
+          <my-icon
             class="cursor-pointer hover:bg-slate-100"
             icon="close"
             @click="emit('close')"
@@ -44,7 +45,9 @@ onKeyStroke('Escape', () => emit('close'))
         </div>
       </template>
 
-      <slot />
+      <n-spin :show="isLoading" class="w-full h-full">
+        <slot />
+      </n-spin>
 
       <template #footer>
         <div class="w-full flex justify-between items-center">
@@ -52,13 +55,11 @@ onKeyStroke('Escape', () => emit('close'))
 
           <div class="grow" />
 
-          <n-button
+          <my-button
             ref="closeRef"
-            tertiary
+            :label="t('close')"
             @click="emit('close')"
-          >
-            {{ t('close') }}
-          </n-button>
+          />
         </div>
       </template>
     </n-drawer-content>
