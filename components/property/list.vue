@@ -40,10 +40,19 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
           placement="top"
         >
           <template #trigger>
-            <span class="size-3 flex items-center justify-center text-blue-600 text-xs font-bold bg-blue-100 rounded cursor-pointer">i</span>
+            <span class="size-3 flex items-center justify-center text-blue-600 text-xs font-bold bg-blue-100 rounded-full">i</span>
           </template>
-          <div class="text-sm">
-            {{ t('publicProperty') }} {{ property.description }}
+          <div
+            v-if="property.description"
+            class="text-sm mb-2 last:mb-0"
+          >
+            {{ property.description }}
+          </div>
+          <div
+            v-if="property.public"
+            class="text-sm"
+          >
+            {{ t('publicProperty') }}
           </div>
         </n-popover>
 
@@ -83,7 +92,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
 
 <i18n lang="yaml">
   en:
-    publicProperty: Public property.
+    publicProperty: If entity is public, then this property is visible to everyone.
   et:
-    publicProperty: Avalik parameeter.
+    publicProperty: Kui objekt on avalik, siis see parameeter on kõigile nähtav.
 </i18n>
