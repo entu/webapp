@@ -77,13 +77,13 @@ async function onAddRight (_id) {
   isUpdating.value = false
 }
 
-async function onEditRight (_id, right) {
+async function onEditRight (_id, reference, right) {
   isUpdating.value = true
 
   await apiUpsertEntity(
     entityId.value,
     _id,
-    [{ type: `_${right}`, reference: _id }]
+    [{ type: `_${right}`, reference }]
   )
 
   await loadEntity()
@@ -192,7 +192,7 @@ function railStyle ({ focused, checked }) {
           :class="{ '!bg-blue-400 !text-white': user.type === r }"
           :icon="`rights/${r}`"
           :tooltip="t(`${r}Description`)"
-          @click="onEditRight(useRequestCounter._id, user.type)"
+          @click="onEditRight(user._id, user.reference, r)"
         />
       </n-button-group>
 
