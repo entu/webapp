@@ -332,7 +332,7 @@ onMounted(async () => {
             >
               <template #trigger>
                 <nuxt-link
-                  class="py-1 px-2 text-xs text-center text-green-600 bg-green-50 border rounded-md border-green-300"
+                  class="py-1 px-2 text-xs text-center text-orange-600 bg-orange-50 border rounded-md border-orange-300"
                   :to="{ path: route.path, query: route.query, hash:'#rights' }"
                 >
                   {{ t('public') }}

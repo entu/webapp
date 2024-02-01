@@ -39,7 +39,7 @@ async function loadEntity () {
     ])
   }
 
-  isPublic.value = rawEntity.value?._public || false
+  isPublic.value = getValue(rawEntity.value?._public, 'boolean') || false
 
   users.value = cloneArray([
     ...rawEntity.value?._viewer?.map(x => ({ ...x, type: 'viewer' })) || [],
