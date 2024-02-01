@@ -13,12 +13,12 @@ const { accountId } = useAccount()
       icon="arrow-up"
     />
 
-    <div class="grow flex flex-wrap gap-3">
+    <div class="grow flex gap-3">
       <nuxt-link
         v-for="parent in parents"
         :key="parent._id"
         :to="{ path: `/${accountId}/${parent.reference}` }"
-        class="link grow text-center"
+        class="link flex-1 flex-nowrap text-center truncate whitespace-nowrap overflow-hidden"
       >
         {{ parent.string }}
       </nuxt-link>

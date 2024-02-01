@@ -64,13 +64,13 @@ async function updateIsPublic (value) {
   isUpdatingPublic.value = false
 }
 
-async function onAddRight (_id) {
+async function onAddRight (reference) {
   isUpdating.value = true
 
   await apiUpsertEntity(
     entityId.value,
     undefined,
-    [{ type: '_viewer', reference: _id }]
+    [{ type: '_viewer', reference }]
   )
 
   await loadEntity()

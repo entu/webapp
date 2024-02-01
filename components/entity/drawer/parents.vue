@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 const { t } = useI18n()
+const { accountId } = useAccount()
 
 const emit = defineEmits(['close'])
 
@@ -13,6 +14,7 @@ const isUpdating = ref(false)
 watch(entityId, loadEntity, { immediate: true })
 
 const entityName = computed(() => getValue(rawEntity.value?.name))
+const parents = computed(() => rawEntity.value?._parent?.sort((a, b) => a.string.localeCompare(b.string)) || [])
 
 async function loadEntity () {
   isLoading.value = true
@@ -27,6 +29,33 @@ async function loadEntity () {
   isLoading.value = false
 }
 
+async function onAddParent (reference) {
+  isUpdating.value = true
+
+  await apiUpsertEntity(
+    entityId.value,
+    undefined,
+    [{ type: '_parent', reference }]
+  )
+
+  await loadEntity()
+
+  isUpdating.value = false
+}
+
+async function onDeleteParent (_id) {
+  isUpdating.value = true
+
+  await apiUpsertEntity(
+    entityId.value,
+    _id
+  )
+
+  await loadEntity()
+
+  isUpdating.value = false
+}
+
 async function onClose () {
   await until(isUpdating).not.toBeTruthy()
 
@@ -37,18 +66,47 @@ async function onClose () {
 <template>
   <my-drawer
     :is-loading="isLoading || isUpdating"
-    :resizable="false"
     :title="t('title', { name: entityName })"
     :width="500"
     @close="onClose()"
   >
-    <pre class="text-xs">{{ rawEntity?._parent }}</pre>
+    <div
+      v-for="parent in parents"
+      :key="parent._id"
+      class="mb-2 flex items-center justify-between gap-2"
+    >
+      <nuxt-link
+        class="link grow truncate whitespace-nowrap overflow-hidden"
+        :to="{ path: `/${accountId}/${parent.reference}` }"
+      >
+        {{ parent.string || parent.reference }}
+      </nuxt-link>
+
+      <my-button
+        circle
+        icon="delete"
+        type="error"
+        :bg="false"
+        :tooltip="t('delete')"
+        @click="onDeleteParent(parent._id)"
+      />
+    </div>
+
+    <my-select-reference
+      class="mt-6"
+      :placeholder="t('selectNewParent')"
+      @update:value="onAddParent($event)"
+    />
   </my-drawer>
 </template>
 
 <i18n lang="yaml">
   en:
     title: Parents - {name}
+    delete: Delete parent
+    selectNewParent: Select new parent
   et:
     title: Kuuluvus - {name}
+    delete: Kustuta kuuluvus
+    selectNewParent: Vali uus kuuluvus
 </i18n>
