@@ -3,6 +3,7 @@
 import { NCheckbox, NDivider, NSwitch } from 'naive-ui'
 
 const { t } = useI18n()
+const { accountId } = useAccount()
 const { userId } = useUser()
 
 const emit = defineEmits(['close'])
@@ -179,6 +180,7 @@ function railStyle ({ focused, checked }) {
         <n-divider class="!text-gray-500">
           {{ t('userRightsParent') }}
         </n-divider>
+
         <template v-if="inheritRights">
           <my-rights-switch
             v-for="user in users"
@@ -187,6 +189,7 @@ function railStyle ({ focused, checked }) {
             class="mb-4 flex items-center justify-between gap-2"
             disabled
             :label="user.string?.trim() || user.reference"
+            :to="{ path: `/${accountId}/${user.reference}` }"
           />
         </template>
 
@@ -214,6 +217,7 @@ function railStyle ({ focused, checked }) {
           deletable
           :disabled="user.reference === userId"
           :label="user.string?.trim() || user.reference"
+          :to="{ path: `/${accountId}/${user.reference}` }"
           @update:value="onEditRight(user._id, user.reference, $event)"
         />
 

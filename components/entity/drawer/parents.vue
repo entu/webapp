@@ -79,7 +79,7 @@ async function onClose () {
       class="mb-2 flex items-center justify-between gap-2"
     >
       <nuxt-link
-        class="link grow truncate whitespace-nowrap overflow-hidden"
+        class="link truncate whitespace-nowrap overflow-hidden"
         :to="{ path: `/${accountId}/${parent.reference}` }"
       >
         {{ parent.string || parent.reference }}

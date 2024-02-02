@@ -11,7 +11,8 @@ const value = defineModel({ type: String, default: undefined })
 defineProps({
   disabled: { type: Boolean, default: false },
   deletable: { type: Boolean, default: false },
-  label: { type: String, required: true }
+  label: { type: String, required: true },
+  to: { type: Object, required: true }
 })
 
 const rights = ref([
@@ -24,9 +25,12 @@ const rights = ref([
 
 <template>
   <div class="mb-4 flex items-center justify-between gap-2">
-    <div class="grow truncate whitespace-nowrap overflow-hidden">
+    <nuxt-link
+      class="link truncate whitespace-nowrap overflow-hidden"
+      :to="to"
+    >
       {{ label }}
-    </div>
+    </nuxt-link>
 
     <n-button-group>
       <my-button
