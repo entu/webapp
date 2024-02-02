@@ -4,6 +4,7 @@ import { NEmpty } from 'naive-ui'
 
 const { t } = useI18n()
 const { accountId } = useAccount()
+const { userId } = useUser()
 
 const emit = defineEmits(['close'])
 
@@ -102,6 +103,7 @@ async function onClose () {
     <my-select-reference
       class="mt-6"
       :placeholder="t('selectNewParent')"
+      :query="`_expander.reference=${userId}`"
       @update:value="onAddParent($event)"
     />
   </my-drawer>

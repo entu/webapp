@@ -152,7 +152,7 @@ function color () {
         </div>
 
         <div class="list-item-text">
-          {{ getValue(entity.name) }}
+          {{ getValue(entity.name) || entity._id }}
         </div>
       </nuxt-link>
     </div>

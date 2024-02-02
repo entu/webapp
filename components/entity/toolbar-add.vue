@@ -15,7 +15,7 @@ const route = useRoute()
   <my-button
     v-if="options.length === 1"
     icon="add"
-    :label="t(isChild ? 'addOneChild' : 'addOne', { type: options.at(0).label.toLowerCase() })"
+    :label="t(isChild ? 'addOneChild' : 'addOne', { type: options.at(0).label?.toLowerCase() })"
     @click="navigateTo({ path: route.path, query: route.query, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}`}, { replace: true })"
   />
 

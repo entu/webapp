@@ -90,7 +90,8 @@ const properties = computed(() => {
   const propsObject = {}
 
   entity.value.props.forEach((property) => {
-    if (property.name.startsWith('_')) return
+    if (!property.type) return
+    if (property.name?.startsWith('_')) return
     if (property.readonly) return
     if (property.formula) return
     if (property.hidden) return

@@ -82,10 +82,10 @@ const properties = computed(() => {
   const propsObject = {}
 
   entity.value.props.forEach((property) => {
-    if (property.name.startsWith('_')) return
+    if (property.name?.startsWith('_')) return
 
-    const group = property.name.startsWith('_') ? '_' : property.group || ''
-    const ordinal = property.name.startsWith('_') ? 99999 : property.ordinal || 0
+    const group = property.name?.startsWith('_') ? '_' : property.group || ''
+    const ordinal = property.name?.startsWith('_') ? 99999 : property.ordinal || 0
 
     if (!propsObject[group]) {
       propsObject[group] = {
@@ -195,6 +195,8 @@ async function loadChilds () {
   })
 
   entities.forEach(async (x) => {
+    if (!x._type?.reference) return
+
     const rawType = await apiGetEntity(x._type.reference, [
       'label_plural',
       'label',
@@ -217,6 +219,8 @@ async function loadReferences () {
   })
 
   entities.forEach(async (x) => {
+    if (!x._type?.reference) return
+
     const rawType = await apiGetEntity(x._type.reference, [
       'label_plural',
       'label',
