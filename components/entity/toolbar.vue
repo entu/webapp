@@ -102,12 +102,13 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
         @click="navigateTo({ path: route.path, query: route.query, hash: `#edit`}, { replace: true })"
       />
 
-      <!-- <my-button
+      <my-button
         v-if="['owner', 'editor'].includes(right)"
+        disabled
         icon="copy"
         :label="t('duplicate')"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`}, { replace: true })"
-      /> -->
+      />
 
       <my-button
         v-if="['owner', 'editor'].includes(right)"
@@ -138,7 +139,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
     edit: Edit
     duplicate: Duplicate
     parents: Parents
-    rights: User rights
+    rights: Rights
   et:
     edit: Muuda
     duplicate: Dubleeri
