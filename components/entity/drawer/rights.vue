@@ -42,11 +42,16 @@ async function loadEntity () {
 
   isPublic.value = getValue(rawEntity.value?._public, 'boolean') || false
 
+  const owners = rawEntity.value?._owner?.map(x => x.reference) || []
+  const editors = rawEntity.value?._editor?.map(x => x.reference).filter(x => !owners.includes(x)) || []
+  const expanders = rawEntity.value?._expander?.map(x => x.reference).filter(x => !owners.includes(x) && !editors.includes(x)) || []
+  const viewers = rawEntity.value?._viewer?.map(x => x.reference).filter(x => !owners.includes(x) && !editors.includes(x) && !expanders.includes(x)) || []
+
   users.value = cloneArray([
-    ...rawEntity.value?._viewer?.map(x => ({ ...x, type: 'viewer' })) || [],
-    ...rawEntity.value?._expander?.map(x => ({ ...x, type: 'expander' })) || [],
-    ...rawEntity.value?._editor?.map(x => ({ ...x, type: 'editor' })) || [],
-    ...rawEntity.value?._owner?.map(x => ({ ...x, type: 'owner' })) || []
+    ...rawEntity.value?._viewer?.filter(x => viewers.includes(x.reference)).map(x => ({ ...x, type: 'viewer' })) || [],
+    ...rawEntity.value?._expander?.filter(x => expanders.includes(x.reference)).map(x => ({ ...x, type: 'expander' })) || [],
+    ...rawEntity.value?._editor?.filter(x => editors.includes(x.reference)).map(x => ({ ...x, type: 'editor' })) || [],
+    ...rawEntity.value?._owner?.filter(x => owners.includes(x.reference)).map(x => ({ ...x, type: 'owner' })) || []
   ].sort((a, b) => a.string?.localeCompare(b.string)))
 
   isLoading.value = false

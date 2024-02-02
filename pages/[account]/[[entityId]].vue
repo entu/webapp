@@ -126,15 +126,12 @@ const childs = computed(() => [
   }))
 ].sort((a, b) => a.label.localeCompare(b.label)))
 
-const right = computed(() => {
-  if (!rawEntity.value) return null
-  if (rawEntity.value._owner?.some(x => x.reference === userId.value)) return 'owner'
-  if (rawEntity.value._editor?.some(x => x.reference === userId.value)) return 'editor'
-  if (rawEntity.value._expander?.some(x => x.reference === userId.value)) return 'expander'
-  if (rawEntity.value._viewer?.some(x => x.reference === userId.value)) return 'viewer'
-
-  return null
-})
+const right = computed(() => ({
+  owner: rawEntity.value?._owner?.some(x => x.reference === userId.value) || false,
+  editor: rawEntity.value?._editor?.some(x => x.reference === userId.value) || false,
+  expander: rawEntity.value?._expander?.some(x => x.reference === userId.value) || false,
+  viewer: rawEntity.value?._viewer?.some(x => x.reference === userId.value) || false
+}))
 
 const drawerType = computed(() => route.hash.replace('#', '').split('-').at(0))
 
@@ -435,7 +432,7 @@ onMounted(async () => {
     <entity-drawer-edit
       v-if="drawerType === 'edit'"
       v-model:entity-id="entityId"
-      :can-delete="right === 'owner'"
+      :can-delete="right.owner"
       @close="onDrawerClose()"
       @delete="onDelete()"
     />

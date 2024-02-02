@@ -5,7 +5,7 @@ import { NButtonGroup } from 'naive-ui'
 const props = defineProps({
   entityId: { type: String, default: null },
   typeId: { type: String, default: null },
-  right: { type: String, default: null }
+  right: { type: Object, default: () => {} }
 })
 
 const { t } = useI18n()
@@ -19,7 +19,7 @@ const addDefaultOptions = computed(() => addDefaults.value.map(x => ({
   label: getValue(x.label) || getValue(x.name)
 })).sort((a, b) => a.label.localeCompare(b.label)))
 
-const addChildOptions = computed(() => ['owner', 'editor', 'expander'].includes(props.right) && addChilds.value.length > 0
+const addChildOptions = computed(() => props.right.expander && addChilds.value.length > 0
   ? addChilds.value.map(x => ({
     value: x._id,
     label: getValue(x.label) || getValue(x.name)
@@ -96,14 +96,14 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
       />
 
       <my-button
-        v-if="['owner', 'editor'].includes(right)"
+        v-if="right.editor"
         icon="edit"
         :label="t('edit')"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#edit`}, { replace: true })"
       />
 
       <my-button
-        v-if="['owner', 'editor'].includes(right)"
+        v-if="right.editor"
         disabled
         icon="copy"
         :label="t('duplicate')"
@@ -111,14 +111,14 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
       />
 
       <my-button
-        v-if="['owner', 'editor'].includes(right)"
+        v-if="right.editor"
         icon="tree-view"
         :label="t('parents')"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#parents`}, { replace: true })"
       />
 
       <my-button
-        v-if="['owner'].includes(right)"
+        v-if="right.owner"
         icon="user-multiple"
         :label="t('rights')"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#rights`}, { replace: true })"
@@ -126,7 +126,7 @@ watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
     </n-button-group>
 
     <my-button
-      v-if="['owner', 'editor', 'expander', 'viewer'].includes(right)"
+      v-if="right.viewer"
       icon="debug"
       :bg="false"
       @click="navigateTo({ path: route.path, query: route.query, hash: `#debug`}, { replace: true })"
