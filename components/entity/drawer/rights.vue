@@ -245,7 +245,7 @@ function railStyle ({ focused, checked }) {
     isPublicDescription: Igaüks Internetis saab vaadata selle objekti avalikke parameetreid. Sisselogimine pole vajalik.
     isNotPublic: Objekt ei ole avalik
     isNotPublicDescription: Seda objekti saavad vaadata ainult õigustega kasutajad. Sisselogimine on vajalik.
-    inheritRights: Päri õigused pemiselt objektilt
+    inheritRights: Päri õigused peamiselt objektilt
     userRightsParent: Peamise objekti õigused
     userRightsEntity: Objekti spetsiifilised õigused
     selectNewUser: Lisa uus kasutaja
