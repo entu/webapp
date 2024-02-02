@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NButtonGroup, NDivider, NSwitch } from 'naive-ui'
+import { NCheckbox, NDivider, NSwitch } from 'naive-ui'
 
 const { t } = useI18n()
 const { userId } = useUser()
@@ -12,15 +12,10 @@ const entityId = defineModel('entityId', { type: String, required: true })
 const rawEntity = ref()
 const isPublic = ref(false)
 const users = ref([])
-const rights = ref([
-  'viewer',
-  'expander',
-  'editor',
-  'owner'
-])
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const isUpdatingPublic = ref(false)
+const inheritRights = ref(false)
 
 watch(entityId, loadEntity, { immediate: true })
 
@@ -36,11 +31,13 @@ async function loadEntity () {
       '_expander',
       '_editor',
       '_owner',
-      '_public'
+      '_public',
+      '_inheritrights'
     ])
   }
 
   isPublic.value = getValue(rawEntity.value?._public, 'boolean') || false
+  inheritRights.value = getValue(rawEntity.value?._inheritrights, 'boolean') || false
 
   const owners = rawEntity.value?._owner?.map(x => x.reference) || []
   const editors = rawEntity.value?._editor?.map(x => x.reference).filter(x => !owners.includes(x)) || []
@@ -69,6 +66,18 @@ async function updateIsPublic (value) {
   isUpdatingPublic.value = false
 }
 
+async function updateInheritRights (value) {
+  isUpdating.value = true
+
+  await apiUpsertEntity(
+    entityId.value,
+    getValue(rawEntity.value?._inheritrights, '_id'),
+    value === true ? [{ type: '_inheritrights', boolean: value }] : undefined
+  )
+
+  isUpdating.value = false
+}
+
 async function onAddRight (reference) {
   isUpdating.value = true
 
@@ -89,20 +98,7 @@ async function onEditRight (_id, reference, right) {
   await apiUpsertEntity(
     entityId.value,
     _id,
-    [{ type: `_${right}`, reference }]
-  )
-
-  await loadEntity()
-
-  isUpdating.value = false
-}
-
-async function onDeleteRight (_id) {
-  isUpdating.value = true
-
-  await apiUpsertEntity(
-    entityId.value,
-    _id
+    right ? [{ type: `_${right}`, reference }] : undefined
   )
 
   await loadEntity()
@@ -144,85 +140,91 @@ function railStyle ({ focused, checked }) {
     :width="550"
     @close="onClose()"
   >
-    <div class="w-full mt-12 flex flex-col justify-center items-center gap-4">
-      <n-switch
-        v-model:value="isPublic"
-        size="large"
-        :loading="isUpdatingPublic"
-        :rail-style="railStyle"
-        @update:value="updateIsPublic($event)"
-      >
-        <template #unchecked-icon>
-          <my-icon
-            class="text-green-600"
-            icon="public/false"
-          />
-        </template>
-        <template #unchecked>
-          {{ t('isNotPublic') }}
-        </template>
+    <div class="pb-12 flex flex-col gap-12">
+      <div class="w-full mt-12 flex flex-col justify-center items-center gap-4">
+        <n-switch
+          v-model:value="isPublic"
+          size="large"
+          :loading="isUpdatingPublic"
+          :rail-style="railStyle"
+          @update:value="updateIsPublic($event)"
+        >
+          <template #unchecked-icon>
+            <my-icon
+              class="text-green-600"
+              icon="public/false"
+            />
+          </template>
+          <template #unchecked>
+            {{ t('isNotPublic') }}
+          </template>
 
-        <template #checked-icon>
-          <my-icon
-            class="text-orange-500"
-            icon="public/true"
-          />
-        </template>
-        <template #checked>
-          {{ t('isPublic') }}
-        </template>
-      </n-switch>
+          <template #checked-icon>
+            <my-icon
+              class="text-orange-500"
+              icon="public/true"
+            />
+          </template>
+          <template #checked>
+            {{ t('isPublic') }}
+          </template>
+        </n-switch>
 
-      <div class="max-w-80 text-center text-sm text-gray-500">
-        {{ isPublic === true ? t('isPublicDescription') : t('isNotPublicDescription') }}
-      </div>
-    </div>
-
-    <n-divider class="!mt-16 !text-gray-500">
-      {{ t('userRights') }}
-    </n-divider>
-
-    <div
-      v-for="user in users"
-      :key="user._id"
-      class="mb-4 flex items-center justify-between gap-2"
-    >
-      <div
-        class="grow truncate whitespace-nowrap overflow-hidden"
-        :class="{ 'text-gray-400': user.reference === userId }"
-      >
-        {{ user.string?.trim() || user.reference }}
+        <div class="max-w-80 text-center text-sm text-gray-500">
+          {{ isPublic === true ? t('isPublicDescription') : t('isNotPublicDescription') }}
+        </div>
       </div>
 
-      <n-button-group>
-        <my-button
-          v-for="r in rights"
-          :key="r"
-          :class="{ '!bg-blue-400 !text-white': user.type === r }"
+      <div>
+        <n-divider class="!text-gray-500">
+          {{ t('userRightsParent') }}
+        </n-divider>
+        <template v-if="inheritRights">
+          <my-rights-switch
+            v-for="user in users"
+            :key="user._id"
+            v-model="user.type"
+            class="mb-4 flex items-center justify-between gap-2"
+            disabled
+            :label="user.string?.trim() || user.reference"
+          />
+        </template>
+
+        <div class="mt-6 flex items-center justify-center gap-2">
+          <n-checkbox
+            v-model:checked="inheritRights"
+            size="large"
+            @update:checked="updateInheritRights($event)"
+          >
+            {{ t('inheritRights') }}
+          </n-checkbox>
+        </div>
+      </div>
+
+      <div>
+        <n-divider class="!text-gray-500">
+          {{ t('userRightsEntity') }}
+        </n-divider>
+
+        <my-rights-switch
+          v-for="user in users"
+          :key="user._id"
+          v-model="user.type"
+          class="mb-4 flex items-center justify-between gap-2"
+          deletable
           :disabled="user.reference === userId"
-          :icon="`rights/${r}`"
-          :tooltip="t(`${r}Description`)"
-          @click="onEditRight(user._id, user.reference, r)"
+          :label="user.string?.trim() || user.reference"
+          @update:value="onEditRight(user._id, user.reference, $event)"
         />
-      </n-button-group>
 
-      <my-button
-        circle
-        icon="delete"
-        type="error"
-        :bg="false"
-        :disabled="user.reference === userId"
-        :tooltip="t('delete')"
-        @click="onDeleteRight(user._id)"
-      />
+        <my-select-reference
+          class="mt-6"
+          query="_type.string=person"
+          :placeholder="t('selectNewUser')"
+          @update:value="onAddRight($event)"
+        />
+      </div>
     </div>
-
-    <my-select-reference
-      class="mt-6"
-      query="_type.string=person"
-      :placeholder="t('selectNewUser')"
-      @update:value="onAddRight($event)"
-    />
   </my-drawer>
 </template>
 
@@ -233,36 +235,18 @@ function railStyle ({ focused, checked }) {
     isPublicDescription: Anyone on the Internet can view the public parameters of this entity. No login required.
     isNotPublic: Entity is not Public
     isNotPublicDescription: Only authorized users (below) can view this entity. Login is required.
-    userRights: Users rights
-    none: No rights
-    viewer: Viewer
-    viewerDescription: User can see this entity
-    expander: Expander
-    expanderDescription: User can add children to this entity
-    editor: Editor
-    editorDescription: User can edit this entity and add children to it
-    owner: Owner
-    ownerDescription: User can edit, delete, add children and change rights
-    delete: Delete right from user
+    inheritRights: Inherit rights from parent
+    userRightsParent: Parent entity rights
+    userRightsEntity: Entity specific rights
     selectNewUser: Add new user
-    searchUser: Search user
   et:
     title: Õigused - {name}
     isPublic: Objekt on avalik
     isPublicDescription: Igaüks Internetis saab vaadata selle objekti avalikke parameetreid. Sisselogimine pole vajalik.
     isNotPublic: Objekt ei ole avalik
-    isNotPublicDescription: Seda objekti saavad vaadata ainult volitatud kasutajad. Sisselogimine on vajalik.
-    userRights: Kasutajate õigused
-    none: Pole õigusi
-    viewer: Vaataja
-    viewerDescription: Kasutaja näeb seda objekti
-    expander: Laiendaja
-    expanderDescription: Kasutaja saab sellele objektile lisada alamobjekte
-    editor: Toimetaja
-    editorDescription: Kasutaja saab objekti muuta ja lisada sellele alamosi
-    owner: Omanik
-    ownerDescription: Kasutaja saab objekti muuta, kustutada, lisada sellele alamosi ja muuta õigusi
-    delete: Kustuta kasutajalt õigus
+    isNotPublicDescription: Seda objekti saavad vaadata ainult õigustega kasutajad. Sisselogimine on vajalik.
+    inheritRights: Päri õigused pemiselt objektilt
+    userRightsParent: Peamise objekti õigused
+    userRightsEntity: Objekti spetsiifilised õigused
     selectNewUser: Lisa uus kasutaja
-    searchUser: Otsi kasutajat
 </i18n>

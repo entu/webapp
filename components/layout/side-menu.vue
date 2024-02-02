@@ -246,7 +246,7 @@ function menuSorter (a, b) {
       :indent="32"
       :options="accountMenu"
       :root-indent="18"
-      @update:expanded-keys="(menus) => expandedMenus = menus"
+      @update:expanded-keys="expandedMenus = $event"
     />
 
     <div
