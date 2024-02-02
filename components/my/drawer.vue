@@ -30,7 +30,7 @@ onKeyStroke('Escape', () => emit('close'))
     @mask-click="emit('close')"
   >
     <n-drawer-content
-      body-content-class="pt-0"
+      body-content-class="!py-0"
       header-class="w-full"
     >
       <template #header>
@@ -47,8 +47,10 @@ onKeyStroke('Escape', () => emit('close'))
         </div>
       </template>
 
-      <n-spin :show="isLoading" class="max-w-full max-h-full">
-        <slot />
+      <n-spin :show="isLoading" class="max-w-full max-h-full h-full">
+        <div class="py-4">
+          <slot />
+        </div>
       </n-spin>
 
       <template #footer>

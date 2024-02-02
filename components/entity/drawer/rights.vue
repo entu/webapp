@@ -140,7 +140,7 @@ function railStyle ({ focused, checked }) {
     :width="550"
     @close="onClose()"
   >
-    <div class="pb-12 flex flex-col gap-12">
+    <div class="flex flex-col gap-12">
       <div class="w-full mt-12 flex flex-col justify-center items-center gap-4">
         <n-switch
           v-model:value="isPublic"

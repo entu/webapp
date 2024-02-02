@@ -215,7 +215,10 @@ async function onDelete () {
       v-for="pg in properties"
       :key="pg.name"
     >
-      <h2 v-if="pg.name">
+      <h2
+        v-if="pg.name"
+        class="font-bold"
+      >
         {{ pg.name }}
       </h2>
 
