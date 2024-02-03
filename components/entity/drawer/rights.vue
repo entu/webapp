@@ -21,6 +21,8 @@ const inheritRights = ref(false)
 watch(entityId, loadEntity, { immediate: true })
 
 const entityName = computed(() => getValue(rawEntity.value?.name))
+const inheritedRights = computed(() => users.value.filter(x => x.inherited))
+const entityRights = computed(() => users.value.filter(x => !x.inherited))
 
 async function loadEntity () {
   isLoading.value = true
@@ -183,7 +185,7 @@ function railStyle ({ focused, checked }) {
 
         <template v-if="inheritRights">
           <my-rights-switch
-            v-for="user in users"
+            v-for="user in inheritedRights"
             :key="user._id"
             v-model="user.type"
             class="mb-4 flex items-center justify-between gap-2"
@@ -210,7 +212,7 @@ function railStyle ({ focused, checked }) {
         </n-divider>
 
         <my-rights-switch
-          v-for="user in users"
+          v-for="user in entityRights"
           :key="user._id"
           v-model="user.type"
           class="mb-4 flex items-center justify-between gap-2"
