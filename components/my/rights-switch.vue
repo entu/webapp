@@ -35,6 +35,16 @@ const rights = ref([
       </nuxt-link>
     </div>
 
+    <my-button
+      v-if="deletable"
+      circle
+      icon="delete"
+      type="error"
+      :bg="false"
+      :tooltip="t('delete')"
+      @click="value = undefined; emit('update:value', undefined)"
+    />
+
     <n-button-group>
       <my-button
         v-for="r in rights"
@@ -46,16 +56,6 @@ const rights = ref([
         @click="value = r; emit('update:value', r)"
       />
     </n-button-group>
-
-    <my-button
-      v-if="deletable"
-      circle
-      icon="delete"
-      type="error"
-      :bg="false"
-      :tooltip="t('delete')"
-      @click="value = undefined; emit('update:value', undefined)"
-    />
   </div>
 </template>
 
