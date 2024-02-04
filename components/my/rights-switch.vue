@@ -16,6 +16,7 @@ defineProps({
 })
 
 const rights = ref([
+  'noaccess',
   'viewer',
   'expander',
   'editor',
@@ -25,22 +26,16 @@ const rights = ref([
 
 <template>
   <div class="mb-4 flex items-center justify-between gap-2">
-    <nuxt-link
-      class="link truncate whitespace-nowrap overflow-hidden"
-      :to="to"
-    >
-      {{ label }}
-    </nuxt-link>
+    <div class="grow">
+      <nuxt-link
+        class="link truncate whitespace-nowrap overflow-hidden"
+        :to="to"
+      >
+        {{ label }}
+      </nuxt-link>
+    </div>
 
     <n-button-group>
-      <my-button
-        v-if="deletable"
-        icon="rights/none"
-        :disabled="disabled"
-        :tooltip="t('none')"
-        @click="value = undefined; emit('update:value', undefined)"
-      />
-
       <my-button
         v-for="r in rights"
         :key="r"
@@ -51,20 +46,32 @@ const rights = ref([
         @click="value = r; emit('update:value', r)"
       />
     </n-button-group>
+
+    <my-button
+      v-if="deletable"
+      circle
+      icon="delete"
+      type="error"
+      :bg="false"
+      :tooltip="t('delete')"
+      @click="value = undefined; emit('update:value', undefined)"
+    />
   </div>
 </template>
 
 <i18n lang="yaml">
   en:
-    none: User has no access to this entity
+    noaccess: User has no access to this entity
     viewer: User can see this entity
     expander: User can add children to this entity
     editor: User can edit this entity and add children to it
     owner: User can edit, delete, add children and change rights
+    delete: Delete right
   et:
-    none: Kasutajal puudub ligipääs objektile
+    noaccess: Kasutajal puudub ligipääs objektile
     viewer: Kasutaja näeb seda objekti
     expander: Kasutaja saab sellele objektile lisada alamobjekte
     editor: Kasutaja saab objekti muuta ja lisada sellele alamosi
     owner: Kasutaja saab objekti muuta, kustutada, lisada sellele alamosi ja muuta õigusi
+    delete: Kustuta õigus
 </i18n>

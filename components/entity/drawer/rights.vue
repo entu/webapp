@@ -30,6 +30,7 @@ async function loadEntity () {
   if (entityId.value) {
     rawEntity.value = await apiGetEntity(entityId.value, [
       'name',
+      '_noaccess',
       '_viewer',
       '_expander',
       '_editor',
@@ -46,8 +47,10 @@ async function loadEntity () {
   const editors = rawEntity.value?._editor?.map(x => x.reference).filter(x => !owners.includes(x)) || []
   const expanders = rawEntity.value?._expander?.map(x => x.reference).filter(x => !owners.includes(x) && !editors.includes(x)) || []
   const viewers = rawEntity.value?._viewer?.map(x => x.reference).filter(x => !owners.includes(x) && !editors.includes(x) && !expanders.includes(x)) || []
+  const noaccess = rawEntity.value?._noaccess?.map(x => x.reference) || []
 
   users.value = cloneArray([
+    ...rawEntity.value?._noaccess?.filter(x => noaccess.includes(x.reference)).map(x => ({ ...x, type: 'noaccess' })) || [],
     ...rawEntity.value?._viewer?.filter(x => viewers.includes(x.reference)).map(x => ({ ...x, type: 'viewer' })) || [],
     ...rawEntity.value?._expander?.filter(x => expanders.includes(x.reference)).map(x => ({ ...x, type: 'expander' })) || [],
     ...rawEntity.value?._editor?.filter(x => editors.includes(x.reference)).map(x => ({ ...x, type: 'editor' })) || [],
@@ -140,7 +143,7 @@ function railStyle ({ focused, checked }) {
   <my-drawer
     :is-loading="isLoading || isUpdating"
     :title="t('title', { name: entityName })"
-    :width="550"
+    :width="600"
     @close="onClose()"
   >
     <div class="flex flex-col gap-12">
