@@ -41,6 +41,7 @@ const rights = ref([
       icon="delete"
       type="error"
       :bg="false"
+      :disabled="disabled"
       :tooltip="t('delete')"
       @click="value = undefined; emit('update:value', undefined)"
     />
