@@ -58,6 +58,28 @@ const accountMenu = computed(() => {
       type: 'divider',
       props: { style: { margin: '.5rem' } }
     })
+  } else if (menuEntities.value.length > 0) {
+    menu.push({
+      key: 'account',
+      icon: () => h(MyIcon, { icon: 'home' }),
+      label: () => h(NuxtLink,
+        { to: { path: `/${accountId.value}` } },
+        () => (accountId.value || '').toUpperCase()
+      ),
+      children: menuCollapsed.value
+        ? [{
+            name: '            1',
+            label: () => h(NuxtLink,
+              { to: { path: `/${accountId.value}` } },
+              { default: () => h('strong', {}, { default: () => (accountId.value || '').toUpperCase() }) })
+          }]
+        : undefined
+    })
+
+    menu.push({
+      type: 'divider',
+      props: { style: { margin: '.5rem' } }
+    })
   }
 
   menuEntities.value.forEach((entity) => {
