@@ -13,6 +13,7 @@ const entityId = defineModel('entityId', { type: String, required: true })
 const rawEntity = ref()
 const isPublic = ref(false)
 const users = ref([])
+const inheritedRights = ref([])
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const isUpdatingPublic = ref(false)
@@ -21,7 +22,6 @@ const inheritRights = ref(false)
 watch(entityId, loadEntity, { immediate: true })
 
 const entityName = computed(() => getValue(rawEntity.value?.name))
-const inheritedRights = computed(() => users.value.filter(x => x.inherited))
 const entityRights = computed(() => users.value.filter(x => !x.inherited))
 
 async function loadEntity () {
@@ -35,6 +35,10 @@ async function loadEntity () {
       '_expander',
       '_editor',
       '_owner',
+      '_parent_viewer',
+      '_parent_expander',
+      '_parent_editor',
+      '_parent_owner',
       '_public',
       '_inheritrights'
     ])
@@ -43,18 +47,30 @@ async function loadEntity () {
   isPublic.value = getValue(rawEntity.value?._public, 'boolean') || false
   inheritRights.value = getValue(rawEntity.value?._inheritrights, 'boolean') || false
 
-  const owners = rawEntity.value?._owner?.map(x => x.reference) || []
-  const editors = rawEntity.value?._editor?.map(x => x.reference).filter(x => !owners.includes(x)) || []
-  const expanders = rawEntity.value?._expander?.map(x => x.reference).filter(x => !owners.includes(x) && !editors.includes(x)) || []
-  const viewers = rawEntity.value?._viewer?.map(x => x.reference).filter(x => !owners.includes(x) && !editors.includes(x) && !expanders.includes(x)) || []
-  const noaccess = rawEntity.value?._noaccess?.map(x => x.reference) || []
+  const owners = rawEntity.value?._owner?.map(x => x._id) || []
+  const editors = rawEntity.value?._editor?.map(x => x._id).filter(x => !owners.includes(x)) || []
+  const expanders = rawEntity.value?._expander?.map(x => x._id).filter(x => !owners.includes(x) && !editors.includes(x)) || []
+  const viewers = rawEntity.value?._viewer?.map(x => x._id).filter(x => !owners.includes(x) && !editors.includes(x) && !expanders.includes(x)) || []
+  const noaccess = rawEntity.value?._noaccess?.map(x => x._id) || []
 
   users.value = cloneArray([
-    ...rawEntity.value?._noaccess?.filter(x => noaccess.includes(x.reference)).map(x => ({ ...x, type: 'noaccess' })) || [],
-    ...rawEntity.value?._viewer?.filter(x => viewers.includes(x.reference)).map(x => ({ ...x, type: 'viewer' })) || [],
-    ...rawEntity.value?._expander?.filter(x => expanders.includes(x.reference)).map(x => ({ ...x, type: 'expander' })) || [],
-    ...rawEntity.value?._editor?.filter(x => editors.includes(x.reference)).map(x => ({ ...x, type: 'editor' })) || [],
-    ...rawEntity.value?._owner?.filter(x => owners.includes(x.reference)).map(x => ({ ...x, type: 'owner' })) || []
+    ...rawEntity.value?._noaccess?.filter(x => noaccess.includes(x._id)).map(x => ({ ...x, type: 'noaccess' })) || [],
+    ...rawEntity.value?._viewer?.filter(x => viewers.includes(x._id)).map(x => ({ ...x, type: 'viewer' })) || [],
+    ...rawEntity.value?._expander?.filter(x => expanders.includes(x._id)).map(x => ({ ...x, type: 'expander' })) || [],
+    ...rawEntity.value?._editor?.filter(x => editors.includes(x._id)).map(x => ({ ...x, type: 'editor' })) || [],
+    ...rawEntity.value?._owner?.filter(x => owners.includes(x._id)).map(x => ({ ...x, type: 'owner' })) || []
+  ].sort((a, b) => a.string?.localeCompare(b.string)))
+
+  const parentOwners = rawEntity.value?._parent_owner?.map(x => x._id) || []
+  const parentEditors = rawEntity.value?._parent_editor?.map(x => x._id).filter(x => !parentOwners.includes(x)) || []
+  const parentExpanders = rawEntity.value?._parent_expander?.map(x => x._id).filter(x => !parentOwners.includes(x) && !parentEditors.includes(x)) || []
+  const parentViewers = rawEntity.value?._parent_viewer?.map(x => x._id).filter(x => !parentOwners.includes(x) && !parentEditors.includes(x) && !parentExpanders.includes(x)) || []
+
+  inheritedRights.value = cloneArray([
+    ...rawEntity.value?._parent_viewer?.filter(x => parentViewers.includes(x._id)).map(x => ({ ...x, type: 'viewer' })) || [],
+    ...rawEntity.value?._parent_expander?.filter(x => parentExpanders.includes(x._id)).map(x => ({ ...x, type: 'expander' })) || [],
+    ...rawEntity.value?._parent_editor?.filter(x => parentEditors.includes(x._id)).map(x => ({ ...x, type: 'editor' })) || [],
+    ...rawEntity.value?._parent_owner?.filter(x => parentOwners.includes(x._id)).map(x => ({ ...x, type: 'owner' })) || []
   ].sort((a, b) => a.string?.localeCompare(b.string)))
 
   isLoading.value = false
