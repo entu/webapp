@@ -4,7 +4,11 @@ import { NConfigProvider, NGlobalStyle, NLoadingBarProvider, enUS, dateEnUS } fr
 const runtimeConfig = useRuntimeConfig()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 
-setLocale(localStorage.getItem('locale') || 'en')
+if (!localStorage.getItem('locale')) {
+  localStorage.setItem('locale', 'en')
+}
+
+setLocale(localStorage.getItem('locale'))
 
 const currentLocale = ref(enUS)
 const currentDateLocale = ref(dateEnUS)
