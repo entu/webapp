@@ -2,6 +2,8 @@
 <script setup>
 import { NPopover } from 'naive-ui'
 
+const { userId } = useUser()
+
 defineProps({
   options: { type: Array, required: true },
   isChild: { type: Boolean, default: false }
@@ -13,14 +15,14 @@ const route = useRoute()
 
 <template>
   <my-button
-    v-if="options.length === 1"
+    v-if="userId && options.length === 1"
     icon="add"
     :label="t(isChild ? 'addOneChild' : 'addOne', { type: options.at(0).label?.toLowerCase() })"
     @click="navigateTo({ path: route.path, query: route.query, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}`}, { replace: true })"
   />
 
   <n-popover
-    v-if="options.length > 1"
+    v-if="userId && options.length > 1"
     content-style="padding:0;border:none"
     footer-style="padding:0;border:none"
   >
