@@ -214,7 +214,7 @@ function railStyle ({ focused, checked }) {
           />
         </template>
 
-        <div class="mt-6 flex items-center justify-center gap-2">
+        <div class="mt-6 flex flex-col items-center justify-center gap-2">
           <n-checkbox
             v-model:checked="inheritRights"
             size="large"
@@ -222,6 +222,13 @@ function railStyle ({ focused, checked }) {
           >
             {{ t('inheritRights') }}
           </n-checkbox>
+
+          <div
+            v-if="inheritRights"
+            class="max-w-96 text-center text-sm text-gray-500"
+          >
+            {{ t('inheritRightsDescription') }}
+          </div>
         </div>
       </div>
 
@@ -261,6 +268,7 @@ function railStyle ({ focused, checked }) {
     isNotPublic: Entity is not Public
     isNotPublicDescription: Only authorized users (below) can view this entity. Login is required.
     inheritRights: Inherit rights from parent
+    inheritRightsDescription: Rights from the parent entity will be used for this entity. Add specific rights below to override inherited rights.
     userRightsParent: Parent entity rights
     userRightsEntity: Entity specific rights
     selectNewUser: Add new user
@@ -271,6 +279,7 @@ function railStyle ({ focused, checked }) {
     isNotPublic: Objekt ei ole avalik
     isNotPublicDescription: Seda objekti saavad vaadata ainult õigustega kasutajad. Sisselogimine on vajalik.
     inheritRights: Päri õigused peamiselt objektilt
+    inheritRightsDescription: Sellele objektile laienevad peamise objekti õigused. Õiguste muutmiseks lisa erisused objekti spetsiifiliste õiguste alla.
     userRightsParent: Peamise objekti õigused
     userRightsEntity: Objekti spetsiifilised õigused
     selectNewUser: Lisa uus kasutaja
