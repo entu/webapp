@@ -208,7 +208,7 @@ async function onDelete () {
 
 <template>
   <my-drawer
-    :is-loading="isLoading || isUpdating"
+    :is-loading="isLoading"
     :title="title"
     @close="onClose()"
   >

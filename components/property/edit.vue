@@ -27,6 +27,7 @@ const newFiles = ref({})
 
 const oldValues = ref()
 const newValues = ref()
+const loadingInputs = ref([])
 
 watch(() => props.values, () => {
   oldValues.value = cloneArray(props.values.map((x) => {
@@ -89,6 +90,7 @@ async function updateValue (newValue) {
 
   if (value === oldValue[property] && language === oldValue.language) return
 
+  loadingInputs.value.push(_id)
   isUpdating.value = true
 
   if (props.type === 'file') {
@@ -125,6 +127,7 @@ async function updateValue (newValue) {
   addListValue(_id)
 
   isUpdating.value = false
+  loadingInputs.value.splice(loading.value.indexOf(_id), 1)
 
   return entity
 }
@@ -313,6 +316,7 @@ function addListValue (_id) {
         v-if="type === 'string' && set.length === 0"
         v-model:value="value.string"
         placeholder=""
+        :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @blur="updateValue(value)"
         @focus="addListValue(value._id)"
@@ -322,6 +326,7 @@ function addListValue (_id) {
         v-else-if="type === 'string' && set.length > 0"
         v-model:value="value.string"
         placeholder=""
+        :loading="loadingInputs.includes(value._id)"
         :options="setOptions"
         :readonly="disabled"
         @update:value="updateValue(value)"
@@ -337,6 +342,7 @@ function addListValue (_id) {
           minRows: 3,
           maxRows: 15
         }"
+        :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @blur="updateValue(value)"
         @focus="addListValue(value._id)"
@@ -347,6 +353,7 @@ function addListValue (_id) {
         v-model:value="value.number"
         class="w-full"
         placeholder=""
+        :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         :precision="decimals"
         @blur="updateValue(value)"
@@ -359,6 +366,7 @@ function addListValue (_id) {
       >
         <n-switch
           v-model:value="value.boolean"
+          :loading="loadingInputs.includes(value._id)"
           :readonly="disabled"
           :unchecked-value="null"
           @update:value="updateValue(value)"
@@ -371,6 +379,7 @@ function addListValue (_id) {
         class="w-full"
         placeholder=""
         type="date"
+        :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @update:value="updateValue(value)"
       />
@@ -381,6 +390,7 @@ function addListValue (_id) {
         class="w-full"
         placeholder=""
         type="datetime"
+        :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @update:value="updateValue(value)"
       />
@@ -389,6 +399,7 @@ function addListValue (_id) {
         v-else-if="type === 'reference'"
         v-model="value.reference"
         placeholder=""
+        :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         :query="referenceQuery"
         :values="referenceOptions"
@@ -401,6 +412,7 @@ function addListValue (_id) {
         v-model:value="value.language"
         class="!w-20 self-start"
         placeholder=""
+        :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         :options="languageOptions"
         @update:value="updateValue(value)"
