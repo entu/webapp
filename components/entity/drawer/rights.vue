@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NCheckbox, NDivider, NSwitch } from 'naive-ui'
+import { apiDeleteProperty } from '~/utils/api'
 
 const { t } = useI18n()
 const { accountId } = useAccount()
@@ -11,9 +12,8 @@ const emit = defineEmits(['close'])
 const entityId = defineModel('entityId', { type: String, required: true })
 
 const rawEntity = ref()
+const newRight = ref()
 const isPublic = ref(false)
-const users = ref([])
-const inheritedRights = ref([])
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const isUpdatingPublic = ref(false)
@@ -22,7 +22,36 @@ const inheritRights = ref(false)
 watch(entityId, loadEntity, { immediate: true })
 
 const entityName = computed(() => getValue(rawEntity.value?.name))
-const entityRights = computed(() => users.value.filter(x => !x.inherited))
+
+const entityRights = computed(() => {
+  const owners = rawEntity.value?._owner?.map(x => x._id) || []
+  const editors = rawEntity.value?._editor?.map(x => x._id).filter(x => !owners.includes(x)) || []
+  const expanders = rawEntity.value?._expander?.map(x => x._id).filter(x => !owners.includes(x) && !editors.includes(x)) || []
+  const viewers = rawEntity.value?._viewer?.map(x => x._id).filter(x => !owners.includes(x) && !editors.includes(x) && !expanders.includes(x)) || []
+  const noaccess = rawEntity.value?._noaccess?.map(x => x._id) || []
+
+  return [
+    ...rawEntity.value?._noaccess?.filter(x => noaccess.includes(x._id)).map(x => ({ ...x, type: 'noaccess' })) || [],
+    ...rawEntity.value?._viewer?.filter(x => viewers.includes(x._id)).map(x => ({ ...x, type: 'viewer' })) || [],
+    ...rawEntity.value?._expander?.filter(x => expanders.includes(x._id)).map(x => ({ ...x, type: 'expander' })) || [],
+    ...rawEntity.value?._editor?.filter(x => editors.includes(x._id)).map(x => ({ ...x, type: 'editor' })) || [],
+    ...rawEntity.value?._owner?.filter(x => owners.includes(x._id)).map(x => ({ ...x, type: 'owner' })) || []
+  ].filter(x => !x.inherited).sort((a, b) => a.string?.localeCompare(b.string))
+})
+
+const inheritedRights = computed(() => {
+  const owners = rawEntity.value?._parent_owner?.map(x => x._id) || []
+  const editors = rawEntity.value?._parent_editor?.map(x => x._id).filter(x => !owners.includes(x)) || []
+  const expanders = rawEntity.value?._parent_expander?.map(x => x._id).filter(x => !owners.includes(x) && !editors.includes(x)) || []
+  const viewers = rawEntity.value?._parent_viewer?.map(x => x._id).filter(x => !owners.includes(x) && !editors.includes(x) && !expanders.includes(x)) || []
+
+  return [
+    ...rawEntity.value?._parent_viewer?.filter(x => viewers.includes(x._id)).map(x => ({ ...x, type: 'viewer' })) || [],
+    ...rawEntity.value?._parent_expander?.filter(x => expanders.includes(x._id)).map(x => ({ ...x, type: 'expander' })) || [],
+    ...rawEntity.value?._parent_editor?.filter(x => editors.includes(x._id)).map(x => ({ ...x, type: 'editor' })) || [],
+    ...rawEntity.value?._parent_owner?.filter(x => owners.includes(x._id)).map(x => ({ ...x, type: 'owner' })) || []
+  ].sort((a, b) => a.string?.localeCompare(b.string))
+})
 
 async function loadEntity () {
   isLoading.value = true
@@ -47,43 +76,27 @@ async function loadEntity () {
   isPublic.value = getValue(rawEntity.value?._public, 'boolean') || false
   inheritRights.value = getValue(rawEntity.value?._inheritrights, 'boolean') || false
 
-  const owners = rawEntity.value?._owner?.map(x => x._id) || []
-  const editors = rawEntity.value?._editor?.map(x => x._id).filter(x => !owners.includes(x)) || []
-  const expanders = rawEntity.value?._expander?.map(x => x._id).filter(x => !owners.includes(x) && !editors.includes(x)) || []
-  const viewers = rawEntity.value?._viewer?.map(x => x._id).filter(x => !owners.includes(x) && !editors.includes(x) && !expanders.includes(x)) || []
-  const noaccess = rawEntity.value?._noaccess?.map(x => x._id) || []
-
-  users.value = cloneArray([
-    ...rawEntity.value?._noaccess?.filter(x => noaccess.includes(x._id)).map(x => ({ ...x, type: 'noaccess' })) || [],
-    ...rawEntity.value?._viewer?.filter(x => viewers.includes(x._id)).map(x => ({ ...x, type: 'viewer' })) || [],
-    ...rawEntity.value?._expander?.filter(x => expanders.includes(x._id)).map(x => ({ ...x, type: 'expander' })) || [],
-    ...rawEntity.value?._editor?.filter(x => editors.includes(x._id)).map(x => ({ ...x, type: 'editor' })) || [],
-    ...rawEntity.value?._owner?.filter(x => owners.includes(x._id)).map(x => ({ ...x, type: 'owner' })) || []
-  ].sort((a, b) => a.string?.localeCompare(b.string)))
-
-  const parentOwners = rawEntity.value?._parent_owner?.map(x => x._id) || []
-  const parentEditors = rawEntity.value?._parent_editor?.map(x => x._id).filter(x => !parentOwners.includes(x)) || []
-  const parentExpanders = rawEntity.value?._parent_expander?.map(x => x._id).filter(x => !parentOwners.includes(x) && !parentEditors.includes(x)) || []
-  const parentViewers = rawEntity.value?._parent_viewer?.map(x => x._id).filter(x => !parentOwners.includes(x) && !parentEditors.includes(x) && !parentExpanders.includes(x)) || []
-
-  inheritedRights.value = cloneArray([
-    ...rawEntity.value?._parent_viewer?.filter(x => parentViewers.includes(x._id)).map(x => ({ ...x, type: 'viewer' })) || [],
-    ...rawEntity.value?._parent_expander?.filter(x => parentExpanders.includes(x._id)).map(x => ({ ...x, type: 'expander' })) || [],
-    ...rawEntity.value?._parent_editor?.filter(x => parentEditors.includes(x._id)).map(x => ({ ...x, type: 'editor' })) || [],
-    ...rawEntity.value?._parent_owner?.filter(x => parentOwners.includes(x._id)).map(x => ({ ...x, type: 'owner' })) || []
-  ].sort((a, b) => a.string?.localeCompare(b.string)))
-
   isLoading.value = false
 }
 
 async function updateIsPublic (value) {
   isUpdatingPublic.value = true
 
-  await apiUpsertEntity(
-    entityId.value,
-    getValue(rawEntity.value?._public, '_id'),
-    value === true ? [{ type: '_public', boolean: value }] : undefined
-  )
+  const propertyId = getValue(rawEntity.value._public, '_id')
+
+  if (value === true) {
+    const entity = await apiUpsertEntity(entityId.value, [
+      { _id: propertyId, type: '_public', boolean: value }
+    ])
+
+    const { _id } = entity.properties.find(x => x.type === '_public')
+
+    rawEntity.value._public = [{ _id, boolean: true }]
+  } else {
+    await apiDeleteProperty(propertyId)
+
+    delete rawEntity.value._public
+  }
 
   isUpdatingPublic.value = false
 }
@@ -91,11 +104,21 @@ async function updateIsPublic (value) {
 async function updateInheritRights (value) {
   isUpdating.value = true
 
-  await apiUpsertEntity(
-    entityId.value,
-    getValue(rawEntity.value?._inheritrights, '_id'),
-    value === true ? [{ type: '_inheritrights', boolean: value }] : undefined
-  )
+  const propertyId = getValue(rawEntity.value._inheritrights, '_id')
+
+  if (value === true) {
+    const entity = await apiUpsertEntity(entityId.value, [
+      { _id: propertyId, type: '_inheritrights', boolean: value }
+    ])
+
+    const { _id } = entity.properties.find(x => x.type === '_inheritrights')
+
+    rawEntity.value._inheritrights = [{ _id, boolean: true }]
+  } else {
+    await apiDeleteProperty(propertyId)
+
+    delete rawEntity.value._inheritrights
+  }
 
   isUpdating.value = false
 }
@@ -103,29 +126,34 @@ async function updateInheritRights (value) {
 async function onAddRight (reference) {
   isUpdating.value = true
 
-  await apiUpsertEntity(
-    entityId.value,
-    undefined,
-    [{ type: '_viewer', reference }]
-  )
+  await apiUpsertEntity(entityId.value, [
+    { type: '_viewer', reference }
+  ])
 
-  await loadEntity()
+  setTimeout(async () => {
+    await loadEntity()
 
-  isUpdating.value = false
+    newRight.value = null
+    isUpdating.value = false
+  }, 2000)
 }
 
 async function onEditRight (_id, reference, right) {
   isUpdating.value = true
 
-  await apiUpsertEntity(
-    entityId.value,
-    _id,
-    right ? [{ type: `_${right}`, reference }] : undefined
-  )
+  if (right) {
+    await apiUpsertEntity(entityId.value, [
+      { _id, type: `_${right}`, reference }
+    ])
+  } else {
+    await apiDeleteProperty(_id)
+  }
 
-  await loadEntity()
+  setTimeout(async () => {
+    await loadEntity()
 
-  isUpdating.value = false
+    isUpdating.value = false
+  }, 2000)
 }
 
 async function onClose () {
@@ -250,6 +278,7 @@ function railStyle ({ focused, checked }) {
         />
 
         <my-select-reference
+          v-model="newRight"
           class="mt-6"
           query="_type.string=person"
           :placeholder="t('selectNewUser')"

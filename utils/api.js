@@ -12,19 +12,20 @@ export async function apiGetEntity (entityId, props = []) {
 }
 
 export async function apiDeleteEntity (entityId) {
-  const { entity } = await apiRequest('entity/' + entityId, {}, {}, 'DELETE')
-  return entity
+  const { deleted } = await apiRequest('entity/' + entityId, {}, {}, 'DELETE')
+  return deleted
+}
+
+export async function apiDeleteProperty (propertyId) {
+  const { deleted } = await apiRequest(`property/${propertyId}`, {}, {}, 'DELETE')
+  return deleted
 }
 
 export async function apiGetProperty (propertyId) {
   return await apiRequest('property/' + propertyId)
 }
 
-export async function apiUpsertEntity (entityId, propertyId, properties) {
-  if (propertyId) {
-    await apiRequest(`property/${propertyId}`, {}, {}, 'DELETE')
-  }
-
+export async function apiUpsertEntity (entityId, properties) {
   if (!properties) return
 
   const url = entityId ? `entity/${entityId}` : 'entity'

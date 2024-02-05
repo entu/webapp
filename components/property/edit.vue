@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NDatePicker, NInput, NInputNumber, NSelect, NSwitch, NUpload, NUploadTrigger, NUploadFileList } from 'naive-ui'
+import { apiDeleteProperty } from '~/utils/api'
 
 const entityId = defineModel('entityId', { type: String, default: undefined })
 const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
@@ -92,6 +93,7 @@ async function updateValue (newValue) {
 
   if (props.type === 'file') {
     properties.push({
+      _id,
       type: props.property,
       filename: newValue.filename,
       filesize: newValue.filesize,
@@ -100,6 +102,7 @@ async function updateValue (newValue) {
     })
   } else {
     properties.push({
+      _id,
       type: props.property,
       [property]: value,
       language
@@ -113,7 +116,7 @@ async function updateValue (newValue) {
   } else if (entityId.value && value !== null && !_id) {
     entity = await addValue(properties)
   } else if (entityId.value && value !== null && _id) {
-    entity = await editValue(_id, properties, language)
+    entity = await editValue(_id, properties)
   } else if (entityId.value && value === null && _id) {
     entity = await deleteValue(_id)
   }
@@ -141,11 +144,7 @@ async function addEntity (properties) {
     })
   }
 
-  const entity = await apiUpsertEntity(
-    undefined,
-    undefined,
-    properties
-  )
+  const entity = await apiUpsertEntity(undefined, properties)
 
   entityId.value = entity._id
 
@@ -153,11 +152,7 @@ async function addEntity (properties) {
 }
 
 async function addValue (properties) {
-  const entity = await apiUpsertEntity(
-    entityId.value,
-    undefined,
-    properties
-  )
+  const entity = await apiUpsertEntity(entityId.value, properties)
 
   const property = entity.properties.find(x => x.type === props.property)
   const newValue = newValues.value.find(x => x._id === undefined)
@@ -168,11 +163,7 @@ async function addValue (properties) {
 }
 
 async function editValue (_id, properties) {
-  const entity = await apiUpsertEntity(
-    entityId.value,
-    _id,
-    properties
-  )
+  const entity = await apiUpsertEntity(entityId.value, properties)
 
   if (entity?.properties) {
     const property = entity.properties.find(x => x.type === props.property)
@@ -191,20 +182,11 @@ async function editValue (_id, properties) {
 }
 
 async function deleteValue (_id) {
-  const entity = await apiUpsertEntity(
-    entityId.value,
-    _id
-  )
+  await apiDeleteProperty(_id)
 
-  if (entity?.properties) return
+  const newValue = newValues.value.find(x => x._id === _id)
 
-  newValues.value = newValues.value.filter(x => x._id !== _id)
-
-  if (newValues.value.length === 0) {
-    newValues.value = [{}]
-  }
-
-  return entity
+  delete newValue._id
 }
 
 async function uploadFile ({ file, onProgress, onFinish, onError }) {

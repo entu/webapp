@@ -11,13 +11,14 @@ const emit = defineEmits(['close'])
 const entityId = defineModel('entityId', { type: String, required: true })
 
 const rawEntity = ref()
+const newParent = ref()
 const isLoading = ref(false)
 const isUpdating = ref(false)
 
 watch(entityId, loadEntity, { immediate: true })
 
 const entityName = computed(() => getValue(rawEntity.value?.name))
-const parents = computed(() => rawEntity.value?._parent?.sort((a, b) => a.string.localeCompare(b.string)) || [])
+const parents = computed(() => rawEntity.value?._parent?.sort((a, b) => a.string?.localeCompare(b.string)) || [])
 
 async function loadEntity () {
   isLoading.value = true
@@ -35,28 +36,28 @@ async function loadEntity () {
 async function onAddParent (reference) {
   isUpdating.value = true
 
-  await apiUpsertEntity(
-    entityId.value,
-    undefined,
-    [{ type: '_parent', reference }]
-  )
+  await apiUpsertEntity(entityId.value, [
+    { type: '_parent', reference }
+  ])
 
-  await loadEntity()
+  setTimeout(async () => {
+    await loadEntity()
 
-  isUpdating.value = false
+    newParent.value = null
+    isUpdating.value = false
+  }, 2000)
 }
 
 async function onDeleteParent (_id) {
   isUpdating.value = true
 
-  await apiUpsertEntity(
-    entityId.value,
-    _id
-  )
+  await apiDeleteProperty(_id)
 
-  await loadEntity()
+  setTimeout(async () => {
+    await loadEntity()
 
-  isUpdating.value = false
+    isUpdating.value = false
+  }, 2000)
 }
 
 async function onClose () {
@@ -101,6 +102,7 @@ async function onClose () {
     />
 
     <my-select-reference
+      v-model="newParent"
       class="mt-6"
       :placeholder="t('selectNewParent')"
       :query="`_expander.reference=${userId}`"
