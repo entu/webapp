@@ -127,7 +127,7 @@ async function updateValue (newValue) {
   addListValue(_id)
 
   isUpdating.value = false
-  loadingInputs.value.splice(loading.value.indexOf(_id), 1)
+  loadingInputs.value.splice(loadingInputs.value.indexOf(_id), 1)
 
   return entity
 }
