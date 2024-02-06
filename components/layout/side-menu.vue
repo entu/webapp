@@ -83,7 +83,7 @@ const accountMenu = computed(() => {
   }
 
   menuEntities.value.forEach((entity) => {
-    const group = getValue(entity.group).toLowerCase()
+    const group = getValue(entity.group)?.toLowerCase()
     const ordinal = getValue(entity.ordinal, 'number') || 0
 
     if (!menuObject[group]) {
@@ -95,7 +95,7 @@ const accountMenu = computed(() => {
         children: menuCollapsed.value
           ? [{
               name: '            1',
-              label: () => h('strong', {}, { default: () => getValue(entity.group).toUpperCase() })
+              label: () => h('strong', {}, { default: () => getValue(entity.group)?.toUpperCase() })
             }, {
               name: '            2',
               type: 'divider'

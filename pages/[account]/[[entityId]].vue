@@ -414,8 +414,8 @@ onMounted(async () => {
           show-total
           :a-label="t('requests')"
           :b-label="t('limit')"
-          :a-value="stats.dbSize"
-          :b-value="Math.ceil(stats.dbSize / Math.pow(10, stats.dbSize.toString().length - 1)) * Math.pow(10, stats.dbSize.toString().length - 1) - stats.dbSize"
+          :a-value="stats.requestsMonth"
+          :b-value="Math.ceil(stats.requestsMonth / Math.pow(10, stats.requestsMonth.toString().length - 1)) * Math.pow(10, stats.requestsMonth.toString().length - 1) - stats.requestsMonth"
         />
       </div>
     </transition>
@@ -472,7 +472,7 @@ onMounted(async () => {
     entities: Entities
     properties: Properties
     files: Files
-    requests: Requests in day
+    requests: Requests in this month
     deleted: deleted
     limit: limit
     public: Entity is public
@@ -484,7 +484,7 @@ onMounted(async () => {
     entities: Objekte
     properties: Parameetreid
     files: Faile
-    requests: Päringuid päevas
+    requests: Päringuid selles kuus
     deleted: kustutatud
     limit: limiit
     public: Objekt on avalik
