@@ -240,7 +240,7 @@ async function onDelete () {
       <n-popconfirm
         :negative-text="t('cancel')"
         :positive-text="t('delete')"
-        :positivmy-button-props="{ type: 'error' }"
+        :positive-button-props="{ type: 'error', loading: isUpdating }"
         @positive-click="onDelete()"
       >
         <template #trigger>
