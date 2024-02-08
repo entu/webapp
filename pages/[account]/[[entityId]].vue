@@ -254,7 +254,7 @@ onMounted(async () => {
     loadEntity()
     loadChilds()
     loadReferences()
-  } else if (userId.value) {
+  } else if (userId.value && !isQuery.value) {
     stats.value = await apiRequest('account')
   }
 })
