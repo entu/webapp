@@ -83,6 +83,7 @@ const properties = computed(() => {
 
   entity.value.props.forEach((property) => {
     if (property.name?.startsWith('_')) return
+    if (property.name === 'name') return
 
     const group = property.name?.startsWith('_') ? '_' : property.group || ''
     const ordinal = property.name?.startsWith('_') ? 99999 : property.ordinal || 0
@@ -282,7 +283,7 @@ onMounted(async () => {
         <div class="pt-5 pr-5 flex gap-5">
           <div class="grow">
             <h1 class="mb-4 pl-5 text-2xl text-[#1E434C] font-bold">
-              {{ entity.name }}
+              {{ entity.name || entity._id }}
             </h1>
 
             <n-collapse :default-expanded-names="[0]">
