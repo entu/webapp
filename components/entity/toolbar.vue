@@ -11,6 +11,9 @@ const props = defineProps({
 const { t } = useI18n()
 const route = useRoute()
 
+const menuStore = useMenueStore()
+const { menuEntities } = storeToRefs(menuStore)
+
 const addChilds = ref([])
 const addDefaults = ref([])
 
@@ -26,28 +29,6 @@ const addChildOptions = computed(() => props.right.expander && addChilds.value.l
   })).sort((a, b) => a.label.localeCompare(b.label))
   : []
 )
-
-async function loadAddDefaults () {
-  const { entities: menuEntities } = await apiGetEntities({
-    '_type.string': 'menu',
-    'query.string': window.location.search.substring(1),
-    props: '_id',
-    limit: 1
-  })
-
-  if (menuEntities.length === 0) return
-
-  const { entities } = await apiGetEntities({
-    '_type.string': 'entity',
-    'add_from.reference': menuEntities.at(0)._id,
-    props: [
-      'name',
-      'label'
-    ].join(',')
-  })
-
-  addDefaults.value = entities
-}
 
 async function loadAddChilds () {
   if (props.entityId) {
@@ -76,7 +57,10 @@ async function loadAddChilds () {
   }
 }
 
-watch(() => route.query, () => loadAddDefaults(), { deep: true, immediate: true })
+watch(() => route.query, () => {
+  addDefaults.value = menuEntities.value?.find(x => getValue(x.query) === window.location.search.substring(1))?.addFrom || []
+}, { deep: true, immediate: true })
+
 watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
 </script>
 

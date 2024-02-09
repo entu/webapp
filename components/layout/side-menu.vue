@@ -8,7 +8,9 @@ const { locale, setLocale } = useI18n({ useScope: 'global' })
 const { accountId, accounts } = useAccount()
 const { menuCollapsed, userId, userName } = useUser()
 
-const menuEntities = ref([])
+const menuStore = useMenueStore()
+const { menuEntities } = storeToRefs(menuStore)
+
 const expandedMenus = ref([])
 const activeMenu = ref(window.location.search.substring(1))
 
@@ -213,23 +215,9 @@ function setLanguage () {
   reloadNuxtApp()
 }
 
-watch(accountId, () => getMenuEntities(), { immediate: true })
-
-async function getMenuEntities () {
-  if (!accountId.value) return
-
-  const { entities } = await apiGetEntities({
-    '_type.string': 'menu',
-    props: [
-      'ordinal.number',
-      'group',
-      'name',
-      'query.string'
-    ].join(',')
-  })
-
-  menuEntities.value = entities
-}
+watch(accountId, () => {
+  menuStore.get()
+}, { immediate: true })
 
 function menuSorter (a, b) {
   if (a.ordinal && b.ordinal && a.ordinal < b.ordinal) return -1
