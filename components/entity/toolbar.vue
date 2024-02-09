@@ -12,7 +12,7 @@ const { t } = useI18n()
 const route = useRoute()
 
 const menuStore = useMenueStore()
-const { activeMenu, addFromEntities } = storeToRefs(menuStore)
+const { activeMenu, addFromEntities, noAddFrom } = storeToRefs(menuStore)
 
 const addChilds = ref([])
 
@@ -34,6 +34,15 @@ watch([() => props.typeId, addFromEntities], async () => {
 
 watch(() => props.entityId, async (value) => {
   if (!value) return
+  if (noAddFrom[value]) return
+
+  const addFrom = addFromEntities.value.filter(x => x.addFrom.includes(value))
+
+  if (addFrom.length > 0) {
+    addChilds.value = addFrom
+
+    return
+  }
 
   const { entities } = await apiGetEntities({
     'add_from.reference': props.entityId,
@@ -43,11 +52,22 @@ watch(() => props.entityId, async (value) => {
     ].join(',')
   })
 
-  addChilds.value = [
-    ...entities?.map(x => ({
-      value: x._id,
-      label: getValue(x.label) || getValue(x.name)
-    }))
+  if (entities.length === 0) {
+    noAddFrom[value] = true
+
+    return
+  }
+
+  const newAddFromEntities = entities?.map(x => ({
+    value: x._id,
+    label: getValue(x.label) || getValue(x.name)
+  }))
+
+  addChilds.value = newAddFromEntities
+
+  addFromEntities.value = [
+    ...addFromEntities.value,
+    ...newAddFromEntities
   ]
 }, { immediate: true })
 </script>

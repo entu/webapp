@@ -6,6 +6,7 @@ export const useMenueStore = defineStore('menu', () => {
   const activeMenu = ref({})
   const menuResult = ref({})
   const addFromResult = ref({})
+  const noAddFrom = ref({})
 
   const menuEntities = computed(() => menuResult.value?.entities || [])
 
@@ -53,6 +54,7 @@ export const useMenueStore = defineStore('menu', () => {
     menuEntities,
     activeMenu,
     addFromEntities,
+    noAddFrom,
     get
   }
 })
