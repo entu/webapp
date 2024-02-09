@@ -9,11 +9,11 @@ export const useMenueStore = defineStore('menu', () => {
 
   const menuEntities = computed(() => menuResult.value?.entities || [])
 
-  const addFromEntities = computed(() => addFromResult.value?.entities.map(x => ({
+  const addFromEntities = computed(() => addFromResult.value?.entities?.map(x => ({
     value: x._id,
     label: getValue(x.label) || getValue(x.name),
     addFrom: x.add_from?.map(x => x.reference)
-  })).sort((a, b) => a.label.localeCompare(b.label)) || [])
+  })) || [])
 
   async function get () {
     menuResult.value = await apiGetEntities({

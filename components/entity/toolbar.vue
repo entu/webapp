@@ -23,29 +23,33 @@ const addChildOptions = computed(() => props.right.expander && addChilds.value.l
   : []
 )
 
-onMounted(async () => {
-  if (props.entityId) {
-    const { entities } = await apiGetEntities({
-      'add_from.reference': props.entityId,
-      props: [
-        'name',
-        'label'
-      ].join(',')
-    })
+watch([() => props.typeId, addFromEntities], async () => {
+  if (props.entityId || !props.typeId) return
 
-    addChilds.value = entities?.map(x => ({
+  addChilds.value = [
+    ...addChilds.value,
+    ...addFromEntities.value?.filter(x => x.addFrom.includes(props.typeId) && !addChilds.value.some(y => y.value === x.value))
+  ]
+}, { immediate: true })
+
+watch(() => props.entityId, async (value) => {
+  if (!value) return
+
+  const { entities } = await apiGetEntities({
+    'add_from.reference': props.entityId,
+    props: [
+      'name',
+      'label'
+    ].join(',')
+  })
+
+  addChilds.value = [
+    ...entities?.map(x => ({
       value: x._id,
       label: getValue(x.label) || getValue(x.name)
     }))
-  }
-
-  if (props.typeId) {
-    addChilds.value = [
-      ...addChilds.value,
-      ...addFromEntities.value?.filter(x => x.addFrom.includes(props.typeId) && !addChilds.value.some(y => y.value === x.value))
-    ]
-  }
-})
+  ]
+}, { immediate: true })
 </script>
 
 <template>
