@@ -12,56 +12,40 @@ const { t } = useI18n()
 const route = useRoute()
 
 const menuStore = useMenueStore()
-const { menuEntities } = storeToRefs(menuStore)
+const { activeMenu, addFromEntities } = storeToRefs(menuStore)
 
 const addChilds = ref([])
-const addDefaults = ref([])
 
-const addDefaultOptions = computed(() => addDefaults.value.map(x => ({
-  value: x._id,
-  label: getValue(x.label) || getValue(x.name)
-})).sort((a, b) => a.label.localeCompare(b.label)))
+const addDefaultOptions = computed(() => activeMenu.value?.addFrom || [])
 
 const addChildOptions = computed(() => props.right.expander && addChilds.value.length > 0
-  ? addChilds.value.map(x => ({
-    value: x._id,
-    label: getValue(x.label) || getValue(x.name)
-  })).sort((a, b) => a.label.localeCompare(b.label))
+  ? addChilds.value.sort((a, b) => a.label.localeCompare(b.label))
   : []
 )
 
-async function loadAddChilds () {
+onMounted(async () => {
   if (props.entityId) {
     const { entities } = await apiGetEntities({
       'add_from.reference': props.entityId,
-      '_type.string.ne': 'entity',
       props: [
         'name',
         'label'
       ].join(',')
     })
 
-    addChilds.value = [...addChilds.value, ...entities.filter(x => !addChilds.value.some(y => y._id === x._id))]
+    addChilds.value = entities?.map(x => ({
+      value: x._id,
+      label: getValue(x.label) || getValue(x.name)
+    }))
   }
 
   if (props.typeId) {
-    const { entities } = await apiGetEntities({
-      'add_from.reference': props.typeId,
-      props: [
-        'name',
-        'label'
-      ].join(',')
-    })
-
-    addChilds.value = [...addChilds.value, ...entities.filter(x => !addChilds.value.some(y => y._id === x._id))]
+    addChilds.value = [
+      ...addChilds.value,
+      ...addFromEntities.value?.filter(x => x.addFrom.includes(props.typeId) && !addChilds.value.some(y => y.value === x.value))
+    ]
   }
-}
-
-watch(() => route.query, () => {
-  addDefaults.value = menuEntities.value?.find(x => getValue(x.query) === window.location.search.substring(1))?.addFrom || []
-}, { deep: true, immediate: true })
-
-watch(() => props, () => loadAddChilds(), { deep: true, immediate: true })
+})
 </script>
 
 <template>

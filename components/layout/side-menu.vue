@@ -215,10 +215,6 @@ function setLanguage () {
   reloadNuxtApp()
 }
 
-watch(accountId, () => {
-  menuStore.get()
-}, { immediate: true })
-
 function menuSorter (a, b) {
   if (a.ordinal && b.ordinal && a.ordinal < b.ordinal) return -1
   if (a.ordinal && b.ordinal && a.ordinal > b.ordinal) return 1

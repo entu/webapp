@@ -1,8 +1,22 @@
 export const useMenueStore = defineStore('menu', () => {
-  const menuEntities = ref([])
+  const route = useRoute()
+
+  const { accountId } = useAccount()
+
+  const activeMenu = ref({})
+  const menuResult = ref({})
+  const addFromResult = ref({})
+
+  const menuEntities = computed(() => menuResult.value?.entities || [])
+
+  const addFromEntities = computed(() => addFromResult.value?.entities.map(x => ({
+    value: x._id,
+    label: getValue(x.label) || getValue(x.name),
+    addFrom: x.add_from?.map(x => x.reference)
+  })).sort((a, b) => a.label.localeCompare(b.label)) || [])
 
   async function get () {
-    const menuResult = await apiGetEntities({
+    menuResult.value = await apiGetEntities({
       '_type.string': 'menu',
       props: [
         'ordinal.number',
@@ -12,7 +26,7 @@ export const useMenueStore = defineStore('menu', () => {
       ].join(',')
     })
 
-    const addFromResult = await apiGetEntities({
+    addFromResult.value = await apiGetEntities({
       '_type.string': 'entity',
       'add_from._id.exists': true,
       props: [
@@ -22,14 +36,23 @@ export const useMenueStore = defineStore('menu', () => {
       ].join(',')
     })
 
-    menuEntities.value = menuResult?.entities?.map(entity => ({
-      ...entity,
-      addFrom: addFromResult?.entities?.filter(x => x.add_from?.map(x => x.reference).includes(entity._id))
-    })) || []
+    menuResult.value.entities?.forEach((entity) => {
+      entity.addFrom = addFromEntities.value?.filter(x => x.addFrom?.includes(entity._id))
+    })
   }
+
+  watch(accountId, get, { immediate: true })
+
+  watch([() => route.query, menuResult], () => {
+    const query = window.location.search.substring(1)
+
+    activeMenu.value = query ? menuEntities.value?.find(x => getValue(x.query) === window.location.search.substring(1)) : undefined
+  }, { immediate: true })
 
   return {
     menuEntities,
+    activeMenu,
+    addFromEntities,
     get
   }
 })

@@ -7,7 +7,11 @@ export async function apiGetEntities (params) {
 }
 
 export async function apiGetEntity (entityId, props = []) {
-  const { entity } = await apiRequest('entity/' + entityId, { props: props?.join(',') })
+  const { entity } = await apiRequest('entity/' + entityId, props.length
+    ? {
+        props: props?.join(',')
+      }
+    : undefined)
   return entity
 }
 
