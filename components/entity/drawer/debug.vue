@@ -14,9 +14,7 @@ const emit = defineEmits(['close'])
 defineProps({
   entity: { type: Object, default: () => ({}) },
   properties: { type: Array, default: () => ([]) },
-  rawEntity: { type: Object, default: () => ({}) },
-  rawType: { type: Object, default: () => ({}) },
-  rawProperties: { type: Array, default: () => ([]) }
+  rawEntity: { type: Object, default: () => ({}) }
 })
 
 hljs.registerLanguage('yaml', yaml)
@@ -58,28 +56,6 @@ function showYaml (value) {
         <div
           class="p-2 text-xs whitespace-pre font-mono rounded-md bg-slate-50"
           v-html="showYaml(rawEntity)"
-        />
-      </n-collapse-item>
-
-      <n-collapse-item
-        name="rawType"
-        :title="t('rawType')"
-      >
-        <div
-          class="p-2 text-xs whitespace-pre font-mono rounded-md bg-slate-50"
-          v-html="showYaml(rawType)"
-        />
-      </n-collapse-item>
-
-      <n-collapse-item
-        name="rawProperties"
-        :title="t('rawPropertyTypes')"
-      >
-        <div
-          v-for="p in rawProperties"
-          :key="p._id"
-          class="mb-5 p-2 text-xs whitespace-pre font-mono rounded-md bg-slate-50"
-          v-html="showYaml(p)"
         />
       </n-collapse-item>
     </n-collapse>

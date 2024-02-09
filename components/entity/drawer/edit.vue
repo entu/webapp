@@ -14,11 +14,14 @@ const props = defineProps({
   canDelete: { type: Boolean, default: false }
 })
 
+const entityTypeStore = useEntityTypeStore()
+const { entityTypes } = storeToRefs(entityTypeStore)
+
 const rawEntity = ref()
-const rawEntityType = ref()
-const entityProps = ref([])
 const isLoading = ref(false)
 const isUpdating = ref(false)
+
+const typeId = computed(() => props.entityTypeId || getValue(rawEntity.value?._type, 'reference'))
 
 const title = computed(() => {
   if (entityParentId.value) {
@@ -36,39 +39,8 @@ const entity = computed(() => {
   const result = {
     _id: rawEntity.value?._id,
     name: getValue(rawEntity.value?.name),
-    type: rawEntityType.value
-      ? {
-          _id: rawEntityType.value._id,
-          name: getValue(rawEntityType.value.name),
-          label: getValue(rawEntityType.value.label),
-          labelPlural: getValue(rawEntityType.value.label_plural),
-          description: getValue(rawEntityType.value.description)
-        }
-      : {},
-    props: entityProps.value
-      ? entityProps.value.map(p => ({
-        decimals: getValue(p.decimals, 'number'),
-        default: getValue(p.default),
-        description: getValue(p.description),
-        formula: getValue(p.formula),
-        group: getValue(p.group),
-        hidden: getValue(p.hidden, 'boolean'),
-        label: getValue(p.label),
-        labelPlural: getValue(p.label_plural),
-        list: getValue(p.list, 'boolean'),
-        mandatory: getValue(p.mandatory, 'boolean'),
-        markdown: getValue(p.markdown, 'boolean'),
-        multilingual: getValue(p.multilingual, 'boolean'),
-        name: getValue(p.name),
-        ordinal: getValue(p.ordinal, 'number'),
-        public: getValue(p.public, 'boolean'),
-        readonly: getValue(p.readonly, 'boolean'),
-        set: p.set,
-        referenceQuery: getValue(p.reference_query),
-        type: getValue(p.type),
-        values: []
-      }))
-      : []
+    type: entityTypes.value[typeId.value]?.type || {},
+    props: entityTypes.value[typeId.value]?.props.map(x => ({ ...x, values: [] })) || []
   }
 
   for (const property in rawEntity.value) {
@@ -146,43 +118,9 @@ async function loadEntity () {
     rawEntity.value = await apiGetEntity(entityId.value)
   }
 
-  const entityTypeId = props.entityTypeId || getValue(rawEntity.value?._type, 'reference')
-
-  if (!entityTypeId) return
-
-  rawEntityType.value = await apiGetEntity(entityTypeId, [
-    'description',
-    'label_plural',
-    'label',
-    'name'
-  ])
-
-  const { entities } = await apiGetEntities({
-    '_parent.reference': entityTypeId,
-    props: [
-      'decimals',
-      'default',
-      'description',
-      'formula',
-      'group',
-      'hidden',
-      'label_plural',
-      'label',
-      'list',
-      'mandatory',
-      'markdown',
-      'multilingual',
-      'name',
-      'ordinal',
-      'public',
-      'readonly',
-      'set',
-      'reference_query',
-      'type'
-    ]
-  })
-
-  entityProps.value = entities
+  if (typeId.value && !entityTypes.value[typeId.value]) {
+    entityTypeStore.get(typeId.value)
+  }
 
   isLoading.value = false
 }

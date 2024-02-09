@@ -7,14 +7,15 @@ const route = useRoute()
 const { accountId } = useAccount()
 const { userId } = useUser()
 
+const entityTypeStore = useEntityTypeStore()
+const { entityTypes } = storeToRefs(entityTypeStore)
+
 const stats = ref()
 const entityId = ref(route.params.entityId)
 const newEntityId = ref()
 const rawEntity = ref()
-const rawEntityType = ref()
 const rawChilds = ref([])
 const rawReferences = ref([])
-const entityProps = ref([])
 const isLoading = ref(false)
 
 const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
@@ -29,36 +30,8 @@ const entity = computed(() => {
     _thumbnail: rawEntity.value._thumbnail,
     _public: getValue(rawEntity.value._public, 'boolean'),
     name: getValue(rawEntity.value.name),
-    type: rawEntityType.value
-      ? {
-          _id: rawEntityType.value._id,
-          name: getValue(rawEntityType.value.name),
-          label: getValue(rawEntityType.value.label),
-          description: getValue(rawEntityType.value.description)
-        }
-      : {},
-    props: entityProps.value.map(p => ({
-      decimals: getValue(p.decimals, 'number'),
-      default: getValue(p.default),
-      description: getValue(p.description),
-      formula: getValue(p.formula),
-      group: getValue(p.group),
-      hidden: getValue(p.hidden, 'boolean'),
-      label: getValue(p.label),
-      labelPlural: getValue(p.label_plural),
-      list: getValue(p.list, 'boolean'),
-      mandatory: getValue(p.mandatory, 'boolean'),
-      markdown: getValue(p.markdown, 'boolean'),
-      multilingual: getValue(p.multilingual, 'boolean'),
-      name: getValue(p.name),
-      ordinal: getValue(p.ordinal, 'number'),
-      public: getValue(p.public, 'boolean'),
-      readonly: getValue(p.readonly, 'boolean'),
-      search: getValue(p.search, 'boolean'),
-      set: p.set,
-      reference_query: getValue(p.reference_query),
-      type: getValue(p.type)
-    }))
+    type: entityTypes.value[typeId.value]?.type || {},
+    props: entityTypes.value[typeId.value]?.props || []
   }
 
   for (const property in rawEntity.value) {
@@ -155,35 +128,9 @@ async function loadEntity () {
 
   if (!rawEntity.value) return showError({ statusCode: 404, statusMessage: t('error404') })
 
-  if (!typeId.value) return
-
-  rawEntityType.value = await apiGetEntity(typeId.value, [
-    'description',
-    'label',
-    'name'
-  ])
-
-  const { entities } = await apiGetEntities({
-    '_parent.reference': typeId.value,
-    props: [
-      'decimals',
-      'description',
-      'group',
-      'hidden',
-      'label_plural',
-      'label',
-      'mandatory',
-      'markdown',
-      'name',
-      'ordinal',
-      'public',
-      'readonly',
-      'search',
-      'type'
-    ]
-  })
-
-  entityProps.value = entities
+  if (typeId.value && !entityTypes.value[typeId.value]) {
+    entityTypeStore.get(typeId.value)
+  }
 
   isLoading.value = false
 }
@@ -461,8 +408,6 @@ onMounted(async () => {
       :entity="entity"
       :properties="properties"
       :raw-entity="rawEntity"
-      :raw-type="rawEntityType"
-      :raw-properties="entityProps"
       @close="onDrawerClose()"
     />
   </div>
