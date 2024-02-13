@@ -322,7 +322,7 @@ onMounted(async () => {
     </transition>
 
     <div
-      v-if="isLoading"
+      v-if="isLoading || !isQuery && !stats"
       class="size-full flex items-center justify-center"
     >
       <n-spin />
