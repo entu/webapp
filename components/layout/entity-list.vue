@@ -1,5 +1,5 @@
 <script setup>
-import { NEmpty } from 'naive-ui'
+import { NEmpty, NSpin } from 'naive-ui'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -158,6 +158,13 @@ function color () {
     </div>
 
     <div
+      v-if="isLoading"
+      class="size-full flex items-center justify-center"
+    >
+      <n-spin />
+    </div>
+
+    <div
       v-if="!isLoading && entitiesCount > 0"
       class="pt-3 pb-1 sticky bottom-0 text-center text-gray-400 italic bg-white"
     >
@@ -165,7 +172,7 @@ function color () {
     </div>
 
     <div
-      v-if="!isLoading && entitiesCount === 0"
+      v-if="entitiesCount === 0"
       class="size-full flex items-center justify-center"
     >
       <n-empty :description="t('noResults')" />

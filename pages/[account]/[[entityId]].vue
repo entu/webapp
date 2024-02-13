@@ -1,5 +1,5 @@
 <script setup>
-import { NCollapse, NCollapseItem, NPopover } from 'naive-ui'
+import { NCollapse, NCollapseItem, NPopover, NSpin } from 'naive-ui'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -230,7 +230,7 @@ onMounted(async () => {
         <div class="pt-5 pr-5 flex gap-5">
           <div class="grow">
             <h1 class="mb-4 pl-5 text-2xl text-[#1E434C] font-bold">
-              {{ entity.name || entity._id }}
+              {{ entity.name?.trim() || entity._id }}
             </h1>
 
             <n-collapse :default-expanded-names="[0]">
@@ -320,6 +320,13 @@ onMounted(async () => {
         </n-collapse>
       </div>
     </transition>
+
+    <div
+      v-if="isLoading"
+      class="size-full flex items-center justify-center"
+    >
+      <n-spin />
+    </div>
 
     <transition>
       <div
