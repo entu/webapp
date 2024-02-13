@@ -1,5 +1,5 @@
 <script setup>
-import { NConfigProvider, NGlobalStyle, NLoadingBarProvider, enUS, dateEnUS } from 'naive-ui'
+import { NConfigProvider, NGlobalStyle, enUS, dateEnUS } from 'naive-ui'
 
 const runtimeConfig = useRuntimeConfig()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
@@ -42,11 +42,9 @@ console.log(
     :date-locale="currentDateLocale"
     :theme-overrides="themeOverrides"
   >
-    <n-loading-bar-provider>
-      <nuxt-layout>
-        <nuxt-page />
-      </nuxt-layout>
-    </n-loading-bar-provider>
+    <nuxt-layout>
+      <nuxt-page />
+    </nuxt-layout>
 
     <n-global-style />
   </n-config-provider>

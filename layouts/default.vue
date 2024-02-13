@@ -1,23 +1,13 @@
 <script setup>
-import { NLayout, NLayoutSider, useLoadingBar } from 'naive-ui'
+import { NLayout, NLayoutSider } from 'naive-ui'
 
 const route = useRoute()
-const loadingBar = useLoadingBar()
-const requests = useRequestCounter()
 
 const { accountId } = useAccount()
 const { menuCollapsed } = useUser()
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
-const loading = computed(() => requests.value > 0)
 
-watch(loading, (value) => {
-  if (value) {
-    loadingBar.start()
-  } else {
-    loadingBar.finish()
-  }
-})
 </script>
 
 <template>

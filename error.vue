@@ -1,5 +1,5 @@
 <script setup>
-import { NConfigProvider, NLoadingBarProvider } from 'naive-ui'
+import { NConfigProvider } from 'naive-ui'
 
 defineProps({
   error: { type: Object, required: true }
@@ -12,12 +12,10 @@ defineProps({
     inline-theme-disabled
     :theme-overrides="themeOverrides"
   >
-    <n-loading-bar-provider>
-      <nuxt-layout>
-        <div class="size-full flex items-center justify-center text-xl">
-          {{ error.message }}
-        </div>
-      </nuxt-layout>
-    </n-loading-bar-provider>
+    <nuxt-layout>
+      <div class="size-full flex items-center justify-center text-xl">
+        {{ error.message }}
+      </div>
+    </nuxt-layout>
   </n-config-provider>
 </template>
