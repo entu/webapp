@@ -34,7 +34,8 @@ export default defineNuxtConfig({
       apiUrl: '',
       gitSha: '',
       title: 'Entu'
-    }
+    },
+    jwtSecret: ''
   },
   spaLoadingTemplate: false,
   ssr: false

@@ -23,6 +23,7 @@
     "eslint": "8.56.0",
     "eslint-config-standard": "17.1.0",
     "highlight.js": "11.9.0",
+    "jsonwebtoken": "9.0.2",
     "marked": "11.2.0",
     "naive-ui": "2.37.3",
     "nuxt": "3.10.0",
