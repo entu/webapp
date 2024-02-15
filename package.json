@@ -9,6 +9,7 @@
     "lint": "eslint . --ext .vue,.js,.ts --fix --ignore-path .gitignore",
     "dev": "nuxt dev",
     "build": "nuxt build",
+    "start": "node .output/server/index.mjs",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
