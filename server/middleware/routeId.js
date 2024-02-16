@@ -1,6 +1,8 @@
 import { ObjectId } from 'mongodb'
 
 export default defineEventHandler((event) => {
+  if (!event.path.startsWith('/api/')) return
+
   const entityId = getRouterParam(event, 'entityId')
   const propertyId = getRouterParam(event, 'propertyId')
 

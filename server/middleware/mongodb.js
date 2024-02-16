@@ -3,6 +3,8 @@ import { MongoClient } from 'mongodb'
 let dbConnection
 
 export default defineEventHandler(async (event) => {
+  if (!event.path.startsWith('/api/')) return
+
   const { mongodbUrl } = useRuntimeConfig(event)
 
   event.context.entu.db = await connectDB(mongodbUrl, event.context.entu.account)
