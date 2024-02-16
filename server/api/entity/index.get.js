@@ -167,6 +167,8 @@ export default defineEventHandler(async (event) => {
     { $count: '_count' }
   ]
 
+  console.log(pipeline)
+
   entities = await entu.db.collection('entity').aggregate(pipeline).toArray()
   count = await entu.db.collection('entity').aggregate(countPipeline).toArray()
 
