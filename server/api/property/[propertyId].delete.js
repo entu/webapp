@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb'
+
 const rightTypes = [
   '_noaccess',
   '_viewer',
@@ -19,8 +21,10 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  const propertyId = new ObjectId(getRouterParam(event, 'propertyId'))
+
   const property = await entu.db.collection('property').findOne({
-    _id: entu._id,
+    _id: propertyId,
     deleted: { $exists: false }
   }, {
     projection: {
@@ -80,7 +84,7 @@ export default defineEventHandler(async (event) => {
   }
 
   await entu.db.collection('property').updateOne({
-    _id: entu._id
+    _id: propertyId
   }, {
     $set: {
       deleted: {

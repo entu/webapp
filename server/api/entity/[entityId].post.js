@@ -52,10 +52,11 @@ export default defineEventHandler(async (event) => {
   }
 
   const createdDt = new Date()
+  const entityId = new ObjectId(getRouterParam(event, 'entityId'))
 
-  if (entu._id) {
+  if (entityId) {
     const entity = await entu.db.collection('entity').findOne({
-      _id: entu._id
+      _id: entityId
     }, {
       projection: {
         _id: false,
@@ -142,21 +143,21 @@ export default defineEventHandler(async (event) => {
       }
 
       if (parent.private?._public?.at(0)?.boolean === true && !body.some(x => x.type === '_public')) {
-        body.push({ entity: entu._id, type: '_public', boolean: true, created: { at: createdDt, by: entu.user } })
+        body.push({ entity: entityId, type: '_public', boolean: true, created: { at: createdDt, by: entu.user } })
       }
 
       if (parent.private?._inheritrights?.at(0)?.boolean === true && !body.some(x => x.type === '_inheritrights')) {
-        body.push({ entity: entu._id, type: '_inheritrights', boolean: true, created: { at: createdDt, by: entu.user } })
+        body.push({ entity: entityId, type: '_inheritrights', boolean: true, created: { at: createdDt, by: entu.user } })
       }
     }
   }
 
-  if (!entu._id) {
+  if (!entityId) {
     const entity = await entu.db.collection('entity').insertOne({})
-    entu._id = entity.insertedId
+    entityId = entity.insertedId
 
-    body.push({ entity: entu._id, type: '_owner', reference: entu.user, created: { at: createdDt, by: entu.user } })
-    body.push({ entity: entu._id, type: '_created', reference: entu.user, datetime: createdDt, created: { at: createdDt, by: entu.user } })
+    body.push({ entity: entityId, type: '_owner', reference: entu.user, created: { at: createdDt, by: entu.user } })
+    body.push({ entity: entityId, type: '_created', reference: entu.user, datetime: createdDt, created: { at: createdDt, by: entu.user } })
   }
 
   const pIds = []
@@ -173,7 +174,7 @@ export default defineEventHandler(async (event) => {
     if (property.date) { property.date = new Date(property.date) }
     if (property.datetime) { property.datetime = new Date(property.datetime) }
 
-    property.entity = entu._id
+    property.entity = entityId
     property.created = {
       at: createdDt,
       by: entu.user
@@ -224,7 +225,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  await addEntityAggregateSqs(entu._id)
+  await addEntityAggregateSqs(entityId)
 
-  return { _id: entu._id, properties: pIds }
+  return { _id: entityId, properties: pIds }
 })

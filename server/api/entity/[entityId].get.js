@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb'
+
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
   const query = getQuery(event)
@@ -20,8 +22,10 @@ export default defineEventHandler(async (event) => {
     fields.access = true
   }
 
+  const entityId = new ObjectId(getRouterParam(event, 'entityId'))
+
   const entity = await entu.db.collection('entity').findOne({
-    _id: entu._id
+    _id: entityId
   }, {
     projection: fields
   })
@@ -33,7 +37,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const cleanedEntity = await claenupEntity(entity, user, getThumbnail)
+  const cleanedEntity = await claenupEntity(entity, entu.user, getThumbnail)
 
   if (!cleanedEntity) {
     throw createError({

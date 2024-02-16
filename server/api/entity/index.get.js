@@ -32,10 +32,10 @@ export default defineEventHandler(async (event) => {
   let search
   const equalSearch = []
 
-  for (const k in event.queryStringParameters) {
+  for (const k in query) {
     if (!k.includes('.')) continue
 
-    const v = event.queryStringParameters[k]
+    const v = query[k]
     const fieldArray = k.split('.')
     const field = fieldArray.at(0)
     const type = fieldArray.at(1)

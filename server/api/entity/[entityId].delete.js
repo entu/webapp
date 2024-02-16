@@ -1,3 +1,5 @@
+import { ObjectId } from 'mongodb'
+
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
 
@@ -8,8 +10,10 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  const entityId = new ObjectId(getRouterParam(event, 'entityId'))
+
   const entity = await entu.db.collection('entity').findOne({
-    _id: entu._id
+    _id: entityId
   }, {
     projection: {
       _id: false,
@@ -34,7 +38,7 @@ export default defineEventHandler(async (event) => {
   }
 
   await entu.db.collection('property').insertOne({
-    entity: entu._id,
+    entity: entityId,
     type: '_deleted',
     reference: entu.user,
     datetime: new Date(),
@@ -43,10 +47,10 @@ export default defineEventHandler(async (event) => {
       by: entu.user
     }
   })
-  await addEntityAggregateSqs(entu._id)
+  await addEntityAggregateSqs(entityId)
 
   const properties = await entu.db.collection('property').find({
-    reference: entu._id,
+    reference: entityId,
     deleted: { $exists: false }
   }, {
     projection: {

@@ -1,8 +1,12 @@
+import { ObjectId } from 'mongodb'
+
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
 
+  const propertyId = new ObjectId(getRouterParam(event, 'propertyId'))
+
   const property = await entu.db.collection('property').findOne({
-    _id: entu._id,
+    _id: propertyId,
     deleted: { $exists: false }
   })
 
@@ -55,7 +59,7 @@ export default defineEventHandler(async (event) => {
     property.string = '***'
   }
 
-  if (property.url && event.queryStringParameters?.download) {
+  if (property.url && getQuery(event)?.download) {
     await sendRedirect(event, property.url, 302)
   } else {
     return property
