@@ -4,7 +4,7 @@ export async function claenupEntity (entity, user, _thumbnail) {
 
   let result = { _id: entity._id }
 
-  if (user && entity.access.includes(user)) {
+  if (user && entity.access.map(x => x.toString()).includes(user.toString())) {
     result = { ...result, ...entity.private }
   } else if (entity.access.includes('public')) {
     result = { ...result, ...entity.public }
