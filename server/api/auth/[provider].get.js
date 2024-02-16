@@ -2,9 +2,10 @@ import https from 'https'
 import jwt from 'jsonwebtoken'
 
 export default defineEventHandler(async (event) => {
+  const provider = getRouterParam(event, 'provider')
   const { jwtSecret, oauthId, oauthSecret } = useRuntimeConfig(event)
-  const provider = event.pathParameters?.provider
-  const { code, error, state } = event.queryStringParameters || {}
+  const { code, error, state } = getQuery(event)
+  const audience = getRequestIP(event, { xForwardedFor: true })
 
   if (error) {
     throw createError({
@@ -14,13 +15,13 @@ export default defineEventHandler(async (event) => {
   }
 
   if (code && state) {
-    const decodedState = jwt.verify(state, jwtSecret, { audience: event.requestContext?.http?.sourceIp })
+    const decodedState = jwt.verify(state, jwtSecret, { audience })
 
     const accessToken = await getToken(code, `https://${getHeader(event, 'host')}${event.rawPath}`, oauthId, oauthSecret)
     const profile = await getProfile(accessToken)
 
     const user = {
-      ip: event.requestContext?.http?.sourceIp,
+      ip: audience,
       provider: profile.provider,
       id: profile.id,
       name: profile.name,
@@ -35,8 +36,8 @@ export default defineEventHandler(async (event) => {
       return { key: sessionId }
     }
   } else {
-    const state = jwt.sign({ next: event.queryStringParameters?.next }, jwtSecret, {
-      audience: event.requestContext?.http?.sourceIp,
+    const state = jwt.sign({ next: getQuery(event)?.next }, jwtSecret, {
+      audience,
       expiresIn: '5m'
     })
 
@@ -50,7 +51,7 @@ export default defineEventHandler(async (event) => {
       state
     }).toString()
 
-    await sendRedirect(event, url, 302)
+    await sendRedirect(event, url.toString(), 302)
   }
 })
 

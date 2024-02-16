@@ -37,7 +37,7 @@ export default defineEventHandler((event) => {
     }
   }
 
-  if (!auth.account) {
+  if (!event.path.startsWith('/api/auth/') && !auth.account) {
     throw createError({
       statusCode: 401,
       statusMessage: 'No account parameter'
