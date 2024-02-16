@@ -46,5 +46,5 @@ export default defineEventHandler((event) => {
 })
 
 function formatAccount (account) {
-  return account.replace(/[^a-z0-9]/gi, '').toLowerCase()
+  return account ? account.replace(/[^a-z0-9]/gi, '').toLowerCase() : undefined
 }
