@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
   const onlyForAccount = getQuery(event)?.account
 
   const dbs = await connection.admin().listDatabases()
-  const accounts = {}
+  const accounts = []
 
   for (let i = 0; i < dbs.databases.length; i++) {
     const account = dbs.databases[i].name
@@ -65,14 +65,14 @@ export default defineEventHandler(async (event) => {
         expiresIn: '48h'
       })
 
-      accounts[account] = {
+      accounts.push({
         _id: person._id.toString(),
         name: person.private?.name?.at(0)?.string,
         account,
         token
-      }
+      })
     }
   }
 
-  return Object.values(accounts)
+  return accounts
 })
