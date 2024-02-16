@@ -3,14 +3,14 @@ import { MongoClient } from 'mongodb'
 let dbConnection
 
 export default defineEventHandler(async (event) => {
-  const { mongoUrl } = useRuntimeConfig(event)
+  const { mongodbUrl } = useRuntimeConfig(event)
 
-  event.context.db = await connectDB(mongoUrl, event.context.auth.account)
+  event.context.db = await connectDB(mongodbUrl, event.context.auth.account)
 })
 
-async function connectDB (mongoUrl, dbName) {
+async function connectDB (mongodbUrl, dbName) {
   if (!dbConnection) {
-    const dbClient = new MongoClient(mongoUrl)
+    const dbClient = new MongoClient(mongodbUrl)
 
     dbConnection = await dbClient.connect()
 

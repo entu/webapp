@@ -32,11 +32,11 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: '',
-      gitSha: '',
+      commitHash: '',
       title: 'Entu'
     },
     jwtSecret: '',
-    mongoUrl: ''
+    mongodbUrl: ''
   },
   spaLoadingTemplate: false,
   ssr: false
