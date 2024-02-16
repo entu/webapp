@@ -1,16 +1,22 @@
 import jwt from 'jsonwebtoken'
+import { ObjectId } from 'mongodb'
 
 export default defineEventHandler((event) => {
+  const jwtToken = (getHeader(event, 'authorization') || '').replace('Bearer ', '').trim()
+  const account = formatAccount(getQuery(event)?.account)
+
   const auth = {
-    account: getQuery(event)?.account,
-    ip: getRequestIP(event, { xForwardedFor: true }),
-    token: (getHeader(event, 'authorization') || '').replace('Bearer ', '')
+    ip: getRequestIP(event, { xForwardedFor: true })
   }
 
-  if (auth.token) {
+  if (account) {
+    auth.account = account
+  }
+
+  if (jwtToken) {
     try {
       const { jwtSecret } = useRuntimeConfig(event)
-      const decoded = jwt.verify(auth.token, jwtSecret, { issuer: auth.account, audience: auth.ip })
+      const decoded = jwt.verify(jwtToken, jwtSecret, { issuer: auth.account, audience: auth.ip })
 
       if (decoded.aud !== auth.ip) {
         throw createError({
@@ -19,8 +25,8 @@ export default defineEventHandler((event) => {
         })
       }
 
-      auth.account = decoded.iss
-      auth.user = decoded.sub
+      auth.account = formatAccount(decoded.iss)
+      auth.user = new ObjectId(decoded.sub)
     } catch (e) {
       throw createError({
         statusCode: 401,
@@ -36,7 +42,9 @@ export default defineEventHandler((event) => {
     })
   }
 
-  auth.account = auth.account.replace(/[^a-z0-9]/gi, '_')
-
-  event.context.auth = auth
+  event.context.entu = auth
 })
+
+function formatAccount (account) {
+  return account.replace(/[^a-z0-9]/gi, '').toLowerCase()
+}

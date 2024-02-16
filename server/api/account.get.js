@@ -1,10 +1,11 @@
-export default defineEventHandler(async ({ context }) => {
-  // await _h.addStats(event, context.db.functionName)
+export default defineEventHandler(async (event) => {
+  const entu = event.context.entu
 
-  const stats = await context.db.stats()
+  const stats = await entu.db.stats()
 
-  const entities = await context.db.collection('entity').countDocuments()
-  const deletedEntities = await context.db.collection('property').aggregate([{
+  const entities = await entu.db.collection('entity').countDocuments()
+
+  const deletedEntities = await entu.db.collection('property').aggregate([{
     $match: {
       type: '_deleted'
     }
@@ -16,14 +17,14 @@ export default defineEventHandler(async ({ context }) => {
     $count: 'count'
   }]).toArray()
 
-  const properties = await context.db.collection('property').aggregate([{
+  const properties = await entu.db.collection('property').aggregate([{
     $group: {
       _id: { $gt: ['$deleted', null] },
       count: { $sum: 1 }
     }
   }]).toArray()
 
-  const files = await context.db.collection('property').aggregate([{
+  const files = await entu.db.collection('property').aggregate([{
     $match: {
       filesize: { $exists: true }
     }
@@ -36,7 +37,7 @@ export default defineEventHandler(async ({ context }) => {
   }]).toArray()
 
   const date = new Date().toISOString()
-  const requests = await context.db.collection('stats').findOne({ date: date.substring(0, 7), function: 'ALL' })
+  const requests = await entu.db.collection('stats').findOne({ date: date.substring(0, 7), function: 'ALL' })
 
   return {
     entities,

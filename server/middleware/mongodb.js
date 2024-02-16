@@ -5,7 +5,7 @@ let dbConnection
 export default defineEventHandler(async (event) => {
   const { mongodbUrl } = useRuntimeConfig(event)
 
-  event.context.db = await connectDB(mongodbUrl, event.context.auth.account)
+  event.context.entu.db = await connectDB(mongodbUrl, event.context.entu.account)
 })
 
 async function connectDB (mongodbUrl, dbName) {
