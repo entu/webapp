@@ -1,7 +1,7 @@
-// const _forIn = require('lodash/forIn')
-// const _set = require('lodash/set')
-// const _toNumber = require('lodash/toNumber')
-// const _toSafeInteger = require('lodash/toSafeInteger')
+import _forIn from 'lodash/forIn'
+import _set from 'lodash/set'
+import _toNumber from 'lodash/toNumber'
+import _toSafeInteger from 'lodash/toSafeInteger'
 import { ObjectId } from 'mongodb'
 
 export default defineEventHandler(async (event) => {
