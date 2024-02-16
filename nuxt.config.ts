@@ -35,7 +35,8 @@ export default defineNuxtConfig({
       gitSha: '',
       title: 'Entu'
     },
-    jwtSecret: ''
+    jwtSecret: '',
+    mongoUrl: ''
   },
   spaLoadingTemplate: false,
   ssr: false

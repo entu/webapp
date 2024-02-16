@@ -36,5 +36,7 @@ export default defineEventHandler((event) => {
     })
   }
 
+  auth.account = auth.account.replace(/[^a-z0-9]/gi, '_')
+
   event.context.auth = auth
 })

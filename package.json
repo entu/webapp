@@ -26,6 +26,7 @@
     "highlight.js": "11.9.0",
     "jsonwebtoken": "9.0.2",
     "marked": "11.2.0",
+    "mongodb": "6.3.0",
     "naive-ui": "2.37.3",
     "nuxt": "3.10.0",
     "nuxt-icons": "3.2.1",
