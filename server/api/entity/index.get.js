@@ -1,5 +1,3 @@
-import { ObjectId } from 'mongodb'
-
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
   const query = getQuery(event)
@@ -44,7 +42,7 @@ export default defineEventHandler(async (event) => {
 
     switch (type) {
       case 'reference':
-        value = new ObjectId(v)
+        value = getObjectId(v)
         break
       case 'boolean':
         value = v.toLowerCase() === 'true'

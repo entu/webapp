@@ -1,6 +1,5 @@
 import { createHash } from 'crypto'
 import jwt from 'jsonwebtoken'
-import { ObjectId } from 'mongodb'
 
 const mongoDbSystemDbs = ['admin', 'config', 'local']
 
@@ -22,7 +21,7 @@ export default defineEventHandler(async (event) => {
   try {
     const decoded = jwt.verify(key, jwtSecret, { audience })
     const session = await connection.collection('session').findOneAndUpdate({
-      _id: new ObjectId(decoded.sub),
+      _id: getObjectId(decoded.sub),
       deleted: { $exists: false }
     }, {
       $set: { deleted: new Date() }

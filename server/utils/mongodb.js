@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb'
+import { MongoClient, ObjectId } from 'mongodb'
 
 let dbConnection
 
@@ -12,6 +12,10 @@ export async function connectDb (dbName) {
   }
 
   return dbConnection.db(dbName)
+}
+
+export function getObjectId (_id) {
+  return new ObjectId(_id)
 }
 
 export async function addUserSession (user) {

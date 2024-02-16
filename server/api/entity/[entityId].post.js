@@ -1,5 +1,3 @@
-import { ObjectId } from 'mongodb'
-
 const allowedTypes = [
   '_type',
   '_parent',
@@ -52,7 +50,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const createdDt = new Date()
-  const entityId = new ObjectId(getRouterParam(event, 'entityId'))
+  let entityId = getObjectId(getRouterParam(event, 'entityId'))
 
   if (entityId) {
     const entity = await entu.db.collection('entity').findOne({
@@ -116,7 +114,7 @@ export default defineEventHandler(async (event) => {
 
     if (property.type === '_parent' && property.reference) {
       const parent = await entu.db.collection('entity').findOne({
-        _id: new ObjectId(property.reference)
+        _id: getObjectId(property.reference)
       }, {
         projection: {
           _id: false,
@@ -166,11 +164,11 @@ export default defineEventHandler(async (event) => {
     const property = body[i]
 
     if (property._id) {
-      oldPIds.push(new ObjectId(property._id))
+      oldPIds.push(getObjectId(property._id))
 
       delete property._id
     }
-    if (property.reference) { property.reference = new ObjectId(property.reference) }
+    if (property.reference) { property.reference = getObjectId(property.reference) }
     if (property.date) { property.date = new Date(property.date) }
     if (property.datetime) { property.datetime = new Date(property.datetime) }
 

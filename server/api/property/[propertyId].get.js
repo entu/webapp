@@ -1,9 +1,7 @@
-import { ObjectId } from 'mongodb'
-
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
 
-  const propertyId = new ObjectId(getRouterParam(event, 'propertyId'))
+  const propertyId = getObjectId(getRouterParam(event, 'propertyId'))
 
   const property = await entu.db.collection('property').findOne({
     _id: propertyId,

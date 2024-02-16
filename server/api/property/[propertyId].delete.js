@@ -1,5 +1,3 @@
-import { ObjectId } from 'mongodb'
-
 const rightTypes = [
   '_noaccess',
   '_viewer',
@@ -21,7 +19,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const propertyId = new ObjectId(getRouterParam(event, 'propertyId'))
+  const propertyId = getObjectId(getRouterParam(event, 'propertyId'))
 
   const property = await entu.db.collection('property').findOne({
     _id: propertyId,

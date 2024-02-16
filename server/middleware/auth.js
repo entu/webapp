@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken'
-import { ObjectId } from 'mongodb'
 
 export default defineEventHandler((event) => {
   if (!event.path.startsWith('/api/')) return
@@ -28,7 +27,7 @@ export default defineEventHandler((event) => {
       }
 
       auth.account = formatAccount(decoded.iss)
-      auth.user = new ObjectId(decoded.sub)
+      auth.user = getObjectId(decoded.sub)
     } catch (e) {
       throw createError({
         statusCode: 401,

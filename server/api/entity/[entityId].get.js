@@ -1,5 +1,3 @@
-import { ObjectId } from 'mongodb'
-
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
   const query = getQuery(event)
@@ -22,7 +20,7 @@ export default defineEventHandler(async (event) => {
     fields.access = true
   }
 
-  const entityId = new ObjectId(getRouterParam(event, 'entityId'))
+  const entityId = getObjectId(getRouterParam(event, 'entityId'))
 
   const entity = await entu.db.collection('entity').findOne({
     _id: entityId
