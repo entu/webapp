@@ -1,7 +1,3 @@
-import _forIn from 'lodash/forIn'
-import _set from 'lodash/set'
-import _toNumber from 'lodash/toNumber'
-import _toSafeInteger from 'lodash/toSafeInteger'
 import { ObjectId } from 'mongodb'
 
 export default defineEventHandler(async (event) => {
@@ -28,59 +24,62 @@ export default defineEventHandler(async (event) => {
   }
 
   const sort = (query.sort || '').split(',').filter(x => !!x)
-  const limit = _toSafeInteger(query.limit) || 100
-  const skip = _toSafeInteger(query.skip) || 0
+  const limit = query.limit ? parseInt(query.limit) : 100
+  const skip = query.skip ? parseInt(query.skip) : 0
   const q = (query.q || '').toLowerCase().split(' ').filter(x => !!x)
   let sortFields = {}
   const filter = {}
   let search
   const equalSearch = []
 
-  _forIn(event.queryStringParameters || {}, (v, k) => {
-    if (k.includes('.')) {
-      const fieldArray = k.split('.')
-      const field = fieldArray.at(0)
-      const type = fieldArray.at(1)
-      const operator = fieldArray.at(2)
-      let value
+  for (const k in event.queryStringParameters) {
+    if (!k.includes('.')) continue
 
-      switch (type) {
-        case 'reference':
-          value = new ObjectId(v)
-          break
-        case 'boolean':
+    const v = event.queryStringParameters[k]
+    const fieldArray = k.split('.')
+    const field = fieldArray.at(0)
+    const type = fieldArray.at(1)
+    const operator = fieldArray.at(2)
+    let value
+
+    switch (type) {
+      case 'reference':
+        value = new ObjectId(v)
+        break
+      case 'boolean':
+        value = v.toLowerCase() === 'true'
+        break
+      case 'number':
+        value = Number(v)
+        break
+      case 'filesize':
+        value = Number(v)
+        break
+      case 'date':
+        value = new Date(v)
+        break
+      case 'datetime':
+        value = new Date(v)
+        break
+      default:
+        if (operator === 'regex' && v.includes('/')) {
+          value = new RegExp(v.split('/').at(1), v.split('/').at(2))
+        } else if (operator === 'exists') {
           value = v.toLowerCase() === 'true'
-          break
-        case 'number':
-          value = _toNumber(v)
-          break
-        case 'filesize':
-          value = _toNumber(v)
-          break
-        case 'date':
-          value = new Date(v)
-          break
-        case 'datetime':
-          value = new Date(v)
-          break
-        default:
-          if (operator === 'regex' && v.includes('/')) {
-            value = new RegExp(v.split('/').at(1), v.split('/').at(2))
-          } else if (operator === 'exists') {
-            value = v.toLowerCase() === 'true'
-          } else {
-            value = v
-          }
-      }
-
-      if (['gt', 'gte', 'lt', 'lte', 'ne', 'regex', 'exists'].includes(operator)) {
-        _set(filter, [`private.${field}.${type}`, `$${operator}`], value)
-      } else {
-        filter[`private.${field}.${type}`] = value
-        equalSearch.push({ text: { path: `private.${field}.${type}`, query: value } })
-      }
+        } else {
+          value = v
+        }
     }
-  })
+
+    if (['gt', 'gte', 'lt', 'lte', 'ne', 'regex', 'exists'].includes(operator)) {
+      filter[`private.${field}.${type}`] = {
+        [`$${operator}`]: value
+      }
+    } else {
+      filter[`private.${field}.${type}`] = value
+      equalSearch.push({ text: { path: `private.${field}.${type}`, query: value } })
+    }
+  }
 
   if (entu.user) {
     filter.access = { $in: [entu.user, 'public'] }
@@ -101,8 +100,13 @@ export default defineEventHandler(async (event) => {
   }
 
   if (q.length > 0) {
-    _set(filter, ['$text', '$search'], q.map(x => `"${x}"`).join(' '))
-    _set(filter, [entu.user ? 'search.private' : 'search.public', '$all'], q.map(x => new RegExp(x)))
+    filter.$text = { $search: q.map(x => `"${x}"`).join(' ') }
+
+    if (entu.user) {
+      filter['search.private'] = { $all: q.map(x => new RegExp(x)) }
+    } else {
+      filter['search.public'] = { $all: q.map(x => new RegExp(x)) }
+    }
   }
 
   const cleanedEntities = []
