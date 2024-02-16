@@ -1,8 +1,6 @@
 import { createHash } from 'crypto'
 import jwt from 'jsonwebtoken'
 
-const mongoDbSystemDbs = ['admin', 'config', 'local']
-
 export default defineEventHandler(async (event) => {
   const { jwtSecret } = useRuntimeConfig(event)
   const key = getHeader(event, 'authorization').replace('Bearer ', '')

@@ -1,5 +1,7 @@
 import { MongoClient, ObjectId } from 'mongodb'
 
+export const mongoDbSystemDbs = ['admin', 'config', 'local']
+
 let dbConnection
 
 export async function connectDb (dbName) {

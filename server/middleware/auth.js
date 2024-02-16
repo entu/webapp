@@ -47,5 +47,7 @@ export default defineEventHandler((event) => {
 })
 
 function formatAccount (account) {
+  if (mongoDbSystemDbs.includes(account)) return undefined
+
   return account ? account.replace(/[^a-z0-9]/gi, '').toLowerCase() : undefined
 }
