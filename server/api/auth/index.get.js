@@ -5,8 +5,6 @@ import { ObjectId } from 'mongodb'
 const mongoDbSystemDbs = ['admin', 'config', 'local']
 
 export default defineEventHandler(async (event) => {
-  const entu = event.context.entu
-
   const { jwtSecret } = useRuntimeConfig(event)
   const key = getHeader(event, 'authorization').replace('Bearer ', '')
 
@@ -51,7 +49,7 @@ export default defineEventHandler(async (event) => {
 
   const onlyForAccount = getQuery(event)?.account
 
-  const dbs = await entu.admin().listDatabases()
+  const dbs = await connection.admin().listDatabases()
   const accounts = {}
 
   for (let i = 0; i < dbs.databases.length; i++) {

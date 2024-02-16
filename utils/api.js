@@ -53,7 +53,7 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
   }
 
   const url = new URL(runtimeConfig.public.apiUrl)
-  url.pathname = '/' + pathname
+  url.pathname = `${url.pathname}/${pathname}`
 
   if (method === 'GET') {
     url.search = new URLSearchParams(params).toString()

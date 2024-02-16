@@ -7,6 +7,8 @@ export default defineEventHandler(async (event) => {
   const { code, error, state } = getQuery(event)
   const audience = getRequestIP(event, { xForwardedFor: true })
 
+  // console.log(getQuery(event))
+
   if (error) {
     throw createError({
       statusCode: 400,
@@ -17,7 +19,7 @@ export default defineEventHandler(async (event) => {
   if (code && state) {
     const decodedState = jwt.verify(state, jwtSecret, { audience })
 
-    const accessToken = await getToken(code, `https://${getHeader(event, 'host')}${event.rawPath}`, oauthId, oauthSecret)
+    const accessToken = await getToken(code, oauthId, oauthSecret)
     const profile = await getProfile(accessToken)
 
     const user = {
@@ -28,7 +30,7 @@ export default defineEventHandler(async (event) => {
       email: profile.email
     }
 
-    const sessionId = await _h.addUserSession(user)
+    const sessionId = await addUserSession(user, jwtSecret)
 
     if (decodedState.next) {
       await sendRedirect(event, `${decodedState.next}${sessionId}`, 302)
@@ -45,7 +47,7 @@ export default defineEventHandler(async (event) => {
     url.pathname = `/auth/${provider}`
     url.search = new URLSearchParams({
       client_id: oauthId,
-      redirect_uri: `https://${getHeader(event, 'host')}${event.rawPath}`,
+      redirect_uri: `https://${getRequestHost(event)}${event.path.split('?').at(0)}`,
       response_type: 'code',
       scope: 'openid',
       state
@@ -124,5 +126,20 @@ const getProfile = (accessToken) => {
     }).on('error', (err) => {
       reject(err)
     })
+  })
+}
+
+async function addUserSession (user, jwtSecret) {
+  const connection = await connectDb('entu')
+
+  const session = await connection.collection('session').insertOne({
+    created: new Date(),
+    user
+  })
+
+  return jwt.sign({}, jwtSecret, {
+    audience: user.ip,
+    subject: session.insertedId.toString(),
+    expiresIn: '5m'
   })
 }
