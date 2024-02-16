@@ -167,7 +167,7 @@ export default defineEventHandler(async (event) => {
   count = await entu.db.collection('entity').aggregate(countPipeline).toArray()
 
   for (let i = 0; i < entities.length; i++) {
-    const entity = await claenupEntity(entities[i], user, getThumbnail)
+    const entity = await claenupEntity(entities[i], entu.user, getThumbnail)
 
     if (entity) cleanedEntities.push(entity)
   }
