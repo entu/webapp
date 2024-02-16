@@ -36,7 +36,9 @@ export default defineNuxtConfig({
       title: 'Entu'
     },
     jwtSecret: '',
-    mongodbUrl: ''
+    mongodbUrl: '',
+    oauthId: '',
+    oauthSecret: ''
   },
   spaLoadingTemplate: false,
   ssr: false

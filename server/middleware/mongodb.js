@@ -1,23 +1,5 @@
-import { MongoClient } from 'mongodb'
-
-let dbConnection
-
 export default defineEventHandler(async (event) => {
   if (!event.path.startsWith('/api/')) return
 
-  const { mongodbUrl } = useRuntimeConfig(event)
-
-  event.context.entu.db = await connectDB(mongodbUrl, event.context.entu.account)
+  event.context.entu.db = await connectDb(event.context.entu.account)
 })
-
-async function connectDB (mongodbUrl, dbName) {
-  if (!dbConnection) {
-    const dbClient = new MongoClient(mongodbUrl)
-
-    dbConnection = await dbClient.connect()
-
-    console.log('Connected to MongoDB')
-  }
-
-  return dbConnection.db(dbName)
-}
