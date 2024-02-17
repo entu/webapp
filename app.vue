@@ -28,7 +28,7 @@ onMounted(() => {
 
 // eslint-disable-next-line no-console
 console.log(
-  `%cX-Entu-Version:%c ${runtimeConfig.public.gitSha}`,
+  `%cX-Entu-Version:%c ${runtimeConfig.public.commitHash}`,
   'font-weight:bold;color:green;font-family:monospace',
   'color:green;font-family:monospace'
 )

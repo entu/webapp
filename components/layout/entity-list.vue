@@ -12,6 +12,7 @@ const entitiesCount = ref(null)
 const limit = ref(Math.ceil(window.innerHeight / 48) + 3)
 const skip = ref(0)
 const isLoading = ref(false)
+const isLoadingOnScroll = ref(false)
 const locationSearch = ref(null)
 const scrollIdx = ref(0)
 
@@ -23,12 +24,14 @@ const debouncedScroll = useDebounceFn(async () => {
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
-useInfiniteScroll(listElement, () => {
+useInfiniteScroll(listElement, async () => {
   if (isLoading.value) return
   if (limit.value === 0) return
   if (entitiesCount.value === 0) return
 
-  getEntities()
+  isLoadingOnScroll.value = true
+  await getEntities()
+  isLoadingOnScroll.value = false
 }, { distance: 150 })
 
 onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
@@ -158,17 +161,22 @@ function color () {
     </div>
 
     <div
-      v-if="isLoading"
+      v-if="isLoading && !isLoadingOnScroll"
       class="size-full flex items-center justify-center"
     >
       <n-spin />
     </div>
 
     <div
-      v-if="!isLoading && entitiesCount > 0"
+      v-if="entitiesCount > 0"
       class="pt-3 pb-1 sticky bottom-0 text-center text-gray-400 italic bg-white"
     >
-      {{ t('count', entitiesCount) }}
+      <n-spin
+        size="small"
+        :show="isLoading"
+      >
+        {{ t('count', entitiesCount) }}
+      </n-spin>
     </div>
 
     <div
