@@ -6,6 +6,7 @@ html,
 body,
 #__nuxt {
   @apply size-full;
+  @apply overflow-hidden;
   @apply antialiased;
 }
 
