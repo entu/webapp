@@ -128,7 +128,7 @@ function color () {
 
     <div
       ref="listElement"
-      class="w-80 max-h-full relative overflow-y-auto"
+      class="w-80 max-h-full py-1 relative overflow-y-auto"
     >
       <nuxt-link
         v-for="(entity, idx) in entitiesList"
@@ -167,17 +167,14 @@ function color () {
       <n-spin />
     </div>
 
-    <div
+    <n-spin
       v-if="entitiesCount > 0"
-      class="pt-3 pb-1 sticky bottom-0 text-center text-gray-400 italic bg-white"
+      class="py-1 sticky bottom-0 text-center text-gray-400 italic bg-white"
+      size="small"
+      :show="isLoading"
     >
-      <n-spin
-        size="small"
-        :show="isLoading"
-      >
-        {{ t('count', entitiesCount) }}
-      </n-spin>
-    </div>
+      {{ t('count', entitiesCount) }}
+    </n-spin>
 
     <div
       v-if="entitiesCount === 0"
