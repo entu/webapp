@@ -30,9 +30,9 @@ const total = ref(0)
 const pagination = ref({
   page: 1,
   pageCount: 1,
-  pageSize: 10,
+  pageSize: 25,
   showSizePicker: true,
-  pageSizes: [10, 25, 50, 100],
+  pageSizes: [25, 50, 100],
   selectProps: {
     renderLabel: e => t('perPage', e.value)
   }
@@ -134,10 +134,15 @@ async function getEntities (page = pagination.value.page, pageSize = pagination.
 
   rawEntities.value = entities
   total.value = count
-  pagination.value.page = page
-  pagination.value.pageCount = Math.ceil(count / pageSize)
-  pagination.value.pageSize = pageSize
   sort.value = sorter
+
+  if (count <= pagination.value.pageSize) {
+    pagination.value = false
+  } else {
+    pagination.value.page = page
+    pagination.value.pageCount = Math.ceil(count / pageSize)
+    pagination.value.pageSize = pageSize
+  }
 
   isLoading.value = false
 }
