@@ -11,9 +11,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const entityId = getObjectId(getRouterParam(event, 'entityId'))
-
-  const { _id, properties } = await setEntity(entu, entityId, body)
+  const { _id, properties } = await setEntity(entu, undefined, body)
 
   // await addEntityAggregateSqs(_id)
 

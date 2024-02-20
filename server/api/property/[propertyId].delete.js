@@ -65,7 +65,7 @@ export default defineEventHandler(async (event) => {
 
   const access = entity.private?._editor?.map(s => s.reference?.toString()) || []
 
-  if (!access.includes(entu.user)) {
+  if (!access.includes(entu.userStr)) {
     throw createError({
       statusCode: 403,
       statusMessage: 'User not in _owner nor _editor property'
@@ -74,7 +74,7 @@ export default defineEventHandler(async (event) => {
 
   const owners = entity.private?._owner?.map(s => s.reference?.toString()) || []
 
-  if (rightTypes.includes(property.type) && !owners.includes(entu.user)) {
+  if (rightTypes.includes(property.type) && !owners.includes(entu.userStr)) {
     throw createError({
       statusCode: 403,
       statusMessage: 'User not in _owner property'
@@ -92,7 +92,7 @@ export default defineEventHandler(async (event) => {
     }
   })
 
-  await addEntityAggregateSqs(property.entity)
+  // await addEntityAggregateSqs(property.entity)
 
   return { deleted: true }
 })

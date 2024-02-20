@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
 
   const access = entity.private?._owner?.map(s => s.reference?.toString()) || []
 
-  if (!access.includes(entu.user)) {
+  if (!access.includes(entu.userStr)) {
     throw createError({
       statusCode: 403,
       statusMessage: 'User not in _owner property'
@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
       by: entu.user
     }
   })
-  await addEntityAggregateSqs(entityId)
+  // await addEntityAggregateSqs(entityId)
 
   const properties = await entu.db.collection('property').find({
     reference: entityId,
@@ -71,7 +71,7 @@ export default defineEventHandler(async (event) => {
       }
     })
 
-    await addEntityAggregateSqs(property.entity)
+    // await addEntityAggregateSqs(property.entity)
   }
 
   return { deleted: true }

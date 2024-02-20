@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
         statusMessage: 'Not a public property'
       })
     }
-  } else if (!access.includes(entu.user)) {
+  } else if (!access.includes(entu.userStr)) {
     throw createError({
       statusCode: 403,
       statusMessage: 'User not in any rights property'
