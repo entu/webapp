@@ -57,6 +57,8 @@ export default defineEventHandler(async (event) => {
     property.string = '***'
   }
 
+  console.log(property)
+
   if (property.url && getQuery(event)?.download) {
     await sendRedirect(event, property.url, 302)
   } else {
