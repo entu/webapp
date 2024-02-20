@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const access = (entity.private?._owner || []).map(s => s.reference?.toString())
+  const access = entity.private?._owner?.map(s => s.reference?.toString()) || []
 
   if (!access.includes(entu.user)) {
     throw createError({

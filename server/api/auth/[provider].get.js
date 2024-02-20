@@ -40,11 +40,13 @@ export default defineEventHandler(async (event) => {
       expiresIn: '5m'
     })
 
+    const { origin, pathname } = getRequestURL(event)
+
     const url = new URL('https://oauth.ee')
     url.pathname = `/auth/${provider}`
     url.search = new URLSearchParams({
       client_id: oauthId,
-      redirect_uri: `https://${getRequestHost(event)}${event.path.split('?').at(0)}`,
+      redirect_uri: `${origin}${pathname}`,
       response_type: 'code',
       scope: 'openid',
       state

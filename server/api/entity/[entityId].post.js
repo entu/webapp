@@ -70,7 +70,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const access = (entity.private?._editor || []).map(s => s.reference?.toString())
+    const access = entity.private?._editor?.map(s => s.reference?.toString()) || []
 
     if (!access.includes(entu.user)) {
       throw createError({
@@ -80,7 +80,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const rigtsProperties = body.filter(property => rightTypes.includes(property.type))
-    const owners = (entity.private?._owner || []).map(s => s.reference?.toString())
+    const owners = entity.private?._owner?.map(s => s.reference?.toString()) || []
 
     if (rigtsProperties.length > 0 && !owners.includes(entu.user)) {
       throw createError({
@@ -131,7 +131,7 @@ export default defineEventHandler(async (event) => {
         })
       }
 
-      const parentAccess = (parent.private?._expander || []).map(s => s.reference?.toString())
+      const parentAccess = parent.private?._expander?.map(s => s.reference?.toString()) || []
 
       if (!parentAccess.includes(entu.user)) {
         throw createError({

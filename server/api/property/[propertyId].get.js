@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const access = (entity.access || []).map(s => s.toString())
+  const access = entity.access?.map(s => s.toString()) || []
 
   if (property.public) {
     if (!access.includes('public')) {

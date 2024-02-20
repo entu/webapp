@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const access = (entity.private?._editor || []).map(s => s.reference?.toString())
+  const access = entity.private?._editor?.map(s => s.reference?.toString()) || []
 
   if (!access.includes(entu.user)) {
     throw createError({
@@ -72,7 +72,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const owners = (entity.private?._owner || []).map(s => s.reference?.toString())
+  const owners = entity.private?._owner?.map(s => s.reference?.toString()) || []
 
   if (rightTypes.includes(property.type) && !owners.includes(entu.user)) {
     throw createError({
