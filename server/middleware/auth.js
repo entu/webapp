@@ -28,6 +28,7 @@ export default defineEventHandler((event) => {
 
       auth.account = formatAccount(decoded.iss)
       auth.user = getObjectId(decoded.sub)
+      auth.userStr = decoded.sub
     } catch (e) {
       throw createError({
         statusCode: 401,

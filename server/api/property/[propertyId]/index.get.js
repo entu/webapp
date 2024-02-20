@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const access = (entity.access || []).map(s => s.toString())
+  const access = entity.access?.map(s => s.toString()) || []
 
   if (property.public) {
     if (!access.includes('public')) {
@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
         statusMessage: 'Not a public property'
       })
     }
-  } else if (!access.includes(entu.user)) {
+  } else if (!access.includes(entu.userStr)) {
     throw createError({
       statusCode: 403,
       statusMessage: 'User not in any rights property'
@@ -56,6 +56,8 @@ export default defineEventHandler(async (event) => {
   if (property.type === 'entu_api_key') {
     property.string = '***'
   }
+
+  console.log(property)
 
   if (property.url && getQuery(event)?.download) {
     await sendRedirect(event, property.url, 302)
