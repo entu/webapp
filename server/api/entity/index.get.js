@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   const sort = (query.sort || '').split(',').filter(x => !!x)
   const limit = parseInt(query.limit) || 100
   const skip = parseInt(query.skip) || 0
-  const q = (query.q || '').toLowerCase().split(' ').filter(x => !!x)
+  const q = (query.q || '').toLowerCase().split(' ').filter(x => x.length > 0)
   let sortFields = {}
   const filter = {}
   let search
@@ -98,12 +98,10 @@ export default defineEventHandler(async (event) => {
   }
 
   if (q.length > 0) {
-    filter.$text = { $search: q.map(x => `"${x}"`).join(' ') }
-
     if (entu.user) {
-      filter['search.private'] = { $all: q.map(x => new RegExp(x)) }
+      filter['search.private'] = { $all: q }
     } else {
-      filter['search.public'] = { $all: q.map(x => new RegExp(x)) }
+      filter['search.public'] = { $all: q }
     }
   }
 

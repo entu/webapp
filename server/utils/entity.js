@@ -417,11 +417,11 @@ export async function aggregateEntity (entu, entityId) {
     delete newEntity.public
   }
 
-  if (newEntity.search.private.length > 0) {
+  if (newEntity.search?.private?.length > 0) {
     newEntity.search.private = makeSearchArray(newEntity.search.private)
   }
 
-  if (newEntity.search.public.length > 0) {
+  if (newEntity.search?.public?.length > 0) {
     newEntity.search.public = makeSearchArray(newEntity.search.public)
   }
 
@@ -918,7 +918,7 @@ function makeSearchArray (array) {
     }
   }
 
-  return [...new Set(result)]
+  return [...new Set(result)].sort()
 }
 
 function uniqBy (array, keyFn) {
