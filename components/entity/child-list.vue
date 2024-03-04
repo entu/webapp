@@ -136,13 +136,9 @@ async function getEntities (page = pagination.value.page, pageSize = pagination.
   total.value = count
   sort.value = sorter
 
-  if (count <= pagination.value.pageSize) {
-    pagination.value = false
-  } else {
-    pagination.value.page = page
-    pagination.value.pageCount = Math.ceil(count / pageSize)
-    pagination.value.pageSize = pageSize
-  }
+  pagination.value.page = page
+  pagination.value.pageCount = Math.ceil(count / pageSize)
+  pagination.value.pageSize = pageSize
 
   isLoading.value = false
 }
@@ -172,11 +168,11 @@ onMounted(async () => {
     :data="rawEntities"
     :loading="isLoading"
     :pagination="pagination"
-    :paginate-single-page="total > 10"
+    :paginate-single-page="total > pagination.pageSizes.at(0)"
     :row-key="row => row._id"
     @update:page="getEntities($event)"
     @update:page-size="getEntities(1, $event)"
-    @update:sorter="getEntities(undefined, undefined, $event)"
+    @update:sorter="getEntities(1, undefined, $event)"
   />
 </template>
 
