@@ -409,7 +409,16 @@ export async function aggregateEntity (entu, entityId) {
 
   const sqsLength = await startRelativeAggregation(entu, entity, newEntity)
 
-  console.log(`UPDATED_SQS ${entityId}`)
+  if (sqsLength > 0) {
+    console.log(`UPDATED_SQS ${entityId}`)
+  }
+
+  return {
+    account: entu.account,
+    entity: entityId,
+    queued: sqsLength,
+    message: 'Entity is aggregated'
+  }
 }
 
 export async function getSignedDownloadUrl (entityId) {
