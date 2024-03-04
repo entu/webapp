@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
   if (!entity) {
     throw createError({
       statusCode: 404,
-      statusMessage: 'Entity not found'
+      statusMessage: `Entity ${entityId} not found`
     })
   }
 

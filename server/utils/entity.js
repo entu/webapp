@@ -87,7 +87,7 @@ export async function setEntity (entu, entityId, properties) {
     if (!entity) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'Entity not found'
+        statusMessage: `Entity ${entityId} not found`
       })
     }
 
@@ -277,7 +277,7 @@ export async function aggregateEntity (entu, entityId) {
   if (!entity) {
     throw createError({
       statusCode: 404,
-      statusMessage: 'Entity not found'
+      statusMessage: `Entity ${entityId} not found`
     })
   }
 
@@ -287,7 +287,7 @@ export async function aggregateEntity (entu, entityId) {
   if (properties.some(x => x.type === '_deleted')) {
     await entu.db.collection('entity').deleteOne({ _id: entityId })
 
-    console.log(`DELETED ${entityId.toString()}`)
+    console.log(`DELETED ${entityId}`)
 
     return {
       account: entu.account,
@@ -345,7 +345,7 @@ export async function aggregateEntity (entu, entityId) {
       }
     }
   } else {
-    console.log(`NO_TYPE ${newEntity.private._type} ${entityId.toString()}`)
+    console.log(`NO_TYPE ${newEntity.private._type} ${entityId}`)
   }
 
   // get and set parent rights
@@ -409,7 +409,7 @@ export async function aggregateEntity (entu, entityId) {
 
   const sqsLength = await startRelativeAggregation(entu, entity, newEntity)
 
-  console.log(`UPDATED_SQS ${entityId.toString()}`)
+  console.log(`UPDATED_SQS ${entityId}`)
 }
 
 export async function getSignedDownloadUrl (entityId) {
@@ -479,7 +479,7 @@ async function formula (entu, str, entityId) {
   let valueArray = []
 
   for (let i = 0; i < data.length; i++) {
-    const value = await formulaField(data[i], entityId, db)
+    const value = await formulaField(entu, data[i], entityId)
 
     if (value) {
       valueArray = [...valueArray, ...value]
@@ -508,7 +508,7 @@ async function formula (entu, str, entityId) {
   }
 }
 
-async function formulaField (str, entityId, db) {
+async function formulaField (entu, str, entityId) {
   str = str.trim()
 
   if ((str.startsWith("'") || str.startsWith('"')) && (str.endsWith("'") || str.endsWith('"'))) {
@@ -535,7 +535,7 @@ async function formulaField (str, entityId, db) {
 
   // same entity property
   } else if (strParts.length === 1 && str !== '_id') {
-    result = await db.collection('property').find({
+    result = await entu.db.collection('property').find({
       entity: entityId,
       type: str,
       string: { $exists: true },
@@ -547,7 +547,7 @@ async function formulaField (str, entityId, db) {
 
   // childs _id
   } else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty === '_id') {
-    result = await db.collection('entity').find({
+    result = await entu.db.collection('entity').find({
       'private._parent.reference': entityId
     }, {
       projection: { _id: true }
@@ -555,7 +555,7 @@ async function formulaField (str, entityId, db) {
 
   // childs (with type) property
   } else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty === '_id') {
-    result = await db.collection('entity').find({
+    result = await entu.db.collection('entity').find({
       'private._parent.reference': entityId,
       'private._type.string': fieldType
     }, {
@@ -564,7 +564,7 @@ async function formulaField (str, entityId, db) {
 
   // childs property
   } else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty !== '_id') {
-    result = await db.collection('entity').aggregate([
+    result = await entu.db.collection('entity').aggregate([
       {
         $match: { 'private._parent.reference': entityId }
       }, {
@@ -595,7 +595,7 @@ async function formulaField (str, entityId, db) {
 
   // childs (with type) property
   } else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty !== '_id') {
-    result = await db.collection('entity').aggregate([
+    result = await entu.db.collection('entity').aggregate([
       {
         $match: {
           'private._parent.reference': entityId,
@@ -629,7 +629,7 @@ async function formulaField (str, entityId, db) {
 
   // parents _id
   } else if (strParts.length === 3 && fieldRef === '_parent' && fieldType === '*' && fieldProperty === '_id') {
-    result = await db.collection('property').aggregate([
+    result = await entu.db.collection('property').aggregate([
       {
         $match: {
           entity: entityId,
@@ -644,7 +644,7 @@ async function formulaField (str, entityId, db) {
 
   // parents (with type) _id
   } else if (strParts.length === 3 && fieldRef === '_parent' && fieldType !== '*' && fieldProperty === '_id') {
-    result = await db.collection('property').aggregate([
+    result = await entu.db.collection('property').aggregate([
       {
         $match: {
           entity: entityId,
@@ -677,7 +677,7 @@ async function formulaField (str, entityId, db) {
 
   // parents property
   } else if (strParts.length === 3 && fieldRef === '_parent' && fieldType === '*' && fieldProperty !== '_id') {
-    result = await db.collection('property').aggregate([
+    result = await entu.db.collection('property').aggregate([
       {
         $match: {
           entity: entityId,
@@ -713,7 +713,7 @@ async function formulaField (str, entityId, db) {
 
   // parents (with type) property
   } else if (strParts.length === 3 && fieldRef === '_parent' && fieldType !== '*' && fieldProperty !== '_id') {
-    result = await db.collection('property').aggregate([
+    result = await entu.db.collection('property').aggregate([
       {
         $match: {
           entity: entityId,
@@ -878,30 +878,34 @@ function uniqBy (array, keyFn) {
   )
 }
 
-async function startRelativeAggregation (entu, entity, newEntity, date) {
-  // let notEqual = false
-  // const rights = ['_noaccess', '_viewer', '_expander', '_editor', '_owner']
+async function startRelativeAggregation (entu, entity, newEntity) {
+  let notEqual = false
+  const rights = ['_noaccess', '_viewer', '_expander', '_editor', '_owner']
 
-  // const name = entity.private?.name?.map(x => x.string || '') || []
-  // const newName = newEntity.private?.name?.map(x => x.string || '') || []
-  // notEqual = notEqual || !_.isEqual(_.sortBy(name), _.sortBy(newName))
+  const oldName = entity.private?.name?.map(x => x.string || '') || []
+  const newName = newEntity.private?.name?.map(x => x.string || '') || []
 
-  // rights.forEach((type) => {
-  //   const oldRights = entity.private?.[type]?.map(x => x.reference?.toString()) || []
-  //   const newRights = newEntity.private?.[type]?.map(x => x.reference?.toString()) || []
-  //   notEqual = notEqual || !_.isEqual(_.sortBy(oldRights), _.sortBy(newRights))
-  // })
+  oldName.sort()
+  newName.sort()
 
-  // if (!notEqual) return 0
+  notEqual = notEqual || oldName.join('') !== newName.join('')
 
-  // const referrers = await entu.db.collection('property').aggregate([
-  //   { $match: { reference: entity._id, deleted: { $exists: false } } },
-  //   { $group: { _id: '$entity' } }
-  // ]).toArray()
+  rights.forEach((type) => {
+    const oldRights = entity.private?.[type]?.map(x => x.reference?.toString()) || []
+    const newRights = newEntity.private?.[type]?.map(x => x.reference?.toString()) || []
+    notEqual = notEqual || oldRights.join('') !== newRights.join('')
+  })
 
-  // for (let j = 0; j < referrers.length; j++) {
-  //   await addAggregateQueue(entu, referrers[j]._id)
-  // }
+  if (!notEqual) return 0
 
-  // return referrers.length
+  const referrers = await entu.db.collection('property').aggregate([
+    { $match: { reference: entity._id, deleted: { $exists: false } } },
+    { $group: { _id: '$entity' } }
+  ]).toArray()
+
+  for (let j = 0; j < referrers.length; j++) {
+    await addAggregateQueue(entu, referrers[j]._id)
+  }
+
+  return referrers.length
 }
