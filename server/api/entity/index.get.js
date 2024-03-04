@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
 
   if (props.length > 0) {
     props.forEach((f) => {
-      if (f === '_thumbnail') {
+      if (f === '_thumbnail' && !props.includes('photo')) {
         fields['private.photo.s3'] = true
         fields['public.photo.s3'] = true
         getThumbnail = true
