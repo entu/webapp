@@ -108,8 +108,6 @@ export default defineEventHandler(async (event) => {
   }
 
   const cleanedEntities = []
-  let entities = 0
-  let count = 0
   let pipeline = [{ $match: filter }]
 
   if (group.length > 0) {
@@ -165,8 +163,11 @@ export default defineEventHandler(async (event) => {
     { $count: '_count' }
   ]
 
-  entities = await entu.db.collection('entity').aggregate(pipeline).toArray()
-  count = await entu.db.collection('entity').aggregate(countPipeline).toArray()
+  const start = new Date().getTime()
+  const [entities, count] = await Promise.all([
+    entu.db.collection('entity').aggregate(pipeline).toArray(),
+    entu.db.collection('entity').aggregate(countPipeline).toArray()
+  ])
 
   for (let i = 0; i < entities.length; i++) {
     const entity = await claenupEntity(entities[i], entu.user, getThumbnail)
