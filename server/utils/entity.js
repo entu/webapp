@@ -902,15 +902,17 @@ function getAccessArray ({ private: entity }) {
 }
 
 function makeSearchArray (array) {
+  if (!array || array.length === 0) return []
+
   const result = []
 
   for (const str of array) {
-    const words = str.split(' ').filter(x => x.trim().length > 1)
+    const words = str.toLowerCase().split(/\s+/).map(x => x.trim()).filter(x => x.length > 0)
 
     for (const word of words) {
       for (let i = 0; i < word.length; i++) {
         for (let j = i + 1; j <= word.length; j++) {
-          result.push(word.slice(i, j).toLowerCase())
+          result.push(word.slice(i, j))
         }
       }
     }
