@@ -22,8 +22,8 @@ export default defineEventHandler(async (event) => {
   }
 
   const sort = (query.sort || '').split(',').filter(x => !!x)
-  const limit = query.limit ? parseInt(query.limit) : 100
-  const skip = query.skip ? parseInt(query.skip) : 0
+  const limit = parseInt(query.limit) || 100
+  const skip = parseInt(query.skip) || 0
   const q = (query.q || '').toLowerCase().split(' ').filter(x => !!x)
   let sortFields = {}
   const filter = {}
