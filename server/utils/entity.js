@@ -172,6 +172,18 @@ export async function setEntity (entu, entityId, properties) {
   }
 
   if (!entityId) {
+    const entityType = properties.find(x => x.type === '_type' && x.reference)
+
+    if (entityType) {
+      const defaultParents = await entu.db.collection('entity').findOne({ _id: getObjectId(entityType.reference), 'private.default_parent': { $exists: true } }, { projection: { 'private.default_parent': true } })
+
+      if (defaultParents) {
+        defaultParents.private.default_parent.forEach((parent) => {
+          properties.push({ entity: entityId, type: '_parent', reference: parent.reference, created: { at: createdDt, by: entu.user } })
+        })
+      }
+    }
+
     const entity = await entu.db.collection('entity').insertOne({})
     entityId = entity.insertedId
 
