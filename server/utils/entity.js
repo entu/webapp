@@ -256,10 +256,12 @@ export async function addAggregateQueue (entu, entityId) {
       queued: new Date()
     }
   })
+
+  aggregateEntity(entu, entityId)
 }
 
 export async function aggregateEntity (entu, entityId) {
-  const entity = await entu.db.collection('entity').findOne({ _id: eId }, {
+  const entity = await entu.db.collection('entity').findOne({ _id: entityId }, {
     projection: {
       aggregated: true,
       'private.name': true,
@@ -295,7 +297,7 @@ export async function aggregateEntity (entu, entityId) {
     }
   }
 
-  const newEntity = await propertiesToEntity(database, properties)
+  const newEntity = await propertiesToEntity(entu, properties)
 
   // get info from type
   if (newEntity.private._type) {
@@ -319,7 +321,7 @@ export async function aggregateEntity (entu, entityId) {
 
     for (let d = 0; d < definition.length; d++) {
       if (definition[d].formula) {
-        newEntity.private[definition[d].name] = [await formula(definition[d].formula, entityId, database)]
+        newEntity.private[definition[d].name] = [await formula(entu, definition[d].formula, entityId)]
       }
 
       const dValue = newEntity.private[definition[d].name]
@@ -405,7 +407,7 @@ export async function aggregateEntity (entu, entityId) {
 
   await entu.db.collection('entity').replaceOne({ _id: entityId }, newEntity, { upsert: true })
 
-  const sqsLength = await startRelativeAggregation(context, account, database, entity, newEntity)
+  const sqsLength = await startRelativeAggregation(entu, entity, newEntity)
 
   console.log(`UPDATED_SQS ${entityId.toString()}`)
 }
@@ -418,7 +420,7 @@ export async function getSignedUploadUrl (entityId) {
   console.log('getSignedDownloadUrl', entityId)
 }
 
-async function propertiesToEntity (database, properties) {
+async function propertiesToEntity (entu, properties) {
   const entity = {
     aggregated: new Date(),
     private: {},
@@ -468,7 +470,7 @@ async function propertiesToEntity (database, properties) {
   return entity
 }
 
-async function formula (str, eId, db) {
+async function formula (entu, str, entityId) {
   const strArray = str.trim().match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g)
 
   const func = formulaFunction(strArray)
@@ -477,7 +479,7 @@ async function formula (str, eId, db) {
   let valueArray = []
 
   for (let i = 0; i < data.length; i++) {
-    const value = await formulaField(data[i], eId, db)
+    const value = await formulaField(data[i], entityId, db)
 
     if (value) {
       valueArray = [...valueArray, ...value]
@@ -506,7 +508,7 @@ async function formula (str, eId, db) {
   }
 }
 
-async function formulaField (str, eId, db) {
+async function formulaField (str, entityId, db) {
   str = str.trim()
 
   if ((str.startsWith("'") || str.startsWith('"')) && (str.endsWith("'") || str.endsWith('"'))) {
@@ -529,12 +531,12 @@ async function formulaField (str, eId, db) {
 
   // same entity _id
   if (strParts.length === 1 && str === '_id') {
-    result = [{ _id: eId }]
+    result = [{ _id: entityId }]
 
   // same entity property
   } else if (strParts.length === 1 && str !== '_id') {
     result = await db.collection('property').find({
-      entity: eId,
+      entity: entityId,
       type: str,
       string: { $exists: true },
       deleted: { $exists: false }
@@ -546,7 +548,7 @@ async function formulaField (str, eId, db) {
   // childs _id
   } else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty === '_id') {
     result = await db.collection('entity').find({
-      'private._parent.reference': eId
+      'private._parent.reference': entityId
     }, {
       projection: { _id: true }
     }).toArray()
@@ -554,7 +556,7 @@ async function formulaField (str, eId, db) {
   // childs (with type) property
   } else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty === '_id') {
     result = await db.collection('entity').find({
-      'private._parent.reference': eId,
+      'private._parent.reference': entityId,
       'private._type.string': fieldType
     }, {
       projection: { _id: true }
@@ -564,17 +566,17 @@ async function formulaField (str, eId, db) {
   } else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty !== '_id') {
     result = await db.collection('entity').aggregate([
       {
-        $match: { 'private._parent.reference': eId }
+        $match: { 'private._parent.reference': entityId }
       }, {
         $lookup: {
           from: 'property',
-          let: { eId: '$_id' },
+          let: { entityId: '$_id' },
           pipeline: [
             {
               $match: {
                 type: fieldProperty,
                 deleted: { $exists: false },
-                $expr: { $eq: ['$entity', '$$eId'] }
+                $expr: { $eq: ['$entity', '$$entityId'] }
               }
             }, {
               $project: { _id: false, entity: false, type: false, created: false }
@@ -596,19 +598,19 @@ async function formulaField (str, eId, db) {
     result = await db.collection('entity').aggregate([
       {
         $match: {
-          'private._parent.reference': eId,
+          'private._parent.reference': entityId,
           'private._type.string': fieldType
         }
       }, {
         $lookup: {
           from: 'property',
-          let: { eId: '$_id' },
+          let: { entityId: '$_id' },
           pipeline: [
             {
               $match: {
                 type: fieldProperty,
                 deleted: { $exists: false },
-                $expr: { $eq: ['$entity', '$$eId'] }
+                $expr: { $eq: ['$entity', '$$entityId'] }
               }
             }, {
               $project: { _id: false, entity: false, type: false, created: false }
@@ -630,7 +632,7 @@ async function formulaField (str, eId, db) {
     result = await db.collection('property').aggregate([
       {
         $match: {
-          entity: eId,
+          entity: entityId,
           type: '_parent',
           reference: { $exists: true },
           deleted: { $exists: false }
@@ -645,7 +647,7 @@ async function formulaField (str, eId, db) {
     result = await db.collection('property').aggregate([
       {
         $match: {
-          entity: eId,
+          entity: entityId,
           type: '_parent',
           reference: { $exists: true },
           deleted: { $exists: false }
@@ -653,12 +655,12 @@ async function formulaField (str, eId, db) {
       }, {
         $lookup: {
           from: 'entity',
-          let: { eId: '$reference' },
+          let: { entityId: '$reference' },
           pipeline: [
             {
               $match: {
                 'private._type.string': fieldType,
-                $expr: { $eq: ['$_id', '$$eId'] }
+                $expr: { $eq: ['$_id', '$$entityId'] }
               }
             }, {
               $project: { _id: true }
@@ -678,7 +680,7 @@ async function formulaField (str, eId, db) {
     result = await db.collection('property').aggregate([
       {
         $match: {
-          entity: eId,
+          entity: entityId,
           type: '_parent',
           reference: { $exists: true },
           deleted: { $exists: false }
@@ -686,13 +688,13 @@ async function formulaField (str, eId, db) {
       }, {
         $lookup: {
           from: 'property',
-          let: { eId: '$reference' },
+          let: { entityId: '$reference' },
           pipeline: [
             {
               $match: {
                 type: fieldProperty,
                 deleted: { $exists: false },
-                $expr: { $eq: ['$entity', '$$eId'] }
+                $expr: { $eq: ['$entity', '$$entityId'] }
               }
             }, {
               $project: { _id: false, entity: false, type: false, created: false }
@@ -714,7 +716,7 @@ async function formulaField (str, eId, db) {
     result = await db.collection('property').aggregate([
       {
         $match: {
-          entity: eId,
+          entity: entityId,
           type: '_parent',
           reference: { $exists: true },
           deleted: { $exists: false }
@@ -722,12 +724,12 @@ async function formulaField (str, eId, db) {
       }, {
         $lookup: {
           from: 'entity',
-          let: { eId: '$reference' },
+          let: { entityId: '$reference' },
           pipeline: [
             {
               $match: {
                 'private._type.string': fieldType,
-                $expr: { $eq: ['$_id', '$$eId'] }
+                $expr: { $eq: ['$_id', '$$entityId'] }
               }
             }, {
               $project: { _id: true }
@@ -738,13 +740,13 @@ async function formulaField (str, eId, db) {
       }, {
         $lookup: {
           from: 'property',
-          let: { eId: '$parents._id' },
+          let: { entityId: '$parents._id' },
           pipeline: [
             {
               $match: {
                 type: fieldProperty,
                 deleted: { $exists: false },
-                $expr: { $in: ['$entity', '$$eId'] }
+                $expr: { $in: ['$entity', '$$entityId'] }
               }
             }, {
               $project: { _id: false, entity: false, type: false, created: false }
@@ -876,7 +878,7 @@ function uniqBy (array, keyFn) {
   )
 }
 
-async function startRelativeAggregation (context, account, database, entity, newEntity, date) {
+async function startRelativeAggregation (entu, entity, newEntity, date) {
   // let notEqual = false
   // const rights = ['_noaccess', '_viewer', '_expander', '_editor', '_owner']
 
