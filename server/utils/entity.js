@@ -256,6 +256,8 @@ export async function setEntity (entu, entityId, properties) {
     })
   }
 
+  await aggregateEntity(entu, entityId)
+
   return { _id: entityId, properties: pIds }
 }
 
@@ -268,8 +270,6 @@ export async function addAggregateQueue (entu, entityId) {
       queued: new Date()
     }
   })
-
-  aggregateEntity(entu, entityId)
 }
 
 export async function aggregateEntity (entu, entityId) {
@@ -339,16 +339,16 @@ export async function aggregateEntity (entu, entityId) {
       const dValue = newEntity.private[definition[d].name]
 
       if (definition[d].search && dValue) {
-        newEntity.search.private = [...new Set([
+        newEntity.search.private = [
           ...(newEntity.search.private || []),
           ...getValueArray(dValue)
-        ])].filter(x => x !== undefined && x !== null).map(x => `${x}`.toLowerCase())
+        ]
 
         if (definition[d].public) {
-          newEntity.search.public = [...new Set([
+          newEntity.search.public = [
             ...(newEntity.search.public || []),
             ...getValueArray(dValue)
-          ])].filter(x => x !== undefined && x !== null).map(x => `${x}`.toLowerCase())
+          ]
         }
       }
 
@@ -415,6 +415,14 @@ export async function aggregateEntity (entu, entityId) {
 
   if (!newEntity.access.includes('public') || Object.keys(newEntity.public).length === 0) {
     delete newEntity.public
+  }
+
+  if (newEntity.search.private.length > 0) {
+    newEntity.search.private = makeSearchArray(newEntity.search.private)
+  }
+
+  if (newEntity.search.public.length > 0) {
+    newEntity.search.public = makeSearchArray(newEntity.search.public)
   }
 
   await entu.db.collection('entity').replaceOne({ _id: entityId }, newEntity, { upsert: true })
@@ -891,6 +899,24 @@ function getAccessArray ({ private: entity }) {
   })
 
   return uniqBy(access, x => x.toString())
+}
+
+function makeSearchArray (array) {
+  const result = []
+
+  for (const str of array) {
+    const words = str.split(' ').filter(x => x.trim().length > 1)
+
+    for (const word of words) {
+      for (let i = 0; i < word.length; i++) {
+        for (let j = i + 1; j <= word.length; j++) {
+          result.push(word.slice(i, j).toLowerCase())
+        }
+      }
+    }
+  }
+
+  return [...new Set(result)]
 }
 
 function uniqBy (array, keyFn) {
