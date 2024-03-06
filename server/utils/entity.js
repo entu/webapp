@@ -299,7 +299,7 @@ export async function aggregateEntity (entu, entityId) {
   if (properties.some(x => x.type === '_deleted')) {
     await entu.db.collection('entity').deleteOne({ _id: entityId })
 
-    console.log(`DELETED ${entityId}`)
+    // console.log(`DELETED ${entityId}`)
 
     return {
       account: entu.account,
@@ -433,9 +433,9 @@ export async function aggregateEntity (entu, entityId) {
 
   const sqsLength = await startRelativeAggregation(entu, entity, newEntity)
 
-  if (sqsLength > 0) {
-    console.log(`UPDATED_SQS ${entityId}`)
-  }
+  // if (sqsLength > 0) {
+  //   console.log(`UPDATED_SQS ${entityId}`)
+  // }
 
   return {
     account: entu.account,
