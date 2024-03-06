@@ -946,6 +946,10 @@ async function startRelativeAggregation (entu, entity, newEntity) {
   rights.forEach((type) => {
     const oldRights = entity.private?.[type]?.map(x => x.reference?.toString()) || []
     const newRights = newEntity.private?.[type]?.map(x => x.reference?.toString()) || []
+
+    oldRights.sort()
+    newRights.sort()
+
     notEqual = notEqual || oldRights.join('') !== newRights.join('')
   })
 
