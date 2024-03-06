@@ -425,6 +425,10 @@ export async function aggregateEntity (entu, entityId) {
     newEntity.search.public = makeSearchArray(newEntity.search.public)
   }
 
+  if (!newEntity.search?.private && !newEntity.search?.public) {
+    delete newEntity.search
+  }
+
   await entu.db.collection('entity').replaceOne({ _id: entityId }, newEntity, { upsert: true })
 
   const sqsLength = await startRelativeAggregation(entu, entity, newEntity)
