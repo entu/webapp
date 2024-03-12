@@ -2,18 +2,38 @@ import { MongoClient, ObjectId } from 'mongodb'
 
 export const mongoDbSystemDbs = ['admin', 'config', 'local']
 
+const dbClient = new MongoClient(process.env.NUXT_MONGODB_URL)
+const dbConnections = {}
 let dbConnection
 
 export async function connectDb (dbName) {
+  if (!dbName) return
+
+  if (dbConnections[dbName]) {
+    return dbConnections[dbName]
+  }
+
   if (!dbConnection) {
-    const dbClient = new MongoClient(process.env.NUXT_MONGODB_URL)
-
     dbConnection = await dbClient.connect()
-
     console.log('Connected to MongoDB')
   }
 
-  return dbConnection.db(dbName)
+  const dbs = await dbConnection.db().admin().listDatabases()
+  const dbNames = dbs.databases.map(db => db.name)
+
+  if (!dbNames.includes(dbName) || mongoDbSystemDbs.includes(dbName)) {
+    console.log(`Database ${dbName} not found`)
+
+    throw createError({
+      statusCode: 404,
+      statusMessage: `Account ${dbName} not found`
+    })
+  }
+
+  dbConnections[dbName] = dbConnection.db(dbName)
+  console.log(`Connected to ${dbName} database`)
+
+  return dbConnections[dbName]
 }
 
 export function getObjectId (_id) {

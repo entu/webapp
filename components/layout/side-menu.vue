@@ -233,7 +233,7 @@ function menuSorter (a, b) {
   <div class="py-1 w-full min-h-full flex flex-col justify-between">
     <nuxt-link
       v-if="!menuCollapsed"
-      :to="{ path: `/${accountId}` }"
+      :to="{ path: `/${accountId || ''}` }"
     >
       <img
         class="mt-6 mb-4 mx-auto h-24 w-24"

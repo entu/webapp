@@ -17,6 +17,13 @@ export const useMenueStore = defineStore('menu', () => {
   })) || [])
 
   async function get () {
+    if (!accountId.value) {
+      menuResult.value = {}
+      addFromResult.value = {}
+
+      return
+    }
+
     menuResult.value = await apiGetEntities({
       '_type.string': 'menu',
       props: [

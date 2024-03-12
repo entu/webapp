@@ -2,7 +2,11 @@
 const { accounts } = useAccount()
 
 onMounted(async () => {
-  await navigateTo({ path: `/${accounts.value?.at(0)?.account || 'entu'}` })
+  const path = accounts.value?.at(0)?.account
+
+  if (!path) return
+
+  await navigateTo({ path: `/${path}` })
 })
 </script>
 

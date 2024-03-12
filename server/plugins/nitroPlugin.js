@@ -3,6 +3,8 @@ export default defineNitroPlugin((nitroApp) => {
     const date = new Date().toISOString()
     const entu = event.context.entu
 
+    if (!entu?.db) return
+
     await Promise.all([
       entu.db.collection('stats').updateOne(
         { date: date.substring(0, 10), function: 'ALL' },

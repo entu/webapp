@@ -48,7 +48,7 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
 
   if (token.value) {
     headers = { Authorization: `Bearer ${token.value}`, ...headers }
-  } else {
+  } else if (accountId.value) {
     params = { account: accountId.value, ...params }
   }
 
