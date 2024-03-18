@@ -200,7 +200,7 @@ onMounted(async () => {
     loadChilds()
     loadReferences()
   } else if (userId.value && !isQuery.value) {
-    stats.value = await apiRequest('account')
+    stats.value = await apiRequest()
   }
 
   isLoading.value = false

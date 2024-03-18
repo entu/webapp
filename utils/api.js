@@ -51,9 +51,12 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
   }
 
   const url = new URL(runtimeConfig.public.apiUrl)
+
   if (accountId.value) {
-    url.pathname = `${url.pathname}/${accountId.value}/${pathname}`
-  } else {
+    url.pathname = `${url.pathname}/${accountId.value}`
+  }
+
+  if (pathname) {
     url.pathname = `${url.pathname}/${pathname}`
   }
 
