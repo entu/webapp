@@ -46,16 +46,16 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
 
   requests.value++
 
-  if (accountId.value) {
-    params = { account: accountId.value, ...params }
-  }
-
   if (token.value) {
     headers = { Authorization: `Bearer ${token.value}`, ...headers }
   }
 
   const url = new URL(runtimeConfig.public.apiUrl)
-  url.pathname = `${url.pathname}/${pathname}`
+  if (accountId.value) {
+    url.pathname = `${url.pathname}/${accountId.value}/${pathname}`
+  } else {
+    url.pathname = `${url.pathname}/${pathname}`
+  }
 
   if (method === 'GET') {
     url.search = new URLSearchParams(params).toString()

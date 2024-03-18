@@ -161,7 +161,6 @@ export default defineEventHandler(async (event) => {
     { $count: '_count' }
   ]
 
-  const start = new Date().getTime()
   const [entities, count] = await Promise.all([
     entu.db.collection('entity').aggregate(pipeline).toArray(),
     entu.db.collection('entity').aggregate(countPipeline).toArray()
