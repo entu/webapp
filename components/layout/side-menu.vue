@@ -5,7 +5,7 @@ import { MyIcon, NuxtLink } from '#components'
 const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 
-const { accountId, accounts } = useAccount()
+const { account, accounts } = useAccount()
 const { menuCollapsed, userId, userName } = useUser()
 
 const menuStore = useMenueStore()
@@ -22,36 +22,36 @@ const accountMenu = computed(() => {
     menu.push({
       key: 'account',
       icon: () => h(MyIcon, { icon: 'home' }),
-      label: (accountId.value || '').toUpperCase(),
+      label: account.value?.name,
       children: menuCollapsed.value
         ? [{
             name: '            1',
             label: () => h(NuxtLink,
-              { to: { path: `/${accountId.value}` } },
-              () => h('strong', {}, { default: () => (accountId.value || '').toUpperCase() })
+              { to: { path: `/${account.value?._id}` } },
+              () => h('strong', {}, { default: () => account.value?.name })
             )
           }, {
             name: '            2',
             type: 'divider'
           },
-          ...accounts.value.filter(x => x.account !== accountId.value).map(x => ({
-            key: x.account,
-            name: x.account,
+          ...accounts.value.filter(x => x._id !== account.value?._id).map(x => ({
+            key: x._id,
+            name: x.name,
             label: () => h(NuxtLink,
-              { to: { path: `/${x.account}` } },
-              { default: () => x.account }
+              { to: { path: `/${x._id}` } },
+              { default: () => x.name }
             )
           }))
           ]
-        : accounts.value.filter(x => x.account !== accountId.value).map(x => ({
-          key: x.account,
-          name: x.account,
+        : accounts.value.filter(x => x._id !== account.value?._id).map(x => ({
+          key: x._id,
+          name: x.name,
           label: () => h(NuxtLink,
             {
-              to: { path: `/${x.account}` },
+              to: { path: `/${x._id}` },
               onClick: () => { expandedMenus.value = [] }
             },
-            { default: () => x.account }
+            { default: () => x.name }
           )
         }))
     })
@@ -65,15 +65,15 @@ const accountMenu = computed(() => {
       key: 'account',
       icon: () => h(MyIcon, { icon: 'home' }),
       label: () => h(NuxtLink,
-        { to: { path: `/${accountId.value}` } },
-        () => (accountId.value || '').toUpperCase()
+        { to: { path: `/${account.value?._id}` } },
+        () => account.value?.name
       ),
       children: menuCollapsed.value
         ? [{
             name: '            1',
             label: () => h(NuxtLink,
-              { to: { path: `/${accountId.value}` } },
-              { default: () => h('strong', {}, { default: () => (accountId.value || '').toUpperCase() }) })
+              { to: { path: `/${account.value?._id}` } },
+              { default: () => h('strong', {}, { default: () => account.value?.name }) })
           }]
         : undefined
     })
@@ -112,7 +112,7 @@ const accountMenu = computed(() => {
       key: getValue(entity.query),
       name: getValue(entity.name),
       label: () => h(NuxtLink,
-        { to: { path: `/${accountId.value}`, query: queryStringToObject(getValue(entity.query)) } },
+        { to: { path: `/${account.value?._id}`, query: queryStringToObject(getValue(entity.query)) } },
         { default: () => getValue(entity.name) }
       ),
       ordinal
@@ -174,12 +174,12 @@ const authMenu = computed(() => [
 const userMenu = computed(() => {
   const menu = []
 
-  if (accountId.value && userId.value) {
+  if (account.value?._id && userId.value) {
     menu.push({
       key: userId.value,
       icon: () => h(MyIcon, { icon: 'user' }),
       label: () => h(NuxtLink,
-        { to: { path: `/${accountId.value}/${userId.value}` } },
+        { to: { path: `/${account.value?._id}/${userId.value}` } },
         { default: () => userName.value || t('userEntity') }
       )
     })
@@ -233,7 +233,7 @@ function menuSorter (a, b) {
   <div class="py-1 w-full min-h-full flex flex-col justify-between">
     <nuxt-link
       v-if="!menuCollapsed"
-      :to="{ path: `/${accountId || ''}` }"
+      :to="{ path: `/${account?._id || ''}` }"
     >
       <img
         class="mt-6 mb-4 mx-auto h-24 w-24"

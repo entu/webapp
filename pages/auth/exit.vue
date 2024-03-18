@@ -1,11 +1,13 @@
 <script setup>
 const { t } = useI18n()
 const { accounts } = useAccount()
+const { token } = useUser()
 
 onMounted(async () => {
   useHead({ title: t('title') })
 
-  accounts.value = []
+  accounts.value = undefined
+  token.value = undefined
 
   await navigateTo({ path: '/', query: {} })
 })

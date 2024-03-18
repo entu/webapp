@@ -68,3 +68,9 @@ export async function addUserSession (user) {
     })
   })
 }
+
+export function formatAccount (account) {
+  if (mongoDbSystemDbs.includes(account)) return undefined
+
+  return account ? account.replace(/[^a-z0-9]/gi, '').toLowerCase() : undefined
+}

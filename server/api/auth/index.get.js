@@ -48,9 +48,11 @@ export default defineEventHandler(async (event) => {
 
   const dbs = await connection.admin().listDatabases()
   const accounts = []
+  const accountUsersIds = {}
 
   for (let i = 0; i < dbs.databases.length; i++) {
     const account = dbs.databases[i].name
+
     if (onlyForAccount && onlyForAccount !== account) { continue }
     if (mongoDbSystemDbs.includes(account)) { continue }
 
@@ -58,21 +60,23 @@ export default defineEventHandler(async (event) => {
     const person = await accountCon.collection('entity').findOne(authFilter, { projection: { _id: true, 'private.name.string': true } })
 
     if (person) {
-      const token = jwt.sign({}, jwtSecret, {
-        issuer: account,
-        audience,
-        subject: person._id.toString(),
-        expiresIn: '48h'
-      })
-
+      accountUsersIds[account] = person._id.toString()
       accounts.push({
-        _id: person._id.toString(),
-        name: person.private?.name?.at(0)?.string,
-        account,
-        token
+        _id: account,
+        name: account,
+        user: {
+          _id: person._id.toString(),
+          name: person.private?.name?.at(0).string || person._id.toString()
+        }
       })
     }
   }
 
-  return accounts
+  return {
+    accounts,
+    token: jwt.sign({ accounts: accountUsersIds }, jwtSecret, {
+      audience,
+      expiresIn: '48h'
+    })
+  }
 })

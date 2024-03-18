@@ -11,7 +11,7 @@ npm install
 Make **.env** file and configure required enviroment parameters. Example is in .env.example file:
 
 ```
-NUXT_PUBLIC_API_URL=https://api.entu.app
+NUXT_PUBLIC_API_URL=https://entu.app/api
 ```
 
 ## Development Server

@@ -46,10 +46,12 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
 
   requests.value++
 
+  if (accountId.value) {
+    params = { account: accountId.value, ...params }
+  }
+
   if (token.value) {
     headers = { Authorization: `Bearer ${token.value}`, ...headers }
-  } else if (accountId.value) {
-    params = { account: accountId.value, ...params }
   }
 
   const url = new URL(runtimeConfig.public.apiUrl)
@@ -63,7 +65,10 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
   }
 
   const result = await fetch(url, { method, headers, body }).then((response) => {
-    if (!response.ok && response.status === 401) accounts.value = []
+    if (!response.ok && response.status === 401) {
+      accounts.value = undefined
+      token.value = undefined
+    }
 
     return response.json()
   })

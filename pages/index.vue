@@ -2,7 +2,7 @@
 const { accounts } = useAccount()
 
 onMounted(async () => {
-  const path = accounts.value?.at(0)?.account
+  const path = accounts.value?.at(0)?._id
 
   if (!path) return
 
