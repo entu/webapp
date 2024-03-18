@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 
 export default defineEventHandler(async (event) => {
   const { jwtSecret } = useRuntimeConfig(event)
-  const key = getHeader(event, 'authorization').replace('Bearer ', '')
+  const key = (getHeader(event, 'authorization') || '').replace('Bearer ', '').trim()
 
   if (!key) {
     throw createError({
@@ -44,7 +44,7 @@ export default defineEventHandler(async (event) => {
     authFilter['private.entu_api_key.string'] = createHash('sha256').update(key).digest('hex')
   }
 
-  const onlyForAccount = getQuery(event)?.account
+  const onlyForAccount = getQuery(event).account
 
   const dbs = await connection.admin().listDatabases()
   const accounts = []
@@ -70,6 +70,13 @@ export default defineEventHandler(async (event) => {
         }
       })
     }
+  }
+
+  if (accounts.length === 0) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'No accounts'
+    })
   }
 
   return {

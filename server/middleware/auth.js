@@ -5,7 +5,7 @@ export default defineEventHandler((event) => {
 
   const entu = {
     ip: getRequestIP(event, { xForwardedFor: true }),
-    account: formatAccount(getQuery(event)?.account)
+    account: formatAccount(getQuery(event).account)
   }
 
   if (!event.path.startsWith('/api/auth') && !entu.account) {
@@ -17,7 +17,7 @@ export default defineEventHandler((event) => {
 
   const jwtToken = (getHeader(event, 'authorization') || '').replace('Bearer ', '').trim()
 
-  if (jwtToken) {
+  if (!event.path.startsWith('/api/auth') && jwtToken) {
     try {
       const { jwtSecret } = useRuntimeConfig(event)
       const decoded = jwt.verify(jwtToken, jwtSecret, { audience: entu.ip })
@@ -29,7 +29,7 @@ export default defineEventHandler((event) => {
         })
       }
 
-      if (entu.account && decoded.accounts) {
+      if (decoded.accounts?.[entu.account]) {
         entu.user = getObjectId(decoded.accounts[entu.account])
         entu.userStr = decoded.accounts[entu.account]
       }

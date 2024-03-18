@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
       return { key: sessionId }
     }
   } else {
-    const state = jwt.sign({ next: getQuery(event)?.next }, jwtSecret, {
+    const state = jwt.sign({ next: getQuery(event).next }, jwtSecret, {
       audience,
       expiresIn: '5m'
     })
