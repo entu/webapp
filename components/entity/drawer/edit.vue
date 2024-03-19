@@ -156,7 +156,7 @@ async function onDelete () {
     >
       <h2
         v-if="pg.name"
-        class="font-bold"
+        class="pt-6 px-1 text-center text-gray-500 font-bold uppercase"
       >
         {{ pg.name }}
       </h2>
