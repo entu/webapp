@@ -363,7 +363,7 @@ export async function aggregateEntity (entu, entityId) {
   // get and set parent rights
   let parentRights = {}
   if (newEntity.private._parent?.length > 0 && newEntity.private._inheritrights?.at(0)?.boolean === true) {
-    parentRights = await getParentRights(entu, account, newEntity.private._parent)
+    parentRights = await getParentRights(entu, newEntity.private._parent)
 
     if (parentRights._viewer) { newEntity.private._parent_viewer = uniqBy(parentRights._viewer, x => x.reference.toString()) }
     if (parentRights._expander) { newEntity.private._parent_expander = uniqBy(parentRights._expander, x => x.reference.toString()) }
@@ -824,7 +824,7 @@ function getValueArray (values) {
   return values.map(x => x.number || x.datetime || x.date || x.string || x._id)
 }
 
-async function getParentRights (entu, account, parents) {
+async function getParentRights (entu, parents) {
   const parentRights = await entu.db.collection('entity').find({
     _id: { $in: parents.map(x => x.reference) }
   }, {
