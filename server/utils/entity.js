@@ -425,7 +425,7 @@ export async function aggregateEntity (entu, entityId) {
 
   newEntity.access = getAccessArray(newEntity)
 
-  if (!newEntity.access.includes('domain') || !newEntity.access.includes('public') || Object.keys(newEntity.public).length === 0) {
+  if (!['domain', 'public'].includes(newEntity.private?._sharing?.at(0)?.string) || Object.keys(newEntity.public).length === 0) {
     delete newEntity.public
   }
 
