@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NCheckbox, NDivider, NSwitch } from 'naive-ui'
+import { NCheckbox, NDivider, NRadio, NRadioGroup, NSwitch } from 'naive-ui'
 import { apiDeleteProperty } from '~/utils/api'
 
 const { t } = useI18n()
@@ -13,6 +13,7 @@ const entityId = defineModel('entityId', { type: String, required: true })
 
 const rawEntity = ref()
 const newRight = ref()
+const sharing = ref()
 const isPublic = ref(false)
 const isLoading = ref(false)
 const isUpdating = ref(false)
@@ -68,37 +69,37 @@ async function loadEntity () {
       '_parent_expander',
       '_parent_editor',
       '_parent_owner',
-      '_public',
+      '_sharing',
       '_inheritrights'
     ])
   }
 
-  isPublic.value = getValue(rawEntity.value?._public, 'boolean') || false
+  sharing.value = getValue(rawEntity.value?._sharing) || 'private'
   inheritRights.value = getValue(rawEntity.value?._inheritrights, 'boolean') || false
 
   isLoading.value = false
 }
 
-async function updateIsPublic (value) {
-  isUpdatingPublic.value = true
+async function updateSharing (value) {
+  isUpdating.value = true
 
-  const propertyId = getValue(rawEntity.value._public, '_id')
+  const propertyId = getValue(rawEntity.value._sharing, '_id')
 
-  if (value === true) {
+  if (value !== 'private') {
     const entity = await apiUpsertEntity(entityId.value, [
-      { _id: propertyId, type: '_public', boolean: value }
+      { _id: propertyId, type: '_sharing', string: value }
     ])
 
-    const { _id } = entity.properties.find(x => x.type === '_public')
+    const { _id } = entity.properties.find(x => x.type === '_sharing')
 
-    rawEntity.value._public = [{ _id, boolean: true }]
+    rawEntity.value._sharing = [{ _id, string: value }]
   } else {
     await apiDeleteProperty(propertyId)
 
-    delete rawEntity.value._public
+    delete rawEntity.value._sharing
   }
 
-  isUpdatingPublic.value = false
+  isUpdating.value = false
 }
 
 async function updateInheritRights (value) {
@@ -161,26 +162,6 @@ async function onClose () {
 
   emit('close')
 }
-
-function railStyle ({ focused, checked }) {
-  const style = {}
-
-  if (checked) {
-    style.background = 'rgb(249, 115, 22)'
-
-    if (focused) {
-      style.boxShadow = '0 0 0 2px rgba(249, 115, 22, 0.4)'
-    }
-  } else {
-    style.background = 'rgb(22, 163, 74)'
-
-    if (focused) {
-      style.boxShadow = '0 0 0 2px rgba(22, 163, 74, 0.4)'
-    }
-  }
-
-  return style
-}
 </script>
 
 <template>
@@ -191,38 +172,42 @@ function railStyle ({ focused, checked }) {
     @close="onClose()"
   >
     <div class="flex flex-col gap-12">
-      <div class="w-full mt-12 flex flex-col justify-center items-center gap-4">
-        <n-switch
-          v-model:value="isPublic"
-          size="large"
-          :loading="isUpdatingPublic"
-          :rail-style="railStyle"
-          @update:value="updateIsPublic($event)"
+      <div class="w-full mt-4 flex flex-col justify-center items-center gap-4">
+        <n-radio-group
+          v-model:value="sharing"
+          name="sharing"
+          @update:value="updateSharing($event)"
         >
-          <template #unchecked-icon>
-            <my-icon
-              class="text-green-600"
-              icon="public/false"
-            />
-          </template>
-          <template #unchecked>
-            {{ t('isNotPublic') }}
-          </template>
+          <n-radio
+            class="w-full"
+            value="private"
+            size="large"
+            :label="t('sharingPrivate')"
+          />
+          <div class="ml-7 mb-6 text-gray-500">
+            {{ t('sharingPrivateDescription') }}
+          </div>
 
-          <template #checked-icon>
-            <my-icon
-              class="text-orange-500"
-              icon="public/true"
-            />
-          </template>
-          <template #checked>
-            {{ t('isPublic') }}
-          </template>
-        </n-switch>
+          <n-radio
+            class="w-full"
+            value="domain"
+            size="large"
+            :label="t('sharingDomain')"
+          />
+          <div class="ml-7 mb-6 text-gray-500">
+            {{ t('sharingDomainDescription') }}
+          </div>
 
-        <div class="max-w-80 text-center text-sm text-gray-500">
-          {{ isPublic === true ? t('isPublicDescription') : t('isNotPublicDescription') }}
-        </div>
+          <n-radio
+            class="w-full"
+            value="public"
+            size="large"
+            :label="t('sharingPublic')"
+          />
+          <div class="ml-7 mb-6 text-gray-500">
+            {{ t('sharingPublicDescription') }}
+          </div>
+        </n-radio-group>
       </div>
 
       <div>
@@ -292,10 +277,12 @@ function railStyle ({ focused, checked }) {
 <i18n lang="yaml">
   en:
     title: Rights - {name}
-    isPublic: Entity is Public
-    isPublicDescription: Anyone on the Internet can view the public parameters of this entity. No login required.
-    isNotPublic: Entity is not Public
-    isNotPublicDescription: Only authorized users (below) can view this entity. Login is required.
+    sharingPrivate: Private
+    sharingPrivateDescription: Only authorized users (below) can view this entity. Login is required.
+    sharingDomain: Anyone with account
+    sharingDomainDescription: All signed in users can view the public parameters of this entity. Login is required.
+    sharingPublic: Public on the web
+    sharingPublicDescription: Anyone on the Internet can view the public parameters of this entity. No login required.
     inheritRights: Inherit rights from parent
     inheritRightsDescription: Rights from the parent entity will be used for this entity. Add specific rights below to override inherited rights.
     userRightsParent: Parent entity rights
@@ -303,10 +290,12 @@ function railStyle ({ focused, checked }) {
     selectNewUser: Add new user
   et:
     title: Õigused - {name}
-    isPublic: Objekt on avalik
-    isPublicDescription: Igaüks Internetis saab vaadata selle objekti avalikke parameetreid. Sisselogimine pole vajalik.
-    isNotPublic: Objekt ei ole avalik
-    isNotPublicDescription: Seda objekti saavad vaadata ainult õigustega kasutajad. Sisselogimine on vajalik.
+    sharingPrivate: Privaatne
+    sharingPrivateDescription: Seda objekti saavad vaadata ainult õigustega kasutajad. Sisselogimine on vajalik.
+    sharingDomain: Kõik kasutajad
+    sharingDomainDescription: Kõik kasutajad saavad vaadata selle objekti avalikke parameetreid. Sisselogimine on vajalik.
+    sharingPublic: Objekt on avalik
+    sharingPublicDescription: Igaüks Internetis saab vaadata selle objekti avalikke parameetreid. Sisselogimine pole vajalik.
     inheritRights: Päri õigused peamiselt objektilt
     inheritRightsDescription: Sellele objektile laienevad peamise objekti õigused. Õiguste muutmiseks lisa erisused objekti spetsiifiliste õiguste alla.
     userRightsParent: Peamise objekti õigused
