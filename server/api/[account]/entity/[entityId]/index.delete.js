@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
       by: entu.user
     }
   })
-  await addAggregateQueue(entu, entityId)
+  await aggregateEntity(entu, entityId)
 
   const properties = await entu.db.collection('property').find({
     reference: entityId,

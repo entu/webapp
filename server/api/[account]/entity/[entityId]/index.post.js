@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
 
   const { _id, properties } = await setEntity(entu, entityId, body)
 
-  await addAggregateQueue(entu, _id)
+  await aggregateEntity(entu, _id)
 
   return { _id, properties }
 })

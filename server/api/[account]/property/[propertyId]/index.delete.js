@@ -92,7 +92,7 @@ export default defineEventHandler(async (event) => {
     }
   })
 
-  await addAggregateQueue(entu, property.entity)
+  await aggregateEntity(entu, property.entity)
 
   return { deleted: true }
 })
