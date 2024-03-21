@@ -6,7 +6,9 @@ export async function claenupEntity (entity, user, _thumbnail) {
 
   if (user && entity.access?.map(x => x.toString())?.includes(user.toString())) {
     result = { ...result, ...entity.private }
-  } else if (entity.access?.includes('public')) {
+  } else if (user && entity.access?.includes('domain')) {
+    result = { ...result, ...entity.public }
+  } else if (!user && entity.access?.includes('public')) {
     result = { ...result, ...entity.public }
   } else {
     return
@@ -38,7 +40,7 @@ export async function setEntity (entu, entityId, properties) {
     '_expander',
     '_editor',
     '_owner',
-    '_public',
+    '_sharing',
     '_inheritrights'
   ]
 
@@ -48,7 +50,7 @@ export async function setEntity (entu, entityId, properties) {
     '_expander',
     '_editor',
     '_owner',
-    '_public',
+    '_sharing',
     '_inheritrights'
   ]
 
@@ -140,7 +142,7 @@ export async function setEntity (entu, entityId, properties) {
         projection: {
           _id: false,
           'private._expander': true,
-          'private._public': true,
+          'private._sharing': true,
           'private._inheritrights': true
         }
       })
@@ -161,12 +163,22 @@ export async function setEntity (entu, entityId, properties) {
         })
       }
 
-      if (parent.private?._public?.at(0)?.boolean === true && !properties.some(x => x.type === '_public')) {
-        properties.push({ entity: entityId, type: '_public', boolean: true, created: { at: createdDt, by: entu.user } })
+      if (parent.private?._sharing.at(0).string && !properties.some(x => x.type === '_sharing')) {
+        properties.push({
+          entity: entityId,
+          type: '_sharing',
+          string: parent.private?._sharing.at(0).string.toLowerCase(),
+          created: { at: createdDt, by: entu.user }
+        })
       }
 
       if (parent.private?._inheritrights?.at(0)?.boolean === true && !properties.some(x => x.type === '_inheritrights')) {
-        properties.push({ entity: entityId, type: '_inheritrights', boolean: true, created: { at: createdDt, by: entu.user } })
+        properties.push({
+          entity: entityId,
+          type: '_inheritrights',
+          boolean: true,
+          created: { at: createdDt, by: entu.user }
+        })
       }
     }
   }
@@ -888,8 +900,8 @@ function getAccessArray ({ private: entity }) {
   const access = []
   const noAccess = entity._noaccess?.map(x => x.reference)
 
-  if (entity._public?.at(0)?.boolean === true) {
-    access.push('public')
+  if (entity._sharing?.at(0)?.string) {
+    access.push(entity._sharing?.at(0)?.string.toLowerCase())
   }
 
   ['_viewer', '_expander', '_editor', '_owner'].forEach((type) => {

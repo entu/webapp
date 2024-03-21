@@ -4,7 +4,7 @@ const rightTypes = [
   '_expander',
   '_editor',
   '_owner',
-  '_public',
+  '_sharing',
   '_parent',
   '_inheritrights'
 ]

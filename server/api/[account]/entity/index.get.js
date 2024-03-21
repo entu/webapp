@@ -80,7 +80,7 @@ export default defineEventHandler(async (event) => {
   }
 
   if (entu.user) {
-    filter.access = { $in: [entu.user, 'public'] }
+    filter.access = { $in: [entu.user, 'domain', 'public'] }
   } else {
     filter.access = 'public'
   }
