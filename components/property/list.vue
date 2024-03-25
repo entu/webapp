@@ -25,7 +25,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
       class="grid grid-cols-3 gap-3 border-t first-of-type:border-t-0 border-gray-100"
     >
       <div
-        class="py-2 flex items-top justify-end gap-1 text-[#1E434C] font-medium"
+        class="py-2 flex items-top justify-end gap-1 text-right text-[#1E434C] font-medium"
         :class="{ 'text-red-700' : property.mandatory && (edit || !property.values) }"
       >
         {{
