@@ -19,7 +19,12 @@ const searchingReferences = ref(false)
 
 const referenceOptions = computed(() => {
   if (rawReferences.value) {
-    return rawReferences.value?.map(x => ({ value: x._id, label: getValue(x.name) || x._id, type: getValue(x._type) })) || []
+    return rawReferences.value?.map(x => ({
+      class: '!pr-2',
+      label: getValue(x.name) || x._id,
+      type: getValue(x._type),
+      value: x._id
+    })) || []
   } else {
     return props.options
   }
@@ -59,10 +64,10 @@ function searchReferences (query) {
 
 function renderReferenceOption (option) {
   return h('div',
-    { class: 'flex gap-3 items-center' },
+    { class: 'flex gap-3 items-center justify-between' },
     [
-      h('div', { }, option.label),
-      h('div', { class: 'px-2 rounded bg-blue-50 text-xs text-gray-500' }, option.type)
+      h('div', { class: 'text-ellipsis overflow-hidden' }, option.label),
+      h('div', { class: 'px-1 rounded bg-blue-50 text-xs text-gray-500' }, option.type)
     ]
   )
 }
@@ -121,3 +126,9 @@ function renderReferenceOption (option) {
     count: 'Objekte ei leitud | Lisaks leiti veel {n} objekt. Täpsusta otsingut. | Leiti veel {n} objekti. Täpsusta otsingut.'
     noResults: Objekte ei leitud
 </i18n>
+
+<style>
+.n-base-select-option__content {
+  @apply w-full;
+}
+</style>

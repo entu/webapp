@@ -34,7 +34,7 @@ onKeyStroke('Escape', () => emit('close'))
       header-class="w-full"
     >
       <template #header>
-        <div class="w-full flex justify-between items-center">
+        <div class="w-full flex items-center justify-between">
           <h2 class="truncate whitespace-nowrap overflow-hidden">
             {{ title }}
           </h2>
@@ -54,7 +54,7 @@ onKeyStroke('Escape', () => emit('close'))
       </n-spin>
 
       <template #footer>
-        <div class="w-full flex justify-between items-center">
+        <div class="w-full flex items-center justify-between">
           <slot name="footer" />
 
           <div class="grow" />
