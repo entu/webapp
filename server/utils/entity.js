@@ -311,7 +311,7 @@ export async function aggregateEntity (entu, entityId) {
   if (properties.some(x => x.type === '_deleted')) {
     await entu.db.collection('entity').deleteOne({ _id: entityId })
 
-    // console.log(`DELETED ${entityId}`)
+    // console.log(`DELETED ${entu.account} ${entityId}`)
 
     return {
       account: entu.account,
@@ -369,7 +369,7 @@ export async function aggregateEntity (entu, entityId) {
       }
     }
   } else {
-    console.log(`NO_TYPE ${newEntity.private._type} ${entityId}`)
+    console.log(`NO_TYPE ${entu.account} ${newEntity.private._type} ${entityId}`)
   }
 
   // get and set parent rights
@@ -446,7 +446,7 @@ export async function aggregateEntity (entu, entityId) {
   const sqsLength = await startRelativeAggregation(entu, entity, newEntity)
 
   // if (sqsLength > 0) {
-  //   console.log(`UPDATED_SQS ${entityId}`)
+  //   console.log(`UPDATED_SQS ${entu.account} ${entityId}`)
   // }
 
   return {
@@ -494,7 +494,7 @@ async function propertiesToEntity (entu, properties) {
         cleanProp = { ...cleanProp, property_type: prop.type, string: referenceEntity.private?.name?.at(0).string, entity_type: referenceEntity.private?._type?.at(0).string }
       } else {
         cleanProp = { ...cleanProp, property_type: prop.type, string: prop.reference.toString() }
-        console.log(`NO_REFERENCE ${prop.reference.toString()}`)
+        console.log(`NO_REFERENCE ${entu.account} ${prop.reference.toString()}`)
       }
 
       if (!prop.type.startsWith('_')) {
