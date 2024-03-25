@@ -30,8 +30,8 @@ const entity = computed(() => {
     _thumbnail: rawEntity.value._thumbnail,
     _public: getValue(rawEntity.value._public, 'boolean'),
     name: getValue(rawEntity.value.name),
-    type: entityTypes.value[typeId.value]?.type || {},
-    props: entityTypes.value[typeId.value]?.props || []
+    type: cloneData(entityTypes.value[typeId.value]?.type || {}),
+    props: cloneData(entityTypes.value[typeId.value]?.props || [])
   }
 
   for (const property in rawEntity.value) {

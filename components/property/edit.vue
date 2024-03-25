@@ -30,14 +30,14 @@ const newValues = ref()
 const loadingInputs = ref([])
 
 watch(() => props.values, () => {
-  oldValues.value = cloneArray(props.values.map((x) => {
+  oldValues.value = cloneData(props.values.map((x) => {
     if (x.date) x.date = new Date(x.date).getTime()
     if (x.datetime) x.datetime = new Date(x.datetime).getTime()
 
     return x
   }))
 
-  newValues.value = cloneArray(oldValues.value)
+  newValues.value = cloneData(oldValues.value)
 }, { immediate: true, deep: true })
 
 const languageOptions = [
@@ -258,7 +258,7 @@ async function deleteFile (file) {
 }
 
 function syncValues () {
-  oldValues.value = cloneArray(newValues.value)
+  oldValues.value = cloneData(newValues.value)
 }
 
 function addListValue (_id) {
