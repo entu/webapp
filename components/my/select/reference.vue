@@ -79,6 +79,7 @@ function renderReferenceOption (option) {
     :options="referenceOptions"
     :render-label="renderReferenceOption"
     @search="searchReferences"
+    @focus="searchReferences(' ')"
   >
     <template
       v-if="referenceCount > referenceLimit"
