@@ -402,7 +402,7 @@ function addListValue (_id) {
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         :query="referenceQuery"
-        :values="referenceOptions"
+        :options="referenceOptions"
         @focus="addListValue(value._id)"
         @update:value="updateValue(value)"
       />

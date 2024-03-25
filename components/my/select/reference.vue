@@ -8,7 +8,7 @@ const value = defineModel({ type: String, default: undefined })
 
 const props = defineProps({
   query: { type: String, default: undefined },
-  values: { type: Array, default: () => [] }
+  options: { type: Array, default: () => [] }
 })
 
 const referenceSearch = ref('')
@@ -21,20 +21,18 @@ const referenceOptions = computed(() => {
   if (rawReferences.value) {
     return rawReferences.value?.map(x => ({ value: x._id, label: getValue(x.name) || x._id, type: getValue(x._type) })) || []
   } else {
-    return props.values
+    return props.options
   }
 })
 
-watchDebounced(referenceSearch, async (value = '') => {
+watchDebounced(referenceSearch, async (q = '') => {
   rawReferences.value = null
-
-  if (value === '') return
 
   searchingReferences.value = true
   referenceCount.value = null
 
   let filter = {
-    q: value,
+    q,
     props: [
       '_type.string',
       'name'
@@ -53,7 +51,7 @@ watchDebounced(referenceSearch, async (value = '') => {
   referenceCount.value = count
 
   searchingReferences.value = false
-}, { debounce: 500, maxWait: 5000 })
+}, { debounce: 500, immediate: true, maxWait: 5000 })
 
 function searchReferences (query) {
   referenceSearch.value = query
@@ -73,13 +71,13 @@ function renderReferenceOption (option) {
 <template>
   <n-select
     v-model:value="value"
+    clearable
     filterable
     remote
     :loading="searchingReferences"
     :options="referenceOptions"
     :render-label="renderReferenceOption"
     @search="searchReferences"
-    @focus="searchReferences(' ')"
   >
     <template
       v-if="referenceCount > referenceLimit"
