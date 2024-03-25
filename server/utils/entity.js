@@ -7,7 +7,7 @@ export async function claenupEntity (entity, user, _thumbnail) {
   if (user && entity.access?.map(x => x.toString())?.includes(user.toString())) {
     result = { ...result, ...entity.private }
   } else if (user && entity.access?.includes('domain')) {
-    result = { ...result, ...entity.public }
+    result = { ...result, ...entity.private }
   } else if (!user && entity.access?.includes('public')) {
     result = { ...result, ...entity.public }
   } else {

@@ -280,7 +280,7 @@ async function onClose () {
     sharingPrivate: Private
     sharingPrivateDescription: Only authorized users (below) can view this entity. Login is required.
     sharingDomain: Anyone with account
-    sharingDomainDescription: All signed in users can view the public parameters of this entity. Login is required.
+    sharingDomainDescription: All signed in users can view this entity. Login is required.
     sharingPublic: Public on the web
     sharingPublicDescription: Anyone on the Internet can view the public parameters of this entity. No login required.
     inheritRights: Inherit rights from parent
@@ -293,7 +293,7 @@ async function onClose () {
     sharingPrivate: Privaatne
     sharingPrivateDescription: Seda objekti saavad vaadata ainult õigustega kasutajad. Sisselogimine on vajalik.
     sharingDomain: Kõik kasutajad
-    sharingDomainDescription: Kõik kasutajad saavad vaadata selle objekti avalikke parameetreid. Sisselogimine on vajalik.
+    sharingDomainDescription: Kõik kasutajad saavad vaadata seda objekti. Sisselogimine on vajalik.
     sharingPublic: Objekt on avalik
     sharingPublicDescription: Igaüks Internetis saab vaadata selle objekti avalikke parameetreid. Sisselogimine pole vajalik.
     inheritRights: Päri õigused peamiselt objektilt
