@@ -1,5 +1,5 @@
 <script setup>
-import { NConfigProvider, NGlobalStyle, enUS, dateEnUS } from 'naive-ui'
+import { NConfigProvider, NGlobalStyle, enUS, etEE, dateEnUS, dateEtEE } from 'naive-ui'
 
 const runtimeConfig = useRuntimeConfig()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
@@ -21,8 +21,8 @@ useHead({
 
 onMounted(() => {
   if (locale.value === 'et') {
-    currentLocale.value = etLocale
-    currentDateLocale.value = etDateLocale
+    currentLocale.value = etEE
+    currentDateLocale.value = dateEtEE
   }
 })
 
