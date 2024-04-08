@@ -9,10 +9,16 @@ const { accounts } = useAccount()
 onMounted(async () => {
   useHead({ title: t('title') })
 
-  const authResponse = await apiRequest('auth', {}, { Authorization: `Bearer ${route.query.key}` })
+  const nextPage = useLocalStorage('next', { path: '/' })
+  const authAccount = nextPage.value?.path.split('/').at(1)
+  let newUser = {}
+
+  const authResponse = await apiRequest('auth', authAccount ? { account: authAccount } : {}, { Authorization: `Bearer ${route.query.key}` })
 
   if (authResponse.accounts) {
     accounts.value = authResponse.accounts
+
+    newUser = authResponse.accounts.find(x => x._id === authAccount)?.user || {}
   }
 
   if (authResponse.token) {
@@ -21,9 +27,9 @@ onMounted(async () => {
     token.value = undefined
   }
 
-  const nextPage = useLocalStorage('next', { path: '/' })
-
-  if (nextPage.value.path !== '/') {
+  if (newUser.new) {
+    await navigateTo({ path: `/${authAccount}/${newUser?._id}`, hash: 'edit' })
+  } else if (nextPage.value.path !== '/') {
     const to = { path: nextPage.value?.path || '/', query: nextPage.value?.query }
     nextPage.value = {}
 

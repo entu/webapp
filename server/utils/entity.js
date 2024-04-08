@@ -95,7 +95,7 @@ export async function setEntity (entu, entityId, properties) {
 
     const access = entity.private?._editor?.map(s => s.reference?.toString()) || []
 
-    if (!access.includes(entu.userStr)) {
+    if (!access.includes(entu.userStr) && !entu.systemUser) {
       throw createError({
         statusCode: 403,
         statusMessage: 'User not in _owner nor _editor property'
@@ -105,7 +105,7 @@ export async function setEntity (entu, entityId, properties) {
     const rigtsProperties = properties.filter(property => rightTypes.includes(property.type))
     const owners = entity.private?._owner?.map(s => s.reference?.toString()) || []
 
-    if (rigtsProperties.length > 0 && !owners.includes(entu.userStr)) {
+    if (rigtsProperties.length > 0 && !owners.includes(entu.userStr) && !entu.systemUser) {
       throw createError({
         statusCode: 403,
         statusMessage: 'User not in _owner property'
@@ -156,19 +156,19 @@ export async function setEntity (entu, entityId, properties) {
 
       const parentAccess = parent.private?._expander?.map(s => s.reference?.toString()) || []
 
-      if (!parentAccess.includes(entu.userStr)) {
+      if (!parentAccess.includes(entu.userStr) && !entu.systemUser) {
         throw createError({
           statusCode: 400,
           statusMessage: 'User not in parent _owner, _editor nor _expander property'
         })
       }
 
-      if (parent.private?._sharing.at(0).string && !properties.some(x => x.type === '_sharing')) {
+      if (parent.private?._sharing?.at(0).string && !properties.some(x => x.type === '_sharing')) {
         properties.push({
           entity: entityId,
           type: '_sharing',
           string: parent.private?._sharing.at(0).string.toLowerCase(),
-          created: { at: createdDt, by: entu.user }
+          created: { at: createdDt, by: entu.user || 'entu' }
         })
       }
 
@@ -177,7 +177,7 @@ export async function setEntity (entu, entityId, properties) {
           entity: entityId,
           type: '_inheritrights',
           boolean: true,
-          created: { at: createdDt, by: entu.user }
+          created: { at: createdDt, by: entu.user || 'entu' }
         })
       }
     }
@@ -191,7 +191,7 @@ export async function setEntity (entu, entityId, properties) {
 
       if (defaultParents) {
         defaultParents.private.default_parent.forEach((parent) => {
-          properties.push({ entity: entityId, type: '_parent', reference: parent.reference, created: { at: createdDt, by: entu.user } })
+          properties.push({ entity: entityId, type: '_parent', reference: parent.reference, created: { at: createdDt, by: entu.user || 'entu' } })
         })
       }
     }
@@ -199,8 +199,12 @@ export async function setEntity (entu, entityId, properties) {
     const entity = await entu.db.collection('entity').insertOne({})
     entityId = entity.insertedId
 
-    properties.push({ entity: entityId, type: '_owner', reference: entu.user, created: { at: createdDt, by: entu.user } })
-    properties.push({ entity: entityId, type: '_created', reference: entu.user, datetime: createdDt, created: { at: createdDt, by: entu.user } })
+    if (entu.user) {
+      properties.push({ entity: entityId, type: '_owner', reference: entu.user, created: { at: createdDt, by: entu.user } })
+      properties.push({ entity: entityId, type: '_created', reference: entu.user, datetime: createdDt, created: { at: createdDt, by: entu.user } })
+    } else {
+      properties.push({ entity: entityId, type: '_created', datetime: createdDt, created: { at: createdDt, by: 'entu' } })
+    }
   }
 
   const pIds = []
@@ -220,7 +224,7 @@ export async function setEntity (entu, entityId, properties) {
     property.entity = entityId
     property.created = {
       at: createdDt,
-      by: entu.user
+      by: entu.user || 'entu'
     }
 
     const insertedProperty = await entu.db.collection('property').insertOne(property)
@@ -262,7 +266,7 @@ export async function setEntity (entu, entityId, properties) {
       $set: {
         deleted: {
           at: new Date(),
-          by: entu.user
+          by: entu.user || 'entu'
         }
       }
     })
