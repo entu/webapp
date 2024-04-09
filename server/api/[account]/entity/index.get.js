@@ -10,8 +10,8 @@ export default defineEventHandler(async (event) => {
   if (props.length > 0) {
     props.forEach((f) => {
       if (f === '_thumbnail' && !props.includes('photo')) {
-        fields['private.photo.s3'] = true
-        fields['public.photo.s3'] = true
+        fields['private.photo'] = true
+        fields['public.photo'] = true
         getThumbnail = true
       } else {
         fields[`private.${f}`] = true
@@ -167,7 +167,7 @@ export default defineEventHandler(async (event) => {
   ])
 
   for (let i = 0; i < entities.length; i++) {
-    const entity = await claenupEntity(entities[i], entu.user, getThumbnail)
+    const entity = await claenupEntity(entu, entities[i], getThumbnail)
 
     if (entity) cleanedEntities.push(entity)
   }

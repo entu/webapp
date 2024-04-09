@@ -38,7 +38,11 @@ export default defineNuxtConfig({
     jwtSecret: '',
     mongodbUrl: '',
     oauthId: '',
-    oauthSecret: ''
+    oauthSecret: '',
+    s3Endpoint: '',
+    s3Bucket: '',
+    s3Key: '',
+    s3Secret: ''
   },
   spaLoadingTemplate: false,
   ssr: false

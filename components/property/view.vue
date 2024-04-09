@@ -43,7 +43,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
       </nuxt-link>
     </template>
 
-    <template v-else-if="v.s3 !== undefined">
+    <template v-else-if="v.filename !== undefined">
       <nuxt-link
         class="link"
         target="_blank"

@@ -1,21 +1,21 @@
 // Return public or private properties (based user rights)
-export async function claenupEntity (entity, user, _thumbnail) {
+export async function claenupEntity (entu, entity, _thumbnail) {
   if (!entity) return
 
   let result = { _id: entity._id }
 
-  if (user && entity.access?.map(x => x.toString())?.includes(user.toString())) {
+  if (entu.user && entity.access?.map(x => x.toString())?.includes(entu.user.toString())) {
     result = { ...result, ...entity.private }
-  } else if (user && entity.access?.includes('domain')) {
+  } else if (entu.user && entity.access?.includes('domain')) {
     result = { ...result, ...entity.private }
-  } else if (!user && entity.access?.includes('public')) {
+  } else if (!entu.user && entity.access?.includes('public')) {
     result = { ...result, ...entity.public }
   } else {
     return
   }
 
-  if (_thumbnail && result.photo?.at(0)?.s3) {
-    result._thumbnail = await getSignedDownloadUrl(result.photo.at(0).s3)
+  if (_thumbnail && result.photo?.at(0)) {
+    result._thumbnail = await getSignedDownloadUrl(entu.account, result._id, result.photo.at(0))
   }
 
   if (result.entu_api_key) {
@@ -237,7 +237,7 @@ export async function setEntity (entu, entityId, properties) {
       const contentDisposition = `inline;filename="${encodeURI(property.filename.replace('"', '\"'))}"`
 
       newProperty.upload = {
-        url: await getSignedUploadUrl(`${user.account}/${newProperty._id}`, property.filename, property.filetype, contentDisposition),
+        url: await getSignedUploadUrl(entu.account, entityId, newProperty, contentDisposition, property.filetype),
         method: 'PUT',
         headers: {
           ACL: 'private',
@@ -245,14 +245,6 @@ export async function setEntity (entu, entityId, properties) {
           'Content-Type': property.filetype
         }
       }
-
-      await entu.db.collection('property').updateOne({
-        _id: newProperty._id
-      }, {
-        $set: {
-          s3: `${user.account}/${newProperty._id}`
-        }
-      })
     }
 
     pIds.push(newProperty)
@@ -459,14 +451,6 @@ export async function aggregateEntity (entu, entityId) {
     queued: sqsLength,
     message: 'Entity is aggregated'
   }
-}
-
-export async function getSignedDownloadUrl (entityId) {
-  console.log('getSignedDownloadUrl', entityId)
-}
-
-export async function getSignedUploadUrl (entityId) {
-  console.log('getSignedDownloadUrl', entityId)
 }
 
 async function propertiesToEntity (entu, properties) {

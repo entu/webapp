@@ -47,10 +47,8 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  if (property.s3) {
-    property.url = await getSignedDownloadUrl(property.s3)
-
-    delete property.s3
+  if (property.filename) {
+    property.url = await getSignedDownloadUrl(entu.account, property.entity, property)
   }
 
   if (property.type === 'entu_api_key') {
