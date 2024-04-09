@@ -43,5 +43,5 @@ export async function getSignedUploadUrl (account, entityId, property, contentDi
 }
 
 function getKey (account, entityId, property) {
-  return `${account}/${entityId.toString().substring(0, 4)}/${entityId.toString().substring(4)}/${property._id}`
+  return `${account}/${entityId}/${property._id}`
 }
