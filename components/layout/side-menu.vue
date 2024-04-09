@@ -25,6 +25,7 @@ const accountMenu = computed(() => {
       label: account.value?.name,
       children: menuCollapsed.value
         ? [{
+            key: `account-${account.value?._id}`,
             name: '            1',
             label: () => h(NuxtLink,
               { to: { path: `/${account.value?._id}` } },
@@ -35,7 +36,7 @@ const accountMenu = computed(() => {
             type: 'divider'
           },
           ...accounts.value.filter(x => x._id !== account.value?._id).map(x => ({
-            key: x._id,
+            key: `account-${account.value?._id}-${x._id}`,
             name: x.name,
             label: () => h(NuxtLink,
               { to: { path: `/${x._id}` } },
@@ -44,7 +45,7 @@ const accountMenu = computed(() => {
           }))
           ]
         : accounts.value.filter(x => x._id !== account.value?._id).map(x => ({
-          key: x._id,
+          key: `account-${x._id}`,
           name: x.name,
           label: () => h(NuxtLink,
             {
@@ -70,6 +71,7 @@ const accountMenu = computed(() => {
       ),
       children: menuCollapsed.value
         ? [{
+            key: `account-${account.value?._id}`,
             name: '            1',
             label: () => h(NuxtLink,
               { to: { path: `/${account.value?._id}` } },
@@ -90,12 +92,13 @@ const accountMenu = computed(() => {
 
     if (!menuObject[group]) {
       menuObject[group] = {
-        key: group,
+        key: `group-${group}`,
         icon: () => h(MyIcon, { icon: 'data' }),
         name: getValue(entity.group),
         label: getValue(entity.group),
         children: menuCollapsed.value
           ? [{
+              key: `group-${group}-${entity.group}`,
               name: '            1',
               label: () => h('strong', {}, { default: () => getValue(entity.group)?.toUpperCase() })
             }, {
@@ -109,7 +112,7 @@ const accountMenu = computed(() => {
 
     menuObject[group].ordinal += ordinal
     menuObject[group].children.push({
-      key: getValue(entity.query),
+      key: getValue(entity.query) || entity._id,
       name: getValue(entity.name),
       label: () => h(NuxtLink,
         { to: { path: `/${account.value?._id}`, query: queryStringToObject(getValue(entity.query)) } },
