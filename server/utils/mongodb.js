@@ -2,7 +2,6 @@ import { MongoClient, ObjectId } from 'mongodb'
 
 export const mongoDbSystemDbs = ['admin', 'config', 'local']
 
-const dbClient = new MongoClient(process.env.NUXT_MONGODB_URL)
 const dbConnections = {}
 let dbConnection
 
@@ -14,7 +13,11 @@ export async function connectDb (dbName) {
   }
 
   if (!dbConnection) {
+    const { mongodbUrl } = useRuntimeConfig()
+    const dbClient = new MongoClient(mongodbUrl)
+
     dbConnection = await dbClient.connect()
+
     console.log('Connected to MongoDB')
   }
 
