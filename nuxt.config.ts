@@ -39,6 +39,7 @@ export default defineNuxtConfig({
     mongodbUrl: '',
     oauthId: '',
     oauthSecret: '',
+    s3region: '',
     s3Endpoint: '',
     s3Bucket: '',
     s3Key: '',
