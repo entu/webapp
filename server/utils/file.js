@@ -2,10 +2,10 @@ import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
 export async function getSignedDownloadUrl (account, entityId, property) {
-  const { s3region, s3Endpoint, s3Bucket, s3Key, s3Secret } = useRuntimeConfig()
+  const { s3Region, s3Endpoint, s3Bucket, s3Key, s3Secret } = useRuntimeConfig()
 
   const s3 = new S3Client({
-    region: s3region,
+    region: s3Region,
     endpoint: s3Endpoint,
     credentials: {
       accessKeyId: s3Key,
@@ -22,10 +22,10 @@ export async function getSignedDownloadUrl (account, entityId, property) {
 }
 
 export async function getSignedUploadUrl (account, entityId, property, contentDisposition, contentType) {
-  const { s3region, s3Endpoint, s3Bucket, s3Key, s3Secret } = useRuntimeConfig()
+  const { s3Region, s3Endpoint, s3Bucket, s3Key, s3Secret } = useRuntimeConfig()
 
   const s3 = new S3Client({
-    region: s3region,
+    region: s3Region,
     endpoint: s3Endpoint,
     credentials: {
       accessKeyId: s3Key,
