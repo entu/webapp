@@ -20,7 +20,8 @@ export default defineEventHandler(async (event) => {
   }, {
     projection: {
       _id: false,
-      access: true
+      access: true,
+      [`public.${property.type}._id`]: true
     }
   })
 
@@ -31,9 +32,10 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  const publicProperty = entity.public?.[property.type].some(x => x._id.toString() === propertyId.toString())
   const access = entity.access?.map(s => s.toString()) || []
 
-  if (property.public) {
+  if (publicProperty) {
     if (!access.includes('public')) {
       throw createError({
         statusCode: 403,
