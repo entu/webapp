@@ -28,7 +28,7 @@ const entity = computed(() => {
   const result = {
     _id: rawEntity.value._id,
     _thumbnail: rawEntity.value._thumbnail,
-    _public: getValue(rawEntity.value._public, 'boolean'),
+    _sharing: getValue(rawEntity.value._sharing),
     name: getValue(rawEntity.value.name),
     type: cloneData(entityTypes.value[typeId.value]?.type || {}),
     props: cloneData(entityTypes.value[typeId.value]?.props || [])
@@ -275,22 +275,62 @@ onMounted(async () => {
             </nuxt-link>
 
             <n-popover
-              v-if="entity._public"
+              v-if="!entity._sharing"
               class="max-w-sm"
               placement="left"
             >
               <template #trigger>
                 <nuxt-link
-                  class="py-1 px-2 flex items-center justify-between gap-1 text-xs text-center text-orange-600 bg-orange-50 border rounded-md border-orange-300"
-                  :to="{ path: route.path, query: route.query, hash:'#rights' }"
+                  class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-green-600 bg-green-50 border rounded-md border-green-300"
+                  :to="right.owner ? { path: route.path, query: route.query, hash:'#rights' } : {}"
                 >
-                  {{ t('public') }}
+                  <my-icon icon="sharing/private" />
 
-                  <my-icon icon="public/true" />
+                  {{ t('sharingPrivate') }}
                 </nuxt-link>
               </template>
               <div class="text-sm">
-                {{ t('publicDescription') }}
+                {{ t('sharingPrivateDescription') }}
+              </div>
+            </n-popover>
+
+            <n-popover
+              v-if="entity._sharing === 'domain'"
+              class="max-w-sm"
+              placement="left"
+            >
+              <template #trigger>
+                <nuxt-link
+                  class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-yellow-600 bg-yellow-50 border rounded-md border-yellow-300"
+                  :to="right.owner ? { path: route.path, query: route.query, hash:'#rights' } : {}"
+                >
+                  <my-icon icon="sharing/domain" />
+
+                  {{ t('sharingDomain') }}
+                </nuxt-link>
+              </template>
+              <div class="text-sm">
+                {{ t('sharingDomainDescription') }}
+              </div>
+            </n-popover>
+
+            <n-popover
+              v-if="entity._sharing === 'public'"
+              class="max-w-sm"
+              placement="left"
+            >
+              <template #trigger>
+                <nuxt-link
+                  class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-orange-600 bg-orange-50 border rounded-md border-orange-300"
+                  :to="right.owner ? { path: route.path, query: route.query, hash:'#rights' } : {}"
+                >
+                  <my-icon icon="sharing/public" />
+
+                  {{ t('sharingPublic') }}
+                </nuxt-link>
+              </template>
+              <div class="text-sm">
+                {{ t('sharingPublicDescription') }}
               </div>
             </n-popover>
           </div>
@@ -428,8 +468,12 @@ onMounted(async () => {
     requests: Requests in this month
     deleted: deleted
     limit: limit
-    public: Entity is public
-    publicDescription: This entity is visible to anonymous users
+    sharingPrivate: Private
+    sharingPrivateDescription: Only authorized users (below) can view this entity. Login is required.
+    sharingDomain: Anyone with account
+    sharingDomainDescription: All signed in users can view this entity. Login is required.
+    sharingPublic: Public on the web
+    sharingPublicDescription: Anyone on the Internet can view the public parameters of this entity. No login required.
     childsCount: 'no childs | {n} child | {n} childs'
     referrersCount: 'no referrers | {n} referrer | {n} referrers'
     error404: Entity not found
@@ -440,8 +484,12 @@ onMounted(async () => {
     requests: Päringuid selles kuus
     deleted: kustutatud
     limit: limiit
-    public: Objekt on avalik
-    publicDescription: Seda objekti näevad ka sisselogimata kasutajad
+    sharingPrivate: Privaatne
+    sharingPrivateDescription: Seda objekti saavad vaadata ainult õigustega kasutajad. Sisselogimine on vajalik.
+    sharingDomain: Kõik kasutajad
+    sharingDomainDescription: Kõik kasutajad saavad vaadata seda objekti. Sisselogimine on vajalik.
+    sharingPublic: Objekt on avalik
+    sharingPublicDescription: Igaüks Internetis saab vaadata selle objekti avalikke parameetreid. Sisselogimine pole vajalik.
     childsCount: 'alamobjekte pole | {n} alamobjekt | {n} alamobjekti'
     referrersCount: 'viitajaid pole | {n} viitaja | {n} viitajat'
     error404: Objekti ei leitud
