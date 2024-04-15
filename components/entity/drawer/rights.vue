@@ -266,6 +266,7 @@ async function onClose () {
           v-model="newRight"
           class="mt-6"
           query="_type.string=person"
+          :exclude="entityRights.map(x => x.reference)"
           :placeholder="t('selectNewUser')"
           @update:value="onAddRight($event)"
         />
