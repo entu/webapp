@@ -319,8 +319,14 @@ export async function aggregateEntity (entu, entityId) {
 
   const newEntity = await propertiesToEntity(entu, properties)
 
+  if (newEntity.private._sharing) {
+    newEntity.public._sharing = newEntity.private._sharing
+  }
+
   // get info from type
   if (newEntity.private._type) {
+    newEntity.public._type = newEntity.private._type
+
     const definition = await entu.db.collection('entity').aggregate([
       {
         $match: {
