@@ -476,7 +476,7 @@ onMounted(async () => {
     sharingPublicDescription: Anyone on the Internet can view the public parameters of this entity. No login required.
     childsCount: 'no childs | {n} child | {n} childs'
     referrersCount: 'no referrers | {n} referrer | {n} referrers'
-    error404: Entity not found
+    error404: Entity not found or you do not have access to it
   et:
     entities: Objekte
     properties: Parameetreid
@@ -492,7 +492,7 @@ onMounted(async () => {
     sharingPublicDescription: Igaüks Internetis saab vaadata selle objekti avalikke parameetreid. Sisselogimine pole vajalik.
     childsCount: 'alamobjekte pole | {n} alamobjekt | {n} alamobjekti'
     referrersCount: 'viitajaid pole | {n} viitaja | {n} viitajat'
-    error404: Objekti ei leitud
+    error404: Objekti ei leitud või sul puudub ligipääs sellele
 </i18n>
 
 <style scoped>

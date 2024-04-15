@@ -26,7 +26,7 @@ onMounted(async () => {
 
 <i18n lang="yaml">
   en:
-    error404: File not found
+    error404: File not found or you do not have access to it
   et:
-    error404: Faili ei leitud
+    error404: Faili ei leitud või sul puudub ligipääs sellele
 </i18n>
