@@ -4,11 +4,11 @@ export async function claenupEntity (entu, entity, _thumbnail) {
 
   let result = { _id: entity._id }
 
-  if (entu.user && entity.access?.map(x => x.toString())?.includes(entu.user.toString())) {
+  if (entu.userStr && entity.access?.map(x => x.toString())?.includes(entu.userStr)) {
     result = { ...result, ...entity.private }
-  } else if (entu.user && entity.access?.includes('domain')) {
+  } else if (entu.userStr && entity.access?.includes('domain')) {
     result = { ...result, ...entity.private }
-  } else if (!entu.user && entity.access?.includes('public')) {
+  } else if (entity.access?.includes('public')) {
     result = { ...result, ...entity.public }
   } else {
     return
