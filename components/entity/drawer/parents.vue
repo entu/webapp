@@ -12,6 +12,7 @@ const entityId = defineModel('entityId', { type: String, required: true })
 
 const rawEntity = ref()
 const newParent = ref()
+const canRemoveParents = ref([])
 const isLoading = ref(false)
 const isUpdating = ref(false)
 
@@ -21,13 +22,22 @@ const entityName = computed(() => getValue(rawEntity.value?.name))
 const parents = computed(() => rawEntity.value?._parent?.sort((a, b) => a.string?.localeCompare(b.string)) || [])
 
 async function loadEntity () {
+  if (!entityId.value) return
+
   isLoading.value = true
 
-  if (entityId.value) {
-    rawEntity.value = await apiGetEntity(entityId.value, [
-      'name',
-      '_parent'
-    ])
+  rawEntity.value = await apiGetEntity(entityId.value, [
+    'name',
+    '_parent'
+  ])
+
+  for (let i = 0; i < rawEntity.value._parent.length; i++) {
+    const parentId = rawEntity.value._parent[i].reference
+    const parentEntity = await apiGetEntity(parentId, ['_expander'])
+
+    if (parentEntity?._expander?.some(x => x.reference === userId.value)) {
+      canRemoveParents.value.push(parentId)
+    }
   }
 
   isLoading.value = false
@@ -87,6 +97,7 @@ async function onClose () {
       </nuxt-link>
 
       <my-button
+        v-if="canRemoveParents.includes(parent.reference)"
         circle
         icon="delete"
         type="error"
@@ -106,6 +117,7 @@ async function onClose () {
       class="mt-6"
       :placeholder="t('selectNewParent')"
       :query="`_expander.reference=${userId}`"
+      :exclude="[...parents.map(x => x.reference), entityId]"
       @update:value="onAddParent($event)"
     />
   </my-drawer>

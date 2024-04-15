@@ -8,6 +8,7 @@ const value = defineModel({ type: String, default: undefined })
 
 const props = defineProps({
   query: { type: String, default: undefined },
+  exclude: { type: Array, default: () => [] },
   options: { type: Array, default: () => [] }
 })
 
@@ -19,7 +20,7 @@ const searchingReferences = ref(false)
 
 const referenceOptions = computed(() => {
   if (rawReferences.value) {
-    return rawReferences.value?.map(x => ({
+    return rawReferences.value?.filter(x => !props.exclude?.includes(x._id))?.map(x => ({
       class: '!pr-2',
       label: getValue(x.name) || x._id,
       type: getValue(x._type),
