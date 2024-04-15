@@ -6,10 +6,16 @@ const { token } = useUser()
 onMounted(async () => {
   useHead({ title: t('title') })
 
+  let path = '/'
+
+  if (accounts.value.length === 1) {
+    path = `/${accounts.value.at(0)._id}`
+  }
+
   accounts.value = undefined
   token.value = undefined
 
-  await navigateTo({ path: '/', query: {} })
+  await navigateTo({ path, query: {} })
 })
 </script>
 
