@@ -1,6 +1,3 @@
-import et from 'date-fns/esm/locale/et'
-import { enUS, createLocale } from 'naive-ui'
-
 export const themeOverrides = {
   common: {
     fontFamily: 'Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif',

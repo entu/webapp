@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NCheckbox, NDivider, NRadio, NRadioGroup, NSwitch } from 'naive-ui'
+import { NCheckbox, NDivider, NRadio, NRadioGroup } from 'naive-ui'
 import { apiDeleteProperty } from '~/utils/api'
 
 const { t } = useI18n()
@@ -14,10 +14,8 @@ const entityId = defineModel('entityId', { type: String, required: true })
 const rawEntity = ref()
 const newRight = ref()
 const sharing = ref()
-const isPublic = ref(false)
 const isLoading = ref(false)
 const isUpdating = ref(false)
-const isUpdatingPublic = ref(false)
 const inheritRights = ref(false)
 
 watch(entityId, loadEntity, { immediate: true })
