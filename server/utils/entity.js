@@ -488,7 +488,7 @@ async function propertiesToEntity (entu, properties) {
         cleanProp = { ...cleanProp, property_type: prop.type, string: referenceEntity.private?.name?.at(0).string, entity_type: referenceEntity.private?._type?.at(0).string }
       } else {
         cleanProp = { ...cleanProp, property_type: prop.type, string: prop.reference.toString() }
-        console.log(`NO_REFERENCE ${entu.account} ${prop.reference.toString()}`)
+        // console.log(`NO_REFERENCE ${entu.account} ${prop.reference.toString()}`)
       }
 
       if (!prop.type.startsWith('_')) {
