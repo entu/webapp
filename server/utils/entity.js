@@ -807,7 +807,14 @@ function formulaContent (data, func) {
 function getValueArray (values) {
   if (!values) return []
 
-  return values.map(x => x.number || x.datetime || x.date || x.string || x._id)
+  return values.map((x) => {
+    if (x.number) return x.number
+    if (x.datetime) return x.datetime?.toISOString()
+    if (x.date) return x.date?.toISOString().substring(0, 10)
+    if (x.string) return x.string
+
+    return x._id
+  })
 }
 
 async function getParentRights (entu, parents) {
