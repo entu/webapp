@@ -563,17 +563,13 @@ async function formulaField (entu, str, entityId) {
   }
 
   const strParts = str.split('.')
-
-  const [fieldRef, fieldType, fieldProperty] = str.split('.')
+  const [fieldRef, fieldType, fieldProperty] = strParts
 
   let result
 
-  // same entity _id
-  if (strParts.length === 1 && str === '_id') {
+  if (strParts.length === 1 && str === '_id') { // same entity _id
     result = [{ _id: entityId }]
-
-  // same entity property
-  } else if (strParts.length === 1 && str !== '_id') {
+  } else if (strParts.length === 1 && str !== '_id') { // same entity property
     result = await entu.db.collection('property').find({
       entity: entityId,
       type: str,
@@ -583,26 +579,20 @@ async function formulaField (entu, str, entityId) {
       sort: { _id: 1 },
       projection: { _id: false, entity: false, type: false }
     }).toArray()
-
-  // childs _id
-  } else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty === '_id') {
+  } else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty === '_id') { // childs _id
     result = await entu.db.collection('entity').find({
       'private._parent.reference': entityId
     }, {
       projection: { _id: true }
     }).toArray()
-
-  // childs (with type) property
-  } else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty === '_id') {
+  } else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty === '_id') { // childs (with type) property
     result = await entu.db.collection('entity').find({
       'private._parent.reference': entityId,
       'private._type.string': fieldType
     }, {
       projection: { _id: true }
     }).toArray()
-
-  // childs property
-  } else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty !== '_id') {
+  } else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty !== '_id') { // childs property
     result = await entu.db.collection('entity').aggregate([
       {
         $match: { 'private._parent.reference': entityId }
@@ -631,9 +621,7 @@ async function formulaField (entu, str, entityId) {
         $replaceWith: '$properties'
       }
     ]).toArray()
-
-  // childs (with type) property
-  } else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty !== '_id') {
+  } else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty !== '_id') { // childs (with type) property
     result = await entu.db.collection('entity').aggregate([
       {
         $match: {
@@ -665,14 +653,12 @@ async function formulaField (entu, str, entityId) {
         $replaceWith: '$properties'
       }
     ]).toArray()
-
-  // parents _id
-  } else if (strParts.length === 3 && fieldRef === '_parent' && fieldType === '*' && fieldProperty === '_id') {
+  } else if (strParts.length === 3 && fieldRef !== '_child' && fieldType === '*' && fieldProperty === '_id') { // other reference _id
     result = await entu.db.collection('property').aggregate([
       {
         $match: {
           entity: entityId,
-          type: '_parent',
+          type: fieldRef,
           reference: { $exists: true },
           deleted: { $exists: false }
         }
@@ -680,14 +666,12 @@ async function formulaField (entu, str, entityId) {
         $project: { _id: '$reference' }
       }
     ]).toArray()
-
-  // parents (with type) _id
-  } else if (strParts.length === 3 && fieldRef === '_parent' && fieldType !== '*' && fieldProperty === '_id') {
+  } else if (strParts.length === 3 && fieldRef !== '_child' && fieldType !== '*' && fieldProperty === '_id') { // other reference (with type) _id
     result = await entu.db.collection('property').aggregate([
       {
         $match: {
           entity: entityId,
-          type: '_parent',
+          type: fieldRef,
           reference: { $exists: true },
           deleted: { $exists: false }
         }
@@ -705,22 +689,20 @@ async function formulaField (entu, str, entityId) {
               $project: { _id: true }
             }
           ],
-          as: 'parents'
+          as: 'references'
         }
       }, {
-        $unwind: '$parents'
+        $unwind: '$references'
       }, {
-        $replaceWith: '$parents'
+        $replaceWith: '$references'
       }
     ]).toArray()
-
-  // parents property
-  } else if (strParts.length === 3 && fieldRef === '_parent' && fieldType === '*' && fieldProperty !== '_id') {
+  } else if (strParts.length === 3 && fieldRef !== '_child' && fieldType === '*' && fieldProperty !== '_id') { // other reference property
     result = await entu.db.collection('property').aggregate([
       {
         $match: {
           entity: entityId,
-          type: '_parent',
+          type: fieldRef,
           reference: { $exists: true },
           deleted: { $exists: false }
         }
@@ -749,14 +731,12 @@ async function formulaField (entu, str, entityId) {
         $replaceWith: '$properties'
       }
     ]).toArray()
-
-  // parents (with type) property
-  } else if (strParts.length === 3 && fieldRef === '_parent' && fieldType !== '*' && fieldProperty !== '_id') {
+  } else if (strParts.length === 3 && fieldRef !== '_child' && fieldType !== '*' && fieldProperty !== '_id') { // other references(with type) property
     result = await entu.db.collection('property').aggregate([
       {
         $match: {
           entity: entityId,
-          type: '_parent',
+          type: fieldRef,
           reference: { $exists: true },
           deleted: { $exists: false }
         }
@@ -774,12 +754,12 @@ async function formulaField (entu, str, entityId) {
               $project: { _id: true }
             }
           ],
-          as: 'parents'
+          as: 'references'
         }
       }, {
         $lookup: {
           from: 'property',
-          let: { entityId: '$parents._id' },
+          let: { entityId: '$references._id' },
           pipeline: [
             {
               $match: {
