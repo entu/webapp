@@ -487,7 +487,7 @@ async function propertiesToEntity (entu, properties) {
       if (referenceEntity) {
         cleanProp = { ...cleanProp, property_type: prop.type, string: referenceEntity.private?.name?.at(0).string, entity_type: referenceEntity.private?._type?.at(0).string }
       } else {
-        cleanProp = { ...cleanProp, property_type: prop.type, string: prop.reference.toString() }
+        cleanProp = { ...cleanProp, property_type: prop.type, noReference: true }
         // console.log(`NO_REFERENCE ${entu.account} ${prop.reference.toString()}`)
       }
 
@@ -503,7 +503,9 @@ async function propertiesToEntity (entu, properties) {
     delete cleanProp.property_type
     delete cleanProp.entity_type
 
-    entity.private[prop.type] = [...entity.private[prop.type], cleanProp]
+    if (!cleanProp.noReference) {
+      entity.private[prop.type] = [...entity.private[prop.type], cleanProp]
+    }
   }
 
   return entity
