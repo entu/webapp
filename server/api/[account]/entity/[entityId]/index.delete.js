@@ -45,6 +45,7 @@ export default defineEventHandler(async (event) => {
       by: entu.user
     }
   })
+
   await aggregateEntity(entu, entityId)
 
   const properties = await entu.db.collection('property').find({
@@ -52,8 +53,7 @@ export default defineEventHandler(async (event) => {
     deleted: { $exists: false }
   }, {
     projection: {
-      entity: true,
-      type: true
+      entity: true
     }
   }).toArray()
 

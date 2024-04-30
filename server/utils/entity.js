@@ -575,7 +575,6 @@ async function formulaField (entu, str, entityId) {
     result = await entu.db.collection('property').find({
       entity: entityId,
       type: str,
-      string: { $exists: true },
       deleted: { $exists: false }
     }, {
       sort: { _id: 1 },

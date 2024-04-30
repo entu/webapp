@@ -13,7 +13,5 @@ export default defineEventHandler(async (event) => {
 
   const { _id, properties } = await setEntity(entu, undefined, body)
 
-  await aggregateEntity(entu, _id)
-
   return { _id, properties }
 })
