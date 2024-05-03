@@ -13,6 +13,7 @@ export const themeOverrides = {
     thColorHover: '#FFFFFF'
   },
   Drawer: {
+    borderRadius: '0',
     resizableTriggerColorHover: '#1E434C'
   },
   Input: {

@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NPopconfirm } from 'naive-ui'
+import { NPopconfirm, NTabs, NTabPane } from 'naive-ui'
 
 const { locale, t } = useI18n()
 
@@ -35,11 +35,15 @@ const title = computed(() => {
   }
 })
 
+const entityType = computed(() => entityTypes.value?.[typeId.value] || {})
+
+const plugins = computed(() => entityType.value?.plugins?.filter(x => x.type === (entityId.value ? 'entity-edit' : 'entity-add')) || [])
+
 const entity = computed(() => {
   const result = {
     _id: rawEntity.value?._id,
     name: getValue(rawEntity.value?.name),
-    type: entityTypes.value[typeId.value]?.type || {},
+    type: entityType.value?.type || {},
     props: entityTypes.value[typeId.value]?.props.map(x => ({ ...x, values: [] })) || []
   }
 
@@ -150,26 +154,52 @@ async function onDelete () {
     :title="title"
     @close="onClose()"
   >
-    <template
-      v-for="pg in properties"
-      :key="pg.name"
+    <n-tabs
+      animated
+      default-value="default"
+      :class="plugins?.length ? 'mt-3' : ''"
+      :tab-class="plugins?.length ? '' : '!hidden'"
+      :type="plugins?.length ? 'segment' : 'bar'"
     >
-      <h2
-        v-if="pg.name"
-        class="pt-6 px-1 text-center text-gray-500 font-bold uppercase"
+      <n-tab-pane
+        name="default"
+        :tab="t('defaultPlugin')"
       >
-        {{ pg.name }}
-      </h2>
+        <template
+          v-for="pg in properties"
+          :key="pg.name"
+        >
+          <h2
+            v-if="pg.name"
+            class="pt-6 px-1 text-center text-gray-500 font-bold uppercase"
+          >
+            {{ pg.name }}
+          </h2>
 
-      <property-list
-        v-model:entity-id="entityId"
-        v-model:properties="pg.children"
-        v-model:entity-parent-id="entityParentId"
-        v-model:entity-type-id="entityTypeId"
-        v-model:is-updating="isUpdating"
-        edit
-      />
-    </template>
+          <property-list
+            v-model:entity-id="entityId"
+            v-model:properties="pg.children"
+            v-model:entity-parent-id="entityParentId"
+            v-model:entity-type-id="entityTypeId"
+            v-model:is-updating="isUpdating"
+            edit
+          />
+        </template>
+      </n-tab-pane>
+
+      <n-tab-pane
+        v-for="plugin in plugins"
+        :key="plugin._id"
+        :name="plugin._id"
+        :tab="plugin.name"
+      >
+        <iframe
+          :src="plugin.url"
+          class="size-full"
+          frameborder="0"
+        />
+      </n-tab-pane>
+    </n-tabs>
 
     <template
       v-if="canDelete && entityId"
@@ -209,6 +239,7 @@ async function onDelete () {
     titleAdd: Add new {name}
     titleChild: Add {name} as a new child
     titleEdit: Edit {name}
+    defaultPlugin: Manual input
     deleteEntity: Delete entity
     confirmDelete: Are you sure you want to delete this entity?
     delete: Delete
@@ -217,6 +248,7 @@ async function onDelete () {
     titleAdd: Lisa uus {name}
     titleChild: Lisa {name} uue alamobjektina
     titleEdit: Muuda objekti {name}
+    defaultPlugin: Sisesta käsitsi
     deleteEntity: Kustuta objekt
     confirmDelete: Kas oled kindel, et soovid selle objekti kustutada?
     delete: Kustuta

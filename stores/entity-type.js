@@ -2,10 +2,28 @@ export const useEntityTypeStore = defineStore('entityType', () => {
   const entityTypes = ref({})
 
   async function get (_id) {
+    const rawPlugins = await apiGetEntities({
+      '_type.string': 'plugin',
+      props: [
+        'name',
+        'type',
+        'url',
+        'new_window'
+      ]
+    })
+    const plugins = rawPlugins?.entities?.map(p => ({
+      _id: p._id,
+      name: getValue(p.name),
+      type: getValue(p.type),
+      url: getValue(p.url),
+      newWindow: getValue(p.new_window, 'boolean')
+    }))
+
     const rawEntityType = await apiGetEntity(_id, [
       'description',
       'label',
-      'name'
+      'name',
+      'plugin'
     ])
 
     const rawEntityProps = await apiGetEntities({
@@ -25,10 +43,11 @@ export const useEntityTypeStore = defineStore('entityType', () => {
         'multilingual',
         'name',
         'ordinal',
-        'sharing',
         'readonly',
-        'set',
         'reference_query',
+        'set',
+        'sharing',
+        'plugin',
         'type'
       ]
     })
@@ -40,6 +59,7 @@ export const useEntityTypeStore = defineStore('entityType', () => {
         label: getValue(rawEntityType.label),
         description: getValue(rawEntityType.description)
       },
+      plugins: rawEntityType.plugin?.map(x => plugins.find(p => p._id === x.reference)),
       props: rawEntityProps?.entities?.map(p => ({
         decimals: getValue(p.decimals, 'number'),
         default: getValue(p.default),
@@ -55,10 +75,11 @@ export const useEntityTypeStore = defineStore('entityType', () => {
         multilingual: getValue(p.multilingual, 'boolean'),
         name: getValue(p.name),
         ordinal: getValue(p.ordinal, 'number'),
-        sharing: getValue(p.sharing),
+        plugins: p.plugin?.map(x => plugins.find(p => p._id === x.reference)),
         readonly: getValue(p.readonly, 'boolean'),
-        set: p.set,
         referenceQuery: getValue(p.reference_query),
+        set: p.set,
+        sharing: getValue(p.sharing),
         type: getValue(p.type)
       }))
     }

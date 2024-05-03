@@ -48,7 +48,7 @@ onKeyStroke('Escape', () => emit('close'))
       </template>
 
       <n-spin :show="isLoading" class="max-w-full max-h-full h-full">
-        <div class="py-4">
+        <div class="pt-1 pb-4">
           <slot />
         </div>
       </n-spin>
