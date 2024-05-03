@@ -564,7 +564,7 @@ async function formulaField (entu, str, entityId) {
     }]
   }
 
-  const strParts = str.split('.')
+  const strParts = str.split('.').filter(x => x !== undefined)
   const [fieldRef, fieldType, fieldProperty] = strParts
 
   let result
