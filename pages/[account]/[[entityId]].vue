@@ -233,29 +233,23 @@ onMounted(async () => {
               {{ entity.name?.trim() || entity._id }}
             </h1>
 
-            <n-collapse :default-expanded-names="[0]">
-              <template
-                v-for="(pg, idx) in properties"
-                :key="pg.name"
+            <template
+              v-for="pg in properties"
+              :key="pg.name"
+            >
+              <h2
+                v-if="pg.name"
+                class="pt-6 px-1 text-center text-gray-500 font-bold uppercase"
               >
-                <n-collapse-item
-                  v-if="pg.name && pg.children && pg.children.some(x => x.mandatory || x.values)"
-                  :name="idx"
-                  :title="pg.name"
-                >
-                  <property-list
-                    class="pl-5"
-                    :properties="pg.children"
-                  />
-                </n-collapse-item>
-                <div v-if="!pg.name && pg.children && pg.children.some(x => x.mandatory || x.values)">
-                  <property-list
-                    class="pl-5"
-                    :properties="pg.children"
-                  />
-                </div>
-              </template>
-            </n-collapse>
+                {{ pg.name }}
+              </h2>
+
+              <property-list
+                v-if="pg.children && pg.children.some(x => x.mandatory || x.values)"
+                class="pl-5"
+                :properties="pg.children"
+              />
+            </template>
           </div>
 
           <div class="min-w-[8rem] flex flex-col gap-3">
