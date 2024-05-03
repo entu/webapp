@@ -37,7 +37,24 @@ const title = computed(() => {
 
 const entityType = computed(() => entityTypes.value?.[typeId.value] || {})
 
-const plugins = computed(() => entityType.value?.plugins?.filter(x => x.type === (entityId.value ? 'entity-edit' : 'entity-add')) || [])
+const plugins = computed(() => entityType.value?.plugins?.filter(x => x.type === (entityId.value ? 'entity-edit' : 'entity-add')).map((x) => {
+  const url = new URL(x.url)
+
+  if (entityId.value) {
+    url.searchParams.append('entity', entityId.value)
+  }
+  if (entityParentId.value) {
+    url.searchParams.append('parent', entityParentId.value)
+  }
+  if (entityTypeId.value) {
+    url.searchParams.append('type', entityTypeId.value)
+  }
+
+  return {
+    ...x,
+    url: url.toString()
+  }
+}) || [])
 
 const entity = computed(() => {
   const result = {
