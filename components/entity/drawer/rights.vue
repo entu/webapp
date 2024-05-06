@@ -169,7 +169,7 @@ async function onClose () {
     :width="600"
     @close="onClose()"
   >
-    <div class="flex flex-col gap-12">
+    <div class="py-4 px-6 flex flex-col gap-12">
       <div class="w-full mt-4 flex flex-col justify-center items-center gap-4">
         <n-radio-group
           v-model:value="sharing"

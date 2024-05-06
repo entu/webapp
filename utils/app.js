@@ -69,6 +69,9 @@ export const themeOverrides = {
     dotBorderActive: '2px solid #1E434C',
     fillColor: '#DBDBDF',
     fillColorHover: '#DBDBDF'
+  },
+  Tabs: {
+    tabBorderRadius: '0'
   }
 }
 

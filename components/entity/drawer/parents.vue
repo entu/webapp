@@ -84,42 +84,44 @@ async function onClose () {
     :width="500"
     @close="onClose()"
   >
-    <div
-      v-for="parent in parents"
-      :key="parent._id"
-      class="mb-2 flex items-center justify-between gap-2"
-    >
-      <nuxt-link
-        class="link truncate whitespace-nowrap overflow-hidden"
-        :to="{ path: `/${accountId}/${parent.reference}` }"
+    <div class="py-4 px-6">
+      <div
+        v-for="parent in parents"
+        :key="parent._id"
+        class="mb-2 flex items-center justify-between gap-2"
       >
-        {{ parent.string || parent.reference }}
-      </nuxt-link>
+        <nuxt-link
+          class="link truncate whitespace-nowrap overflow-hidden"
+          :to="{ path: `/${accountId}/${parent.reference}` }"
+        >
+          {{ parent.string || parent.reference }}
+        </nuxt-link>
 
-      <my-button
-        v-if="canRemoveParents.includes(parent.reference)"
-        circle
-        icon="delete"
-        type="error"
-        :bg="false"
-        :tooltip="t('delete')"
-        @click="onDeleteParent(parent._id)"
+        <my-button
+          v-if="canRemoveParents.includes(parent.reference)"
+          circle
+          icon="delete"
+          type="error"
+          :bg="false"
+          :tooltip="t('delete')"
+          @click="onDeleteParent(parent._id)"
+        />
+      </div>
+
+      <n-empty
+        v-if="parents.length === 0"
+        :description="t('noParents')"
+      />
+
+      <my-select-reference
+        v-model="newParent"
+        class="my-6"
+        :placeholder="t('selectNewParent')"
+        :query="`_expander.reference=${userId}`"
+        :exclude="[...parents.map(x => x.reference), entityId]"
+        @update:value="onAddParent($event)"
       />
     </div>
-
-    <n-empty
-      v-if="parents.length === 0"
-      :description="t('noParents')"
-    />
-
-    <my-select-reference
-      v-model="newParent"
-      class="mt-6"
-      :placeholder="t('selectNewParent')"
-      :query="`_expander.reference=${userId}`"
-      :exclude="[...parents.map(x => x.reference), entityId]"
-      @update:value="onAddParent($event)"
-    />
   </my-drawer>
 </template>
 

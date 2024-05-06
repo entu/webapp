@@ -177,18 +177,25 @@ async function onDelete () {
   >
     <n-tabs
       animated
+      class="size-full"
       default-value="default"
-      :class="plugins?.length ? 'mt-3' : ''"
+      justify-content="center"
+      pane-class="!p-0"
+      pane-wrapper-class="size-full"
+      :class="plugins?.length ? '' : ''"
       :tab-class="plugins?.length ? '' : '!hidden'"
-      :type="plugins?.length ? 'segment' : 'bar'"
+      :type="plugins?.length ? 'line' : 'bar'"
     >
       <n-tab-pane
+        class="size-full pt-0 overflow-auto"
+        display-directive="show:lazy"
         name="default"
         :tab="t('defaultPlugin')"
       >
-        <template
+        <div
           v-for="pg in properties"
           :key="pg.name"
+          class="py-4 px-6"
         >
           <h2
             v-if="pg.name"
@@ -205,12 +212,14 @@ async function onDelete () {
             v-model:is-updating="isUpdating"
             edit
           />
-        </template>
+        </div>
       </n-tab-pane>
 
       <n-tab-pane
         v-for="plugin in plugins"
         :key="plugin._id"
+        class="size-full overflow-auto"
+        display-directive="show:lazy"
         :name="plugin._id"
         :tab="plugin.name"
       >

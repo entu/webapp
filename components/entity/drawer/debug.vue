@@ -28,7 +28,7 @@ function showYaml (value) {
     :title="t('title')"
     @close="emit('close')"
   >
-    <n-collapse>
+    <n-collapse class="py-4 px-6">
       <n-collapse-item
         name="entity"
         :title="t('entity')"
