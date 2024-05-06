@@ -108,6 +108,7 @@ export default defineEventHandler(async (event) => {
   setCookie(event, 'token', token, {
     httpOnly: true,
     maxAge: 60 * 60 * 48,
+    path: '/api',
     sameSite: 'None',
     secure: true
   })
