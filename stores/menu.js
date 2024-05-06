@@ -54,7 +54,7 @@ export const useMenueStore = defineStore('menu', () => {
   watch([() => route.query, menuResult], () => {
     const query = window.location.search.substring(1)
 
-    activeMenu.value = query ? menuEntities.value?.find(x => getValue(x.query) === window.location.search.substring(1)) : undefined
+    activeMenu.value = query ? menuEntities.value?.find(x => window.location.search.substring(1).startsWith(getValue(x.query))) : undefined
   }, { immediate: true })
 
   return {
