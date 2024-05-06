@@ -29,6 +29,9 @@ export default defineNuxtConfig({
       autoprefixer: {}
     }
   },
+  routeRules: {
+    '/api/**': { cors: true }
+  },
   runtimeConfig: {
     public: {
       apiUrl: '',
