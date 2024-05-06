@@ -3,6 +3,7 @@ import { NCollapse, NCollapseItem, NPopover, NSpin } from 'naive-ui'
 
 const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 
 const { accountId } = useAccount()
 const { userId } = useUser()
@@ -189,7 +190,7 @@ async function onDrawerClose () {
 }
 
 async function onDelete () {
-  await navigateTo({ path: `/${accountId.value}`, query: route.query, hash: undefined }, { replace: true })
+  router.back()
 }
 
 onMounted(async () => {
