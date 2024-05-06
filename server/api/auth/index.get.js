@@ -100,12 +100,21 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  const token = jwt.sign({ accounts: accountUsersIds }, jwtSecret, {
+    audience,
+    expiresIn: '48h'
+  })
+
+  setCookie(event, 'token', token, {
+    httpOnly: true,
+    maxAge: 60 * 60 * 48,
+    secure: true,
+    sameSite: 'Strict'
+  })
+
   return {
     accounts,
-    token: jwt.sign({ accounts: accountUsersIds }, jwtSecret, {
-      audience,
-      expiresIn: '48h'
-    })
+    token
   }
 })
 
