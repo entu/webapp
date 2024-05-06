@@ -3,6 +3,7 @@
 import { NPopconfirm, NTabs, NTabPane } from 'naive-ui'
 
 const { locale, t } = useI18n()
+const { token } = useUser()
 const { accountId } = useAccount()
 
 const emit = defineEmits(['close', 'delete'])
@@ -41,7 +42,6 @@ const entityType = computed(() => entityTypes.value?.[typeId.value] || {})
 const plugins = computed(() => entityType.value?.plugins?.filter(x => x.type === (entityId.value ? 'entity-edit' : 'entity-add')).map((x) => {
   const url = new URL(x.url)
 
-  url.searchParams.append('locale', locale.value)
   url.searchParams.append('account', accountId.value)
 
   if (entityId.value) {
@@ -53,6 +53,9 @@ const plugins = computed(() => entityType.value?.plugins?.filter(x => x.type ===
   if (entityTypeId.value) {
     url.searchParams.append('type', entityTypeId.value)
   }
+
+  url.searchParams.append('locale', locale.value)
+  url.searchParams.append('token', token.value)
 
   return {
     ...x,

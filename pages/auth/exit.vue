@@ -1,7 +1,7 @@
 <script setup>
 const { t } = useI18n()
 const { accounts } = useAccount()
-const { token: userToken } = useUser()
+const { token } = useUser()
 
 onMounted(async () => {
   useHead({ title: t('title') })
@@ -13,9 +13,6 @@ onMounted(async () => {
   }
 
   accounts.value = undefined
-  userToken.value = undefined
-
-  const token = useCookie('token')
   token.value = undefined
 
   await navigateTo({ path, query: {} })
