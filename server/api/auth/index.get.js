@@ -109,6 +109,7 @@ export default defineEventHandler(async (event) => {
     httpOnly: true,
     maxAge: 60 * 60 * 48,
     path: '/api',
+    sameSite: 'None',
     secure: true
   })
 

@@ -15,7 +15,11 @@ export default defineEventHandler((event) => {
     })
   }
 
-  const jwtToken = (getHeader(event, 'authorization') || '').replace('Bearer ', '').trim()
+  let jwtToken = (getHeader(event, 'authorization') || '').replace('Bearer ', '').trim()
+
+  if (!jwtToken) {
+    jwtToken = getCookie(event, 'token')
+  }
 
   if (!event.path.startsWith('/api/auth') && jwtToken) {
     try {
