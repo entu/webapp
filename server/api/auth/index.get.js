@@ -73,12 +73,7 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  if (!onlyForAccount && accounts.length === 0) {
-    throw createError({
-      statusCode: 403,
-      statusMessage: 'No accounts'
-    })
-  } else if (onlyForAccount && accounts.length === 0 && session) {
+  if (onlyForAccount && accounts.length === 0 && session) {
     const person = await createUserForAccount(onlyForAccount, session)
 
     if (person) {
@@ -92,17 +87,25 @@ export default defineEventHandler(async (event) => {
           new: true
         }
       })
-    } else {
-      throw createError({
-        statusCode: 403,
-        statusMessage: 'No account'
-      })
     }
+  }
+
+  const tokenData = {
+    email: session.user.email
+  }
+
+  if (session.user.name) {
+    tokenData.name = session.user.name
+  }
+
+  if (accounts.length > 0) {
+    tokenData.accounts = accountUsersIds
   }
 
   return {
     accounts,
-    token: jwt.sign({ accounts: accountUsersIds }, jwtSecret, {
+    token: jwt.sign(tokenData, jwtSecret, {
+      subject: session.user.email,
       audience,
       expiresIn: '48h'
     })

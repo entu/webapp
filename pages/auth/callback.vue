@@ -15,10 +15,12 @@ onMounted(async () => {
 
   const authResponse = await apiRequest('auth', authAccount ? { account: authAccount } : {}, { Authorization: `Bearer ${route.query.key}` })
 
-  if (authResponse.accounts) {
+  if (authResponse.accounts?.length > 0) {
     accounts.value = authResponse.accounts
 
     newUser = authResponse.accounts.find(x => x._id === authAccount)?.user || {}
+  } else {
+    accounts.value = []
   }
 
   if (authResponse.token) {
@@ -36,6 +38,8 @@ onMounted(async () => {
     await navigateTo(to)
   } else if (accounts.value.length > 0) {
     await navigateTo({ path: `/${accounts.value.at(0)._id}` })
+  } else {
+    await navigateTo({ path: '/signup' })
   }
 })
 </script>
