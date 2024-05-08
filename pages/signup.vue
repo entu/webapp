@@ -32,12 +32,8 @@ function createDatabase () {
   console.log('Creating database', database.value)
 }
 
-onMounted(async () => {
+onMounted(() => {
   useHead({ title: t('title') })
-
-  if (!token.value) {
-    await navigateTo({ path: '/' })
-  }
 })
 </script>
 
