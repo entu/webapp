@@ -93,13 +93,13 @@ export default defineEventHandler(async (event) => {
   const userData = {
     email: session.user.email
   }
-  const tokenData = {
-    email: session.user.email
-  }
 
   if (session.user.name) {
     userData.name = session.user.name
-    tokenData.name = session.user.name
+  }
+
+  const tokenData = {
+    user: userData
   }
 
   if (accounts.length > 0) {
