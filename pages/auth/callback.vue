@@ -45,7 +45,7 @@ onMounted(async () => {
   } else if (accounts.value.length > 0) {
     await navigateTo({ path: `/${accounts.value.at(0)._id}` })
   } else {
-    await navigateTo({ path: '/signup' })
+    await navigateTo({ path: '/new' })
   }
 })
 </script>
