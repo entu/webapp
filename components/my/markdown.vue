@@ -17,4 +17,12 @@ const md = computed(() => marked.parse(props.source))
 .markdown p {
   @apply mb-3 last-of-type:mb-0;
 }
+
+.markdown a {
+  @apply underline;
+}
+
+.markdown ul {
+  @apply list-disc pl-3;
+}
 </style>

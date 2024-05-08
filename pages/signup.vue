@@ -1,8 +1,9 @@
 <script setup>
-import { NButton, NCard, NInput, NSwitch } from 'naive-ui'
+import { NButton, NCard, NInput, NPopover, NSwitch } from 'naive-ui'
 
 definePageMeta({ layout: 'blank' })
 const { t } = useI18n()
+const { token } = useUser()
 
 const databaseName = ref('')
 const types = ref([
@@ -11,6 +12,12 @@ const types = ref([
   { value: 'folder', label: t('typeNameFolder'), selected: false },
   { value: 'document', label: t('typeNameDocument'), selected: false },
   { value: 'book', label: t('typeNameBook'), selected: false }
+])
+const prices = ref([
+  { value: 1, label: t('price1label'), price: t('price1price'), info: t('price1info'), selected: false },
+  { value: 2, label: t('price2label'), price: t('price2price'), info: t('price2info'), selected: true },
+  { value: 3, label: t('price3label'), price: t('price3price'), info: t('price3info'), selected: false },
+  { value: 4, label: t('price4label'), price: t('price4price'), info: t('price4info'), selected: false }
 ])
 
 function validateName () {
@@ -27,11 +34,15 @@ function createDatabase () {
 
 onMounted(async () => {
   useHead({ title: t('title') })
+
+  if (!token.value) {
+    await navigateTo({ path: '/' })
+  }
 })
 </script>
 
 <template>
-  <div class="size-full py-8 bg-gray-50">
+  <div class="size-full py-8 bg-gray-50 overflow-auto">
     <nuxt-link :to="{ path: '/' }">
       <img
         class="mt-6 mb-4 mx-auto h-24 w-24"
@@ -50,9 +61,10 @@ onMounted(async () => {
           :placeholder="t('databaseName')"
           @keyup="validateName()"
         />
-        <p class="mt-1 text-sm">
-          {{ t('databaseInfo') }}
-        </p>
+        <my-markdown
+          class="mt-1 text-sm"
+          :source="t('databaseInfo')"
+        />
 
         <div>
           <h2 class="mt-8 font-bold">
@@ -73,9 +85,50 @@ onMounted(async () => {
             </div>
           </div>
 
-          <p class="mt-1 text-sm">
-            {{ t('typesInfo') }}
-          </p>
+          <my-markdown
+            class="mt-1 text-sm"
+            :source="t('typesInfo')"
+          />
+        </div>
+
+        <div>
+          <h2 class="mt-8 font-bold">
+            {{ t('price') }}
+          </h2>
+
+          <div class="my-1">
+            <n-popover
+              v-for="price in prices"
+              :key="price.value"
+              class="max-w-72"
+              trigger="manual"
+              placement="left"
+              :show="price.selected"
+            >
+              <template #trigger>
+                <div
+                  class="price"
+                  :class="price.selected ? 'active' : ''"
+                  @click="prices.forEach(p => p.selected = p.value === price.value)"
+                >
+                  {{ price.label }}
+                  <span class="float-end">
+                    {{ price.price }}
+                  </span>
+                </div>
+              </template>
+
+              <my-markdown
+                class="text-sm"
+                :source="price.info"
+              />
+            </n-popover>
+          </div>
+
+          <my-markdown
+            class="mt-2 text-sm"
+            :source="t('priceInfo')"
+          />
         </div>
 
         <n-button
@@ -83,6 +136,7 @@ onMounted(async () => {
           secondary
           size="large"
           strong
+          type="success"
           :disabled="!databaseName"
           @click="createDatabase()"
         >
@@ -93,29 +147,138 @@ onMounted(async () => {
   </div>
 </template>
 
+<style scoped>
+.price {
+  @apply py-2;
+  @apply flex justify-between items-center;
+  @apply border-t border-t-gray-200;
+  @apply border-b border-b-white;
+  @apply cursor-pointer;
+}
+.price:first-child {
+  @apply border-t border-t-white;
+}
+
+.price.active + .price {
+  @apply border-t-white;
+}
+
+.price.active {
+  @apply -mx-2 px-2;
+  @apply bg-sky-100;
+  @apply border border-gray-200;
+  @apply rounded-sm;
+  @apply font-bold;
+}
+</style>
+
 <i18n lang="yaml">
   en:
     title: Create a new database
     databaseName: Database Name
     databaseInfo: Database name can contain only letters and underscores. It must start with a letter.
+
     types: Data Types
-    typesInfo: Data types are used to define data. Select the desired pre-set types. You can also create new data types later.
+    typesInfo: |
+      Data types are used to define data. Select the desired pre-set types.
+
+      You can also create new data types later.
     typeNamePerson: Person
     typeNameDepartment: Department
     typeNameFolder: Folder
     typeNameDocument: Document
     typeNameBook: Book
+
+    price: Package
+    priceInfo: |
+      Price per month including VAT.
+
+      You can see a full list of package options and limitations at [entu.ee](https://www.entu.ee/en/#price).
+    price1price: Free
+    price1label: 1,000 objects
+    price1info: |
+      - Up to 1,000 objects
+      - Up to 100MB storage
+      - Unlimited users
+    price2price: 10 €
+    price2label: 10,000 objects
+    price2info: |
+      - Up to 10,000 objects
+      - Up to 1GB storage
+      - Unlimited users
+      - Daily backup
+    price3price: 40 €
+    price3label: 100,000 objects
+    price3info: |
+      - Up to 100,000 objects
+      - Up to 5GB storage
+      - Unlimited users
+      - Daily backup
+      - ID-card and Mobile-ID authentication
+      - Own domain
+    price4price: 200 €
+    price4label: 500,000 objects
+    price4info: |
+      - Up to 500,000 objects
+      - Up to 50GB storage
+      - Unlimited users
+      - Daily backup
+      - ID-card and Mobile-ID authentication
+      - Own domain
+      - Priority support
     create: Create Database
   et:
     title: Loo uus andmebaas
     databaseName: Andmebaasi nimi
     databaseInfo: Andmebaasi nimi võib sisaldada ainult tähti ja allkriipse ning see peab algama tähega.
+
     types: Andmetüübid
-    typesInfo: Andmetüüpe kasutatakse andmete määratlemiseks. Valige soovitud eelseadistatud tüübid. Uusi andmetüüpe saate luua ka hiljem.
+    typesInfo: |
+      Andmetüüpe kasutatakse andmete määratlemiseks. Valige soovitud eelseadistatud tüübid.
+
+      Uusi andmetüüpe saate luua ka hiljem.
     typeNamePerson: Persoon
     typeNameDepartment: Osakond
     typeNameFolder: Kaust
     typeNameDocument: Dokument
     typeNameBook: Raamat
+
+    price: Pakett
+    priceInfo: |
+      Hind kuus koos käibemaksuga.
+
+      Täieliku nimekirja pakettide võimaluste ja piirangutega saate vaadata aadressil [entu.ee](https://www.entu.ee/#price).
+    price1price: Tasuta
+    price1label: 1000 objekti
+    price1info: |
+      - Kuni 1000 objekti
+      - Kuni 100MB andmeid
+      - Piiramatult kasutajaid
+    price2price: 10 €
+    price2label: 10 000 objekti
+    price2info: |
+      - Kuni 10 000 objekti
+      - Kuni 1GB andmeid
+      - Piiramatult kasutajaid
+      - Igapäevane varukoopia
+    price3price: 40 €
+    price3label: 100 000 objekti
+    price3info: |
+      - Kuni 100 000 objekti
+      - Kuni 5GB andmeid
+      - Piiramatult kasutajaid
+      - Igapäevane varukoopia
+      - ID-kaardi ja Mobiil-ID tugi
+      - Oma aadress
+    price4price: 200 €
+    price4label: 500 000 objekti
+    price4info: |
+      - Kuni 500 000 objekti
+      - Kuni 50GB andmeid
+      - Piiramatult kasutajaid
+      - Igapäevane varukoopia
+      - ID-kaardi ja Mobiil-ID tugi
+      - Oma aadress
+      - Personaalteenindus
     create: Loo andmebaas
 </i18n>
