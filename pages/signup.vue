@@ -102,115 +102,114 @@ onMounted(() => {
         </template>
       </n-card>
 
-      <n-card :title="t('title')">
-        <n-input
-          v-model:value="databaseName"
-          autofocus
-          :disabled="!token"
-          :placeholder="t('databaseName')"
-          @keyup="validateName()"
-        />
-
-        <template #footer>
-          <my-markdown
-            class="mt-1 text-sm"
-            :source="t('databaseInfo')"
+      <template v-else>
+        <n-card :title="t('title')">
+          <n-input
+            v-model:value="databaseName"
+            autofocus
+            :disabled="!token"
+            :placeholder="t('databaseName')"
+            @keyup="validateName()"
           />
-        </template>
-      </n-card>
 
-      <n-card
-        v-if="token"
-        :title="t('user')"
-      >
-        <n-input
-          v-model:value="userName"
-          :placeholder="t('userName')"
-        />
-
-        <n-input
-          v-model:value="userEmail"
-          class="mt-2"
-          type="email"
-          :placeholder="t('userEmail')"
-        />
-
-        <template #footer>
-          <my-markdown
-            class="mt-1 text-sm"
-            :source="t('userInfo')"
-          />
-        </template>
-      </n-card>
-
-      <n-card :title="t('types')">
-        <div
-          v-for="type in types"
-          :key="type.value"
-          class="py-2 border-b last-of-type:border-b-0 flex justify-between items-center"
-        >
-          {{ t(`typeLabel-${type.value}`) }}
-
-          <n-switch
-            v-model:value="type.selected"
-            :disabled="type.disabled || !token"
-          />
-        </div>
-
-        <template #footer>
-          <my-markdown
-            class="mt-1 text-sm"
-            :source="t('typesInfo')"
-          />
-        </template>
-      </n-card>
-
-      <n-card :title="t('price')">
-        <n-popover
-          v-for="price in prices"
-          :key="price.value"
-          class="max-w-72"
-          trigger="manual"
-          placement="left"
-          :show="price.selected"
-        >
-          <template #trigger>
-            <div
-              class="price"
-              :class="price.selected ? 'active' : ''"
-              @click="prices.forEach(p => p.selected = p.value === price.value)"
-            >
-              {{ t(`price${price.value}label`) }}
-              <span class="float-end">
-                {{ t(`price${price.value}price`) }}
-              </span>
-            </div>
+          <template #footer>
+            <my-markdown
+              class="mt-1 text-sm"
+              :source="t('databaseInfo')"
+            />
           </template>
+        </n-card>
 
-          <my-markdown
-            class="text-sm"
-            :source="t(`price${price.value}info`)"
+        <n-card :title="t('user')">
+          <n-input
+            v-model:value="userName"
+            :placeholder="t('userName')"
           />
-        </n-popover>
 
-        <template #footer>
-          <my-markdown
-            class="mt-2 text-sm"
-            :source="t('priceInfo')"
+          <n-input
+            v-model:value="userEmail"
+            class="mt-2"
+            type="email"
+            :placeholder="t('userEmail')"
           />
-        </template>
-      </n-card>
 
-      <n-button
-        secondary
-        size="large"
-        strong
-        type="success"
-        :disabled="!token || !databaseName || !userName || !userEmail"
-        @click="createDatabase()"
-      >
-        {{ t('create') }}
-      </n-button>
+          <template #footer>
+            <my-markdown
+              class="mt-1 text-sm"
+              :source="t('userInfo')"
+            />
+          </template>
+        </n-card>
+
+        <n-card :title="t('types')">
+          <div
+            v-for="type in types"
+            :key="type.value"
+            class="py-2 border-b last-of-type:border-b-0 flex justify-between items-center"
+          >
+            {{ t(`typeLabel-${type.value}`) }}
+
+            <n-switch
+              v-model:value="type.selected"
+              :disabled="type.disabled || !token"
+            />
+          </div>
+
+          <template #footer>
+            <my-markdown
+              class="mt-1 text-sm"
+              :source="t('typesInfo')"
+            />
+          </template>
+        </n-card>
+
+        <n-card :title="t('price')">
+          <n-popover
+            v-for="price in prices"
+            :key="price.value"
+            class="max-w-72"
+            trigger="manual"
+            placement="left"
+            :show="price.selected"
+          >
+            <template #trigger>
+              <div
+                class="price"
+                :class="price.selected ? 'active' : ''"
+                @click="prices.forEach(p => p.selected = p.value === price.value)"
+              >
+                {{ t(`price${price.value}label`) }}
+                <span class="float-end">
+                  {{ t(`price${price.value}price`) }}
+                </span>
+              </div>
+            </template>
+
+            <my-markdown
+              class="text-sm"
+              :source="t(`price${price.value}info`)"
+            />
+          </n-popover>
+
+          <template #footer>
+            <my-markdown
+              class="mt-2 text-sm"
+              :source="t('priceInfo')"
+            />
+          </template>
+        </n-card>
+
+        <n-button
+          secondary
+          size="large"
+          strong
+          type="success"
+          :disabled="!token || !databaseName || !userName || !userEmail"
+          @click="createDatabase()"
+        >
+          {{ t('create') }}
+        </n-button>
+      </template>
     </div>
   </div>
 </template>
