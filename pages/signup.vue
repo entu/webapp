@@ -43,29 +43,28 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="size-full py-8 bg-gray-50 overflow-auto">
-    <nuxt-link :to="{ path: '/' }">
-      <img
-        class="mt-6 mb-4 mx-auto h-24 w-24"
-        src="/logo.png"
-      >
-    </nuxt-link>
+  <div class="size-full bg-gray-50 overflow-auto">
+    <div class="w-full sm:w-96 my-8 px-4 sm:mx-auto flex flex-col gap-8">
+      <div class="-mb-6">
+        <span
+          class="float-right uppercase font-bold text-gray-500 text-xs cursor-pointer"
+          @click="setLanguage()"
+        >
+          {{ t('language') }}
+        </span>
+      </div>
 
-    <div class="w-2/6 mt-8 mx-auto">
+      <nuxt-link :to="{ path: '/' }">
+        <img
+          class="mx-auto h-24 w-24"
+          src="/logo.png"
+        >
+      </nuxt-link>
+
       <n-card
         :title="t('title')"
-        class="mt-8"
         @close="navigateTo({ path: '/' })"
       >
-        <template #header-extra>
-          <div
-            class="uppercase font-bold text-gray-500 text-xs cursor-pointer"
-            @click="setLanguage()"
-          >
-            {{ t('language') }}
-          </div>
-        </template>
-
         <n-input
           v-model:value="databaseName"
           :placeholder="t('databaseName')"
@@ -82,7 +81,6 @@ onMounted(() => {
 
       <n-card
         :title="t('types')"
-        class="mt-8"
         @close="navigateTo({ path: '/' })"
       >
         <div
@@ -108,7 +106,6 @@ onMounted(() => {
 
       <n-card
         :title="t('price')"
-        class="mt-8"
         @close="navigateTo({ path: '/' })"
       >
         <n-popover
@@ -147,7 +144,6 @@ onMounted(() => {
       </n-card>
 
       <n-button
-        class="!w-full !mt-8"
         secondary
         size="large"
         strong
@@ -188,7 +184,7 @@ onMounted(() => {
 
 <i18n lang="yaml">
   en:
-    language: ET
+    language: Eesti keel
     title: Create a new database
     databaseName: Database Name
     databaseInfo: Database name can contain only letters and underscores. It must start with a letter.
@@ -243,7 +239,7 @@ onMounted(() => {
       - Priority support
     create: Create Database
   et:
-    language: EN
+    language: English
     title: Loo uus andmebaas
     databaseName: Andmebaasi nimi
     databaseInfo: Andmebaasi nimi võib sisaldada ainult tähti ja allkriipse ning see peab algama tähega.
