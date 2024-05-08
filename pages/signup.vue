@@ -3,21 +3,21 @@ import { NButton, NCard, NInput, NPopover, NSwitch } from 'naive-ui'
 
 definePageMeta({ layout: 'blank' })
 const { t } = useI18n()
-const { token } = useUser()
+const { locale, setLocale } = useI18n({ useScope: 'global' })
 
 const databaseName = ref('')
 const types = ref([
-  { value: 'person', label: t('typeNamePerson'), selected: true, disabled: true },
-  { value: 'department', label: t('typeNameDepartment'), selected: false },
-  { value: 'folder', label: t('typeNameFolder'), selected: false },
-  { value: 'document', label: t('typeNameDocument'), selected: false },
-  { value: 'book', label: t('typeNameBook'), selected: false }
+  { value: 'person', selected: true, disabled: true },
+  { value: 'department', selected: false },
+  { value: 'folder', selected: false },
+  { value: 'document', selected: false },
+  { value: 'book', selected: false }
 ])
 const prices = ref([
-  { value: 1, label: t('price1label'), price: t('price1price'), info: t('price1info'), selected: false },
-  { value: 2, label: t('price2label'), price: t('price2price'), info: t('price2info'), selected: true },
-  { value: 3, label: t('price3label'), price: t('price3price'), info: t('price3info'), selected: false },
-  { value: 4, label: t('price4label'), price: t('price4price'), info: t('price4info'), selected: false }
+  { value: 1, selected: false },
+  { value: 2, selected: true },
+  { value: 3, selected: false },
+  { value: 4, selected: false }
 ])
 
 function validateName () {
@@ -30,6 +30,11 @@ function validateName () {
 
 function createDatabase () {
   console.log('Creating database', database.value)
+}
+
+function setLanguage () {
+  setLocale(locale.value === 'en' ? 'et' : 'en')
+  reloadNuxtApp()
 }
 
 onMounted(() => {
@@ -49,96 +54,109 @@ onMounted(() => {
     <div class="w-2/6 mt-8 mx-auto">
       <n-card
         :title="t('title')"
-        closable
+        class="mt-8"
         @close="navigateTo({ path: '/' })"
       >
+        <template #header-extra>
+          <div
+            class="uppercase font-bold text-gray-500 text-xs cursor-pointer"
+            @click="setLanguage()"
+          >
+            {{ t('language') }}
+          </div>
+        </template>
+
         <n-input
           v-model:value="databaseName"
           :placeholder="t('databaseName')"
           @keyup="validateName()"
         />
-        <my-markdown
-          class="mt-1 text-sm"
-          :source="t('databaseInfo')"
-        />
 
-        <div>
-          <h2 class="mt-8 font-bold">
-            {{ t('types') }}
-          </h2>
+        <template #footer>
+          <my-markdown
+            class="mt-1 text-sm"
+            :source="t('databaseInfo')"
+          />
+        </template>
+      </n-card>
 
-          <div class="my-1">
-            <div
-              v-for="type in types"
-              :key="type.value"
-              class="py-2 border-b last-of-type:border-b-0 flex justify-between items-center"
-            >
-              {{ type.label }}
-              <n-switch
-                v-model:value="type.selected"
-                :disabled="type.disabled"
-              />
-            </div>
-          </div>
+      <n-card
+        :title="t('types')"
+        class="mt-8"
+        @close="navigateTo({ path: '/' })"
+      >
+        <div
+          v-for="type in types"
+          :key="type.value"
+          class="py-2 border-b last-of-type:border-b-0 flex justify-between items-center"
+        >
+          {{ t(`typeLabel-${type.value}`) }}
 
+          <n-switch
+            v-model:value="type.selected"
+            :disabled="type.disabled"
+          />
+        </div>
+
+        <template #footer>
           <my-markdown
             class="mt-1 text-sm"
             :source="t('typesInfo')"
           />
-        </div>
+        </template>
+      </n-card>
 
-        <div>
-          <h2 class="mt-8 font-bold">
-            {{ t('price') }}
-          </h2>
-
-          <div class="my-1">
-            <n-popover
-              v-for="price in prices"
-              :key="price.value"
-              class="max-w-72"
-              trigger="manual"
-              placement="left"
-              :show="price.selected"
+      <n-card
+        :title="t('price')"
+        class="mt-8"
+        @close="navigateTo({ path: '/' })"
+      >
+        <n-popover
+          v-for="price in prices"
+          :key="price.value"
+          class="max-w-72"
+          trigger="manual"
+          placement="left"
+          :show="price.selected"
+        >
+          <template #trigger>
+            <div
+              class="price"
+              :class="price.selected ? 'active' : ''"
+              @click="prices.forEach(p => p.selected = p.value === price.value)"
             >
-              <template #trigger>
-                <div
-                  class="price"
-                  :class="price.selected ? 'active' : ''"
-                  @click="prices.forEach(p => p.selected = p.value === price.value)"
-                >
-                  {{ price.label }}
-                  <span class="float-end">
-                    {{ price.price }}
-                  </span>
-                </div>
-              </template>
+              {{ price.label }}
+              <span class="float-end">
+                {{ price.price }}
+              </span>
+            </div>
+          </template>
 
-              <my-markdown
-                class="text-sm"
-                :source="price.info"
-              />
-            </n-popover>
-          </div>
+          <my-markdown
+            class="text-sm"
+            :source="price.info"
+          />
+        </n-popover>
 
+        <template #footer>
           <my-markdown
             class="mt-2 text-sm"
             :source="t('priceInfo')"
           />
-        </div>
-
-        <n-button
-          class="!w-full !mt-8"
-          secondary
-          size="large"
-          strong
-          type="success"
-          :disabled="!databaseName"
-          @click="createDatabase()"
-        >
-          {{ t('create') }}
-        </n-button>
+        </template>
       </n-card>
+
+      <n-button
+        class="!w-full !mt-8"
+        secondary
+        size="large"
+        strong
+        type="success"
+        :disabled="!databaseName"
+        @click="createDatabase()"
+      >
+        {{ t('create') }}
+      </n-button>
     </div>
   </div>
 </template>
@@ -170,6 +188,7 @@ onMounted(() => {
 
 <i18n lang="yaml">
   en:
+    language: ET
     title: Create a new database
     databaseName: Database Name
     databaseInfo: Database name can contain only letters and underscores. It must start with a letter.
@@ -179,11 +198,11 @@ onMounted(() => {
       Data types are used to define data. Select the desired pre-set types.
 
       You can also create new data types later.
-    typeNamePerson: Person
-    typeNameDepartment: Department
-    typeNameFolder: Folder
-    typeNameDocument: Document
-    typeNameBook: Book
+    typeLabel-person: Person
+    typeLabel-department: Department
+    typeLabel-folder: Folder
+    typeLabel-document: Document
+    typeLabel-book: Book
 
     price: Package
     priceInfo: |
@@ -224,6 +243,7 @@ onMounted(() => {
       - Priority support
     create: Create Database
   et:
+    language: EN
     title: Loo uus andmebaas
     databaseName: Andmebaasi nimi
     databaseInfo: Andmebaasi nimi võib sisaldada ainult tähti ja allkriipse ning see peab algama tähega.
@@ -233,11 +253,11 @@ onMounted(() => {
       Andmetüüpe kasutatakse andmete määratlemiseks. Valige soovitud eelseadistatud tüübid.
 
       Uusi andmetüüpe saate luua ka hiljem.
-    typeNamePerson: Persoon
-    typeNameDepartment: Osakond
-    typeNameFolder: Kaust
-    typeNameDocument: Dokument
-    typeNameBook: Raamat
+    typeLabel-person: Persoon
+    typeLabel-department: Osakond
+    typeLabel-folder: Kaust
+    typeLabel-document: Dokument
+    typeLabel-book: Raamat
 
     price: Pakett
     priceInfo: |
