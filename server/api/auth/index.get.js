@@ -107,7 +107,6 @@ export default defineEventHandler(async (event) => {
     accounts,
     user: userData,
     token: jwt.sign(tokenData, jwtSecret, {
-      subject: session?.user?.email,
       audience,
       expiresIn: '48h'
     })
