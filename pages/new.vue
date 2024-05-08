@@ -346,7 +346,7 @@ onMounted(() => {
     billingInfo: |
       We use [Stripe](https://stripe.com) to process payments. We do not store your payment information.
 
-      On clicking the "Create Database" button, you will be redirected to the Stripe for subscription confirmation. Please enter your information there and confirm the subscription.
+      On clicking the "Create Database" button, you will be redirected to the Stripe. Please enter your information there and confirm the subscription.
 
       After that, you will be redirected back to your new database in Entu.
 
@@ -429,7 +429,7 @@ onMounted(() => {
     billingInfo: |
       Me kasutame maksete töötlemiseks [Stripe](https://stripe.com) teenust. Me ei salvesta teie makseandmeid.
 
-      Vajutades nupule "Loo andmebaas", suunatakse teid Stripe'i tellimuse kinnitamiseks. Palun sisestage oma andmed ja kinnitage tellimus.
+      Vajutades nupule "Loo andmebaas", suunatakse teid Stripe'i. Palun sisestage oma andmed ja kinnitage tellimus.
 
       Pärast seda suunatakse teid tagasi oma uude andmebaasi Entus.
     create: Loo andmebaas
