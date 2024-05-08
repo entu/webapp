@@ -125,16 +125,16 @@ onMounted(() => {
               :class="price.selected ? 'active' : ''"
               @click="prices.forEach(p => p.selected = p.value === price.value)"
             >
-              {{ price.label }}
+              {{ t(`price${price.value}label`) }}
               <span class="float-end">
-                {{ price.price }}
+                {{ t(`price${price.value}price`) }}
               </span>
             </div>
           </template>
 
           <my-markdown
             class="text-sm"
-            :source="price.info"
+            :source="t(`price${price.value}info`)"
           />
         </n-popover>
 
