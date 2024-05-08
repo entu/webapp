@@ -115,7 +115,9 @@ const accountMenu = computed(() => {
       key: getValue(entity.query) || entity._id,
       name: getValue(entity.name),
       label: () => h(NuxtLink,
-        { to: { path: `/${account.value?._id}`, query: queryStringToObject(getValue(entity.query)) } },
+        getValue(entity.query).startsWith('http')
+          ? { to: getValue(entity.query), target: '_blank' }
+          : { to: { path: `/${account.value?._id}`, query: queryStringToObject(getValue(entity.query)) } },
         { default: () => getValue(entity.name) }
       ),
       ordinal
