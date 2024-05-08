@@ -4,8 +4,21 @@ import { NButton, NCard, NInput, NPopover, NSwitch } from 'naive-ui'
 definePageMeta({ layout: 'blank' })
 const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
+const { token, user } = useUser()
 
 const databaseName = ref('')
+const userName = ref('')
+const userEmail = ref('')
+
+const authProviders = ref(
+  [
+    { value: 'apple', icon: 'apple', to: { path: '/auth/apple' } },
+    { value: 'google', icon: 'google', to: { path: '/auth/google' } },
+    { value: 'sid', icon: 'smart-id', to: { path: '/auth/smart-id' } },
+    { value: 'mid', icon: 'mobile-id', to: { path: '/auth/mobile-id' } },
+    { value: 'idc', icon: 'id-card', to: { path: '/auth/id-card' } }
+  ]
+)
 const types = ref([
   { value: 'person', selected: true, disabled: true },
   { value: 'department', selected: false },
@@ -28,8 +41,12 @@ function validateName () {
   }
 }
 
-function createDatabase () {
-  console.log('Creating database', database.value)
+async function createDatabase () {
+  if (token.value) {
+    console.log('Creating database', databaseName.value)
+  } else {
+    await navigateTo({ path: '/auth' })
+  }
 }
 
 function setLanguage () {
@@ -39,6 +56,9 @@ function setLanguage () {
 
 onMounted(() => {
   useHead({ title: t('title') })
+
+  userName.value = user.value?.name || ''
+  userEmail.value = user.value?.email || ''
 })
 </script>
 
@@ -62,11 +82,31 @@ onMounted(() => {
       </nuxt-link>
 
       <n-card
-        :title="t('title')"
-        @close="navigateTo({ path: '/' })"
+        v-if="!token"
+        :title="t('auth')"
       >
+        <nuxt-link
+          v-for="provider in authProviders"
+          :key="provider.value"
+          :to="provider.to"
+          class="flex items-center py-2 border-b last-of-type:border-b-0 gap-2"
+        >
+          <my-icon :icon="provider.icon" />
+          {{ t(`auth-${provider.value}`) }}
+        </nuxt-link>
+        <template #footer>
+          <my-markdown
+            class="mt-1 text-sm"
+            :source="t('authInfo')"
+          />
+        </template>
+      </n-card>
+
+      <n-card :title="t('title')">
         <n-input
           v-model:value="databaseName"
+          autofocus
+          :disabled="!token"
           :placeholder="t('databaseName')"
           @keyup="validateName()"
         />
@@ -80,9 +120,30 @@ onMounted(() => {
       </n-card>
 
       <n-card
-        :title="t('types')"
-        @close="navigateTo({ path: '/' })"
+        v-if="token"
+        :title="t('user')"
       >
+        <n-input
+          v-model:value="userName"
+          :placeholder="t('userName')"
+        />
+
+        <n-input
+          v-model:value="userEmail"
+          class="mt-2"
+          type="email"
+          :placeholder="t('userEmail')"
+        />
+
+        <template #footer>
+          <my-markdown
+            class="mt-1 text-sm"
+            :source="t('userInfo')"
+          />
+        </template>
+      </n-card>
+
+      <n-card :title="t('types')">
         <div
           v-for="type in types"
           :key="type.value"
@@ -92,7 +153,7 @@ onMounted(() => {
 
           <n-switch
             v-model:value="type.selected"
-            :disabled="type.disabled"
+            :disabled="type.disabled || !token"
           />
         </div>
 
@@ -104,10 +165,7 @@ onMounted(() => {
         </template>
       </n-card>
 
-      <n-card
-        :title="t('price')"
-        @close="navigateTo({ path: '/' })"
-      >
+      <n-card :title="t('price')">
         <n-popover
           v-for="price in prices"
           :key="price.value"
@@ -148,7 +206,7 @@ onMounted(() => {
         size="large"
         strong
         type="success"
-        :disabled="!databaseName"
+        :disabled="!token || !databaseName || !userName || !userEmail"
         @click="createDatabase()"
       >
         {{ t('create') }}
@@ -187,7 +245,28 @@ onMounted(() => {
     language: Eesti keel
     title: Create a new database
     databaseName: Database Name
-    databaseInfo: Database name can contain only letters and underscores. It must start with a letter.
+    databaseInfo: |
+      Name can contain only letters and underscores. It must start with a letter.
+
+      Database name cannot be changed later.
+
+    user: User
+    userName: Name
+    userEmail: Email
+    userInfo: |
+      User name and email are required to create the first user account.
+
+      You can add more users later.
+    auth: Sign In
+    authInfo: |
+      **You need to sign in to create a database!**
+
+      We only use those authentication providers. We do not store your password.
+    auth-apple: Apple
+    auth-google: Google
+    auth-sid: Smart-ID
+    auth-mid: Mobile-ID
+    auth-idc: ID-Card
 
     types: Data Types
     typesInfo: |
@@ -242,8 +321,28 @@ onMounted(() => {
     language: English
     title: Loo uus andmebaas
     databaseName: Andmebaasi nimi
-    databaseInfo: Andmebaasi nimi võib sisaldada ainult tähti ja allkriipse ning see peab algama tähega.
+    databaseInfo: |
+      Nimi võib sisaldada ainult tähti ja allkriipse ning see peab algama tähega.
 
+      Andmebaasi nime hiljem muuta ei saa.
+    auth: Sisene
+    authInfo: |
+      **Andmebaasi loomiseks peate sisse logima!**
+
+      Me kasutame ainult neid autentimisviise. Me ei salvesta teie parooli.
+    auth-apple: Apple
+    auth-google: Google
+    auth-sid: Smart-ID
+    auth-mid: Mobiil-ID
+    auth-idc: ID-kaart
+
+    user: Kasutaja
+    userName: Nimi
+    userEmail: E-post
+    userInfo: |
+      Kasutajanime ja e-posti aadress on vajalikud esimese kasutaja loomiseks.
+
+      Hiljem saate lisada veel kasutajaid.
     types: Andmetüübid
     typesInfo: |
       Andmetüüpe kasutatakse andmete määratlemiseks. Valige soovitud eelseadistatud tüübid.

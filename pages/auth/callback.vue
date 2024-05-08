@@ -3,14 +3,16 @@ import { NSpin } from 'naive-ui'
 
 const { t } = useI18n()
 const route = useRoute()
-const { token } = useUser()
+const { token, user } = useUser()
 const { accounts } = useAccount()
+
+definePageMeta({ layout: 'blank' })
 
 onMounted(async () => {
   useHead({ title: t('title') })
 
   const nextPage = useLocalStorage('next', { path: '/' })
-  const authAccount = nextPage.value?.path.split('/').at(1)
+  const authAccount = nextPage.value?.path.split('/').filter(x => x !== 'signup').at(1)
   let newUser = {}
 
   const authResponse = await apiRequest('auth', authAccount ? { account: authAccount } : {}, { Authorization: `Bearer ${route.query.key}` })
@@ -27,6 +29,10 @@ onMounted(async () => {
     token.value = authResponse.token
   } else {
     token.value = undefined
+  }
+
+  if (authResponse.user) {
+    user.value = authResponse.user
   }
 
   if (newUser.new) {

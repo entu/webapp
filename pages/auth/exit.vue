@@ -1,7 +1,9 @@
 <script setup>
 const { t } = useI18n()
 const { accounts } = useAccount()
-const { token } = useUser()
+const { token, user } = useUser()
+
+definePageMeta({ layout: 'blank' })
 
 onMounted(async () => {
   useHead({ title: t('title') })
@@ -14,6 +16,7 @@ onMounted(async () => {
 
   accounts.value = undefined
   token.value = undefined
+  user.value = undefined
 
   await navigateTo({ path, query: {} })
 })

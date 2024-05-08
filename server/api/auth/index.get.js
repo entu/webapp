@@ -90,11 +90,15 @@ export default defineEventHandler(async (event) => {
     }
   }
 
+  const userData = {
+    email: session.user.email
+  }
   const tokenData = {
     email: session.user.email
   }
 
   if (session.user.name) {
+    userData.name = session.user.name
     tokenData.name = session.user.name
   }
 
@@ -104,6 +108,7 @@ export default defineEventHandler(async (event) => {
 
   return {
     accounts,
+    user: userData,
     token: jwt.sign(tokenData, jwtSecret, {
       subject: session.user.email,
       audience,

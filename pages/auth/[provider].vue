@@ -3,6 +3,8 @@ const runtimeConfig = useRuntimeConfig()
 const { t } = useI18n()
 const route = useRoute()
 
+definePageMeta({ layout: 'blank' })
+
 onMounted(async () => {
   useHead({ title: t('title') })
 
