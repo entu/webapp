@@ -6,7 +6,7 @@ const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 
 const { account, accounts } = useAccount()
-const { menuCollapsed, userId, userName } = useUser()
+const { menuCollapsed, token, userId, userName } = useUser()
 
 const menuStore = useMenueStore()
 const { menuEntities } = storeToRefs(menuStore)
@@ -188,6 +188,9 @@ const userMenu = computed(() => {
         { default: () => userName.value || t('userEntity') }
       )
     })
+  }
+
+  if (token.value) {
     menu.push({
       key: 'auth',
       icon: () => h(MyIcon, { icon: 'logout' }),
@@ -261,14 +264,14 @@ function menuSorter (a, b) {
     />
 
     <div
-      v-if="!userId && !menuCollapsed"
+      v-if="!token && !menuCollapsed"
       class="mt-8 text-white font-bold text-center"
     >
       {{ t('signIn') }}
     </div>
 
     <n-menu
-      v-if="!userId"
+      v-if="!token"
       class="pb-0"
       collapse-mode="width"
       :accordion="true"
