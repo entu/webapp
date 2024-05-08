@@ -2,6 +2,8 @@
 import { NButton, NCard, NInput, NPopover, NSwitch } from 'naive-ui'
 
 definePageMeta({ layout: 'blank' })
+
+const runtimeConfig = useRuntimeConfig()
 const { query } = useRoute()
 const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
@@ -28,7 +30,10 @@ const types = ref([
   { value: 'document', selected: false },
   { value: 'book', selected: false }
 ])
-const plans = ref(['1', '2', '3', '4'])
+const plans = computed(() => runtimeConfig.public.stripePaths.split(',').map((p) => {
+  const [value, stripe] = p.split(':')
+  return { value, stripe }
+}))
 
 function validateName () {
   databaseName.value = databaseName.value?.trim().replace(/[^a-zA-Z_]/g, '').toLowerCase()
@@ -39,11 +44,13 @@ function validateName () {
 }
 
 async function createDatabase () {
-  if (token.value) {
-    console.log('Creating database', databaseName.value)
-  } else {
-    await navigateTo({ path: '/auth' })
-  }
+  const url = new URL('https://buy.stripe.com')
+  url.pathname = plans.value.find(p => p.value === plan.value).stripe
+  url.searchParams.set('prefilled_email', userEmail.value)
+  url.searchParams.set('client_reference_id', databaseName.value)
+  url.searchParams.set('locale', locale.value)
+
+  await navigateTo(url.toString(), { external: true })
 }
 
 function setLanguage () {
@@ -148,15 +155,15 @@ onMounted(() => {
         :title="t('types')"
       >
         <div
-          v-for="type in types"
-          :key="type.value"
+          v-for="tp in types"
+          :key="tp.value"
           class="py-2 border-b last-of-type:border-b-0 flex justify-between items-center"
         >
-          {{ t(`typeLabel-${type.value}`) }}
+          {{ t(`typeLabel-${tp.value}`) }}
 
           <n-switch
-            v-model:value="type.selected"
-            :disabled="type.disabled || !token"
+            v-model:value="tp.selected"
+            :disabled="tp.disabled || !token"
           />
         </div>
 
@@ -174,28 +181,28 @@ onMounted(() => {
       >
         <n-popover
           v-for="p in plans"
-          :key="p"
+          :key="p.value"
           class="max-w-72"
           trigger="manual"
           placement="left"
-          :show="token && plan === p"
+          :show="token && plan === p.value"
         >
           <template #trigger>
             <div
               class="price"
-              :class="{ active: plan === p }"
-              @click="plan = p"
+              :class="{ active: plan === p.value }"
+              @click="plan = p.value"
             >
-              {{ t(`price${p}label`) }}
+              {{ t(`price${p.value}label`) }}
               <span class="float-end">
-                {{ t(`price${p}price`) }}
+                {{ t(`price${p.value}price`) }}
               </span>
             </div>
           </template>
 
           <my-markdown
             class="text-sm"
-            :source="t(`price${p}info`)"
+            :source="t(`price${p.value}info`)"
           />
         </n-popover>
 
@@ -203,6 +210,18 @@ onMounted(() => {
           <my-markdown
             class="mt-2 text-sm"
             :source="t('priceInfo')"
+          />
+        </template>
+      </n-card>
+
+      <n-card
+        :class="{ 'select-none opacity-0': !token }"
+        :title="t('billing')"
+      >
+        <template #footer>
+          <my-markdown
+            class="mt-2 text-sm"
+            :source="t('billingInfo')"
           />
         </template>
       </n-card>
@@ -290,8 +309,8 @@ onMounted(() => {
     priceInfo: |
       Price per month including VAT.
 
-      You can see a full list of package options and limitations at [entu.ee](https://www.entu.ee/en/#price).
-    price1price: Free
+      **First 30 days are free** (no credit card required).
+    price1price: 1 €
     price1label: 1,000 objects
     price1info: |
       - Up to 1,000 objects
@@ -323,6 +342,14 @@ onMounted(() => {
       - ID-card and Mobile-ID authentication
       - Own domain
       - Priority support
+    billing: Billing and subscription
+    billingInfo: |
+      We use [Stripe](https://stripe.com) to process payments. We do not store your payment information.
+
+      On clicking the "Create Database" button, you will be redirected to the Stripe for subscription confirmation. Please enter your information there and confirm the subscription.
+
+      After that, you will be redirected back to your new database in Entu.
+
     create: Create Database
   et:
     language: English
@@ -365,8 +392,8 @@ onMounted(() => {
     priceInfo: |
       Hind kuus koos käibemaksuga.
 
-      Täieliku nimekirja pakettide võimaluste ja piirangutega saate vaadata aadressil [entu.ee](https://www.entu.ee/#price).
-    price1price: Tasuta
+      **Esimesed 30 päeva on tasuta** (krediitkaarti pole vaja).
+    price1price: 1 €
     price1label: 1000 objekti
     price1info: |
       - Kuni 1000 objekti
@@ -398,5 +425,12 @@ onMounted(() => {
       - ID-kaardi ja Mobiil-ID tugi
       - Oma aadress
       - Personaalteenindus
+    billing: Arveldamine ja tellimus
+    billingInfo: |
+      Me kasutame maksete töötlemiseks [Stripe](https://stripe.com) teenust. Me ei salvesta teie makseandmeid.
+
+      Vajutades nupule "Loo andmebaas", suunatakse teid Stripe'i tellimuse kinnitamiseks. Palun sisestage oma andmed ja kinnitage tellimus.
+
+      Pärast seda suunatakse teid tagasi oma uude andmebaasi Entus.
     create: Loo andmebaas
 </i18n>
