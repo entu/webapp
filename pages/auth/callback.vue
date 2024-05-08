@@ -12,7 +12,7 @@ onMounted(async () => {
   useHead({ title: t('title') })
 
   const nextPage = useLocalStorage('next', { path: '/' })
-  const authAccount = nextPage.value?.path.split('/').filter(x => x !== 'signup').at(1)
+  const authAccount = nextPage.value?.path.split('/').filter(x => x !== 'new').at(1)
   let newUser = {}
 
   const authResponse = await apiRequest('auth', authAccount ? { account: authAccount } : {}, { Authorization: `Bearer ${route.query.key}` })
