@@ -2,11 +2,13 @@
 import { NButton, NCard, NInput, NPopover, NSwitch } from 'naive-ui'
 
 definePageMeta({ layout: 'blank' })
+const { query } = useRoute()
 const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 const { token, user } = useUser()
 
 const databaseName = ref('')
+const plan = ref(query.plan || '3')
 const userName = ref('')
 const userEmail = ref('')
 
@@ -26,12 +28,7 @@ const types = ref([
   { value: 'document', selected: false },
   { value: 'book', selected: false }
 ])
-const prices = ref([
-  { value: 1, selected: false },
-  { value: 2, selected: true },
-  { value: 3, selected: false },
-  { value: 4, selected: false }
-])
+const plans = ref(['1', '2', '3', '4'])
 
 function validateName () {
   databaseName.value = databaseName.value?.trim().replace(/[^a-zA-Z_]/g, '').toLowerCase()
@@ -165,29 +162,29 @@ onMounted(() => {
 
         <n-card :title="t('price')">
           <n-popover
-            v-for="price in prices"
-            :key="price.value"
+            v-for="p in plans"
+            :key="p"
             class="max-w-72"
             trigger="manual"
             placement="left"
-            :show="price.selected"
+            :show="plan === p"
           >
             <template #trigger>
               <div
                 class="price"
-                :class="price.selected ? 'active' : ''"
-                @click="prices.forEach(p => p.selected = p.value === price.value)"
+                :class="{ active: plan === p }"
+                @click="plan = p"
               >
-                {{ t(`price${price.value}label`) }}
+                {{ t(`price${p}label`) }}
                 <span class="float-end">
-                  {{ t(`price${price.value}price`) }}
+                  {{ t(`price${p}price`) }}
                 </span>
               </div>
             </template>
 
             <my-markdown
               class="text-sm"
-              :source="t(`price${price.value}info`)"
+              :source="t(`price${p}info`)"
             />
           </n-popover>
 
