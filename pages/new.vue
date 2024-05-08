@@ -347,7 +347,7 @@ onMounted(() => {
     userName: Nimi
     userEmail: E-post
     userInfo: |
-      Kasutajanime ja e-posti aadress on vajalikud esimese kasutaja loomiseks.
+      Kasutaja nime ja e-posti aadress on vajalikud esimese kasutaja loomiseks.
 
       Hiljem saate lisada veel kasutajaid.
     types: Andmetüübid
