@@ -310,7 +310,7 @@ onMounted(() => {
       Price per month including VAT.
 
       **First 30 days are free** (no credit card required).
-    price1price: 1 €
+    price1price: 2 €
     price1label: 1,000 objects
     price1info: |
       - Up to 1,000 objects
