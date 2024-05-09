@@ -393,7 +393,7 @@ onMounted(() => {
       Hind kuus koos käibemaksuga.
 
       **Esimesed 30 päeva on tasuta** (krediitkaarti pole vaja).
-    price1price: 1 €
+    price1price: 2 €
     price1label: 1000 objekti
     price1info: |
       - Kuni 1000 objekti
