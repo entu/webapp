@@ -7,10 +7,12 @@ const runtimeConfig = useRuntimeConfig()
 const { query } = useRoute()
 const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
+const { accounts } = useAccount()
 const { token, user } = useUser()
 
 const databaseName = ref('')
 const plan = ref(query.plan || '3')
+const checkoutId = ref(query.checkout)
 const userName = ref('')
 const userEmail = ref('')
 
@@ -45,6 +47,7 @@ function validateName () {
 
 async function createDatabase () {
   const url = new URL('https://buy.stripe.com')
+
   url.pathname = plans.value.find(p => p.value === plan.value).stripe
   url.searchParams.set('prefilled_email', userEmail.value)
   url.searchParams.set('client_reference_id', databaseName.value)
@@ -60,6 +63,14 @@ function setLanguage () {
 
 onMounted(() => {
   useHead({ title: t('title') })
+
+  if (checkoutId.value) {
+    accounts.value = undefined
+    token.value = undefined
+    user.value = undefined
+
+    return
+  }
 
   userName.value = user.value?.name || ''
   userEmail.value = user.value?.email || ''
@@ -85,158 +96,180 @@ onMounted(() => {
         >
       </nuxt-link>
 
-      <n-card
-        v-if="!token"
-        :title="t('auth')"
-      >
-        <nuxt-link
-          v-for="provider in authProviders"
-          :key="provider.value"
-          :to="provider.to"
-          class="flex items-center py-2 border-b last-of-type:border-b-0 gap-2"
-        >
-          <my-icon :icon="provider.icon" />
-          {{ t(`auth-${provider.value}`) }}
-        </nuxt-link>
-        <template #footer>
-          <my-markdown
-            class="mt-1 text-sm"
-            :source="t('authInfo')"
-          />
-        </template>
-      </n-card>
-
-      <n-card
-        :class="{ 'select-none opacity-50': !token }"
-        :title="t('title')"
-      >
-        <n-input
-          v-model:value="databaseName"
-          autofocus
-          :disabled="!token"
-          :placeholder="t('databaseName')"
-          @keyup="validateName()"
-        />
-
-        <template #footer>
-          <my-markdown
-            class="mt-1 text-sm"
-            :source="t('databaseInfo')"
-          />
-        </template>
-      </n-card>
-
-      <n-card
-        :class="{ 'select-none opacity-30': !token }"
-        :title="t('user')"
-      >
-        <n-input
-          v-model:value="userName"
-          :placeholder="t('userName')"
-        />
-
-        <n-input
-          v-model:value="userEmail"
-          class="mt-2"
-          type="email"
-          :placeholder="t('userEmail')"
-        />
-
-        <template #footer>
-          <my-markdown
-            class="mt-1 text-sm"
-            :source="t('userInfo')"
-          />
-        </template>
-      </n-card>
-
-      <n-card
-        :class="{ 'select-none opacity-20': !token }"
-        :title="t('types')"
-      >
-        <div
-          v-for="tp in types"
-          :key="tp.value"
-          class="py-2 border-b last-of-type:border-b-0 flex justify-between items-center"
-        >
-          {{ t(`typeLabel-${tp.value}`) }}
-
-          <n-switch
-            v-model:value="tp.selected"
-            :disabled="tp.disabled || !token"
-          />
-        </div>
-
-        <template #footer>
-          <my-markdown
-            class="mt-1 text-sm"
-            :source="t('typesInfo')"
-          />
-        </template>
-      </n-card>
-
-      <n-card
-        :class="{ 'select-none opacity-5': !token }"
-        :title="t('price')"
-      >
-        <n-popover
-          v-for="p in plans"
-          :key="p.value"
-          class="max-w-72"
-          trigger="manual"
-          placement="left"
-          :show="token && plan === p.value"
-        >
-          <template #trigger>
-            <div
-              class="price"
-              :class="{ active: plan === p.value }"
-              @click="plan = p.value"
-            >
-              {{ t(`price${p.value}label`) }}
-              <span class="float-end">
-                {{ t(`price${p.value}price`) }}
-              </span>
-            </div>
+      <template v-if="checkoutId">
+        <n-card :title="t('success')">
+          <template #footer>
+            <my-markdown
+              class="mt-1 text-sm"
+              :source="t('successInfo')"
+            />
           </template>
+        </n-card>
 
-          <my-markdown
-            class="text-sm"
-            :source="t(`price${p.value}info`)"
+        <n-button
+          secondary
+          size="large"
+          strong
+          @click="navigateTo({ path: '/' })"
+        >
+          {{ t('continue') }}
+        </n-button>
+      </template>
+
+      <template v-else>
+        <n-card
+          v-if="!token"
+          :title="t('auth')"
+        >
+          <nuxt-link
+            v-for="provider in authProviders"
+            :key="provider.value"
+            :to="provider.to"
+            class="flex items-center py-2 border-b last-of-type:border-b-0 gap-2"
+          >
+            <my-icon :icon="provider.icon" />
+            {{ t(`auth-${provider.value}`) }}
+          </nuxt-link>
+          <template #footer>
+            <my-markdown
+              class="mt-1 text-sm"
+              :source="t('authInfo')"
+            />
+          </template>
+        </n-card>
+
+        <n-card
+          :class="{ 'select-none opacity-50': !token }"
+          :title="t('title')"
+        >
+          <n-input
+            v-model:value="databaseName"
+            autofocus
+            :disabled="!token"
+            :placeholder="t('databaseName')"
+            @keyup="validateName()"
           />
-        </n-popover>
 
-        <template #footer>
-          <my-markdown
-            class="mt-2 text-sm"
-            :source="t('priceInfo')"
+          <template #footer>
+            <my-markdown
+              class="mt-1 text-sm"
+              :source="t('databaseInfo')"
+            />
+          </template>
+        </n-card>
+
+        <n-card
+          :class="{ 'select-none opacity-30': !token }"
+          :title="t('user')"
+        >
+          <n-input
+            v-model:value="userName"
+            :placeholder="t('userName')"
           />
-        </template>
-      </n-card>
 
-      <n-card
-        :class="{ 'select-none opacity-0': !token }"
-        :title="t('billing')"
-      >
-        <template #footer>
-          <my-markdown
-            class="mt-2 text-sm"
-            :source="t('billingInfo')"
+          <n-input
+            v-model:value="userEmail"
+            class="mt-2"
+            type="email"
+            :placeholder="t('userEmail')"
           />
-        </template>
-      </n-card>
 
-      <n-button
-        v-if="token"
-        secondary
-        size="large"
-        strong
-        type="success"
-        :disabled="!token || !databaseName || !userName || !userEmail"
-        @click="createDatabase()"
-      >
-        {{ t('create') }}
-      </n-button>
+          <template #footer>
+            <my-markdown
+              class="mt-1 text-sm"
+              :source="t('userInfo')"
+            />
+          </template>
+        </n-card>
+
+        <n-card
+          :class="{ 'select-none opacity-20': !token }"
+          :title="t('types')"
+        >
+          <div
+            v-for="tp in types"
+            :key="tp.value"
+            class="py-2 border-b last-of-type:border-b-0 flex justify-between items-center"
+          >
+            {{ t(`typeLabel-${tp.value}`) }}
+
+            <n-switch
+              v-model:value="tp.selected"
+              :disabled="tp.disabled || !token"
+            />
+          </div>
+
+          <template #footer>
+            <my-markdown
+              class="mt-1 text-sm"
+              :source="t('typesInfo')"
+            />
+          </template>
+        </n-card>
+
+        <n-card
+          :class="{ 'select-none opacity-5': !token }"
+          :title="t('price')"
+        >
+          <n-popover
+            v-for="p in plans"
+            :key="p.value"
+            class="max-w-72"
+            trigger="manual"
+            placement="left"
+            :show="token && plan === p.value"
+          >
+            <template #trigger>
+              <div
+                class="price"
+                :class="{ active: plan === p.value }"
+                @click="plan = p.value"
+              >
+                {{ t(`price${p.value}label`) }}
+                <span class="float-end">
+                  {{ t(`price${p.value}price`) }}
+                </span>
+              </div>
+            </template>
+
+            <my-markdown
+              class="text-sm"
+              :source="t(`price${p.value}info`)"
+            />
+          </n-popover>
+
+          <template #footer>
+            <my-markdown
+              class="mt-2 text-sm"
+              :source="t('priceInfo')"
+            />
+          </template>
+        </n-card>
+
+        <n-card
+          :class="{ 'select-none opacity-0': !token }"
+          :title="t('billing')"
+        >
+          <template #footer>
+            <my-markdown
+              class="mt-2 text-sm"
+              :source="t('billingInfo')"
+            />
+          </template>
+        </n-card>
+
+        <n-button
+          v-if="token"
+          secondary
+          size="large"
+          strong
+          type="success"
+          :disabled="!token || !databaseName || !userName || !userEmail"
+          @click="createDatabase()"
+        >
+          {{ t('create') }}
+        </n-button>
+      </template>
     </div>
   </div>
 </template>
@@ -351,6 +384,12 @@ onMounted(() => {
       After that, you will be redirected back to your new database in Entu.
 
     create: Create Database
+    success: Your database is created!
+    successInfo: |
+      You need to sign in with same authentication provider as you used to create the database.
+
+      Enjoy!
+    continue: Continue
   et:
     language: English
     title: Loo uus andmebaas
@@ -433,4 +472,10 @@ onMounted(() => {
 
       Pärast seda suunatakse teid tagasi oma uude andmebaasi Entus.
     create: Loo andmebaas
+    success: Andmebaas on loodud!
+    successInfo: |
+      Sisselogimiseks kasutage sama autentimisviisi, mida kasutasite andmebaasi loomisel.
+
+      Head kasutamist!
+    continue: Jätka
 </i18n>
