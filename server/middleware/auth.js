@@ -15,23 +15,23 @@ export default defineEventHandler((event) => {
     })
   }
 
-  const jwtToken = (getHeader(event, 'authorization') || '').replace('Bearer ', '').trim()
+  entu.tokenStr = (getHeader(event, 'authorization') || '').replace('Bearer ', '').trim()
 
-  if (!event.path.startsWith('/api/auth') && jwtToken) {
+  if (!event.path.startsWith('/api/auth') && entu.tokenStr) {
     try {
       const { jwtSecret } = useRuntimeConfig(event)
-      const decoded = jwt.verify(jwtToken, jwtSecret, { audience: entu.ip })
+      entu.token = jwt.verify(entu.tokenStr, jwtSecret, { audience: entu.ip })
 
-      if (decoded.aud !== entu.ip) {
+      if (entu.token.aud !== entu.ip) {
         throw createError({
           statusCode: 401,
           statusMessage: 'Invalid JWT audience'
         })
       }
 
-      if (decoded.accounts?.[entu.account]) {
-        entu.user = getObjectId(decoded.accounts[entu.account])
-        entu.userStr = decoded.accounts[entu.account]
+      if (entu.token.accounts?.[entu.account]) {
+        entu.user = getObjectId(entu.token.accounts[entu.account])
+        entu.userStr = entu.token.accounts[entu.account]
       }
     } catch (e) {
       throw createError({
