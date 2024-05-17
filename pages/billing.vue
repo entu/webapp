@@ -6,7 +6,7 @@ definePageMeta({ layout: 'blank' })
 onMounted(async () => {
   useHead({ title: t('title') })
 
-  await navigateTo('https://billing.stripe.com/p/login/00g02XgGnc7F4lGeUU', { external: true, open: { target: '_blank' } })
+  await navigateTo('https://billing.stripe.com/p/login/00g02XgGnc7F4lGeUU', { external: true })
 })
 </script>
 
