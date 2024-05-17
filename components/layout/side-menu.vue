@@ -114,12 +114,15 @@ const accountMenu = computed(() => {
     menuObject[group].children.push({
       key: getValue(entity.query) || entity._id,
       name: getValue(entity.name),
-      label: () => h(NuxtLink,
-        getValue(entity.query).startsWith('http')
-          ? { to: getValue(entity.query), target: '_blank' }
-          : { to: { path: `/${account.value?._id}`, query: queryStringToObject(getValue(entity.query)) } },
-        { default: () => getValue(entity.name) }
-      ),
+      label: () => getValue(entity.query).startsWith('http')
+        ? h(NuxtLink, { class: 'flex items-center justify-between', to: getValue(entity.query), target: '_blank' },
+          () => [
+            getValue(entity.name),
+            h(MyIcon, { icon: 'external-link' })
+          ])
+        : h(NuxtLink, { to: { path: `/${account.value?._id}`, query: queryStringToObject(getValue(entity.query)) } },
+          { default: () => getValue(entity.name) }
+        ),
       ordinal
     })
   })
