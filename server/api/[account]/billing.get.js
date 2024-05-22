@@ -7,7 +7,8 @@ export default defineEventHandler(async (event) => {
   const { stripeKey, public: { apiUrl } } = useRuntimeConfig()
 
   const database = await entu.db.collection('entity').findOne({
-    'private._type.string': 'database'
+    'private._type.string': 'database',
+    'private._editors.reference': entu.user
   }, { projection: { _id: true, 'private.billing_customer.string': true } })
 
   const customerId = database?.private?.billing_customer?.at(0)?.string
