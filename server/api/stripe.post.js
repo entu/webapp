@@ -1,10 +1,11 @@
 import stripe from 'stripe'
 
 export default defineEventHandler(async (event) => {
+  const { stripeKey, stripeEndpointSecret } = useRuntimeConfig()
+
   const stripeSignature = getHeader(event, 'stripe-signature')
   const body = await readRawBody(event, false)
 
-  const { stripeKey, stripeEndpointSecret } = useRuntimeConfig()
   const { webhooks } = stripe(stripeKey)
 
   const stripeEvent = webhooks.constructEvent(body, stripeSignature, stripeEndpointSecret)
