@@ -37,20 +37,36 @@ const plans = computed(() => runtimeConfig.public.stripePaths.split(',').map((p)
   return { value, stripe }
 }))
 
-function validateName () {
-  databaseName.value = databaseName.value?.trim().replace(/[^a-zA-Z_]/g, '').toLowerCase()
+const isValidForm = computed(() => databaseName.value && databaseName.value.length >= 4 && databaseName.value.length <= 12 && userName.value && userEmail.value && token.value)
 
-  while (databaseName.value && !/^[a-zA-Z]/.test(databaseName.value)) {
+function validateName () {
+  databaseName.value = databaseName.value?.replace(/[^a-z0-9_]/gi, '').toLowerCase()
+
+  while (databaseName.value && (/^[_0-9]/.test(databaseName.value))) {
     databaseName.value = databaseName.value.substring(1)
   }
 }
 
 async function createDatabase () {
+  const { database, person } = await fetch(runtimeConfig.public.apiUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token.value}`
+    },
+    body: JSON.stringify({
+      database: databaseName.value,
+      types: types.value.filter(t => t.selected).map(t => t.value),
+      name: userName.value,
+      email: userEmail.value
+    })
+  })
+
   const url = new URL('https://buy.stripe.com')
 
   url.pathname = plans.value.find(p => p.value === plan.value).stripe
   url.searchParams.set('prefilled_email', userEmail.value)
-  url.searchParams.set('client_reference_id', databaseName.value)
+  url.searchParams.set('client_reference_id', `${person}@${database}`)
   url.searchParams.set('locale', locale.value)
 
   await navigateTo(url.toString(), { external: true })
@@ -264,7 +280,7 @@ onMounted(() => {
           size="large"
           strong
           type="success"
-          :disabled="!token || !databaseName || !userName || !userEmail"
+          :disabled="!isValidForm"
           @click="createDatabase()"
         >
           {{ t('create') }}
@@ -305,7 +321,7 @@ onMounted(() => {
     title: Create a new database
     databaseName: Database Name
     databaseInfo: |
-      Name can contain only letters and underscores. It must start with a letter.
+      Name can contain only letters and underscores, it must start with a letter and must be 4 to 12 characters long.
 
       Database name cannot be changed later.
 
@@ -395,7 +411,7 @@ onMounted(() => {
     title: Loo uus andmebaas
     databaseName: Andmebaasi nimi
     databaseInfo: |
-      Nimi võib sisaldada ainult tähti ja allkriipse ning see peab algama tähega.
+      Nimi võib sisaldada ainult tähti ja allkriipse, see peab algama tähega ja olema 4 kuni 12 tähemärki pikk.
 
       Andmebaasi nime hiljem muuta ei saa.
     auth: Sisene

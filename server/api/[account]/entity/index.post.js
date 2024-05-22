@@ -1,5 +1,3 @@
-import { setEntity } from '~/server/utils/entity'
-
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
   const body = await readBody(event)

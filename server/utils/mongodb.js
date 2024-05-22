@@ -5,7 +5,7 @@ export const mongoDbSystemDbs = ['admin', 'config', 'local']
 const dbConnections = {}
 let dbConnection
 
-export async function connectDb (dbName) {
+export async function connectDb (dbName, isNew) {
   if (!dbName) return
 
   if (dbConnections[dbName]) {
@@ -24,8 +24,17 @@ export async function connectDb (dbName) {
   const dbs = await dbConnection.db().admin().listDatabases()
   const dbNames = dbs.databases.map(db => db.name)
 
-  if (!dbNames.includes(dbName) || mongoDbSystemDbs.includes(dbName)) {
-    console.log(`Database ${dbName} not found`)
+  if (mongoDbSystemDbs.includes(dbName)) {
+    console.log(`Database "${dbName}" is a system database`)
+
+    throw createError({
+      statusCode: 400,
+      statusMessage: `Account ${dbName} not found`
+    })
+  }
+
+  if (!isNew && !dbNames.includes(dbName)) {
+    console.log(`Database "${dbName}" not found`)
 
     throw createError({
       statusCode: 404,
@@ -34,7 +43,7 @@ export async function connectDb (dbName) {
   }
 
   dbConnections[dbName] = dbConnection.db(dbName)
-  console.log(`Connected to ${dbName} database`)
+  console.log(`Connected to database "${dbName}"`)
 
   return dbConnections[dbName]
 }
@@ -72,8 +81,15 @@ export async function addUserSession (user) {
   })
 }
 
-export function formatAccount (account) {
-  if (mongoDbSystemDbs.includes(account)) return undefined
+export function formatDatabaseName (name) {
+  if (typeof name !== 'string') return undefined
 
-  return account ? account.replace(/[^a-z0-9]/gi, '').toLowerCase() : undefined
+  let sanitized = name ? name.replace(/[^a-z0-9_]/gi, '').toLowerCase() : undefined
+  while (sanitized && (/^[_0-9]/.test(sanitized))) {
+    sanitized = sanitized.substring(1)
+  }
+
+  if (mongoDbSystemDbs.includes(sanitized)) return undefined
+
+  return sanitized
 }

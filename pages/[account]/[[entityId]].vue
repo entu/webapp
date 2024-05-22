@@ -189,10 +189,6 @@ async function onDrawerClose () {
   }
 }
 
-async function onDelete () {
-  router.back()
-}
-
 onMounted(async () => {
   isLoading.value = true
 
@@ -428,7 +424,7 @@ onMounted(async () => {
       v-model:entity-id="entityId"
       :can-delete="right.owner"
       @close="onDrawerClose()"
-      @delete="onDelete()"
+      @delete="router.back()"
     />
     <entity-drawer-duplicate
       v-if="drawerType === 'duplicate'"

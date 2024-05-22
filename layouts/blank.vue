@@ -1,3 +1,5 @@
 <template>
-  <slot />
+  <div class="size-full overflow-auto">
+    <slot />
+  </div>
 </template>

@@ -5,7 +5,7 @@ export default defineEventHandler((event) => {
 
   const entu = {
     ip: getRequestIP(event, { xForwardedFor: true }),
-    account: event.path.startsWith('/api/auth') ? undefined : formatAccount(event.path.split('/').at(2))
+    account: event.path.startsWith('/api/auth') ? undefined : formatDatabaseName(event.path.split('/').at(2))
   }
 
   if (!event.path.startsWith('/api/auth') && !entu.account) {
