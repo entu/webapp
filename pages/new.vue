@@ -63,13 +63,18 @@ async function createDatabase () {
       name: userName.value,
       email: userEmail.value
     })
-  })
+  }).then(response => response.json())
+
+  if (!database || !person) {
+    isCreating.value = false
+    return
+  }
 
   const url = new URL('https://buy.stripe.com')
 
   url.pathname = plans.value.find(p => p.value === plan.value).stripe
   url.searchParams.set('prefilled_email', userEmail.value)
-  url.searchParams.set('client_reference_id', `${person}@${database}`)
+  url.searchParams.set('client_reference_id', `${database}-${person}`)
   url.searchParams.set('locale', locale.value)
 
   await navigateTo(url.toString(), { external: true })
