@@ -1,5 +1,5 @@
 <script setup>
-import { NButton, NCard, NInput, NPopover, NSwitch } from 'naive-ui'
+import { NAlert, NButton, NCard, NInput, NPopover, NSwitch } from 'naive-ui'
 
 definePageMeta({ layout: 'blank' })
 
@@ -16,6 +16,7 @@ const checkoutId = ref(query.checkout)
 const userName = ref('')
 const userEmail = ref('')
 const isCreating = ref(false)
+const error = ref()
 
 const authProviders = ref(
   [
@@ -38,7 +39,11 @@ const plans = computed(() => runtimeConfig.public.stripePaths.split(',').map((p)
   return { value, stripe }
 }))
 
-const isValidForm = computed(() => databaseName.value && databaseName.value.length >= 4 && databaseName.value.length <= 12 && userName.value && userEmail.value && token.value)
+const isValidForm = computed(() => {
+  error.value = undefined
+
+  return databaseName.value && databaseName.value.length >= 4 && databaseName.value.length <= 12 && userName.value && userEmail.value && token.value
+})
 
 function validateName () {
   databaseName.value = databaseName.value?.replace(/[^a-z0-9_]/gi, '').toLowerCase()
@@ -50,8 +55,9 @@ function validateName () {
 
 async function createDatabase () {
   isCreating.value = true
+  error.value = undefined
 
-  const { database, person } = await fetch(`${runtimeConfig.public.apiUrl}/entu`, {
+  const { database, person, message } = await fetch(`${runtimeConfig.public.apiUrl}/entu`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -64,6 +70,12 @@ async function createDatabase () {
       email: userEmail.value
     })
   }).then(response => response.json())
+
+  if (message) {
+    error.value = message
+    isCreating.value = false
+    return
+  }
 
   if (!database || !person) {
     isCreating.value = false
@@ -282,6 +294,14 @@ onMounted(() => {
           </template>
         </n-card>
 
+        <n-alert
+          v-if="error"
+          type="error"
+          :title="t('error')"
+        >
+          {{ error }}
+        </n-alert>
+
         <n-button
           v-if="token"
           secondary
@@ -415,6 +435,7 @@ onMounted(() => {
 
       Enjoy!
     continue: Continue
+    error: Error
   et:
     language: English
     title: Loo uus andmebaas
@@ -503,4 +524,5 @@ onMounted(() => {
 
       Head kasutamist!
     continue: Jätka
+    error: Viga
 </i18n>
