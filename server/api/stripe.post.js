@@ -2,12 +2,12 @@ import stripe from 'stripe'
 
 export default defineEventHandler(async (event) => {
   const stripeSignature = getHeader(event, 'stripe-signature')
-  const body = await readBody(event)
+  const body = await readRawBody(event, 'utf-8')
 
   const { stripeKey, stripeEndpointSecret } = useRuntimeConfig()
   const { webhooks } = stripe(stripeKey)
 
-  stripeEvent = webhooks.constructEvent(event.body, stripeSignature, stripeEndpointSecret)
+  stripeEvent = webhooks.constructEvent(body, stripeSignature, stripeEndpointSecret)
 
   if (stripeEvent.type === 'checkout.session.completed') {
     const { customer, client_reference_id: reference } = stripeEvent.data?.object
