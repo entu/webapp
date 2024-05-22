@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
   if (body.type === 'checkout.session.completed') {
-    const { customer, reference } = body.data?.object
+    const { customer, client_reference_id: reference } = body.data?.object
 
     if (!customer) {
       console.error('No customer found in checkout')
