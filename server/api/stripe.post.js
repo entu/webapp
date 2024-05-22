@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const { stripeKey, stripeEndpointSecret } = useRuntimeConfig()
   const { webhooks } = stripe(stripeKey)
 
-  stripeEvent = webhooks.constructEvent(body, stripeSignature, stripeEndpointSecret)
+  const stripeEvent = webhooks.constructEvent(body, stripeSignature, stripeEndpointSecret)
 
   if (stripeEvent.type === 'checkout.session.completed') {
     const { customer, client_reference_id: reference } = stripeEvent.data?.object
