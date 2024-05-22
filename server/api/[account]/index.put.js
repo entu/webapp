@@ -125,7 +125,7 @@ async function newDatabase (name) {
     })
   }
 
-  if (name.length <= 4 || name.length >= 12) {
+  if (name.length < 4 || name.length > 12) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Invalid database length'
