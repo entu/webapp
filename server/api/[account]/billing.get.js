@@ -9,9 +9,9 @@ export default defineEventHandler(async (event) => {
   const database = await entu.db.collection('entity').findOne({
     'private._type.string': 'database',
     'private._editors.reference': entu.user
-  }, { projection: { _id: true, 'private.billing_customer.string': true } })
+  }, { projection: { _id: true, 'private.billing_customer_id.string': true } })
 
-  const customerId = database?.private?.billing_customer?.at(0)?.string
+  const customerId = database?.private?.billing_customer_id?.at(0)?.string
 
   if (!customerId) {
     throw createError({
