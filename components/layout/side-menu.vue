@@ -114,8 +114,8 @@ const accountMenu = computed(() => {
     menuObject[group].children.push({
       key: getValue(entity.query) || entity._id,
       name: getValue(entity.name),
-      label: () => getValue(entity.query).startsWith('http')
-        ? h(NuxtLink, { class: 'flex items-center justify-between', to: getValue(entity.query), target: '_blank' },
+      label: () => getValue(entity.query).startsWith('http') || getValue(entity.query).startsWith('/')
+        ? h(NuxtLink, { class: 'flex items-center justify-between', to: linkReplace(getValue(entity.query)), target: '_blank' },
           () => [
             getValue(entity.name),
             h(MyIcon, { icon: 'external-link' })
@@ -237,6 +237,12 @@ function menuSorter (a, b) {
   if (!b.name || a.name > b.name) return 1
 
   return 0
+}
+
+function linkReplace (url) {
+  return url
+    .replace('{DATABASE}', account.value?._id)
+    .replace('{LOCALE}', locale.value)
 }
 </script>
 
