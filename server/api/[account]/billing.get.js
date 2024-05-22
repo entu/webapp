@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
   const { url } = await billingPortal.sessions.create({
     customer: customerId,
     locale,
-    return_url: apiUrl.replace('/api', '')
+    return_url: apiUrl.replace('/api', `/${entu.account}`)
   })
 
   sendRedirect(event, url)
