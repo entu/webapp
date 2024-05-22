@@ -47,7 +47,9 @@ export default defineNuxtConfig({
     s3Endpoint: '',
     s3Bucket: '',
     s3Key: '',
-    s3Secret: ''
+    s3Secret: '',
+    stripeKey: '',
+    stripeEndpointSecret: ''
   },
   spaLoadingTemplate: false,
   ssr: false
