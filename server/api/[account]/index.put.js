@@ -227,9 +227,12 @@ async function getMenus (types = []) {
   const entities = await templateDb.collection('entity').find({
     'private._type.string': 'menu',
     $or: [
-      ...defaultTypes,
-      ...optionalTypes.filter(x => types.includes(x))
-    ].map(x => ({ 'private.query.string': { $regex: `.*_type.string=${x}.*` } }))
+      ...[
+        ...defaultTypes,
+        ...optionalTypes.filter(x => types.includes(x))
+      ].map(x => ({ 'private.query.string': { $regex: `.*_type.string=${x}.*` } })),
+      { 'private.query.string': 'https://entu.app/billing' }
+    ]
   }, { projection: { _id: true } }).toArray()
 
   const result = await Promise.all(entities.map(x =>
