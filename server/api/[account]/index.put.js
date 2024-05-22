@@ -1,3 +1,11 @@
+const reservedDatabases = [
+  'admin',
+  'config',
+  'entu',
+  'local',
+  'stripe',
+  'template'
+]
 const defaultTypes = [
   'database',
   'entity',
@@ -118,17 +126,16 @@ export default defineEventHandler(async (event) => {
 })
 
 async function newDatabase (name) {
-  if (typeof name !== 'string') {
+  if (
+    typeof name !== 'string' ||
+    name.length < 4 ||
+    name.length > 12 ||
+    reservedDatabases.includes(name) ||
+    name.startsWith('entu_')
+  ) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Invalid database name'
-    })
-  }
-
-  if (name.length < 4 || name.length > 12) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Invalid database length'
     })
   }
 
@@ -138,7 +145,7 @@ async function newDatabase (name) {
   if (databases.some(db => db.name === name)) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Invalid database'
+      statusMessage: 'Invalid database name'
     })
   }
 
