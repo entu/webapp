@@ -114,6 +114,7 @@ export default defineEventHandler(async (event) => {
   const { _id: newDatabaseId } = await setEntity(entu, undefined, [
     { type: '_type', reference: databaseTypeId },
     { type: '_sharing', string: 'domain' },
+    { type: '_inheritrights', boolean: true },
     { type: '_editor', reference: newPersonId },
     { type: 'name', string: databaseName }
   ])
