@@ -327,48 +327,52 @@ export async function aggregateEntity (entu, entityId) {
   if (newEntity.private._type) {
     newEntity.public._type = newEntity.private._type
 
-    const definition = await entu.db.collection('entity').aggregate([
-      {
-        $match: {
-          'private._parent.reference': newEntity.private._type.at(0).reference,
-          'private._type.string': 'property',
-          'private.name.string': { $exists: true }
+    if (newEntity.private._type.at(0)?.reference) {
+      const definition = await entu.db.collection('entity').aggregate([
+        {
+          $match: {
+            'private._parent.reference': newEntity.private._type.at(0).reference,
+            'private._type.string': 'property',
+            'private.name.string': { $exists: true }
+          }
+        }, {
+          $project: {
+            _id: false,
+            name: { $arrayElemAt: ['$private.name.string', 0] },
+            public: { $arrayElemAt: ['$private.public.boolean', 0] },
+            search: { $arrayElemAt: ['$private.search.boolean', 0] },
+            formula: { $arrayElemAt: ['$private.formula.string', 0] }
+          }
         }
-      }, {
-        $project: {
-          _id: false,
-          name: { $arrayElemAt: ['$private.name.string', 0] },
-          public: { $arrayElemAt: ['$private.public.boolean', 0] },
-          search: { $arrayElemAt: ['$private.search.boolean', 0] },
-          formula: { $arrayElemAt: ['$private.formula.string', 0] }
+      ]).toArray()
+
+      for (let d = 0; d < definition.length; d++) {
+        if (definition[d].formula) {
+          newEntity.private[definition[d].name] = [await formula(entu, definition[d].formula, entityId)]
         }
-      }
-    ]).toArray()
 
-    for (let d = 0; d < definition.length; d++) {
-      if (definition[d].formula) {
-        newEntity.private[definition[d].name] = [await formula(entu, definition[d].formula, entityId)]
-      }
+        const dValue = newEntity.private[definition[d].name]
 
-      const dValue = newEntity.private[definition[d].name]
-
-      if (definition[d].search && dValue) {
-        newEntity.search.private = [
-          ...(newEntity.search.private || []),
-          ...getValueArray(dValue)
-        ]
-
-        if (definition[d].public) {
-          newEntity.search.public = [
-            ...(newEntity.search.public || []),
+        if (definition[d].search && dValue) {
+          newEntity.search.private = [
+            ...(newEntity.search.private || []),
             ...getValueArray(dValue)
           ]
+
+          if (definition[d].public) {
+            newEntity.search.public = [
+              ...(newEntity.search.public || []),
+              ...getValueArray(dValue)
+            ]
+          }
+        }
+
+        if (definition[d].public && dValue) {
+          newEntity.public[definition[d].name] = dValue
         }
       }
-
-      if (definition[d].public && dValue) {
-        newEntity.public[definition[d].name] = dValue
-      }
+    } else {
+      console.log(`NO_REFERENCE ${entu.account} ${entityId}`)
     }
   } else {
     console.log(`NO_TYPE ${entu.account} ${newEntity.private._type} ${entityId}`)
@@ -419,13 +423,50 @@ export async function aggregateEntity (entu, entityId) {
     _owner: newEntity.private._owner
   })
 
-  if (_noaccess) { newEntity.private._noaccess = _noaccess }
-  if (_viewer) { newEntity.private._viewer = _viewer }
-  if (_expander) { newEntity.private._expander = _expander }
-  if (_editor) { newEntity.private._editor = _editor }
-  if (_owner) { newEntity.private._owner = _owner }
-
   newEntity.access = getAccessArray(newEntity)
+
+  if (!newEntity.access?.length) {
+    delete newEntity.access
+  }
+
+  if (!_noaccess?.length) {
+    delete newEntity.private._noaccess
+  } else {
+    newEntity.private._noaccess = _noaccess
+  }
+  if (!_viewer?.length) {
+    delete newEntity.private._viewer
+  } else {
+    newEntity.private._viewer = _viewer
+  }
+  if (!_expander?.length) {
+    delete newEntity.private._expander
+  } else {
+    newEntity.private._expander = _expander
+  }
+  if (!_editor?.length) {
+    delete newEntity.private._editor
+  } else {
+    newEntity.private._editor = _editor
+  }
+  if (!_owner?.length) {
+    delete newEntity.private._owner
+  } else {
+    newEntity.private._owner = _owner
+  }
+
+  if (!newEntity.private._parent_viewer?.length) {
+    delete newEntity.private._parent_viewer
+  }
+  if (!newEntity.private._parent_expander?.length) {
+    delete newEntity.private._parent_expander
+  }
+  if (!newEntity.private._parent_editor?.length) {
+    delete newEntity.private._parent_editor
+  }
+  if (!newEntity.private._parent_owner?.length) {
+    delete newEntity.private._parent_owner
+  }
 
   if (!['domain', 'public'].includes(newEntity.private?._sharing?.at(0)?.string) || Object.keys(newEntity.public).length === 0) {
     delete newEntity.public
@@ -833,10 +874,10 @@ async function getParentRights (entu, parents) {
   }).toArray()
 
   const rights = combineRights(parentRights.reduce((acc, cur) => ({
-    _viewer: [...acc._viewer, ...cur.private?._viewer],
-    _expander: [...acc._expander, ...cur.private?._expander],
-    _editor: [...acc._editor, ...cur.private?._editor],
-    _owner: [...acc._owner, ...cur.private?._owner]
+    _viewer: [...acc._viewer || [], ...cur.private?._viewer || []],
+    _expander: [...acc._expander || [], ...cur.private?._expander || []],
+    _editor: [...acc._editor || [], ...cur.private?._editor || []],
+    _owner: [...acc._owner || [], ...cur.private?._owner || []]
   }), {
     _viewer: [],
     _expander: [],
