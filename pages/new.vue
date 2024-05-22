@@ -15,6 +15,7 @@ const plan = ref(query.plan || '3')
 const checkoutId = ref(query.checkout)
 const userName = ref('')
 const userEmail = ref('')
+const isCreating = ref(false)
 
 const authProviders = ref(
   [
@@ -48,7 +49,9 @@ function validateName () {
 }
 
 async function createDatabase () {
-  const { database, person } = await fetch(runtimeConfig.public.apiUrl, {
+  isCreating.value = true
+
+  const { database, person } = await fetch(`${runtimeConfig.public.apiUrl}/entu`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -281,6 +284,7 @@ onMounted(() => {
           strong
           type="success"
           :disabled="!isValidForm"
+          :loading="isCreating"
           @click="createDatabase()"
         >
           {{ t('create') }}
