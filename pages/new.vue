@@ -181,7 +181,7 @@ onMounted(() => {
           <n-input
             v-model:value="databaseName"
             autofocus
-            :disabled="!token"
+            :disabled="!token || isCreating"
             :placeholder="t('databaseName')"
             @keyup="validateName()"
           />
@@ -200,6 +200,7 @@ onMounted(() => {
         >
           <n-input
             v-model:value="userName"
+            :disabled="!token || isCreating"
             :placeholder="t('userName')"
           />
 
@@ -207,6 +208,7 @@ onMounted(() => {
             v-model:value="userEmail"
             class="mt-2"
             type="email"
+            :disabled="!token || isCreating"
             :placeholder="t('userEmail')"
           />
 
@@ -231,7 +233,7 @@ onMounted(() => {
 
             <n-switch
               v-model:value="tp.selected"
-              :disabled="tp.disabled || !token"
+              :disabled="tp.disabled || !token || isCreating"
             />
           </div>
 
