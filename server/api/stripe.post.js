@@ -31,7 +31,7 @@ export default defineEventHandler(async (event) => {
     await setEntity(entu, databaseId, [
       { type: 'billing_customer', string: customer }
     ])
+  } else {
+    console.error('Unhandled Stripe event:', body.type)
   }
-
-  console.error('Unhandled Stripe event:', body.type)
 })

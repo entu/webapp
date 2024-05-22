@@ -1,10 +1,21 @@
 const reservedDatabases = [
   'admin',
+  'api',
+  'auth',
+  'billing',
+  'collection',
   'config',
+  'database',
+  'dev',
+  'develop',
+  'entity',
   'entu',
   'local',
+  'new',
+  'property',
   'stripe',
-  'template'
+  'template',
+  'test'
 ]
 const defaultTypes = [
   'database',
