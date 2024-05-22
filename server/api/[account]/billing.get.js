@@ -2,8 +2,15 @@ import stripe from 'stripe'
 
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
-  const { locale } = getQuery(event)
 
+  if (!entu.user) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'No user'
+    })
+  }
+
+  const { locale } = getQuery(event)
   const { stripeKey, public: { apiUrl } } = useRuntimeConfig()
 
   const database = await entu.db.collection('entity').findOne({
