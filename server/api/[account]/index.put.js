@@ -149,8 +149,17 @@ export default defineEventHandler(async (event) => {
     ])
   ))
 
-  // Aggregate all entities
   const allEntities = await entu.db.collection('entity').find({}, { sort: { _id: 1 } }).toArray()
+
+  // Delete all reference properties that are not related to any entity
+  await entu.db.collection('property').deleteMany({
+    $and: [
+      { reference: { $exists: true } },
+      { reference: { $nin: allEntities.map(x => x._id) } }
+    ]
+  })
+
+  // Aggregate all entities
   await Promise.all(allEntities.map(x =>
     aggregateEntity(entu, x._id)
   ))
