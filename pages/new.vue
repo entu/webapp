@@ -403,7 +403,7 @@ onMounted(() => {
     priceInfo: |
       Price per month including VAT.
 
-      **First 30 days are free** (no credit card required).
+      **First 14 days are free** (no credit card required).
     price1price: 2 €
     price1label: 1,000 objects
     price1info: |
@@ -498,7 +498,7 @@ onMounted(() => {
     priceInfo: |
       Hind kuus koos käibemaksuga.
 
-      **Esimesed 30 päeva on tasuta** (krediitkaarti pole vaja).
+      **Esimesed 14 päeva on tasuta** (krediitkaarti pole vaja).
     price1price: 2 €
     price1label: 1000 objekti
     price1info: |
