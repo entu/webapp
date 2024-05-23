@@ -1,5 +1,5 @@
 <script setup>
-import { NAlert, NButton, NCard, NInput, NPopover, NSwitch } from 'naive-ui'
+import { NAlert, NButton, NCard, NInput, NPopover, NSpin, NSwitch } from 'naive-ui'
 
 definePageMeta({ layout: 'blank' })
 
@@ -125,12 +125,12 @@ onMounted(() => {
         </span>
       </div>
 
-      <nuxt-link :to="{ path: '/' }">
+      <a href="/">
         <img
           class="mx-auto h-24 w-24"
           src="/logo.png"
         >
-      </nuxt-link>
+      </a>
 
       <template v-if="checkoutId">
         <n-card :title="t('success')">
@@ -150,6 +150,20 @@ onMounted(() => {
         >
           {{ t('continue') }}
         </n-button>
+      </template>
+
+      <template v-else-if="isCreating">
+        <n-card :title="t('creating')">
+          <template #footer>
+            <div class="flex justify-center">
+              <n-spin size="small" />
+            </div>
+            <my-markdown
+              class="mt-6 text-sm"
+              :source="t('creatingInfo')"
+            />
+          </template>
+        </n-card>
       </template>
 
       <template v-else>
@@ -181,7 +195,7 @@ onMounted(() => {
           <n-input
             v-model:value="databaseName"
             autofocus
-            :disabled="!token || isCreating"
+            :disabled="!token"
             :placeholder="t('databaseName')"
             @keyup="validateName()"
           />
@@ -200,7 +214,7 @@ onMounted(() => {
         >
           <n-input
             v-model:value="userName"
-            :disabled="!token || isCreating"
+            :disabled="!token"
             :placeholder="t('userName')"
           />
 
@@ -208,7 +222,7 @@ onMounted(() => {
             v-model:value="userEmail"
             class="mt-2"
             type="email"
-            :disabled="!token || isCreating"
+            :disabled="!token"
             :placeholder="t('userEmail')"
           />
 
@@ -233,7 +247,7 @@ onMounted(() => {
 
             <n-switch
               v-model:value="tp.selected"
-              :disabled="tp.disabled || !token || isCreating"
+              :disabled="tp.disabled || !token"
             />
           </div>
 
@@ -431,6 +445,11 @@ onMounted(() => {
       After that, you will be redirected back to your new database in Entu.
 
     create: Create Database
+    creating: Creating database
+    creatingInfo: |
+      Please wait while we create your database. This may take a few seconds.
+
+      Once the database is created, you will be redirected to the payment page.
     success: Your database is created!
     successInfo: |
       You need to sign in with same authentication provider as you used to create the database.
@@ -520,6 +539,11 @@ onMounted(() => {
 
       Pärast seda suunatakse teid tagasi oma uude andmebaasi Entus.
     create: Loo andmebaas
+    creating: Andmebaasi loomine
+    creatingInfo: |
+      Palun oodake, kuni loome teie andmebaasi. See võib võtta mõne sekundi.
+
+      Andmebaasi loomisel suunatakse teid makselehele.
     success: Andmebaas on loodud!
     successInfo: |
       Sisselogimiseks kasutage sama autentimisviisi, mida kasutasite andmebaasi loomisel.
