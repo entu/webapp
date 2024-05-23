@@ -248,15 +248,15 @@ function linkReplace (url) {
 
 <template>
   <div class="py-1 w-full min-h-full flex flex-col justify-between">
-    <nuxt-link
+    <a
       v-if="!menuCollapsed"
-      :to="{ path: `/${account?._id || ''}` }"
+      :href="`/${account?._id || ''}`"
     >
       <img
         class="mt-6 mb-4 mx-auto h-24 w-24"
         src="/logo.png"
       >
-    </nuxt-link>
+    </a>
 
     <n-menu
       v-model:value="activeMenu"
