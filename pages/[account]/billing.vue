@@ -4,13 +4,14 @@ const { locale, t } = useI18n()
 onMounted(async () => {
   useHead({ title: t('title') })
 
-  try {
-    const { url } = await apiRequest('billing')
+  const { billingUrl } = await apiRequest('billing')
 
-    await navigateTo(`${url}?locale=${locale.value}`, { external: true })
-  } catch (error) {
+  if (!billingUrl) {
     showError({ statusCode: 404, message: t('error404') })
+    return
   }
+
+  await navigateTo(`${billingUrl}?locale=${locale.value}`, { external: true })
 })
 </script>
 

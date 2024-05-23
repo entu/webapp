@@ -35,5 +35,5 @@ export default defineEventHandler(async (event) => {
     return_url: apiUrl.replace('/api', `/${entu.account}`)
   })
 
-  return { url }
+  return { billingUrl: url }
 })
