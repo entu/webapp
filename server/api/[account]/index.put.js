@@ -120,15 +120,39 @@ export default defineEventHandler(async (event) => {
   ])
 
   // Add database as parent to all entities
-  const noParent = await entu.db.collection('entity').find({
+  const noParents = await entu.db.collection('entity').find({
     _id: { $ne: newDatabaseId },
     'private._parent.reference': { $exists: false }
   }, { projection: { _id: true }, sort: { _id: 1 } }).toArray()
 
-  await Promise.all(noParent.map(x =>
+  await Promise.all(noParents.map(x =>
     setEntity(entu, x._id, [
       { type: '_parent', reference: newDatabaseId }
     ])
+  ))
+
+  // Add rights to new person
+  const noRights = await entu.db.collection('entity').find({
+    $or: [{
+      'private._type.string': 'entity',
+      'private.system._id': { $exists: false }
+    }, {
+      'private._type.string': 'menu'
+    }, {
+      'private._type.string': 'plugin'
+    }]
+  }, { projection: { _id: true }, sort: { _id: 1 } }).toArray()
+
+  await Promise.all(noRights.map(x =>
+    setEntity(entu, x._id, [
+      { type: '_owner', reference: newPersonId }
+    ])
+  ))
+
+  // Aggregate all entities
+  const allEntities = await entu.db.collection('entity').find({}, { sort: { _id: 1 } }).toArray()
+  await Promise.all(allEntities.map(x =>
+    aggregateEntity(entu, x._id)
   ))
 
   return {
@@ -324,7 +348,7 @@ async function createEntities (entu, entities) {
     const properties = entity.properties.map(property => ({
       entity: insertedId,
       ...property,
-      _created: {
+      created: {
         at: new Date()
       }
     }))
@@ -342,10 +366,12 @@ async function createEntities (entu, entities) {
     )
   ))
 
+  // Aggregate all entities
   await Promise.all(allEntities.map(x =>
     aggregateEntity(entu, x._id)
   ))
 
+  // Aggregate all entities again
   await Promise.all(allEntities.map(x =>
     aggregateEntity(entu, x._id)
   ))
