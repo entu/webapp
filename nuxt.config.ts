@@ -10,6 +10,9 @@ export default defineNuxtConfig({
       title: process.env.NUXT_PUBLIC_TITLE || 'Entu',
       link: [
         { rel: 'icon', type: 'image/png', href: '/logo.png' }
+      ],
+      script: [
+        { src: 'https://plausible.io/js/script.js', 'data-domain': 'entu.app', defer: true }
       ]
     }
   },
