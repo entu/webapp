@@ -5,6 +5,7 @@ import { NButtonGroup } from 'naive-ui'
 const props = defineProps({
   entityId: { type: String, default: null },
   typeId: { type: String, default: null },
+  typeName: { type: String, default: null },
   right: { type: Object, default: () => {} }
 })
 
@@ -12,70 +13,27 @@ const { t } = useI18n()
 const route = useRoute()
 
 const menuStore = useMenueStore()
-const { activeMenu, addFromEntities, noAddFrom } = storeToRefs(menuStore)
+const { activeMenu, addFromEntities } = storeToRefs(menuStore)
 
-const addChilds = ref([])
+const addByActiveMenuOptions = computed(() => activeMenu.value?.addFrom || [])
 
-const addDefaultOptions = computed(() => activeMenu.value?.addFrom || [])
+const addChildOptions = computed(() => {
+  let result = addFromEntities.value?.filter(x => !['entity', 'menu'].includes(props.typeName) && x.addFrom.includes(props.entityId))
 
-const addChildOptions = computed(() => props.right.expander && addChilds.value.length > 0
-  ? addChilds.value.sort((a, b) => a.label.localeCompare(b.label))
-  : []
-)
-
-watch([() => props.typeId, addFromEntities], async () => {
-  if (props.entityId || !props.typeId) return
-
-  addChilds.value = [
-    ...addChilds.value,
-    ...addFromEntities.value?.filter(x => x.addFrom.includes(props.typeId) && !addChilds.value.some(y => y.value === x.value))
-  ]
-}, { immediate: true })
-
-watch(() => props.entityId, async (value) => {
-  if (!value) return
-  if (noAddFrom[value]) return
-
-  const addFrom = addFromEntities.value.filter(x => x.addFrom.includes(value))
-
-  if (addFrom.length > 0) {
-    addChilds.value = addFrom
-
-    return
+  if (result.length === 0) {
+    result = addFromEntities.value?.filter(x => x.addFrom.includes(props.typeId))
   }
 
-  const { entities } = await apiGetEntities({
-    'add_from.reference': props.entityId,
-    props: [
-      'name',
-      'label'
-    ].join(',')
-  })
+  result.sort((a, b) => a.label.localeCompare(b.label))
 
-  if (entities.length === 0) {
-    noAddFrom[value] = true
-
-    return
-  }
-
-  const newAddFromEntities = entities?.map(x => ({
-    value: x._id,
-    label: getValue(x.label) || getValue(x.name)
-  }))
-
-  addChilds.value = newAddFromEntities
-
-  addFromEntities.value = [
-    ...addFromEntities.value,
-    ...newAddFromEntities
-  ]
-}, { immediate: true })
+  return result
+})
 </script>
 
 <template>
   <div class="mx-2 flex gap-2">
     <div class="grow">
-      <entity-toolbar-add :options="addDefaultOptions" />
+      <entity-toolbar-add :options="addByActiveMenuOptions" />
     </div>
 
     <n-button-group
@@ -83,6 +41,7 @@ watch(() => props.entityId, async (value) => {
       class="flex items-center"
     >
       <entity-toolbar-add
+        v-if="right.expander"
         :is-child="true"
         :options="addChildOptions"
       />

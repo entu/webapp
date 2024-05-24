@@ -20,6 +20,7 @@ const rawReferences = ref([])
 const isLoading = ref(false)
 
 const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
+const typeName = computed(() => getValue(rawEntity.value?._type, 'string'))
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
@@ -210,6 +211,7 @@ onMounted(async () => {
       :entity-id="entityId"
       :right="right"
       :type-id="typeId"
+      :type-name="typeName"
     />
 
     <transition>
