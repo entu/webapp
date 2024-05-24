@@ -43,11 +43,11 @@ export const useEntityTypeStore = defineStore('entityType', () => {
         'multilingual',
         'name',
         'ordinal',
+        'plugin',
+        'public',
         'readonly',
         'reference_query',
         'set',
-        'sharing',
-        'plugin',
         'type'
       ]
     })
@@ -76,10 +76,10 @@ export const useEntityTypeStore = defineStore('entityType', () => {
         name: getValue(p.name),
         ordinal: getValue(p.ordinal, 'number'),
         plugins: p.plugin?.map(x => plugins.find(p => p._id === x.reference)),
+        public: getValue(p.public, 'boolean'),
         readonly: getValue(p.readonly, 'boolean'),
         referenceQuery: getValue(p.reference_query),
         set: p.set,
-        sharing: getValue(p.sharing),
         type: getValue(p.type)
       }))
     }

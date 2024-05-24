@@ -33,34 +33,47 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
             ? (property.labelPlural || property.label || property.name)
             : (property.label || property.name)
         }}
-
-        <n-popover
-          v-if="property.public || property.description"
-          class="max-w-sm text-sm"
-          placement="top"
+        <div
+          v-if="property.description || property.public"
+          class="-mt-0.5 flex flex-col gap-0.5"
         >
-          <template #trigger>
-            <span class="size-3 flex items-center justify-center text-blue-600 text-xs font-bold bg-blue-100 rounded-full">i</span>
-          </template>
-
-          <div
+          <n-popover
             v-if="property.description"
-            class="text-sm"
+            class="max-w-sm text-sm"
+            placement="top"
           >
-            {{ property.description }}
-          </div>
-          <n-divider
-            v-if="property.public && property.description"
-            class="!my-1.5"
-            dashed
-          />
-          <div
+            <template #trigger>
+              <my-icon
+                icon="info"
+                class="text-sm text-blue-600 cursor-help"
+              />
+            </template>
+
+            <div
+              v-if="property.description"
+              class="text-sm"
+            >
+              {{ property.description }}
+            </div>
+          </n-popover>
+
+          <n-popover
             v-if="property.public"
-            class="text-sm"
+            class="max-w-sm text-sm"
+            placement="top"
           >
-            {{ t('publicProperty') }}
-          </div>
-        </n-popover>
+            <template #trigger>
+              <my-icon
+                icon="sharing/public"
+                class="text-sm text-orange-400 float-right cursor-help"
+              />
+            </template>
+
+            <div class="text-sm">
+              {{ t('publicProperty') }}
+            </div>
+          </n-popover>
+        </div>
 
         <div
           v-else
