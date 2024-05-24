@@ -32,7 +32,8 @@ const types = ref([
   { value: 'department', selected: false },
   { value: 'folder', selected: false },
   { value: 'document', selected: false },
-  { value: 'book', selected: false }
+  { value: 'book', selected: false },
+  { value: 'audiovideo', selected: false }
 ])
 const plans = computed(() => runtimeConfig.public.stripePaths.split(',').map((p) => {
   const [value, stripe] = p.split(':')
@@ -398,6 +399,7 @@ onMounted(() => {
     typeLabel-folder: Folder
     typeLabel-document: Document
     typeLabel-book: Book
+    typeLabel-audiovideo: Audio-Video
 
     price: Package
     priceInfo: |
@@ -493,6 +495,7 @@ onMounted(() => {
     typeLabel-folder: Kaust
     typeLabel-document: Dokument
     typeLabel-book: Raamat
+    typeLabel-audiovideo: Auvis
 
     price: Pakett
     priceInfo: |

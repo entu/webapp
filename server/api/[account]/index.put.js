@@ -26,8 +26,8 @@ const defaultTypes = [
   'property'
 ]
 const optionalTypes = [
+  'audiovideo',
   'book',
-  'copy',
   'department',
   'document',
   'folder',
