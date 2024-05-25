@@ -2,8 +2,6 @@
 import { NConfigProvider, NGlobalStyle, enUS, etEE, dateEnUS, dateEtEE } from 'naive-ui'
 import Intercom from '@intercom/messenger-js-sdk'
 
-const { user } = useUser()
-
 const runtimeConfig = useRuntimeConfig()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 
@@ -12,6 +10,8 @@ if (!localStorage.getItem('locale')) {
 }
 
 setLocale(localStorage.getItem('locale'))
+
+Intercom({ app_id: runtimeConfig.public.intercomAppId })
 
 const currentLocale = ref(enUS)
 const currentDateLocale = ref(dateEnUS)
@@ -27,16 +27,6 @@ onMounted(() => {
     currentLocale.value = etEE
     currentDateLocale.value = dateEtEE
   }
-
-  const intercomConfig = { app_id: runtimeConfig.public.intercomAppId }
-
-  if (user.value) {
-    intercomConfig.user_id = user.value.email
-    intercomConfig.email = user.value.email
-    intercomConfig.name = user.value.name
-  }
-
-  Intercom(intercomConfig)
 })
 
 // eslint-disable-next-line no-console

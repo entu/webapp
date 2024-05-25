@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NPopover, NDivider } from 'naive-ui'
+import { NPopover } from 'naive-ui'
 
 const { t } = useI18n()
 

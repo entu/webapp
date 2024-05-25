@@ -40,8 +40,8 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
   const runtimeConfig = useRuntimeConfig()
   const requests = useRequestCounter()
 
-  const { accounts, accountId } = useAccount()
-  const { token } = useUser()
+  const { accountId } = useAccount()
+  const { token, logOut } = useUser()
   let body = null
 
   requests.value++
@@ -69,8 +69,7 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
 
   const result = await fetch(url, { method, headers, body }).then((response) => {
     if (!response.ok && response.status === 401) {
-      accounts.value = undefined
-      token.value = undefined
+      logOut()
     }
 
     return response.json()

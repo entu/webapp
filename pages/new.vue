@@ -7,8 +7,7 @@ const runtimeConfig = useRuntimeConfig()
 const { query } = useRoute()
 const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
-const { accounts } = useAccount()
-const { token, user } = useUser()
+const { token, user, logOut } = useUser()
 
 const databaseName = ref('')
 const plan = ref(query.plan || '3')
@@ -102,9 +101,7 @@ onMounted(() => {
   useHead({ title: t('title') })
 
   if (checkoutId.value) {
-    accounts.value = undefined
-    token.value = undefined
-    user.value = undefined
+    logOut()
 
     return
   }

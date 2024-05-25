@@ -1,7 +1,7 @@
 <script setup>
 const { t } = useI18n()
 const { accounts } = useAccount()
-const { token, user } = useUser()
+const { logOut } = useUser()
 
 definePageMeta({ layout: 'blank' })
 
@@ -14,9 +14,7 @@ onMounted(async () => {
     path = `/${accounts.value.at(0)._id}`
   }
 
-  accounts.value = undefined
-  token.value = undefined
-  user.value = undefined
+  logOut()
 
   await navigateTo({ path, query: {} })
 })
