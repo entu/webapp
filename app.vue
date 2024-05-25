@@ -2,8 +2,7 @@
 import { NConfigProvider, NGlobalStyle, enUS, etEE, dateEnUS, dateEtEE } from 'naive-ui'
 import Intercom from '@intercom/messenger-js-sdk'
 
-const { user, userId } = useUser()
-const { accountId } = useAccount()
+const { user } = useUser()
 
 const runtimeConfig = useRuntimeConfig()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
@@ -31,19 +30,10 @@ onMounted(() => {
 
   const intercomConfig = { app_id: runtimeConfig.public.intercomAppId }
 
-  if (userId.value) {
-    intercomConfig.user_id = userId.value
-  }
-
   if (user.value) {
-    intercomConfig.name = user.value.name
+    intercomConfig.user_id = user.value.email
     intercomConfig.email = user.value.email
-  }
-
-  if (accountId.value) {
-    intercomConfig.company = {
-      id: accountId.value
-    }
+    intercomConfig.name = user.value.name
   }
 
   Intercom(intercomConfig)
