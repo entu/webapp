@@ -1,5 +1,8 @@
 <script setup>
 import { NConfigProvider, NGlobalStyle, enUS, etEE, dateEnUS, dateEtEE } from 'naive-ui'
+import Intercom from '@intercom/messenger-js-sdk'
+
+Intercom({ app_id: 'btkfxskm' })
 
 const runtimeConfig = useRuntimeConfig()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
