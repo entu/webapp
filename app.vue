@@ -11,7 +11,12 @@ if (!localStorage.getItem('locale')) {
 
 setLocale(localStorage.getItem('locale'))
 
-Intercom({ app_id: runtimeConfig.public.intercomAppId })
+watch(locale, (value) => {
+  Intercom({
+    app_id: runtimeConfig.public.intercomAppId,
+    language_override: value
+  })
+}, { immediate: true })
 
 const currentLocale = ref(enUS)
 const currentDateLocale = ref(dateEnUS)
