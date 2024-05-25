@@ -43,6 +43,7 @@ export default defineNuxtConfig({
       stripePaths: '',
       title: 'Entu'
     },
+    intercomSecret: '',
     jwtSecret: '',
     mongodbUrl: '',
     oauthId: '',

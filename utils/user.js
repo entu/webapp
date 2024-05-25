@@ -12,6 +12,7 @@ export const useUser = () => {
   watch(user, (userValue) => {
     update({
       user_id: userValue.email,
+      user_hash: userValue.hash,
       name: userValue.name,
       email: userValue.email
     })

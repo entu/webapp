@@ -1,8 +1,8 @@
-import { createHash } from 'crypto'
+import { createHash, createHmac } from 'crypto'
 import jwt from 'jsonwebtoken'
 
 export default defineEventHandler(async (event) => {
-  const { jwtSecret } = useRuntimeConfig(event)
+  const { intercomSecret, jwtSecret } = useRuntimeConfig(event)
   const key = (getHeader(event, 'authorization') || '').replace('Bearer ', '').trim()
 
   if (!key) {
@@ -92,7 +92,8 @@ export default defineEventHandler(async (event) => {
 
   const userData = {
     email: session?.user?.email,
-    name: session?.user?.name
+    name: session?.user?.name,
+    hash: createHmac('sha256', intercomSecret).update(session?.user?.email).digest('hex')
   }
 
   const tokenData = {
