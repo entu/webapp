@@ -39,8 +39,9 @@ export default defineNuxtConfig({
     public: {
       apiUrl: '',
       commitHash: '',
-      title: 'Entu',
-      stripePaths: ''
+      intercomAppId: '',
+      stripePaths: '',
+      title: 'Entu'
     },
     jwtSecret: '',
     mongodbUrl: '',
