@@ -613,14 +613,19 @@ async function formulaField (entu, str, entityId) {
   if (strParts.length === 1 && str === '_id') { // same entity _id
     result = [{ _id: entityId }]
   } else if (strParts.length === 1 && str !== '_id') { // same entity property
-    result = await entu.db.collection('property').find({
-      entity: entityId,
-      type: str,
-      deleted: { $exists: false }
+    result = await entu.db.collection('entity').aggregate([{
+      $match: {
+        _id: entityId
+      }
     }, {
-      sort: { _id: 1 },
-      projection: { _id: false, entity: false, type: false }
-    }).toArray()
+      $project: {
+        property: `$private.${fieldRef}`
+      }
+    }, {
+      $unwind: '$property'
+    }, {
+      $replaceWith: '$property'
+    }]).toArray()
   } else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty === '_id') { // childs _id
     result = await entu.db.collection('entity').find({
       'private._parent.reference': entityId
@@ -635,194 +640,143 @@ async function formulaField (entu, str, entityId) {
       projection: { _id: true }
     }).toArray()
   } else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty !== '_id') { // childs property
-    result = await entu.db.collection('entity').aggregate([
-      {
-        $match: { 'private._parent.reference': entityId }
-      }, {
-        $lookup: {
-          from: 'property',
-          let: { entityId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                type: fieldProperty,
-                deleted: { $exists: false },
-                $expr: { $eq: ['$entity', '$$entityId'] }
-              }
-            }, {
-              $project: { _id: false, entity: false, type: false, created: false }
-            }
-          ],
-          as: 'properties'
-        }
-      }, {
-        $project: { properties: true }
-      }, {
-        $unwind: '$properties'
-      }, {
-        $replaceWith: '$properties'
+    result = await entu.db.collection('entity').aggregate([{
+      $match: {
+        'private._parent.reference': entityId
       }
-    ]).toArray()
+    }, {
+      $project: {
+        property: `$private.${fieldProperty}`
+      }
+    }, {
+      $unwind: '$property'
+    }, {
+      $replaceWith: '$property'
+    }]).toArray()
   } else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty !== '_id') { // childs (with type) property
-    result = await entu.db.collection('entity').aggregate([
-      {
-        $match: {
-          'private._parent.reference': entityId,
-          'private._type.string': fieldType
-        }
-      }, {
-        $lookup: {
-          from: 'property',
-          let: { entityId: '$_id' },
-          pipeline: [
-            {
-              $match: {
-                type: fieldProperty,
-                deleted: { $exists: false },
-                $expr: { $eq: ['$entity', '$$entityId'] }
-              }
-            }, {
-              $project: { _id: false, entity: false, type: false, created: false }
-            }
-          ],
-          as: 'properties'
-        }
-      }, {
-        $project: { properties: true }
-      }, {
-        $unwind: '$properties'
-      }, {
-        $replaceWith: '$properties'
+    result = await entu.db.collection('entity').aggregate([{
+      $match: {
+        'private._parent.reference': entityId,
+        'private._type.string': fieldType
       }
-    ]).toArray()
+    }, {
+      $project: {
+        property: `$private.${fieldProperty}`
+      }
+    }, {
+      $unwind: '$property'
+    }, {
+      $replaceWith: '$property'
+    }]).toArray()
   } else if (strParts.length === 3 && fieldRef !== '_child' && fieldType === '*' && fieldProperty === '_id') { // other reference _id
-    result = await entu.db.collection('property').aggregate([
-      {
-        $match: {
-          entity: entityId,
-          type: fieldRef,
-          reference: { $exists: true },
-          deleted: { $exists: false }
-        }
-      }, {
-        $project: { _id: '$reference' }
+    result = await entu.db.collection('property').aggregate([{
+      $match: {
+        entity: entityId,
+        type: fieldRef,
+        reference: { $exists: true },
+        deleted: { $exists: false }
       }
-    ]).toArray()
+    }, {
+      $project: { _id: '$reference' }
+    }]).toArray()
   } else if (strParts.length === 3 && fieldRef !== '_child' && fieldType !== '*' && fieldProperty === '_id') { // other reference (with type) _id
-    result = await entu.db.collection('property').aggregate([
-      {
-        $match: {
-          entity: entityId,
-          type: fieldRef,
-          reference: { $exists: true },
-          deleted: { $exists: false }
-        }
-      }, {
-        $lookup: {
-          from: 'entity',
-          let: { entityId: '$reference' },
-          pipeline: [
-            {
-              $match: {
-                'private._type.string': fieldType,
-                $expr: { $eq: ['$_id', '$$entityId'] }
-              }
-            }, {
-              $project: { _id: true }
-            }
-          ],
-          as: 'references'
-        }
-      }, {
-        $unwind: '$references'
-      }, {
-        $replaceWith: '$references'
+    result = await entu.db.collection('property').aggregate([{
+      $match: {
+        entity: entityId,
+        type: fieldRef,
+        reference: { $exists: true },
+        deleted: { $exists: false }
       }
-    ]).toArray()
+    }, {
+      $lookup: {
+        from: 'entity',
+        let: { entityId: '$reference' },
+        pipeline: [
+          {
+            $match: {
+              'private._type.string': fieldType,
+              $expr: { $eq: ['$_id', '$$entityId'] }
+            }
+          }, {
+            $project: { _id: true }
+          }
+        ],
+        as: 'references'
+      }
+    }, {
+      $unwind: '$references'
+    }, {
+      $replaceWith: '$references'
+    }]).toArray()
   } else if (strParts.length === 3 && fieldRef !== '_child' && fieldType === '*' && fieldProperty !== '_id') { // other reference property
-    result = await entu.db.collection('property').aggregate([
-      {
-        $match: {
-          entity: entityId,
-          type: fieldRef,
-          reference: { $exists: true },
-          deleted: { $exists: false }
-        }
-      }, {
-        $lookup: {
-          from: 'property',
-          let: { entityId: '$reference' },
-          pipeline: [
-            {
-              $match: {
-                type: fieldProperty,
-                deleted: { $exists: false },
-                $expr: { $eq: ['$entity', '$$entityId'] }
-              }
-            }, {
-              $project: { _id: false, entity: false, type: false, created: false }
-            }
-          ],
-          as: 'properties'
-        }
-      }, {
-        $project: { properties: true }
-      }, {
-        $unwind: '$properties'
-      }, {
-        $replaceWith: '$properties'
+    result = await entu.db.collection('property').aggregate([{
+      $match: {
+        entity: entityId,
+        type: fieldRef,
+        reference: { $exists: true },
+        deleted: { $exists: false }
       }
-    ]).toArray()
+    }, {
+      $lookup: {
+        from: 'entity',
+        let: { entityId: '$reference' },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ['$_id', '$$entityId'] }
+            }
+          }, {
+            $project: { property: `$private.${fieldProperty}` }
+          }
+        ],
+        as: 'references'
+      }
+    }, {
+      $project: {
+        property: '$references.property'
+      }
+    }, {
+      $unwind: '$property'
+    }, {
+      $unwind: '$property'
+    }, {
+      $replaceWith: '$property'
+    }]).toArray()
   } else if (strParts.length === 3 && fieldRef !== '_child' && fieldType !== '*' && fieldProperty !== '_id') { // other references(with type) property
-    result = await entu.db.collection('property').aggregate([
-      {
-        $match: {
-          entity: entityId,
-          type: fieldRef,
-          reference: { $exists: true },
-          deleted: { $exists: false }
-        }
-      }, {
-        $lookup: {
-          from: 'entity',
-          let: { entityId: '$reference' },
-          pipeline: [
-            {
-              $match: {
-                'private._type.string': fieldType,
-                $expr: { $eq: ['$_id', '$$entityId'] }
-              }
-            }, {
-              $project: { _id: true }
-            }
-          ],
-          as: 'references'
-        }
-      }, {
-        $lookup: {
-          from: 'property',
-          let: { entityId: '$references._id' },
-          pipeline: [
-            {
-              $match: {
-                type: fieldProperty,
-                deleted: { $exists: false },
-                $expr: { $in: ['$entity', '$$entityId'] }
-              }
-            }, {
-              $project: { _id: false, entity: false, type: false, created: false }
-            }
-          ],
-          as: 'properties'
-        }
-      }, {
-        $project: { properties: true }
-      }, {
-        $unwind: '$properties'
-      }, {
-        $replaceWith: '$properties'
+    result = await entu.db.collection('property').aggregate([{
+      $match: {
+        entity: entityId,
+        type: fieldRef,
+        reference: { $exists: true },
+        deleted: { $exists: false }
       }
-    ]).toArray()
+    }, {
+      $lookup: {
+        from: 'entity',
+        let: { entityId: '$reference' },
+        pipeline: [
+          {
+            $match: {
+              'private._type.string': fieldType,
+              $expr: { $eq: ['$_id', '$$entityId'] }
+            }
+          }, {
+            $project: { property: `$private.${fieldProperty}` }
+          }
+        ],
+        as: 'references'
+      }
+    }, {
+      $project: {
+        property: '$references.property'
+      }
+    }, {
+      $unwind: '$property'
+    }, {
+      $unwind: '$property'
+    }, {
+      $replaceWith: '$property'
+    }]).toArray()
   }
 
   return result
