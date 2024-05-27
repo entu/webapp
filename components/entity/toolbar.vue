@@ -42,6 +42,7 @@ const addChildOptions = computed(() => {
     >
       <entity-toolbar-add
         v-if="right.expander"
+        icon="expand"
         :is-child="true"
         :options="addChildOptions"
       />
