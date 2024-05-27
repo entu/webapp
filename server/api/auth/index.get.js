@@ -93,7 +93,7 @@ export default defineEventHandler(async (event) => {
   const userData = {
     email: session?.user?.email,
     name: session?.user?.name,
-    hash: createHmac('sha256', intercomSecret).update(session?.user?.email).digest('hex')
+    hash: createHmac('sha256', intercomSecret).update(session?.user?.email || session?.user?._id).digest('hex')
   }
 
   const tokenData = {
