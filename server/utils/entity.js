@@ -563,7 +563,7 @@ async function formula (entu, str, entityId) {
   for (let i = 0; i < data.length; i++) {
     const value = await formulaField(entu, data[i], entityId)
 
-    if (value) {
+    if (value !== undefined || value !== null) {
       valueArray = [...valueArray, ...value]
     }
   }
