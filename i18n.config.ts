@@ -10,6 +10,8 @@ export default defineI18nConfig(() => ({
     }
   },
   defaultLocale: 'en',
+  fallbackWarn: false,
+  missingWarn: false,
   legacy: false,
   locale: 'en',
   strategy: 'no_prefix'

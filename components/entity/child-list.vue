@@ -54,17 +54,7 @@ const columns = computed(() => [
     title: c.label,
     align: align[c.type] || 'left',
     ellipsis: { tooltip: true },
-    render: (row) => {
-      if (c.type === 'number' && getValue(row[c.name], 'number')) return getValue(row[c.name], 'number').toLocaleString(locale.value, { minimumFractionDigits: c.decimals, maximumFractionDigits: c.decimals })
-
-      if (c.type === 'boolean' && getValue(row[c.name], 'boolean')) return h(MyIcon, { icon: 'checkmark' })
-
-      if (c.type === 'datetime' && getValue(row[c.name], 'datetime')) return d(getValue(row[c.name], 'datetime'), 'datetime')
-
-      if (c.type === 'date' && getValue(row[c.name], 'date')) return d(getValue(row[c.name], 'date'), 'date')
-
-      return getValue(row[c.name], c.type)
-    },
+    render: row => renderColumn(row, c),
     renderSorterMyIcon: ({ order }) => {
       if (order === false) return null
       if (order === 'ascend') return h(MyIcon, { class: 'text-sky-800', icon: 'sort-ascending' })
@@ -149,6 +139,34 @@ function color () {
   const rnd = Math.floor(Math.random() * colors.length)
 
   return colors[rnd]
+}
+
+function renderColumn (row, { type, name, decimals }) {
+  if (type === 'number' && getValue(row[name], 'number')) {
+    return getValue(row[name], 'number').toLocaleString(locale.value, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+  }
+
+  if (type === 'boolean' && getValue(row[name], 'boolean')) {
+    return h(MyIcon, { icon: 'checkmark' })
+  }
+
+  if (type === 'datetime' && getValue(row[name], 'datetime')) {
+    return d(getValue(row[name], 'datetime'), 'datetime')
+  }
+
+  if (type === 'date' && getValue(row[name], 'date')) {
+    return d(getValue(row[name], 'date'), 'date')
+  }
+
+  if (type === 'reference') {
+    return h(NuxtLink, {
+      class: 'hover:underline',
+      to: { path: `/${accountId.value}/${getValue(row[name], 'reference')}` }
+    }, () => (getValue(row[name]) || getValue(row[name], 'reference'))
+    )
+  }
+
+  return getValue(row[name], type)
 }
 
 onMounted(async () => {
