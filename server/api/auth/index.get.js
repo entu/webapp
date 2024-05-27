@@ -91,19 +91,18 @@ export default defineEventHandler(async (event) => {
   }
 
   const userData = {}
+  const tokenData = {}
 
   if (session?.user?.email || session?.user?.name) {
     userData.email = session?.user?.email
     userData.name = session?.user?.name
     userData.hash = createHmac('sha256', intercomSecret).update(session?.user?.email || session?.user?._id).digest('hex')
 
-    const tokenData = {
-      user: userData
-    }
+    tokenData.user = userData
+  }
 
-    if (accounts.length > 0) {
-      tokenData.accounts = accountUsersIds
-    }
+  if (accounts.length > 0) {
+    tokenData.accounts = accountUsersIds
   }
 
   return {
