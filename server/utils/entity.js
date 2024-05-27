@@ -563,7 +563,7 @@ async function formula (entu, str, entityId) {
   for (let i = 0; i < data.length; i++) {
     const value = await formulaField(entu, data[i], entityId)
 
-    if (value !== undefined || value !== null) {
+    if (value !== undefined && value !== null) {
       valueArray = [...valueArray, ...value]
     }
   }
@@ -850,10 +850,10 @@ function getValueArray (values) {
   if (!values) return []
 
   return values.map((x) => {
-    if (x.number) return x.number
-    if (x.datetime) return x.datetime?.toISOString()
-    if (x.date) return x.date?.toISOString().substring(0, 10)
-    if (x.string) return x.string
+    if (x.number !== undefined && x.number !== null) return x.number
+    if (x.datetime !== undefined && x.datetime !== null) return x.datetime?.toISOString()
+    if (x.date !== undefined && x.date !== null) return x.date?.toISOString().substring(0, 10)
+    if (x.string !== undefined && x.string !== null) return x.string
 
     return x._id
   })
