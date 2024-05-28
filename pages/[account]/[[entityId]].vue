@@ -1,4 +1,5 @@
 <script setup>
+import { hide, update } from '@intercom/messenger-js-sdk'
 import { NCollapse, NCollapseItem, NPopover, NSpin } from 'naive-ui'
 
 const { t } = useI18n()
@@ -120,6 +121,15 @@ watch(() => entity?.value?.name, (value) => {
     useHead({ title: accountId.value })
   }
 }, { immediate: true })
+
+watch(drawerType, (value) => {
+  if (value) {
+    hide()
+    update({ hide_default_launcher: true })
+  } else {
+    update({ hide_default_launcher: false })
+  }
+})
 
 async function loadEntity () {
   if (!entityId.value) return
