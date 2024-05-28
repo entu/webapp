@@ -370,40 +370,38 @@ onMounted(async () => {
         <my-stats-bar
           class="my-3"
           color="rgb(23,162,184)"
-          rail-color="rgba(23,162,184,.3)"
-          :a-label="t('entities')"
-          :b-label="t('deleted')"
-          :a-value="stats.entities"
-          :b-value="stats.deletedEntities"
+          deleted-color="rgba(23,162,184,.3)"
+          :label="t('entities')"
+          :usage="stats.entities.usage"
+          :deleted="stats.entities.deleted"
+          :limit="stats.entities.limit"
         />
         <my-stats-bar
           class="my-3"
           color="rgb(255,193,7)"
-          rail-color="rgba(255,193,7,.3)"
-          :a-label="t('properties')"
-          :b-label="t('deleted')"
-          :a-value="stats.properties"
-          :b-value="stats.deletedProperties"
+          deleted-color="rgba(255,193,7,.3)"
+          :label="t('properties')"
+          :usage="stats.properties.usage"
+          :deleted="stats.properties.deleted"
         />
         <my-stats-bar
           class="my-3"
           is-bytes
           color="rgb(40,167,69)"
-          rail-color="rgba(40,167,69,.3)"
-          :a-label="t('files')"
-          :b-label="t('deleted')"
-          :a-value="stats.filesSize"
-          :b-value="stats.deletedFilesSize"
+          deleted-color="rgba(40,167,69,.3)"
+          :label="t('files')"
+          :usage="stats.files.usage"
+          :deleted="stats.files.deleted"
+          :limit="stats.files.limit"
         />
         <my-stats-bar
           class="my-3"
           color="rgb(108,117,125)"
-          rail-color="rgba(108,117,125,.3)"
+          deleted-color="rgba(108,117,125,.3)"
           show-total
-          :a-label="t('requests')"
-          :b-label="t('limit')"
-          :a-value="stats.requestsMonth"
-          :b-value="Math.ceil(stats.requestsMonth / Math.pow(10, stats.requestsMonth.toString().length - 1)) * Math.pow(10, stats.requestsMonth.toString().length - 1) - stats.requestsMonth"
+          :label="t('requests')"
+          :usage="stats.requests.usage"
+          :limit="stats.requests.limit"
         />
       </div>
     </transition>
@@ -459,8 +457,6 @@ onMounted(async () => {
     properties: Properties
     files: Files
     requests: Requests in this month
-    deleted: deleted
-    limit: limit
     sharingPrivate: Private
     sharingPrivateDescription: Only authorized users (below) can view this entity. Login is required.
     sharingDomain: Anyone with account
@@ -475,8 +471,6 @@ onMounted(async () => {
     properties: Parameetreid
     files: Faile
     requests: Päringuid selles kuus
-    deleted: kustutatud
-    limit: limiit
     sharingPrivate: Privaatne
     sharingPrivateDescription: Seda objekti saavad vaadata ainult õigustega kasutajad. Sisselogimine on vajalik.
     sharingDomain: Kõik kasutajad

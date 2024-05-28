@@ -36,19 +36,38 @@ export default defineEventHandler(async (event) => {
     }
   }]).toArray()
 
+  const database = await entu.db.collection('entity').findOne({ 'private._type.string': 'database' }, {
+    projection: {
+      'private.name.string': true,
+      'private.billing_entities_limit.number': true,
+      'private.billing_data_limit.number': true,
+      'private.billing_requests_limit.number': true
+    }
+  })
+
   const date = new Date().toISOString()
   const requests = await entu.db.collection('stats').findOne({ date: date.substring(0, 7), function: 'ALL' })
 
   return {
-    entities,
-    deletedEntities: deletedEntities?.at(0)?.count || 0,
-    properties: properties.find(e => e._id === false)?.count || 0,
-    deletedProperties: properties.find(e => e._id === true)?.count || 0,
-    files: files.find(e => e._id === false)?.count || 0,
-    filesSize: files.find(e => e._id === false)?.filesize || 0,
-    deletedFiles: files.find(e => e._id === true)?.count || 0,
-    deletedFilesSize: files.find(e => e._id === true)?.filesize || 0,
-    dbSize: stats.dataSize + stats.indexSize,
-    requestsMonth: requests?.count || 0
+    entities: {
+      usage: entities,
+      deleted: deletedEntities?.at(0)?.count || 0,
+      limit: database?.private?.billing_entities_limit?.at(0)?.number || 0
+    },
+    properties: {
+      usage: properties.find(e => e._id === false)?.count || 0,
+      deleted: properties.find(e => e._id === true)?.count || 0
+    },
+    requests: {
+      usage: requests?.count || 0,
+      // limit: database?.private?.billing_requests_limit?.at(0)?.number || 0
+      limit: Math.ceil(requests?.count / Math.pow(10, requests?.count.toString().length - 1)) * Math.pow(10, requests?.count.toString().length - 1) || 0
+    },
+    files: {
+      usage: files.find(e => e._id === false)?.filesize || 0,
+      deleted: files.find(e => e._id === true)?.filesize || 0,
+      limit: (database?.private?.billing_data_limit?.at(0)?.number || 0) * 1e9
+    },
+    dbSize: stats.dataSize + stats.indexSize
   }
 })
