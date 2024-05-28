@@ -1,8 +1,5 @@
 const reservedDatabases = [
-  'admin',
-  'akg',
   'api',
-  'are',
   'argo',
   'argoroots',
   'arx_raamat',
@@ -33,7 +30,6 @@ const reservedDatabases = [
   'test',
   'tng',
   'vabamu',
-  'vask',
   'ww'
 ]
 const defaultTypes = [
