@@ -56,6 +56,7 @@ const limitStr = computed(() => props.isBytes ? humanFileSize(props.limit) : n(p
         {{ label }}
       </div>
       <div
+        v-if="limit"
         class="text-gray-400"
         :class="{ 'text-red-700': limitPercent }"
       >
