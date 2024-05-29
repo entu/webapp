@@ -189,7 +189,26 @@ const userMenu = computed(() => {
       label: () => h(NuxtLink,
         { to: { path: `/${account.value?._id}/${userId.value}` } },
         { default: () => userName.value || t('userEntity') }
-      )
+      ),
+      children: menuCollapsed.value
+        ? [{
+            key: `user-${userId.value}`,
+            name: '            1',
+            label: () => h(NuxtLink,
+              { to: { path: `/${account.value?._id}/${userId.value}` } },
+              { default: () => h('strong', {}, { default: () => userName.value || t('userEntity') }) }
+            )
+          }, {
+            type: 'divider',
+            props: { style: { margin: '.5rem' } }
+          }, {
+            key: `language-${locale.value}`,
+            label: () => h('a',
+              { onClick: () => setLanguage() },
+              { default: () => t('language') }
+            )
+          }]
+        : undefined
     })
   }
 
@@ -203,20 +222,6 @@ const userMenu = computed(() => {
       )
     })
   }
-
-  menu.push({
-    type: 'divider',
-    props: { style: { margin: '.5rem' } }
-  })
-
-  menu.push({
-    key: `language-${locale.value}`,
-    icon: () => h(MyIcon, { icon: 'language' }),
-    label: () => h('a',
-      { onClick: () => setLanguage() },
-      { default: () => t('language') }
-    )
-  })
 
   return menu
 })
@@ -248,12 +253,24 @@ function linkReplace (url) {
 
 <template>
   <div class="py-1 w-full min-h-full flex flex-col justify-between">
+    <div
+      v-if="!menuCollapsed"
+      class="mt-1 ml-2 mr-3 flex items-center justify-end"
+    >
+      <div
+        class="font-bold text-sm text-white opacity-80 uppercase cursor-pointer"
+        @click="setLanguage()"
+      >
+        {{ locale === 'en' ? 'ET' : 'EN' }}
+      </div>
+    </div>
+
     <a
       v-if="!menuCollapsed"
       :href="`/${account?._id || ''}`"
     >
       <img
-        class="mt-6 mb-4 mx-auto h-24 w-24"
+        class="mb-4 mx-auto h-24 w-24"
         src="/logo.png"
       >
     </a>
