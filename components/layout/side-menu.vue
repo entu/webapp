@@ -214,6 +214,11 @@ const userMenu = computed(() => {
 
   if (token.value) {
     menu.push({
+      type: 'divider',
+      props: { style: { margin: '.5rem' } }
+    })
+
+    menu.push({
       key: 'auth',
       icon: () => h(MyIcon, { icon: 'logout' }),
       label: () => h(NuxtLink,
