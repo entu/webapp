@@ -30,7 +30,7 @@ onMounted(async () => {
       </n-button>
     </div>
 
-    <div class="px-4 text-sm text-right">
+    <div class="px-4 text-sm text-center">
       <a
         v-if="!isQuery && !entityId"
         target="_blank"
