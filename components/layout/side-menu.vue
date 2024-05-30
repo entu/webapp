@@ -260,13 +260,13 @@ function linkReplace (url) {
   <div class="py-1 w-full min-h-full flex flex-col justify-between">
     <div
       v-if="!menuCollapsed"
-      class="mt-1 ml-2 mr-3 flex items-center justify-end"
+      class="mt-1 ml-2 mr-3 mb-6 flex items-center justify-end"
     >
       <div
-        class="font-bold text-sm text-white opacity-80 uppercase cursor-pointer"
+        class="text-sm text-white opacity-80 uppercase cursor-pointer"
         @click="setLanguage()"
       >
-        {{ locale === 'en' ? 'ET' : 'EN' }}
+        {{ t('language') }}
       </div>
     </div>
 
@@ -275,7 +275,7 @@ function linkReplace (url) {
       :href="`/${account?._id || ''}`"
     >
       <img
-        class="mb-4 mx-auto h-24 w-24"
+        class="mx-auto h-24 w-24"
         src="/logo.png"
       >
     </a>
