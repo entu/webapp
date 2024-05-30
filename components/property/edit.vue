@@ -461,8 +461,8 @@ function addListValue (_id) {
 <i18n lang="yaml">
   en:
     upload: Upload
-    counter: Get from counter
+    counter: Generate
   et:
     upload: Laadi üles
-    counter: Võta loendurist
+    counter: Genereeri
 </i18n>
