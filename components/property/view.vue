@@ -18,7 +18,11 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     :key="v._id"
     class="my-1"
   >
-    <template v-if="isMarkdown && v.string !== undefined">
+    <template v-if="v.string !== undefined && !isMarkdown">
+      {{ v.string }}
+    </template>
+
+    <template v-else-if="v.string !== undefined && isMarkdown">
       <my-markdown :source="v.string" />
     </template>
 
@@ -78,10 +82,6 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
 
     <template v-else-if="v.date !== undefined">
       {{ d(v.date, 'date') }}<br>
-    </template>
-
-    <template v-else-if="v.string !== undefined">
-      {{ v.string }}
     </template>
 
     <template v-else>

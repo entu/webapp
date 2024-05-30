@@ -71,6 +71,9 @@ async function updateValue (newValue) {
     case 'text':
       property = 'string'
       break
+    case 'counter':
+      property = 'string'
+      break
     case 'file':
       property = 'filename'
       break
@@ -88,27 +91,39 @@ async function updateValue (newValue) {
     value = new Date(value) || null
   }
 
-  if (value === oldValue[property] && language === oldValue.language) return
+  if (!newValue.counter && value === oldValue[property] && language === oldValue.language) return
 
   loadingInputs.value.push(_id)
   isUpdating.value = true
 
-  if (props.type === 'file') {
-    properties.push({
-      _id,
-      type: props.property,
-      filename: newValue.filename,
-      filesize: newValue.filesize,
-      filetype: newValue.filetype,
-      language
-    })
-  } else {
-    properties.push({
-      _id,
-      type: props.property,
-      [property]: value,
-      language
-    })
+  switch (props.type) {
+    case 'file':
+      properties.push({
+        _id,
+        type: props.property,
+        filename: newValue.filename,
+        filesize: newValue.filesize,
+        filetype: newValue.filetype,
+        language
+      })
+      break
+    case 'counter':
+      properties.push({
+        _id,
+        type: props.property,
+        [property]: value,
+        counter: 1,
+        language
+      })
+      break
+    default:
+      properties.push({
+        _id,
+        type: props.property,
+        [property]: value,
+        language
+      })
+      break
   }
 
   let entity
@@ -161,6 +176,10 @@ async function addValue (properties) {
   const newValue = newValues.value.find(x => x._id === undefined)
 
   newValue._id = property._id
+
+  if (props.type === 'counter') {
+    newValue.string = property.string
+  }
 
   return entity
 }
@@ -407,6 +426,24 @@ function addListValue (_id) {
         @update:value="updateValue(value)"
       />
 
+      <n-input
+        v-else-if="type === 'counter' && value.string"
+        v-model:value="value.string"
+        placeholder=""
+        :loading="loadingInputs.includes(value._id)"
+        :readonly="disabled"
+        @blur="updateValue(value)"
+        @focus="addListValue(value._id)"
+      />
+
+      <my-button
+        v-else-if="type === 'counter' && !value._id"
+        :label="t('counter')"
+        :loading="loadingInputs.includes(value._id)"
+        :readonly="disabled"
+        @click="updateValue({ counter: 1 })"
+      />
+
       <n-select
         v-if="isMultilingual"
         v-model:value="value.language"
@@ -424,6 +461,8 @@ function addListValue (_id) {
 <i18n lang="yaml">
   en:
     upload: Upload
+    counter: Get from counter
   et:
     upload: Laadi üles
+    counter: Võta loendurist
 </i18n>

@@ -220,6 +220,14 @@ export async function setEntity (entu, entityId, properties) {
     if (property.reference) { property.reference = getObjectId(property.reference) }
     if (property.date) { property.date = new Date(property.date) }
     if (property.datetime) { property.datetime = new Date(property.datetime) }
+    if (property.counter) {
+      const nextCounter = await getNextCounterValue(entu, property)
+
+      property.string = nextCounter.string
+      property.number = nextCounter.number
+
+      delete property.counter
+    }
 
     property.entity = entityId
     property.created = {
@@ -954,4 +962,38 @@ async function startRelativeAggregation (entu, entity, newEntity) {
   }
 
   return referrers.length
+}
+
+async function getNextCounterValue (entu, property) {
+  const regex = /\d+(?!.*\d)/
+  const add = typeof property.counter === 'number' ? property.counter : 1
+
+  if (property.string) {
+    const match = property.string.match(regex)
+
+    if (match) {
+      const number = parseInt(match.at(0), 10)
+      return { string: property.string.replace(regex, number), number }
+    }
+  } else {
+    const lastProperty = await entu.db.collection('property')
+      .find({ type: property.type, deleted: { $exists: false } })
+      .sort({ number: -1, _id: -1 })
+      .limit(1)
+      .toArray()
+
+    if (!lastProperty.length === 0) {
+      return { string: `${add}`, number: add }
+    }
+
+    const str = lastProperty.at(0).string
+    const match = str.match(regex)
+
+    if (match) {
+      const number = parseInt(match.at(0), 10) + add
+      return { string: str.replace(regex, number), number }
+    } else {
+      return { string: `${str}${add}`, number: add }
+    }
+  }
 }
