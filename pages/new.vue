@@ -330,6 +330,13 @@ onMounted(() => {
         </n-button>
       </template>
     </div>
+    <div class="mb-2 px-4 text-sm text-center text-gray-500">
+      <a
+        v-if="!isQuery && !entityId"
+        target="_blank"
+        :href="t('termsUrl')"
+      >{{ t('terms') }}</a>
+    </div>
   </div>
 </template>
 
@@ -456,6 +463,8 @@ onMounted(() => {
       Enjoy!
     continue: Continue
     error: Error
+    terms: Terms of Service
+    termsUrl: https://www.entu.ee/en/terms
   et:
     language: English
     title: Loo uus andmebaas
@@ -551,4 +560,6 @@ onMounted(() => {
       Head kasutamist!
     continue: Jätka
     error: Viga
+    terms: Kasutustingimused
+    termsUrl: https://www.entu.ee/tingimused
 </i18n>

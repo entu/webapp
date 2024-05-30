@@ -459,7 +459,7 @@ onMounted(async () => {
       @close="onDrawerClose()"
     />
 
-    <div class="px-4 text-sm text-center">
+    <div class="px-4 text-sm text-center text-gray-500">
       <a
         v-if="!isQuery && !entityId"
         target="_blank"
