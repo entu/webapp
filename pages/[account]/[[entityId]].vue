@@ -458,6 +458,14 @@ onMounted(async () => {
       :raw-entity="rawEntity"
       @close="onDrawerClose()"
     />
+
+    <div class="px-4 text-sm text-right">
+      <a
+        v-if="!isQuery && !entityId"
+        target="_blank"
+        :href="t('termsUrl')"
+      >{{ t('terms') }}</a>
+    </div>
   </div>
 </template>
 
@@ -476,6 +484,8 @@ onMounted(async () => {
     childsCount: 'no childs | {n} child | {n} childs'
     referrersCount: 'no referrers | {n} referrer | {n} referrers'
     error404: Entity not found or you do not have access to it
+    terms: Terms of Service
+    termsUrl: https://www.entu.ee/en/terms
   et:
     entities: Objekte
     properties: Parameetreid
@@ -490,6 +500,8 @@ onMounted(async () => {
     childsCount: 'alamobjekte pole | {n} alamobjekt | {n} alamobjekti'
     referrersCount: 'viitajaid pole | {n} viitaja | {n} viitajat'
     error404: Objekti ei leitud või sul puudub ligipääs sellele
+    terms: Kasutustingimused
+    termsUrl: https://www.entu.ee/tingimused
 </i18n>
 
 <style scoped>
