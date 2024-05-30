@@ -216,7 +216,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="h-full flex flex-col">
+  <div class="relative h-full flex flex-col">
     <entity-toolbar
       :entity-id="entityId"
       :right="right"
@@ -459,9 +459,11 @@ onMounted(async () => {
       @close="onDrawerClose()"
     />
 
-    <div class="px-4 text-sm text-center text-gray-500">
+    <div
+      v-if="!isQuery && !entityId"
+      class="absolute bottom-0 right-0 left-0 text-sm text-center text-gray-500"
+    >
       <a
-        v-if="!isQuery && !entityId"
         target="_blank"
         :href="t('termsUrl')"
       >{{ t('terms') }}</a>

@@ -14,25 +14,25 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="h-full flex flex-col">
-    <div class="grow flex justify-center items-center">
-      <n-button
-        secondary
-        size="large"
-        type="success"
-        @click="navigateTo('/new')"
-      >
-        <my-icon
-          class="mr-2"
-          icon="add"
-        />
-        {{ t('new') }}
-      </n-button>
-    </div>
+  <div class="relative h-full flex flex-col justify-center items-center">
+    <n-button
+      secondary
+      size="large"
+      type="success"
+      @click="navigateTo('/new')"
+    >
+      <my-icon
+        class="mr-2"
+        icon="add"
+      />
+      {{ t('new') }}
+    </n-button>
 
-    <div class="px-4 text-sm text-center text-gray-500">
+    <div
+      v-if="!isQuery && !entityId"
+      class="absolute bottom-0 right-0 left-0 text-sm text-center text-gray-500"
+    >
       <a
-        v-if="!isQuery && !entityId"
         target="_blank"
         :href="t('termsUrl')"
       >{{ t('terms') }}</a>
