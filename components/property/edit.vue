@@ -386,7 +386,7 @@ function addListValue (_id) {
 
       <n-date-picker
         v-else-if="type === 'datetime'"
-        v-model:value="value.date"
+        v-model:value="value.datetime"
         class="w-full"
         placeholder=""
         type="datetime"
