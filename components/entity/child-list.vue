@@ -17,7 +17,6 @@ const { locale, d, t } = useI18n()
 const { accountId } = useAccount()
 const { tablePageSize } = useUser()
 
-const sort = ref()
 const rawEntities = ref()
 const rawColumns = ref([{
   name: 'name',
@@ -28,6 +27,7 @@ const rawColumns = ref([{
 const isLoading = ref(false)
 const total = ref(0)
 const page = ref(1)
+const sorter = ref()
 
 const pagination = computed(() => ({
   page: page.value,
@@ -54,10 +54,14 @@ const columns = computed(() => [
     align: align[c.type] || 'left',
     ellipsis: { tooltip: true },
     render: row => renderColumn(row, c),
-    renderSorterMyIcon: ({ order }) => {
-      if (order === false) return null
-      if (order === 'ascend') return h(MyIcon, { class: 'text-sky-800', icon: 'sort-ascending' })
-      if (order === 'descend') return h(MyIcon, { class: 'text-sky-800', icon: 'sort-descending' })
+    renderSorterIcon: ({ order }) => {
+      if (!sorter.value?.order || sorter.value?.columnKey !== c.name) {
+        return null
+      } else if (sorter.value?.order === 'ascend') {
+        return h(MyIcon, { class: 'text-sky-800', icon: 'sort/ascending' })
+      } else {
+        return h(MyIcon, { class: 'text-sky-800', icon: 'sort/descending' })
+      }
     },
     sorter: true
   }))
@@ -104,17 +108,29 @@ async function getTypes () {
   }
 }
 
-async function getEntities (setPage, setPageSize, sorter = sort.value) {
+async function getEntities (setPage, setPageSize, setSorter) {
   isLoading.value = true
 
-  if (!setPage) {
+  if (setPage) {
     page.value = setPage
   }
   if (setPageSize) {
     tablePageSize.value = setPageSize
   }
+  if (setSorter) {
+    sorter.value = setSorter
+  } else {
+    sorter.value = {
+      columnKey: rawColumns.value.at(0).name,
+      order: 'ascend'
+    }
+  }
 
-  const field = sorter ? rawColumns.value.find(c => c.name === sorter.columnKey).type : null
+  let field = rawColumns.value.find(c => c.name === sorter.value.columnKey).type
+
+  if (field === 'reference') {
+    field = 'string'
+  }
 
   const { entities, count } = await apiGetEntities({
     [props.referenceField]: props.entityId,
@@ -123,14 +139,13 @@ async function getEntities (setPage, setPageSize, sorter = sort.value) {
       '_thumbnail',
       ...rawColumns.value.map(c => c.name)
     ].join(','),
-    sort: sorter ? `${sorter.order === 'descend' ? '-' : ''}${sorter.columnKey}.${field}` : null,
+    sort: `${sorter.value.order === 'descend' ? '-' : ''}${sorter.value.columnKey}.${field}`,
     limit: tablePageSize.value,
     skip: tablePageSize.value * (page.value - 1)
   })
 
   rawEntities.value = entities
   total.value = count
-  sort.value = sorter
 
   isLoading.value = false
 }
