@@ -34,7 +34,7 @@ const pagination = computed(() => ({
   pageCount: Math.ceil(total.value / tablePageSize.value),
   pageSize: tablePageSize.value,
   showSizePicker: true,
-  pageSizes: [25, 50, 100]
+  pageSizes: [10, 25, 100, 250]
 }))
 
 const columns = computed(() => [
