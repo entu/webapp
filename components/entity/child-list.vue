@@ -27,7 +27,6 @@ const rawColumns = ref([{
 }])
 const isLoading = ref(false)
 const total = ref(0)
-const activeRow = ref(null)
 const page = ref(1)
 
 const pagination = computed(() => ({
@@ -132,10 +131,6 @@ async function getEntities (setPage, setPageSize, sorter = sort.value) {
   rawEntities.value = entities
   total.value = count
   sort.value = sorter
-
-  pagination.value.page = page
-  pagination.value.pageCount = Math.ceil(count / pageSize)
-  pagination.value.pageSize = pageSize
 
   isLoading.value = false
 }
