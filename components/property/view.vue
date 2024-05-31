@@ -18,15 +18,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     :key="v._id"
     class="my-1"
   >
-    <template v-if="v.string !== undefined && !isMarkdown">
-      {{ v.string }}
-    </template>
-
-    <template v-else-if="v.string !== undefined && isMarkdown">
-      <my-markdown :source="v.string" />
-    </template>
-
-    <template v-else-if="v.reference !== undefined && v.datetime !== undefined">
+    <template v-if="v.reference !== undefined && v.datetime !== undefined">
       <nuxt-link
         class="link"
         :to="{ path:`/${accountId}/${v.reference}`}"
@@ -64,10 +56,6 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
       </span>
     </template>
 
-    <template v-else-if="v.number !== undefined && v.number !== null">
-      {{ v.number.toLocaleString(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) }}
-    </template>
-
     <template v-else-if="v.boolean !== undefined && v.boolean === true">
       <my-icon icon="checkmark" />
     </template>
@@ -82,6 +70,18 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
 
     <template v-else-if="v.date !== undefined">
       {{ d(v.date, 'date') }}<br>
+    </template>
+
+    <template v-else-if="v.string !== undefined && !isMarkdown">
+      {{ v.string }}
+    </template>
+
+    <template v-else-if="v.string !== undefined && isMarkdown">
+      <my-markdown :source="v.string" />
+    </template>
+
+    <template v-else-if="v.number !== undefined && v.number !== null">
+      {{ v.number.toLocaleString(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals }) }}
     </template>
 
     <template v-else>
