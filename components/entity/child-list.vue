@@ -15,6 +15,7 @@ const align = {
 
 const { locale, d, t } = useI18n()
 const { accountId } = useAccount()
+const { tablePageSize } = useUser()
 
 const sort = ref()
 const rawEntities = ref()
@@ -26,17 +27,16 @@ const rawColumns = ref([{
 }])
 const isLoading = ref(false)
 const total = ref(0)
+const activeRow = ref(null)
+const page = ref(1)
 
-const pagination = ref({
-  page: 1,
-  pageCount: 1,
-  pageSize: 25,
+const pagination = computed(() => ({
+  page: page.value,
+  pageCount: Math.ceil(total.value / tablePageSize.value),
+  pageSize: tablePageSize.value,
   showSizePicker: true,
-  pageSizes: [25, 50, 100],
-  selectProps: {
-    renderLabel: e => t('perPage', e.value)
-  }
-})
+  pageSizes: [25, 50, 100]
+}))
 
 const columns = computed(() => [
   {
@@ -105,8 +105,15 @@ async function getTypes () {
   }
 }
 
-async function getEntities (page = pagination.value.page, pageSize = pagination.value.pageSize, sorter = sort.value) {
+async function getEntities (setPage, setPageSize, sorter = sort.value) {
   isLoading.value = true
+
+  if (!setPage) {
+    page.value = setPage
+  }
+  if (setPageSize) {
+    tablePageSize.value = setPageSize
+  }
 
   const field = sorter ? rawColumns.value.find(c => c.name === sorter.columnKey).type : null
 
@@ -118,8 +125,8 @@ async function getEntities (page = pagination.value.page, pageSize = pagination.
       ...rawColumns.value.map(c => c.name)
     ].join(','),
     sort: sorter ? `${sorter.order === 'descend' ? '-' : ''}${sorter.columnKey}.${field}` : null,
-    limit: pageSize,
-    skip: pageSize * (page - 1)
+    limit: tablePageSize.value,
+    skip: tablePageSize.value * (page.value - 1)
   })
 
   rawEntities.value = entities
@@ -186,7 +193,7 @@ onMounted(async () => {
     :data="rawEntities"
     :loading="isLoading"
     :pagination="pagination"
-    :paginate-single-page="total > pagination.pageSizes.at(0)"
+    :paginate-single-page="total > tablePageSize"
     :row-key="row => row._id"
     @update:page="getEntities($event)"
     @update:page-size="getEntities(1, $event)"

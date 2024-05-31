@@ -5,6 +5,7 @@ export const useUser = () => {
   const token = useLocalStorage('token')
   const user = useLocalStorage('user', {})
   const menuCollapsed = useLocalStorage('menu-collapsed', false)
+  const tablePageSize = useLocalStorage('table-page-size', 25)
 
   const userId = computed(() => account.value?.user?._id)
   const userName = computed(() => account.value?.user?.name)
@@ -29,6 +30,7 @@ export const useUser = () => {
   return {
     logOut,
     menuCollapsed,
+    tablePageSize,
     token,
     user,
     userId,
