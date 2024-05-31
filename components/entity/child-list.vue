@@ -203,7 +203,7 @@ onMounted(async () => {
     :data="rawEntities"
     :loading="isLoading"
     :pagination="pagination"
-    :paginate-single-page="total > tablePageSize"
+    :paginate-single-page="total > pagination.pageSizes.at(0)"
     :row-key="row => row._id"
     @update:page="getEntities($event)"
     @update:page-size="getEntities(1, $event)"
