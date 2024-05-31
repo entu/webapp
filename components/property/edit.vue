@@ -20,7 +20,7 @@ const props = defineProps({
   values: { type: Array, default: () => [] }
 })
 
-const { t } = useI18n()
+const { locale, t } = useI18n()
 const { accountId } = useAccount()
 
 const newFiles = ref({})
@@ -375,6 +375,8 @@ function addListValue (_id) {
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         :precision="decimals"
+        :format="value => value?.toLocaleString(locale)"
+        :parse="value => parseFloat(value?.replace(/,/g, '.'))"
         @blur="updateValue(value)"
         @focus="addListValue(value._id)"
       />
