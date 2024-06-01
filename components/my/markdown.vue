@@ -23,6 +23,10 @@ const md = computed(() => marked.parse(props.source))
 }
 
 .markdown ul {
-  @apply list-disc pl-3;
+  @apply list-disc pl-6;
+}
+
+.markdown ol {
+  @apply list-decimal pl-6;
 }
 </style>
