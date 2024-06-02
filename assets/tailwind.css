@@ -14,3 +14,7 @@ a.link {
   @apply text-sky-800;
   @apply hover:underline;
 }
+
+aside.n-layout-sider {
+  @apply print:hidden;
+}

@@ -107,7 +107,7 @@ function color () {
 </script>
 
 <template>
-  <div class="h-full flex flex-col border-r border-gray-300">
+  <div class="h-full flex flex-col border-r border-gray-300 print:hidden">
     <div class="h-12 ml-6 flex items-center gap-3">
       <label
         for="search"

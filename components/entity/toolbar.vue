@@ -31,7 +31,7 @@ const addChildOptions = computed(() => {
 </script>
 
 <template>
-  <div class="mx-2 flex gap-2">
+  <div class="mx-2 flex gap-2 print:hidden">
     <div class="grow">
       <entity-toolbar-add :options="addByActiveMenuOptions" />
     </div>
