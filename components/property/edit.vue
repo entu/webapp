@@ -371,6 +371,7 @@ function addListValue (_id) {
         v-else-if="type === 'number'"
         v-model:value="value.number"
         class="w-full"
+        clearable
         placeholder=""
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
