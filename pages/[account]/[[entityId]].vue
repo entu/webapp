@@ -91,17 +91,19 @@ const properties = computed(() => {
 const childs = computed(() => [
   ...rawChilds.value.map(x => ({
     _id: x._id,
+    type: 'child',
     label: getValue(x.label_plural) || getValue(x.label) || getValue(x.name),
     count: t('childsCount', x._count),
     referenceField: '_parent.reference'
   })),
   ...rawReferences.value.map(x => ({
     _id: x._id,
+    type: 'reference',
     label: getValue(x.label_plural) || getValue(x.label) || getValue(x.name),
     count: t('referrersCount', x._count),
     referenceField: '_reference.reference'
   }))
-].sort((a, b) => a.label.localeCompare(b.label)))
+].sort((a, b) => `${a.type} - ${a.label}`.localeCompare(`${b.type} - ${b.label}`)))
 
 const right = computed(() => ({
   owner: rawEntity.value?._owner?.some(x => x.reference === userId.value) || false,
