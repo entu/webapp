@@ -100,6 +100,10 @@ function setLanguage () {
 onMounted(() => {
   useHead({ title: t('title') })
 
+  if (route.query.locale) {
+    setLocale(route.query.locale === 'en' ? 'en' : 'et')
+  }
+
   if (checkoutId.value) {
     logOut()
 
