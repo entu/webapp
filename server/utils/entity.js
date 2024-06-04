@@ -356,7 +356,11 @@ export async function aggregateEntity (entu, entityId) {
 
       for (let d = 0; d < definition.length; d++) {
         if (definition[d].formula) {
-          newEntity.private[definition[d].name] = [await formula(entu, definition[d].formula, entityId)]
+          const formulaValue = await formula(entu, definition[d].formula, entityId)
+
+          if (formulaValue) {
+            newEntity.private[definition[d].name] = [formulaValue]
+          }
         }
 
         const dValue = newEntity.private[definition[d].name]
@@ -579,8 +583,6 @@ async function formula (entu, str, entityId) {
   valueArray = getValueArray(valueArray)
 
   switch (func) {
-    case 'CONCAT':
-      return { string: valueArray.join('') }
     case 'COUNT':
       return { number: valueArray.length }
     case 'SUM':
@@ -594,7 +596,11 @@ async function formula (entu, str, entityId) {
     case 'MAX':
       return { number: Math.max(...valueArray) }
     default:
-      return { string: valueArray.join('') }
+      if (valueArray.length === 0) {
+        return undefined
+      } else {
+        return { string: valueArray.join('') }
+      }
   }
 }
 
