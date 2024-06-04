@@ -4,7 +4,8 @@ import { NAlert, NButton, NCard, NInput, NPopover, NSpin, NSwitch } from 'naive-
 definePageMeta({ layout: 'blank' })
 
 const runtimeConfig = useRuntimeConfig()
-const { query } = useRoute()
+const router = useRouter()
+const { path, query } = useRoute()
 const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 const { token, user, logOut } = useUser()
@@ -109,6 +110,8 @@ onMounted(() => {
 
     return
   }
+
+  router.replace({ path, query: {} })
 
   userName.value = user.value?.name || ''
   userEmail.value = user.value?.email || ''
@@ -336,7 +339,6 @@ onMounted(() => {
     </div>
     <div class="mb-2 px-4 text-sm text-center text-gray-500">
       <a
-        v-if="!isQuery && !entityId"
         target="_blank"
         :href="t('termsUrl')"
       >{{ t('terms') }}</a>
