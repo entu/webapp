@@ -464,7 +464,7 @@ onMounted(() => {
     continue: Continue
     error: Error
     terms: Terms of Service
-    termsUrl: https://www.entu.ee/en/terms
+    termsUrl: https://www.entu.app/terms
   et:
     language: English
     title: Loo uus andmebaas
@@ -561,5 +561,5 @@ onMounted(() => {
     continue: Jätka
     error: Viga
     terms: Kasutustingimused
-    termsUrl: https://www.entu.ee/tingimused
+    termsUrl: https://www.entu.app/et/tingimused
 </i18n>
