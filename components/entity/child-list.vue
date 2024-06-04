@@ -119,7 +119,7 @@ async function getEntities (setPage, setPageSize, setSorter) {
   }
   if (setSorter) {
     sorter.value = setSorter
-  } else {
+  } else if (!sorter.value) {
     sorter.value = {
       columnKey: rawColumns.value.at(0).name,
       order: 'ascend'
