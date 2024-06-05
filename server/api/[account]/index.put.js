@@ -1,4 +1,5 @@
 const reservedDatabases = [
+  'admin',
   'api',
   'argo',
   'argoroots',
@@ -11,26 +12,15 @@ const reservedDatabases = [
   'database',
   'dev',
   'develop',
-  'ehituskool',
   'eka',
-  'eki',
   'entity',
-  'entu',
-  'laanemere',
-  'linnamae',
   'local',
-  'mg',
   'new',
-  'piletilevi',
-  'pillimuuseum',
   'property',
   'raamatukogu',
   'stripe',
   'template',
-  'test',
-  'tng',
-  'vabamu',
-  'ww'
+  'test'
 ]
 const defaultTypes = [
   'database',
