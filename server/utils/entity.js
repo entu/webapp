@@ -582,25 +582,25 @@ async function formula (entu, str, entityId) {
 
   valueArray = getValueArray(valueArray)
 
+  if (valueArray.length === 0 && !['COUNT', 'SUM'].includes(func)) {
+    return undefined
+  }
+
   switch (func) {
     case 'COUNT':
       return { number: valueArray.length }
     case 'SUM':
       return { number: valueArray.reduce((a, b) => a + b, 0) }
     case 'SUBTRACT':
-      return { number: valueArray.reduce((a, b) => a - b, 0) + (valueArray.at(0) * 2) }
+      return { number: valueArray.slice(1).reduce((a, b) => a - b, valueArray.at(0)) }
     case 'AVERAGE':
       return { number: valueArray.reduce((a, b) => a + b, 0) / valueArray.length }
     case 'MIN':
       return { number: Math.min(...valueArray) }
     case 'MAX':
       return { number: Math.max(...valueArray) }
-    default:
-      if (valueArray.length === 0) {
-        return undefined
-      } else {
-        return { string: valueArray.join('') }
-      }
+    default: // CONCAT
+      return { string: valueArray.join('') }
   }
 }
 
