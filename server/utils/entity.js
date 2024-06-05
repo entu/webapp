@@ -599,6 +599,8 @@ async function formula (entu, str, entityId) {
       return { number: Math.min(...valueArray) }
     case 'MAX':
       return { number: Math.max(...valueArray) }
+    case 'CONCAT_WS':
+      return { string: valueArray.slice(1).join(valueArray.at(-1) || ', ') }
     default: // CONCAT
       return { string: valueArray.join('') }
   }
