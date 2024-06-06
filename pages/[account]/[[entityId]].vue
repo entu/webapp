@@ -263,7 +263,10 @@ onMounted(async () => {
             </template>
           </div>
 
-          <div class="min-w-[8rem] flex flex-col gap-3">
+          <div
+            v-if="userId || entity._thumbnail"
+            class="min-w-[8rem] flex flex-col gap-3"
+          >
             <entity-thumbnail
               v-if="entity._thumbnail"
               class="w-full flex-none"
@@ -271,78 +274,80 @@ onMounted(async () => {
               :photos="rawEntity.photo"
             />
 
-            <nuxt-link
-              v-if="entity.type.label"
-              class="py-1 px-2 text-xs text-center bg-slate-50 border rounded-md border-slate-300 hover:bg-slate-200"
-              :to="{ path: `/${accountId}/${entity.type._id}` }"
-            >
-              {{ entity.type.label }}
-            </nuxt-link>
+            <template v-if="userId">
+              <nuxt-link
+                v-if="entity.type.label"
+                class="py-1 px-2 text-xs text-center bg-slate-50 border rounded-md border-slate-300 hover:bg-slate-200"
+                :to="{ path: `/${accountId}/${entity.type._id}` }"
+              >
+                {{ entity.type.label }}
+              </nuxt-link>
 
-            <n-popover
-              v-if="!entity._sharing"
-              class="max-w-sm"
-              placement="left"
-            >
-              <template #trigger>
-                <nuxt-link
-                  class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-green-600 bg-green-50 border rounded-md border-green-300"
-                  :to="right.owner ? { path: route.path, query: route.query, hash:'#rights' } : {}"
-                >
-                  <my-icon icon="sharing/private" />
+              <n-popover
+                v-if="!entity._sharing"
+                class="max-w-sm"
+                placement="left"
+              >
+                <template #trigger>
+                  <nuxt-link
+                    class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-green-600 bg-green-50 border rounded-md border-green-300"
+                    :to="right.owner ? { path: route.path, query: route.query, hash:'#rights' } : {}"
+                  >
+                    <my-icon icon="sharing/private" />
 
-                  {{ t('sharingPrivate') }}
-                </nuxt-link>
-              </template>
-              <div class="text-sm">
-                {{ t('sharingPrivateDescription') }}
-              </div>
-            </n-popover>
+                    {{ t('sharingPrivate') }}
+                  </nuxt-link>
+                </template>
+                <div class="text-sm">
+                  {{ t('sharingPrivateDescription') }}
+                </div>
+              </n-popover>
 
-            <n-popover
-              v-if="entity._sharing === 'domain'"
-              class="max-w-sm"
-              placement="left"
-            >
-              <template #trigger>
-                <nuxt-link
-                  class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-yellow-600 bg-yellow-50 border rounded-md border-yellow-300"
-                  :to="right.owner ? { path: route.path, query: route.query, hash:'#rights' } : {}"
-                >
-                  <my-icon icon="sharing/domain" />
+              <n-popover
+                v-if="entity._sharing === 'domain'"
+                class="max-w-sm"
+                placement="left"
+              >
+                <template #trigger>
+                  <nuxt-link
+                    class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-yellow-600 bg-yellow-50 border rounded-md border-yellow-300"
+                    :to="right.owner ? { path: route.path, query: route.query, hash:'#rights' } : {}"
+                  >
+                    <my-icon icon="sharing/domain" />
 
-                  {{ t('sharingDomain') }}
-                </nuxt-link>
-              </template>
-              <div class="text-sm">
-                {{ t('sharingDomainDescription') }}
-              </div>
-            </n-popover>
+                    {{ t('sharingDomain') }}
+                  </nuxt-link>
+                </template>
+                <div class="text-sm">
+                  {{ t('sharingDomainDescription') }}
+                </div>
+              </n-popover>
 
-            <n-popover
-              v-if="entity._sharing === 'public'"
-              class="max-w-sm"
-              placement="left"
-            >
-              <template #trigger>
-                <nuxt-link
-                  class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-orange-600 bg-orange-50 border rounded-md border-orange-300"
-                  :to="right.owner ? { path: route.path, query: route.query, hash:'#rights' } : {}"
-                >
-                  <my-icon icon="sharing/public" />
+              <n-popover
+                v-if="entity._sharing === 'public'"
+                class="max-w-sm"
+                placement="left"
+              >
+                <template #trigger>
+                  <nuxt-link
+                    class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-orange-600 bg-orange-50 border rounded-md border-orange-300"
+                    :to="right.owner ? { path: route.path, query: route.query, hash:'#rights' } : {}"
+                  >
+                    <my-icon icon="sharing/public" />
 
-                  {{ t('sharingPublic') }}
-                </nuxt-link>
-              </template>
-              <div class="text-sm">
-                {{ t('sharingPublicDescription') }}
-              </div>
-            </n-popover>
+                    {{ t('sharingPublic') }}
+                  </nuxt-link>
+                </template>
+                <div class="text-sm">
+                  {{ t('sharingPublicDescription') }}
+                </div>
+              </n-popover>
+            </template>
           </div>
         </div>
 
         <n-collapse
-          :default-expanded-names="[0]"
+          :default-expanded-names="[]"
           class="mt-8 pr-5"
         >
           <n-collapse-item

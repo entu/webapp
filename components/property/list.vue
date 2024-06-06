@@ -3,6 +3,7 @@
 import { NPopover } from 'naive-ui'
 
 const { t } = useI18n()
+const { userId } = useUser()
 
 const entityId = defineModel('entityId', { type: String, default: undefined })
 const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
@@ -58,7 +59,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
           </n-popover>
 
           <n-popover
-            v-if="property.public"
+            v-if="userId && property.public"
             class="max-w-sm text-sm"
             placement="top"
           >
