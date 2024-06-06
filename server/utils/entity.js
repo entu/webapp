@@ -7,7 +7,7 @@ export async function claenupEntity (entu, entity, _thumbnail) {
   if (entu.userStr && entity.access?.map(x => x.toString())?.includes(entu.userStr)) {
     result = { ...result, ...entity.private }
   } else if (entu.userStr && entity.access?.includes('domain')) {
-    result = { ...result, ...entity.private }
+    result = { ...result, ...entity.public }
   } else if (entity.access?.includes('public')) {
     result = { ...result, ...entity.public }
   } else {
