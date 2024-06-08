@@ -63,6 +63,7 @@ const columns = computed(() => [
         return h(MyIcon, { class: 'text-sky-800', icon: 'sort/descending' })
       }
     },
+    resizable: true,
     sorter: true
   }))
 ])
