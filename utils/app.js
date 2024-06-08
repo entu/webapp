@@ -64,11 +64,6 @@ export const themeOverrides = {
       }
     }
   },
-  Slider: {
-    dotBorder: '2px solid #1E434C',
-    dotBorderActive: '2px solid #1E434C',
-    fillColor: '#DBDBDF',
-    fillColorHover: '#DBDBDF'
   },
   Tabs: {
     tabBorderRadius: '0'

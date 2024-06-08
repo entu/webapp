@@ -107,7 +107,7 @@ function color () {
 </script>
 
 <template>
-  <div class="h-full flex flex-col border-r border-gray-300 print:hidden">
+  <div class="h-full flex flex-col print:hidden">
     <div class="h-12 ml-6 flex items-center gap-3">
       <label
         for="search"
@@ -128,7 +128,7 @@ function color () {
 
     <div
       ref="listElement"
-      class="w-80 max-h-full py-1 relative overflow-y-auto"
+      class="w-full max-h-full py-1 relative overflow-y-auto"
     >
       <nuxt-link
         v-for="(entity, idx) in entitiesList"

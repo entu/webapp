@@ -1,10 +1,10 @@
 <script setup>
-import { NLayout, NLayoutSider } from 'naive-ui'
+import { NLayout, NLayoutSider, NSplit } from 'naive-ui'
 
 const route = useRoute()
 
 const { accountId } = useAccount()
-const { menuCollapsed } = useUser()
+const { menuCollapsed, listWidth } = useUser()
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
@@ -27,14 +27,35 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
       <layout-side-menu :collapsed="menuCollapsed" />
     </n-layout-sider>
 
-    <div
+    <n-split
       v-if="accountId && isQuery"
-      :class="{ 'py-2': !menuCollapsed }"
+      v-model:size="listWidth"
+      direction="horizontal"
+      :max="0.50"
+      :min="0.20"
+      :pane1-class="!menuCollapsed ? 'py-2' : ''"
+      :pane2-class="!isQuery ? 'pl-4 py-2 grow overflow-y-auto' : 'py-2 grow overflow-y-auto'"
     >
-      <layout-entity-list />
-    </div>
+      <template #1>
+        <layout-entity-list />
+      </template>
+
+      <template #resize-trigger>
+        <div
+          class="h-full"
+          :class="menuCollapsed ? 'py-0' : 'py-2'"
+        >
+          <div class="h-full w-0.5 hover:bg-gray-400 bg-gray-300" />
+        </div>
+      </template>
+
+      <template #2>
+        <slot />
+      </template>
+    </n-split>
 
     <div
+      v-else
       class="py-2 grow overflow-y-auto"
       :class="{ 'pl-4': !isQuery }"
     >
