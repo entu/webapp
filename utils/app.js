@@ -64,7 +64,6 @@ export const themeOverrides = {
       }
     }
   },
-  },
   Tabs: {
     tabBorderRadius: '0'
   }
