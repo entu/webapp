@@ -347,13 +347,13 @@ onMounted(async () => {
         </div>
 
         <n-collapse
-          :default-expanded-names="[]"
+          :default-expanded-names="[0]"
           class="mt-8 pr-5"
         >
           <n-collapse-item
-            v-for="child in childs"
+            v-for="child, idx in childs"
             :key="child._id"
-            :name="child._id + child.count"
+            :name="idx"
             :title="child.label"
           >
             <template #header-extra>
