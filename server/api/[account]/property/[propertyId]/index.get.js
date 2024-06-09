@@ -32,7 +32,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const publicProperty = entity.public?.[property.type].some(x => x._id.toString() === propertyId.toString())
+  const publicProperty = entity.public?.[property.type]?.some(x => x._id.toString() === propertyId.toString())
   const access = entity.access?.map(s => s.toString()) || []
 
   if (publicProperty) {
