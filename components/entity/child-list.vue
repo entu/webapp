@@ -177,11 +177,7 @@ function renderColumn (row, { type, name, decimals }) {
   }
 
   if (type === 'reference') {
-    return h(NuxtLink, {
-      class: 'hover:underline',
-      to: { path: `/${accountId.value}/${getValue(row[name], 'reference')}` }
-    }, () => (getValue(row[name]) || getValue(row[name], 'reference'))
-    )
+    return getValue(row[name]) || getValue(row[name], 'reference')
   }
 
   return getValue(row[name], type)
