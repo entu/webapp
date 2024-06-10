@@ -27,32 +27,36 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
       <layout-side-menu :collapsed="menuCollapsed" />
     </n-layout-sider>
 
-    <n-split
+    <div
       v-if="accountId && isQuery"
-      v-model:size="listWidth"
-      direction="horizontal"
-      :max="0.50"
-      :min="0.20"
-      :pane1-class="!menuCollapsed ? 'py-2' : ''"
-      :pane2-class="!isQuery ? 'pl-4 py-2 grow overflow-y-auto' : 'py-2 grow overflow-y-auto'"
+      class="flex-grow overflow-y-auto"
     >
-      <template #1>
-        <layout-entity-list />
-      </template>
+      <n-split
+        v-model:size="listWidth"
+        direction="horizontal"
+        :max="0.50"
+        :min="0.20"
+        :pane1-class="!menuCollapsed ? 'py-2' : ''"
+        :pane2-class="!isQuery ? 'pl-4 py-2 grow overflow-y-auto' : 'py-2 grow overflow-y-auto'"
+      >
+        <template #1>
+          <layout-entity-list />
+        </template>
 
-      <template #resize-trigger>
-        <div
-          class="h-full"
-          :class="menuCollapsed ? 'py-0' : 'py-2'"
-        >
-          <div class="h-full w-0.5 hover:bg-gray-400 bg-gray-300" />
-        </div>
-      </template>
+        <template #resize-trigger>
+          <div
+            class="h-full"
+            :class="menuCollapsed ? 'py-0' : 'py-2'"
+          >
+            <div class="h-full w-0.5 hover:bg-gray-400 bg-gray-300" />
+          </div>
+        </template>
 
-      <template #2>
-        <slot />
-      </template>
-    </n-split>
+        <template #2>
+          <slot />
+        </template>
+      </n-split>
+    </div>
 
     <div
       v-else
