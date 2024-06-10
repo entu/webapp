@@ -37,6 +37,8 @@ const pagination = computed(() => ({
   pageSizes: [10, 25, 100, 250]
 }))
 
+const resizableCols = computed(() => rawColumns.value.length > 1)
+
 const columns = computed(() => [
   {
     key: '_thumbnail',
@@ -63,7 +65,7 @@ const columns = computed(() => [
         return h(MyIcon, { class: 'text-sky-800', icon: 'sort/descending' })
       }
     },
-    resizable: true,
+    resizable: resizableCols.value,
     sorter: true
   }))
 ])
