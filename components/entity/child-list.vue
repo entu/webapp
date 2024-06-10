@@ -55,7 +55,7 @@ const columns = computed(() => [
     title: c.label,
     align: align[c.type] || 'left',
     ellipsis: { tooltip: true },
-    render: row => renderColumn(row, c),
+    render: row => h(NuxtLink, { to: { path: `/${accountId.value}/${row._id}` } }, () => renderColumn(row, c)),
     renderSorterIcon: ({ order }) => {
       if (!sorter.value?.order || sorter.value?.columnKey !== c.name) {
         return null
