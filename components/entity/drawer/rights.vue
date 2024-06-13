@@ -228,6 +228,7 @@ async function onClose () {
         <div class="mt-6 flex flex-col items-center justify-center gap-2">
           <n-checkbox
             v-model:checked="inheritRights"
+            :disabled="!entityRights.length"
             size="large"
             @update:checked="updateInheritRights($event)"
           >
