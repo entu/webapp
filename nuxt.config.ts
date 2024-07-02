@@ -24,7 +24,8 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    'nuxt-icons'
+    'nuxt-icons',
+    'nuxt-security'
   ],
   postcss: {
     plugins: {
