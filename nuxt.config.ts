@@ -57,6 +57,12 @@ export default defineNuxtConfig({
     stripeKey: '',
     stripeEndpointSecret: ''
   },
+  security: {
+    rateLimiter: {
+      tokensPerInterval: 600,
+      interval: 60000
+    }
+  },
   spaLoadingTemplate: false,
   ssr: false
 })
