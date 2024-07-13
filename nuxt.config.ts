@@ -58,6 +58,11 @@ export default defineNuxtConfig({
     stripeEndpointSecret: ''
   },
   security: {
+    headers: {
+      contentSecurityPolicy: {
+        'img-src': ['https://entu-files.fra1.digitaloceanspaces.com']
+      }
+    },
     rateLimiter: {
       tokensPerInterval: 600,
       interval: 60000
