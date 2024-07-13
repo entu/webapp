@@ -61,13 +61,13 @@ export default defineNuxtConfig({
     headers: {
       contentSecurityPolicy: {
         'img-src': [
-          '"self"',
+          'https://entu.app',
           'https://entu-files.fra1.digitaloceanspaces.com',
           'https://static.intercomassets.com',
           'https://js.intercomcdn.com'
         ],
         'script-src': [
-          '"self"',
+          'https://entu.app',
           'https://plausible.io'
         ]
       }
