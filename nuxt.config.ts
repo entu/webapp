@@ -60,7 +60,15 @@ export default defineNuxtConfig({
   security: {
     headers: {
       contentSecurityPolicy: {
-        'img-src': ['https://entu-files.fra1.digitaloceanspaces.com']
+        'img-src': [
+          'https://entu.app',
+          'https://entu-files.fra1.digitaloceanspaces.com',
+          'https://static.intercomassets.com',
+          'https://js.intercomcdn.com'
+        ],
+        'script-src': [
+          'https://plausible.io'
+        ]
       }
     },
     rateLimiter: {
