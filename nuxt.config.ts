@@ -83,6 +83,7 @@ export default defineNuxtConfig({
       hashScripts: true,
       hashStyles: false,
       exportToPresets: true
+    }
   },
   spaLoadingTemplate: false,
   ssr: false
