@@ -70,7 +70,8 @@ export default defineNuxtConfig({
           'https://entu.app',
           'https://plausible.io',
           'https://js.intercomcdn.com',
-          'https://widget.intercom.io'
+          'https://widget.intercom.io',
+          "'unsafe-inline'"
         ]
       }
     },
