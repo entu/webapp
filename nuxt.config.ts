@@ -69,6 +69,7 @@ export default defineNuxtConfig({
         'script-src': [
           'https://entu.app',
           'https://plausible.io',
+          'https://js.intercomcdn.com',
           'https://widget.intercom.io'
         ]
       }
@@ -76,7 +77,12 @@ export default defineNuxtConfig({
     rateLimiter: {
       tokensPerInterval: 600,
       interval: 60000
-    }
+    },
+    ssg: {
+      meta: true,
+      hashScripts: true,
+      hashStyles: false,
+      exportToPresets: true
   },
   spaLoadingTemplate: false,
   ssr: false
