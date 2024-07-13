@@ -24,8 +24,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    'nuxt-icons',
-    'nuxt-security'
+    'nuxt-icons'
   ],
   postcss: {
     plugins: {
@@ -56,35 +55,6 @@ export default defineNuxtConfig({
     s3Secret: '',
     stripeKey: '',
     stripeEndpointSecret: ''
-  },
-  security: {
-    headers: {
-      contentSecurityPolicy: {
-        'img-src': [
-          'https://entu.app',
-          'https://entu-files.fra1.digitaloceanspaces.com',
-          'https://static.intercomassets.com',
-          'https://js.intercomcdn.com'
-        ],
-        'script-src': [
-          'https://entu.app',
-          'https://plausible.io',
-          'https://js.intercomcdn.com',
-          'https://widget.intercom.io',
-          "'unsafe-inline'"
-        ]
-      }
-    },
-    rateLimiter: {
-      tokensPerInterval: 600,
-      interval: 60000
-    },
-    ssg: {
-      meta: true,
-      hashScripts: true,
-      hashStyles: false,
-      exportToPresets: true
-    }
   },
   spaLoadingTemplate: false,
   ssr: false
