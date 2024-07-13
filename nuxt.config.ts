@@ -68,7 +68,8 @@ export default defineNuxtConfig({
         ],
         'script-src': [
           'https://entu.app',
-          'https://plausible.io'
+          'https://plausible.io',
+          'https://widget.intercom.io'
         ]
       }
     },
