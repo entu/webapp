@@ -161,29 +161,24 @@ onMounted(async () => {
       <thead>
         <tr>
           <th class="w-7" />
+
           <th
             v-for="column in rawColumns"
             :key="column.name"
-            class="px-3 py-3"
+            class="px-3 py-3 text-left cursor-pointer"
+            :class="{
+              'text-center': column.type === 'boolean',
+              'text-right': column.type === 'number'
+            }"
+            @click="getEntities(1, undefined, column.name)"
           >
-            <div class="flex items-center gap-0.5">
-              <div
-                class="grow text-left cursor-pointer"
-                :class="{
-                  'text-center': column.type === 'boolean',
-                  'text-right': column.type === 'number'
-                }"
-                @click="getEntities(1, undefined, column.name)"
-              >
-                {{ column.label }}
-              </div>
+            {{ column.label }}
 
-              <my-icon
-                v-if="sorter && sorter.column === column.name"
-                class="mt-0.5 ml-2"
-                :icon="`sort/${sorter.order}`"
-              />
-            </div>
+            <my-icon
+              v-if="sorter && sorter.column === column.name"
+              class="mt-0.5 ml-2 float-end"
+              :icon="`sort/${sorter.order}`"
+            />
           </th>
         </tr>
       </thead>
@@ -202,6 +197,7 @@ onMounted(async () => {
                 class="size-8 rounded-full group-hover:border-sky-800"
                 :class="color()"
               >
+
               <div
                 v-else
                 class="size-8 rounded-full group-hover:border-sky-800"
@@ -218,23 +214,19 @@ onMounted(async () => {
             }"
           >
             <nuxt-link
-              class="block size-full px-3 py-3"
+              class="w-full flex items-center px-3 py-3"
+              :class="{
+                'justify-center': column.type === 'boolean',
+                'justify-end': column.type === 'number'
+              }"
               :to="{ path: `/${accountId}/${row._id}` }"
             >
-              <div
-                class="w-full flex items-center"
-                :class="{
-                  'justify-center': column.type === 'boolean',
-                  'justify-end': column.type === 'number'
-                }"
-              >
-                {{ renderColumn(row[column.name], column.type, column.decimals) }}
+              {{ renderColumn(row[column.name], column.type, column.decimals) }}
 
-                <my-icon
-                  v-if="column.type === 'boolean' && getValue(row[column.name], 'boolean')"
-                  icon="checkmark"
-                />
-              </div>
+              <my-icon
+                v-if="column.type === 'boolean' && getValue(row[column.name], 'boolean')"
+                icon="checkmark"
+              />
             </nuxt-link>
           </td>
         </tr>
