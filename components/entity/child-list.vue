@@ -1,5 +1,5 @@
 <script setup>
-import { NDataTable } from 'naive-ui'
+import { NPagination } from 'naive-ui'
 import { MyIcon, NuxtLink } from '#components'
 
 const props = defineProps({
@@ -7,11 +7,6 @@ const props = defineProps({
   typeId: { type: String, required: true },
   referenceField: { type: String, required: true }
 })
-
-const align = {
-  number: 'right',
-  boolean: 'center'
-}
 
 const { locale, d, t } = useI18n()
 const { accountId } = useAccount()
@@ -28,47 +23,6 @@ const isLoading = ref(false)
 const total = ref(0)
 const page = ref(1)
 const sorter = ref()
-
-const pagination = computed(() => ({
-  page: page.value,
-  pageCount: Math.ceil(total.value / tablePageSize.value),
-  pageSize: tablePageSize.value,
-  showSizePicker: true,
-  pageSizes: [10, 25, 100, 250]
-}))
-
-const resizableCols = computed(() => rawColumns.value.length > 1)
-
-const columns = computed(() => [
-  {
-    key: '_thumbnail',
-    title: '',
-    width: 44,
-    render: row => h(NuxtLink,
-      { class: 'link', to: { path: `/${accountId.value}/${row._id}` } },
-      () => row._thumbnail
-        ? h('img', { class: `size-7 flex-none border border-white hover:border-sky-800 object-cover rounded-full ${color()}`, src: row._thumbnail })
-        : h('div', { class: `size-7 flex-none border border-white hover:border-sky-800 rounded-full ${color()}` })
-    )
-  }, ...rawColumns.value.map(c => ({
-    key: c.name,
-    title: c.label,
-    align: align[c.type] || 'left',
-    ellipsis: { tooltip: true },
-    render: row => h(NuxtLink, { to: { path: `/${accountId.value}/${row._id}` } }, () => renderColumn(row, c)),
-    renderSorterIcon: ({ order }) => {
-      if (!sorter.value?.order || sorter.value?.columnKey !== c.name) {
-        return null
-      } else if (sorter.value?.order === 'ascend') {
-        return h(MyIcon, { class: 'text-sky-800', icon: 'sort/ascending' })
-      } else {
-        return h(MyIcon, { class: 'text-sky-800', icon: 'sort/descending' })
-      }
-    },
-    resizable: resizableCols.value,
-    sorter: true
-  }))
-])
 
 async function getTypes () {
   const { entities } = await apiGetEntities({
@@ -121,15 +75,25 @@ async function getEntities (setPage, setPageSize, setSorter) {
     tablePageSize.value = setPageSize
   }
   if (setSorter) {
-    sorter.value = setSorter
+    if (sorter.value.column === setSorter) {
+      sorter.value = {
+        column: setSorter,
+        order: sorter.value.order === 'ascending' ? 'descending' : 'ascending'
+      }
+    } else {
+      sorter.value = {
+        column: setSorter,
+        order: 'ascending'
+      }
+    }
   } else if (!sorter.value) {
     sorter.value = {
-      columnKey: rawColumns.value.at(0).name,
-      order: 'ascend'
+      column: rawColumns.value.at(0).name,
+      order: 'ascending'
     }
   }
 
-  let field = rawColumns.value.find(c => c.name === sorter.value.columnKey).type
+  let field = rawColumns.value.find(c => c.name === sorter.value.column)?.type
 
   if (field === 'reference') {
     field = 'string'
@@ -142,7 +106,7 @@ async function getEntities (setPage, setPageSize, setSorter) {
       '_thumbnail',
       ...rawColumns.value.map(c => c.name)
     ].join(','),
-    sort: `${sorter.value.order === 'descend' ? '-' : ''}${sorter.value.columnKey}.${field}`,
+    sort: `${sorter.value.order === 'descending' ? '-' : ''}${sorter.value.column}.${field}`,
     limit: tablePageSize.value,
     skip: tablePageSize.value * (page.value - 1)
   })
@@ -161,28 +125,28 @@ function color () {
   return colors[rnd]
 }
 
-function renderColumn (row, { type, name, decimals }) {
-  if (type === 'number' && getValue(row[name], 'number')) {
-    return getValue(row[name], 'number').toLocaleString(locale.value, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
+function renderColumn (value, type, decimals) {
+  if (type === 'number' && getValue(value, 'number')) {
+    return getValue(value, 'number').toLocaleString(locale.value, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
   }
 
-  if (type === 'boolean' && getValue(row[name], 'boolean')) {
-    return h(MyIcon, { icon: 'checkmark' })
+  if (type === 'boolean' && getValue(value, 'boolean')) {
+    return undefined
   }
 
-  if (type === 'datetime' && getValue(row[name], 'datetime')) {
-    return d(getValue(row[name], 'datetime'), 'datetime')
+  if (type === 'datetime' && getValue(value, 'datetime')) {
+    return d(getValue(value, 'datetime'), 'datetime')
   }
 
-  if (type === 'date' && getValue(row[name], 'date')) {
-    return d(getValue(row[name], 'date'), 'date')
+  if (type === 'date' && getValue(value, 'date')) {
+    return d(getValue(value, 'date'), 'date')
   }
 
   if (type === 'reference') {
-    return getValue(row[name]) || getValue(row[name], 'reference')
+    return getValue(value) || getValue(value, 'reference')
   }
 
-  return getValue(row[name], type)
+  return getValue(value, type)
 }
 
 onMounted(async () => {
@@ -192,22 +156,106 @@ onMounted(async () => {
 </script>
 
 <template>
-  <n-data-table
-    remote
-    size="small"
-    summary-placement="top"
-    :bordered="false"
-    :bottom-bordered="false"
-    :columns="columns"
-    :data="rawEntities"
-    :loading="isLoading"
-    :pagination="pagination"
-    :paginate-single-page="total > pagination.pageSizes.at(0)"
-    :row-key="row => row._id"
-    @update:page="getEntities($event)"
-    @update:page-size="getEntities(1, $event)"
-    @update:sorter="getEntities(1, undefined, $event)"
-  />
+  <div>
+    <table class="w-full text-sm">
+      <thead>
+        <tr>
+          <th class="w-7" />
+          <th
+            v-for="column in rawColumns"
+            :key="column.name"
+            class="px-3 py-3"
+          >
+            <div class="flex items-center gap-0.5">
+              <div
+                class="grow text-left cursor-pointer"
+                :class="{
+                  'text-center': column.type === 'boolean',
+                  'text-right': column.type === 'number'
+                }"
+                @click="getEntities(1, undefined, column.name)"
+              >
+                {{ column.label }}
+              </div>
+
+              <my-icon
+                v-if="sorter && sorter.column === column.name"
+                class="mt-0.5 ml-2"
+                :icon="`sort/${sorter.order}`"
+              />
+            </div>
+          </th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr
+          v-for="row in rawEntities"
+          :key="row._id"
+          class="group border-t border-gray-200 hover:bg-gray-50"
+        >
+          <td>
+            <nuxt-link :to="{ path: `/${accountId}/${row._id}` }">
+              <img
+                v-if="row._thumbnail"
+                :src="row._thumbnail"
+                class="size-8 rounded-full group-hover:border-sky-800"
+                :class="color()"
+              >
+              <div
+                v-else
+                class="size-8 rounded-full group-hover:border-sky-800"
+                :class="color()"
+              />
+            </nuxt-link>
+          </td>
+
+          <td
+            v-for="column in rawColumns"
+            :key="column.name"
+            :class="{
+              'text-right': column.type === 'number'
+            }"
+          >
+            <nuxt-link
+              class="block size-full px-3 py-3"
+              :to="{ path: `/${accountId}/${row._id}` }"
+            >
+              <div
+                class="w-full flex items-center"
+                :class="{
+                  'justify-center': column.type === 'boolean',
+                  'justify-end': column.type === 'number'
+                }"
+              >
+                {{ renderColumn(row[column.name], column.type, column.decimals) }}
+
+                <my-icon
+                  v-if="column.type === 'boolean' && getValue(row[column.name], 'boolean')"
+                  icon="checkmark"
+                />
+              </div>
+            </nuxt-link>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div
+      v-if="total >= 10"
+      class="w-full mt-2 flex justify-end"
+    >
+      <n-pagination
+        v-model:page="page"
+        show-size-picker
+        :item-count="total"
+        :page-size="tablePageSize"
+        :page-sizes="[10, 25, 100, 250]"
+        @update:page="getEntities($event)"
+        @update:page-size="getEntities(1, $event)"
+      />
+    </div>
+  </div>
 </template>
 
 <i18n lang="yaml">
