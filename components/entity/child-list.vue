@@ -165,20 +165,21 @@ onMounted(async () => {
           <th
             v-for="column in rawColumns"
             :key="column.name"
-            class="px-3 py-3 text-left cursor-pointer"
+            class="px-3 py-3 text-left hover:bg-gray-50 cursor-pointer"
             :class="{
               'text-center': column.type === 'boolean',
               'text-right': column.type === 'number'
             }"
             @click="getEntities(1, undefined, column.name)"
           >
-            {{ column.label }}
+            <div class="flex items-center gap-2">
+              {{ column.label }}
 
-            <my-icon
-              v-if="sorter && sorter.column === column.name"
-              class="mt-0.5 ml-2 float-end"
-              :icon="`sort/${sorter.order}`"
-            />
+              <my-icon
+                v-if="sorter && sorter.column === column.name"
+                :icon="`sort/${sorter.order}`"
+              />
+            </div>
           </th>
         </tr>
       </thead>
