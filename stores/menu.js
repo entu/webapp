@@ -1,6 +1,5 @@
 export const useMenueStore = defineStore('menu', () => {
   const route = useRoute()
-
   const { accountId } = useAccount()
 
   const activeMenu = ref({})

@@ -17,71 +17,6 @@ const accountMenu = computed(() => {
   const menu = []
   const menuObject = {}
 
-  if (accounts.value.length > 1) {
-    menu.push({
-      key: 'account',
-      icon: () => h(MyIcon, { icon: 'home' }),
-      label: account.value?.name,
-      children: menuCollapsed.value
-        ? [{
-            key: `account-${account.value?._id}`,
-            name: '            1',
-            label: () => h(NuxtLink,
-              { to: { path: `/${account.value?._id}` } },
-              () => h('strong', {}, { default: () => account.value?.name })
-            )
-          }, {
-            name: '            2',
-            type: 'divider'
-          },
-          ...accounts.value.filter(x => x._id !== account.value?._id).map(x => ({
-            key: `account-${account.value?._id}-${x._id}`,
-            name: x.name,
-            label: () => h(NuxtLink,
-              { to: { path: `/${x._id}` } },
-              { default: () => x.name }
-            )
-          }))
-          ]
-        : accounts.value.filter(x => x._id !== account.value?._id).map(x => ({
-          key: `account-${x._id}`,
-          name: x.name,
-          label: () => h(NuxtLink,
-            { to: { path: `/${x._id}` } },
-            { default: () => x.name }
-          )
-        }))
-    })
-
-    menu.push({
-      type: 'divider',
-      props: { style: { margin: '.5rem' } }
-    })
-  } else if (menuEntities.value.length > 0) {
-    menu.push({
-      key: 'account',
-      icon: () => h(MyIcon, { icon: 'home' }),
-      label: () => h(NuxtLink,
-        { to: { path: `/${account.value?._id}` } },
-        () => account.value?.name
-      ),
-      children: menuCollapsed.value
-        ? [{
-            key: `account-${account.value?._id}`,
-            name: '            1',
-            label: () => h(NuxtLink,
-              { to: { path: `/${account.value?._id}` } },
-              { default: () => h('strong', {}, { default: () => account.value?.name }) })
-          }]
-        : undefined
-    })
-
-    menu.push({
-      type: 'divider',
-      props: { style: { margin: '.5rem' } }
-    })
-  }
-
   menuEntities.value.forEach((entity) => {
     const group = getValue(entity.group)?.toLowerCase()
     const ordinal = getValue(entity.ordinal, 'number') || 0
@@ -129,51 +64,159 @@ const accountMenu = computed(() => {
     children: m.children.sort(menuSorter)
   })).sort(menuSorter)
 
-  return [...menu, ...menuArray]
+  if (accounts.value.length > 1) {
+    menu.push({
+      key: 'account',
+      icon: () => h(MyIcon, { icon: 'home' }),
+      label: account.value?.name,
+      children: menuCollapsed.value
+        ? [{
+            key: `account-${account.value?._id}`,
+            name: '            1',
+            label: () => h(NuxtLink,
+              { to: { path: `/${account.value?._id}` } },
+              () => h('strong', {}, { default: () => account.value?.name })
+            )
+          }, {
+            name: '            2',
+            type: 'divider'
+          },
+          ...accounts.value.filter(x => x._id !== account.value?._id).map(x => ({
+            key: `account-${account.value?._id}-${x._id}`,
+            name: x.name,
+            label: () => h(NuxtLink,
+              { to: { path: `/${x._id}` } },
+              { default: () => x.name }
+            )
+          }))
+          ]
+        : accounts.value.filter(x => x._id !== account.value?._id).map(x => ({
+          key: `account-${x._id}`,
+          name: x.name,
+          label: () => h(NuxtLink,
+            { to: { path: `/${x._id}` } },
+            { default: () => x.name }
+          )
+        }))
+    })
+
+    menu.push({
+      type: 'divider',
+      props: { style: { margin: '.5rem' } }
+    })
+
+    menu.push(...menuArray)
+  } else if (menuArray.length === 1) {
+    menu.push({
+      key: 'account',
+      icon: () => h(MyIcon, { icon: 'home' }),
+      label: account.value?.name,
+      children: menuCollapsed.value
+        ? menuArray.at(0).children
+        : [
+            {
+              type: 'divider',
+              props: { style: { margin: '.5rem' } }
+            },
+            ...menuArray.at(0).children
+          ]
+    })
+  } else if (menuEntities.value.length > 0) {
+    menu.push({
+      key: 'account',
+      icon: () => h(MyIcon, { icon: 'home' }),
+      label: () => h(NuxtLink,
+        { to: { path: `/${account.value?._id}` } },
+        () => account.value?.name
+      ),
+      children: menuCollapsed.value
+        ? [{
+            key: `account-${account.value?._id}`,
+            name: '            1',
+            label: () => h(NuxtLink,
+              { to: { path: `/${account.value?._id}` } },
+              { default: () => h('strong', {}, { default: () => account.value?.name }) })
+          }]
+        : undefined
+    })
+
+    menu.push({
+      type: 'divider',
+      props: { style: { margin: '.5rem' } }
+    })
+
+    menu.push(...menuArray)
+  }
+
+  return menu
 })
 
-const authMenu = computed(() => [
-  {
-    key: 'auth-apple',
-    icon: () => h(MyIcon, { icon: 'apple' }),
-    label: () => h(NuxtLink,
-      { to: { path: '/auth/apple' } },
-      { default: () => 'Apple' }
-    )
-  },
-  {
-    key: 'auth-google',
-    icon: () => h(MyIcon, { icon: 'google' }),
-    label: () => h(NuxtLink,
-      { to: { path: '/auth/google' } },
-      { default: () => 'Google' }
-    )
-  },
-  {
-    key: 'auth-sid',
-    icon: () => h(MyIcon, { icon: 'smart-id' }),
-    label: () => h(NuxtLink,
-      { to: { path: '/auth/smart-id' } },
-      { default: () => t('sid') }
-    )
-  },
-  {
-    key: 'auth-mid',
-    icon: () => h(MyIcon, { icon: 'mobile-id' }),
-    label: () => h(NuxtLink,
-      { to: { path: '/auth/mobile-id' } },
-      { default: () => t('mid') }
-    )
-  },
-  {
-    key: 'auth-idc',
-    icon: () => h(MyIcon, { icon: 'id-card' }),
-    label: () => h(NuxtLink,
-      { to: { path: '/auth/id-card' } },
-      { default: () => t('idc') }
-    )
-  }
-])
+const authMenu = computed(() => {
+  const providers = [
+    {
+      name: '            4',
+      type: 'divider'
+    },
+    {
+      key: 'auth-apple',
+      icon: () => h(MyIcon, { icon: 'apple' }),
+      label: () => h(NuxtLink,
+        { to: { path: '/auth/apple' } },
+        { default: () => 'Apple' }
+      )
+    },
+    {
+      key: 'auth-google',
+      icon: () => h(MyIcon, { icon: 'google' }),
+      label: () => h(NuxtLink,
+        { to: { path: '/auth/google' } },
+        { default: () => 'Google' }
+      )
+    },
+    {
+      key: 'auth-sid',
+      icon: () => h(MyIcon, { icon: 'smart-id' }),
+      label: () => h(NuxtLink,
+        { to: { path: '/auth/smart-id' } },
+        { default: () => t('sid') }
+      )
+    },
+    {
+      key: 'auth-mid',
+      icon: () => h(MyIcon, { icon: 'mobile-id' }),
+      label: () => h(NuxtLink,
+        { to: { path: '/auth/mobile-id' } },
+        { default: () => t('mid') }
+      )
+    },
+    {
+      key: 'auth-idc',
+      icon: () => h(MyIcon, { icon: 'id-card' }),
+      label: () => h(NuxtLink,
+        { to: { path: '/auth/id-card' } },
+        { default: () => t('idc') }
+      )
+    }
+  ]
+
+  return [
+    {
+      key: 'auth-group',
+      icon: () => h(MyIcon, { icon: 'login' }),
+      label: () => h('strong', { }, { default: () => t('signIn') }),
+      children: menuCollapsed.value
+        ? [
+            {
+              key: 'auth-title',
+              name: '            1',
+              icon: () => h(MyIcon, { icon: 'login' }),
+              label: () => h('strong', { }, { default: () => t('signIn').toUpperCase() })
+            },
+            ...providers
+          ]
+        : providers
+    }]
+})
 
 const userMenu = computed(() => {
   const menu = []
@@ -283,19 +326,12 @@ function linkReplace (url) {
       collapse-mode="width"
       :collapsed-width="60"
       :collapsed="menuCollapsed"
-      :default-expanded-keys="accountMenu.length === 3 ? [accountMenu.at(2).key] : undefined"
+      :default-expanded-keys="accountMenu.length === 1 ? [accountMenu.at(0).key] : undefined"
       :indent="32"
       :options="accountMenu"
       :root-indent="18"
       :watch-props="['defaultExpandedKeys']"
     />
-
-    <div
-      v-if="!token && !menuCollapsed"
-      class="mt-8 text-white font-bold text-center"
-    >
-      {{ t('signIn') }}
-    </div>
 
     <n-menu
       v-if="!token"
@@ -304,7 +340,7 @@ function linkReplace (url) {
       collapse-mode="width"
       :collapsed-width="60"
       :collapsed="menuCollapsed"
-      :indent="32"
+      :indent="0"
       :options="authMenu"
       :root-indent="18"
     />
