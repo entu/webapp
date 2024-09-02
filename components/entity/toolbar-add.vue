@@ -10,8 +10,8 @@ const props = defineProps({
   icon: { type: String, default: 'add' }
 })
 
+const { path, query } = useRoute()
 const { t } = useI18n()
-const route = useRoute()
 
 const label = computed(() => {
   if (props.isChild && props.options.length === 1) {
@@ -31,7 +31,7 @@ const label = computed(() => {
     v-if="userId && options.length === 1"
     :icon="icon"
     :label="label"
-    @click="navigateTo({ path: route.path, query: route.query, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}`}, { replace: true })"
+    @click="navigateTo({ path, query, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}` }, { replace: true })"
   />
 
   <n-popover
@@ -51,7 +51,7 @@ const label = computed(() => {
         v-for="o in options"
         :key="o.value"
         class="py-2 px-4 hover:bg-gray-50 cursor-pointer"
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#${isChild ? 'child' : 'add'}-${o.value}`}, { replace: true })"
+        @click="navigateTo({ path, query, hash: `#${isChild ? 'child' : 'add'}-${o.value}` }, { replace: true })"
       >
         {{ o.label.toLowerCase() }}
       </div>

@@ -1,8 +1,8 @@
 <script setup>
 import { NSpin } from 'naive-ui'
 
-const { t } = useI18n()
 const route = useRoute()
+const { t } = useI18n()
 const { token, user } = useUser()
 const { accounts } = useAccount()
 

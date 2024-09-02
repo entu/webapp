@@ -2,9 +2,9 @@
 import { hide, update } from '@intercom/messenger-js-sdk'
 import { NCollapse, NCollapseItem, NPopover, NSpin } from 'naive-ui'
 
-const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 
 const { accountId } = useAccount()
 const { userId } = useUser()
@@ -278,7 +278,7 @@ onMounted(async () => {
               <nuxt-link
                 v-if="entity.type.label"
                 class="py-1 px-2 text-xs text-center bg-slate-50 border rounded-md border-slate-300 hover:bg-slate-200"
-                :to="{ path: `/${accountId}/${entity.type._id}` }"
+                :to="{ path: `/${accountId}/${entity.type._id}`, query: route.query }"
               >
                 {{ entity.type.label }}
               </nuxt-link>
@@ -291,7 +291,7 @@ onMounted(async () => {
                 <template #trigger>
                   <nuxt-link
                     class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-green-600 bg-green-50 border rounded-md border-green-300"
-                    :to="right.owner ? { path: route.path, query: route.query, hash:'#rights' } : {}"
+                    :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
                   >
                     <my-icon icon="sharing/private" />
 
@@ -311,7 +311,7 @@ onMounted(async () => {
                 <template #trigger>
                   <nuxt-link
                     class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-yellow-600 bg-yellow-50 border rounded-md border-yellow-300"
-                    :to="right.owner ? { path: route.path, query: route.query, hash:'#rights' } : {}"
+                    :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
                   >
                     <my-icon icon="sharing/domain" />
 
@@ -331,7 +331,7 @@ onMounted(async () => {
                 <template #trigger>
                   <nuxt-link
                     class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-orange-600 bg-orange-50 border rounded-md border-orange-300"
-                    :to="right.owner ? { path: route.path, query: route.query, hash:'#rights' } : {}"
+                    :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
                   >
                     <my-icon icon="sharing/public" />
 

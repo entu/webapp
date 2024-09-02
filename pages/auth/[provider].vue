@@ -1,7 +1,7 @@
 <script setup>
 const runtimeConfig = useRuntimeConfig()
-const { t } = useI18n()
 const route = useRoute()
+const { t } = useI18n()
 
 definePageMeta({ layout: 'blank' })
 

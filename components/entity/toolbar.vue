@@ -9,8 +9,8 @@ const props = defineProps({
   right: { type: Object, default: () => {} }
 })
 
+const { path, query } = useRoute()
 const { t } = useI18n()
-const route = useRoute()
 
 const menuStore = useMenueStore()
 const { activeMenu, addFromEntities } = storeToRefs(menuStore)
@@ -51,7 +51,7 @@ const addChildOptions = computed(() => {
         v-if="right.editor"
         icon="edit"
         :label="t('edit')"
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#edit`}, { replace: true })"
+        @click="navigateTo({ path, query, hash: `#edit` }, { replace: true })"
       />
 
       <my-button
@@ -59,21 +59,21 @@ const addChildOptions = computed(() => {
         disabled
         icon="copy"
         :label="t('duplicate')"
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate`}, { replace: true })"
+        @click="navigateTo({ path, query, hash: `#duplicate` }, { replace: true })"
       />
 
       <my-button
         v-if="right.editor"
         icon="tree-view"
         :label="t('parents')"
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#parents`}, { replace: true })"
+        @click="navigateTo({ path, query, hash: `#parents` }, { replace: true })"
       />
 
       <my-button
         v-if="right.owner"
         icon="user-multiple"
         :label="t('rights')"
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#rights`}, { replace: true })"
+        @click="navigateTo({ path, query, hash: `#rights` }, { replace: true })"
       />
     </n-button-group>
 
@@ -81,7 +81,7 @@ const addChildOptions = computed(() => {
       v-if="right.viewer"
       icon="debug"
       :bg="false"
-      @click="navigateTo({ path: route.path, query: route.query, hash: `#debug`}, { replace: true })"
+      @click="navigateTo({ path, query, hash: `#debug` }, { replace: true })"
     />
   </div>
 </template>

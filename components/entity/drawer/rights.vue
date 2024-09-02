@@ -3,6 +3,7 @@
 import { NCheckbox, NDivider, NRadio, NRadioGroup } from 'naive-ui'
 import { apiDeleteProperty } from '~/utils/api'
 
+const { query } = useRoute()
 const { t } = useI18n()
 const { accountId } = useAccount()
 const { userId } = useUser()
@@ -221,7 +222,7 @@ async function onClose () {
             class="mb-4 flex items-center justify-between gap-2"
             disabled
             :label="user.string?.trim() || user.reference"
-            :to="{ path: `/${accountId}/${user.reference}` }"
+            :to="{ path: `/${accountId}/${user.reference}`, query }"
           />
         </template>
 
@@ -257,7 +258,7 @@ async function onClose () {
           deletable
           :disabled="user.reference === userId"
           :label="user.string?.trim() || user.reference"
-          :to="{ path: `/${accountId}/${user.reference}` }"
+          :to="{ path: `/${accountId}/${user.reference}`, query }"
           @update:value="onEditRight(user._id, user.reference, $event)"
         />
 

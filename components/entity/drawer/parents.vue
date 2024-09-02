@@ -2,6 +2,7 @@
 <script setup>
 import { NEmpty } from 'naive-ui'
 
+const { query } = useRoute()
 const { t } = useI18n()
 const { accountId } = useAccount()
 const { userId } = useUser()
@@ -92,7 +93,7 @@ async function onClose () {
       >
         <nuxt-link
           class="link truncate whitespace-nowrap overflow-hidden"
-          :to="{ path: `/${accountId}/${parent.reference}` }"
+          :to="{ path: `/${accountId}/${parent.reference}`, query }"
         >
           {{ parent.string || parent.reference }}
         </nuxt-link>

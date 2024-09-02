@@ -8,7 +8,8 @@ const props = defineProps({
   referenceField: { type: String, required: true }
 })
 
-const { locale, d, t } = useI18n()
+const { query } = useRoute()
+const { locale, d } = useI18n()
 const { accountId } = useAccount()
 const { tablePageSize } = useUser()
 
@@ -191,7 +192,7 @@ onMounted(async () => {
           class="group border-t border-gray-200 hover:bg-gray-50"
         >
           <td>
-            <nuxt-link :to="{ path: `/${accountId}/${row._id}` }">
+            <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
               <img
                 v-if="row._thumbnail"
                 :src="row._thumbnail"
@@ -220,7 +221,7 @@ onMounted(async () => {
                 'justify-center': column.type === 'boolean',
                 'justify-end': column.type === 'number'
               }"
-              :to="{ path: `/${accountId}/${row._id}` }"
+              :to="{ path: `/${accountId}/${row._id}`, query }"
             >
               {{ renderColumn(row[column.name], column.type, column.decimals) }}
 
@@ -250,10 +251,3 @@ onMounted(async () => {
     </div>
   </div>
 </template>
-
-<i18n lang="yaml">
-  en:
-    perPage: '{n} / page'
-  et:
-    perPage: '{n} / leht'
-</i18n>

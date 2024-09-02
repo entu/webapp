@@ -6,6 +6,7 @@ const props = defineProps({
   values: { type: Array, required: true }
 })
 
+const { query } = useRoute()
 const { locale, d } = useI18n()
 const { accountId } = useAccount()
 
@@ -21,7 +22,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     <template v-if="v.reference !== undefined && v.datetime !== undefined">
       <nuxt-link
         class="link"
-        :to="{ path:`/${accountId}/${v.reference}`}"
+        :to="{ path: `/${accountId}/${v.reference}`, query }"
       >
         {{ v.string }}
       </nuxt-link>
@@ -33,7 +34,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
     <template v-else-if="v.reference !== undefined && v.datetime === undefined">
       <nuxt-link
         class="link"
-        :to="{ path:`/${accountId}/${v.reference}`}"
+        :to="{ path: `/${accountId}/${v.reference}`, query }"
       >
         {{ v.string }}
       </nuxt-link>
@@ -43,7 +44,7 @@ const localeValues = computed(() => props.values.filter(x => !x.language || x.la
       <nuxt-link
         class="link"
         target="_blank"
-        :to="{ path:`/${accountId}/file/${v._id}`}"
+        :to="{ path: `/${accountId}/file/${v._id}`, query }"
       >
         {{ v.filename || v._id }}
       </nuxt-link>

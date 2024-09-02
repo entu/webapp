@@ -1,8 +1,8 @@
 <script setup>
 import { NEmpty, NSpin } from 'naive-ui'
 
-const { t } = useI18n()
 const route = useRoute()
+const { t } = useI18n()
 const { accountId } = useAccount()
 
 const listElement = ref(null)
