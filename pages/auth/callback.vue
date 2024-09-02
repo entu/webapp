@@ -53,7 +53,7 @@ onMounted(async () => {
 <template>
   <n-spin
     class="size-full"
-    :show="true"
+    show
     :delay="1000"
   />
 </template>

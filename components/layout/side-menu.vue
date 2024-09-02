@@ -11,7 +11,6 @@ const { menuCollapsed, token, userId, userName } = useUser()
 const menuStore = useMenueStore()
 const { menuEntities } = storeToRefs(menuStore)
 
-const expandedMenus = ref([])
 const activeMenu = ref(window.location.search.substring(1))
 
 const accountMenu = computed(() => {
@@ -48,10 +47,7 @@ const accountMenu = computed(() => {
           key: `account-${x._id}`,
           name: x.name,
           label: () => h(NuxtLink,
-            {
-              to: { path: `/${x._id}` },
-              onClick: () => { expandedMenus.value = [] }
-            },
+            { to: { path: `/${x._id}` } },
             { default: () => x.name }
           )
         }))
@@ -282,16 +278,16 @@ function linkReplace (url) {
 
     <n-menu
       v-model:value="activeMenu"
+      accordion
       class="pb-0 grow"
       collapse-mode="width"
-      :accordion="true"
       :collapsed-width="60"
       :collapsed="menuCollapsed"
-      :expanded-keys="expandedMenus"
+      :default-expanded-keys="accountMenu.length === 3 ? [accountMenu.at(2).key] : undefined"
       :indent="32"
       :options="accountMenu"
       :root-indent="18"
-      @update:expanded-keys="expandedMenus = $event"
+      :watch-props="['defaultExpandedKeys']"
     />
 
     <div
@@ -303,9 +299,9 @@ function linkReplace (url) {
 
     <n-menu
       v-if="!token"
+      accordion
       class="pb-0"
       collapse-mode="width"
-      :accordion="true"
       :collapsed-width="60"
       :collapsed="menuCollapsed"
       :indent="32"
@@ -315,9 +311,9 @@ function linkReplace (url) {
 
     <n-menu
       v-model:value="activeMenu"
+      accordion
       class="pb-0"
       collapse-mode="width"
-      :accordion="true"
       :collapsed-width="60"
       :collapsed="menuCollapsed"
       :indent="32"

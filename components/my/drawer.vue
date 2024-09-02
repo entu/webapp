@@ -23,10 +23,10 @@ onKeyStroke('Escape', () => emit('close'))
   <n-drawer
     placement="right"
     resizable
+    show
     :close-on-esc="false"
     :default-width="width"
     :mask-closable="false"
-    :show="true"
     @mask-click="emit('close')"
   >
     <n-drawer-content
