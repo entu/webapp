@@ -261,6 +261,7 @@ export async function setEntity (entu, entityId, properties) {
   if (oldPIds.length > 0) {
     await entu.db.collection('property').updateMany({
       _id: { $in: oldPIds },
+      entity: entityId,
       deleted: { $exists: false }
     }, {
       $set: {

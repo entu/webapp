@@ -82,7 +82,8 @@ export default defineEventHandler(async (event) => {
   }
 
   await entu.db.collection('property').updateOne({
-    _id: propertyId
+    _id: propertyId,
+    entity: property.entity
   }, {
     $set: {
       deleted: {
