@@ -6,7 +6,8 @@ const runtimeConfig = useRuntimeConfig()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 
 if (!localStorage.getItem('locale')) {
-  localStorage.setItem('locale', 'en')
+  const defaultLocale = navigator?.language?.split('-')?.at(0) || 'en'
+  localStorage.setItem('locale', defaultLocale)
 }
 
 setLocale(localStorage.getItem('locale'))
