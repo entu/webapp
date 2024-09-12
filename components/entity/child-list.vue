@@ -1,5 +1,5 @@
 <script setup>
-import { NPagination } from 'naive-ui'
+import { NPagination, NPopover } from 'naive-ui'
 import { MyIcon, NuxtLink } from '#components'
 
 const props = defineProps({
@@ -9,7 +9,7 @@ const props = defineProps({
 })
 
 const { query } = useRoute()
-const { locale, d } = useI18n()
+const { locale, d, t } = useI18n()
 const { accountId } = useAccount()
 const { tablePageSize } = useUser()
 
@@ -105,6 +105,7 @@ async function getEntities (setPage, setPageSize, setSorter) {
     '_type.reference': props.typeId,
     props: [
       '_thumbnail',
+      '_sharing',
       ...rawColumns.value.map(c => c.name)
     ].join(','),
     sort: `${sorter.value.order === 'descending' ? '-' : ''}${sorter.value.column}.${field}`,
@@ -182,6 +183,7 @@ onMounted(async () => {
               />
             </div>
           </th>
+          <th class="w-1" />
         </tr>
       </thead>
 
@@ -196,7 +198,7 @@ onMounted(async () => {
               <img
                 v-if="row._thumbnail"
                 :src="row._thumbnail"
-                class="size-8 rounded-full group-hover:border-sky-800"
+                class="size-7 rounded-full group-hover:border-sky-800"
                 :class="color()"
               >
 
@@ -231,6 +233,44 @@ onMounted(async () => {
               />
             </nuxt-link>
           </td>
+
+          <td>
+            <n-popover
+              class="max-w-sm"
+              placement="left"
+            >
+              <template #trigger>
+                <my-icon
+                  v-if="renderColumn(row._sharing, 'string') === 'public'"
+                  class="text-gray-500 group-hover:text-orange-600"
+                  icon="sharing/public"
+                />
+                <my-icon
+                  v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
+                  class="text-gray-500 group-hover:text-yellow-600"
+                  icon="sharing/domain"
+                />
+                <my-icon
+                  v-else
+                  class="text-gray-500 group-hover:text-green-600"
+                  icon="sharing/private"
+                />
+              </template>
+
+              <span
+                v-if="renderColumn(row._sharing, 'string') === 'public'"
+                class="text-sm text-orange-600"
+              >{{ t('sharingPublic') }}</span>
+              <span
+                v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
+                class="text-sm text-yellow-600"
+              >{{ t('sharingDomain') }}</span>
+              <span
+                v-else
+                class="text-sm text-green-600"
+              >{{ t('sharingPrivate') }}</span>
+            </n-popover>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -251,3 +291,14 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
+<i18n lang="yaml">
+  en:
+    sharingPrivate: Private entity
+    sharingDomain: Anyone with account can see
+    sharingPublic: Public entity
+  et:
+    sharingPrivate: Privaatne objekt
+    sharingDomain: Kõik kasutajad näevad seda objekti
+    sharingPublic: Avalik objekt
+</i18n>
