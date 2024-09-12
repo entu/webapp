@@ -11,7 +11,7 @@ const { menuCollapsed, token, userId, userName } = useUser()
 const menuStore = useMenueStore()
 const { menuEntities } = storeToRefs(menuStore)
 
-const activeMenu = ref(window.location.search.substring(1))
+const activeMenu = ref(window.location.search.substring(1) || window.location.pathname)
 
 const accountMenu = computed(() => {
   const menu = []
@@ -223,7 +223,7 @@ const userMenu = computed(() => {
 
   if (account.value?._id && userId.value) {
     menu.push({
-      key: userId.value,
+      key: `/${account.value?._id}/${userId.value}`,
       icon: () => h(MyIcon, { icon: 'user' }),
       label: () => h(NuxtLink,
         { to: { path: `/${account.value?._id}/${userId.value}` } },
@@ -322,7 +322,7 @@ function linkReplace (url) {
     <n-menu
       v-model:value="activeMenu"
       accordion
-      class="pb-0 grow"
+      class="grow"
       collapse-mode="width"
       :collapsed-width="60"
       :collapsed="menuCollapsed"
@@ -334,26 +334,24 @@ function linkReplace (url) {
     />
 
     <n-menu
-      v-if="!token"
-      accordion
-      class="pb-0"
-      collapse-mode="width"
-      :collapsed-width="60"
-      :collapsed="menuCollapsed"
-      :indent="0"
-      :options="authMenu"
-      :root-indent="18"
-    />
-
-    <n-menu
+      v-if="token"
       v-model:value="activeMenu"
       accordion
-      class="pb-0"
       collapse-mode="width"
       :collapsed-width="60"
       :collapsed="menuCollapsed"
       :indent="32"
       :options="userMenu"
+      :root-indent="18"
+    />
+    <n-menu
+      v-else
+      accordion
+      collapse-mode="width"
+      :collapsed-width="60"
+      :collapsed="menuCollapsed"
+      :indent="0"
+      :options="authMenu"
       :root-indent="18"
     />
   </div>
