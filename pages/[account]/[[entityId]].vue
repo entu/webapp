@@ -229,7 +229,7 @@ onMounted(async () => {
     <transition>
       <div
         v-if="rawEntity"
-        class="px-2 pb-4 flex flex-col overflow-y-auto overflow-hidden"
+        class="px-2 pb-20 flex flex-col overflow-y-auto overflow-hidden"
       >
         <div
           v-if="rawEntity?._parent"
