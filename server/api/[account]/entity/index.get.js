@@ -167,7 +167,7 @@ export default defineEventHandler(async (event) => {
   ])
 
   for (let i = 0; i < entities.length; i++) {
-    const entity = await claenupEntity(entu, entities[i], getThumbnail)
+    const entity = await cleanupEntity(entu, entities[i], getThumbnail)
 
     if (entity) cleanedEntities.push(entity)
   }

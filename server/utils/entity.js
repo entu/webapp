@@ -1,5 +1,5 @@
 // Return public or private properties (based user rights)
-export async function claenupEntity (entu, entity, _thumbnail) {
+export async function cleanupEntity (entu, entity, _thumbnail) {
   if (!entity) return
 
   let result = { _id: entity._id }

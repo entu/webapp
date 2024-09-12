@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const cleanedEntity = await claenupEntity(entu, entity, getThumbnail)
+  const cleanedEntity = await cleanupEntity(entu, entity, getThumbnail)
 
   if (!cleanedEntity) {
     throw createError({
