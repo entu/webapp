@@ -28,10 +28,7 @@ onMounted(async () => {
       {{ t('new') }}
     </n-button>
 
-    <div
-      v-if="!isQuery && !entityId"
-      class="absolute bottom-0 right-0 left-0 text-sm text-center text-gray-500"
-    >
+    <div class="absolute bottom-0 right-0 left-0 text-sm text-center text-gray-500">
       <a
         target="_blank"
         :href="t('termsUrl')"

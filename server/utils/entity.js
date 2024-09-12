@@ -191,7 +191,12 @@ export async function setEntity (entu, entityId, properties) {
 
       if (defaultParents) {
         defaultParents.private.default_parent.forEach((parent) => {
-          properties.push({ entity: entityId, type: '_parent', reference: parent.reference, created: { at: createdDt, by: entu.user || 'entu' } })
+          properties.push({
+            entity: entityId,
+            type: '_parent',
+            reference: parent.reference,
+            created: { at: createdDt, by: entu.user || 'entu' }
+          })
         })
       }
     }
@@ -200,10 +205,26 @@ export async function setEntity (entu, entityId, properties) {
     entityId = entity.insertedId
 
     if (entu.user) {
-      properties.push({ entity: entityId, type: '_owner', reference: entu.user, created: { at: createdDt, by: entu.user } })
-      properties.push({ entity: entityId, type: '_created', reference: entu.user, datetime: createdDt, created: { at: createdDt, by: entu.user } })
+      properties.push({
+        entity: entityId,
+        type: '_owner',
+        reference: entu.user,
+        created: { at: createdDt, by: entu.user }
+      })
+      properties.push({
+        entity: entityId,
+        type: '_created',
+        reference: entu.user,
+        datetime: createdDt,
+        created: { at: createdDt, by: entu.user }
+      })
     } else {
-      properties.push({ entity: entityId, type: '_created', datetime: createdDt, created: { at: createdDt, by: 'entu' } })
+      properties.push({
+        entity: entityId,
+        type: '_created',
+        datetime: createdDt,
+        created: { at: createdDt, by: 'entu' }
+      })
     }
   }
 

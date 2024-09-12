@@ -166,7 +166,7 @@ onMounted(async () => {
           <th
             v-for="column in rawColumns"
             :key="column.name"
-            class="px-3 py-3 text-left hover:bg-gray-50 cursor-pointer"
+            class="p-3 text-left hover:bg-gray-50 cursor-pointer"
             :class="{
               'text-center': column.type === 'boolean',
               'text-right': column.type === 'number'
@@ -216,7 +216,7 @@ onMounted(async () => {
             }"
           >
             <nuxt-link
-              class="w-full flex items-center px-3 py-3"
+              class="w-full flex items-center p-3"
               :class="{
                 'justify-center': column.type === 'boolean',
                 'justify-end': column.type === 'number'
