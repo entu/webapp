@@ -6,6 +6,9 @@ const route = useRoute()
 const { accountId } = useAccount()
 const { menuCollapsed, listWidth } = useUser()
 
+const siderRef = ref()
+const isHovered = useElementHover(siderRef, { delayEnter: 200, delayLeave: 600 })
+
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
 </script>
@@ -16,11 +19,14 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
     has-sider
   >
     <n-layout-sider
-      show-trigger="bar"
+      ref="siderRef"
       collapse-mode="width"
+      collapsed-trigger-class="!top-7.5 !text-white !bg-[#1E434C] !shaddow-none !border-white"
+      trigger-class="!top-5 !-left-1 !text-white !opacity-80 !bg-transparent !shaddow-none !border-transparent hover:!border-white"
       :class="{ 'm-2 mr-0 rounded-md': !menuCollapsed }"
-      :collapsed-width="60"
       :collapsed="menuCollapsed"
+      :collapsed-width="60"
+      :show-trigger="!menuCollapsed || isHovered ? 'arrow-circle' : undefined"
       @collapse="menuCollapsed = true"
       @expand="menuCollapsed = false"
     >

@@ -108,7 +108,7 @@ function color () {
 
 <template>
   <div class="h-full flex flex-col print:hidden">
-    <div class="h-12 ml-6 flex items-center gap-3">
+    <div class="h-12 ml-3 flex items-center gap-3">
       <label
         for="search"
         class="w-8 h-7 flex items-center justify-center"
@@ -187,7 +187,7 @@ function color () {
 
 <style scoped>
 .list-item {
-  @apply h-12 pl-6 pr-3;
+  @apply h-12 px-3;
   @apply flex items-center gap-3;
   @apply hover:bg-zinc-50;
   @apply hover:border-y border-zinc-50;
