@@ -159,122 +159,123 @@ onMounted(async () => {
 
 <template>
   <div>
-    <table class="w-full text-sm">
-      <thead>
-        <tr>
-          <th class="w-7" />
+    <div class="overflow-auto">
+      <table class="w-full text-sm table-auto">
+        <thead>
+          <tr>
+            <th class="w-7" />
 
-          <th
-            v-for="column in rawColumns"
-            :key="column.name"
-            class="p-3 text-left hover:bg-gray-50 cursor-pointer"
-            :class="{
-              'text-center': column.type === 'boolean',
-              'text-right': column.type === 'number'
-            }"
-            @click="getEntities(1, undefined, column.name)"
-          >
-            <div class="flex items-center gap-2">
-              {{ column.label }}
-
-              <my-icon
-                v-if="sorter && sorter.column === column.name"
-                :icon="`sort/${sorter.order}`"
-              />
-            </div>
-          </th>
-          <th class="w-1" />
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr
-          v-for="row in rawEntities"
-          :key="row._id"
-          class="group border-t border-gray-200 hover:bg-gray-50"
-        >
-          <td>
-            <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
-              <img
-                v-if="row._thumbnail"
-                :src="row._thumbnail"
-                class="size-7 rounded-full group-hover:border-sky-800"
-                :class="color()"
-              >
-
-              <div
-                v-else
-                class="size-8 rounded-full group-hover:border-sky-800"
-                :class="color()"
-              />
-            </nuxt-link>
-          </td>
-
-          <td
-            v-for="column in rawColumns"
-            :key="column.name"
-            :class="{
-              'text-right': column.type === 'number'
-            }"
-          >
-            <nuxt-link
-              class="w-full flex items-center p-3"
+            <th
+              v-for="column in rawColumns"
+              :key="column.name"
+              class="p-3 text-left hover:bg-gray-50 cursor-pointer"
               :class="{
-                'justify-center': column.type === 'boolean',
-                'justify-end': column.type === 'number'
+                'text-center': column.type === 'boolean',
+                'text-right': column.type === 'number'
               }"
-              :to="{ path: `/${accountId}/${row._id}`, query }"
+              @click="getEntities(1, undefined, column.name)"
             >
-              {{ renderColumn(row[column.name], column.type, column.decimals) }}
+              <div class="flex items-center gap-2">
+                {{ column.label }}
 
-              <my-icon
-                v-if="column.type === 'boolean' && getValue(row[column.name], 'boolean')"
-                icon="checkmark"
-              />
-            </nuxt-link>
-          </td>
+                <my-icon
+                  v-if="sorter && sorter.column === column.name"
+                  :icon="`sort/${sorter.order}`"
+                />
+              </div>
+            </th>
+            <th class="w-1" />
+          </tr>
+        </thead>
 
-          <td>
-            <n-popover
-              class="max-w-sm"
-              placement="left"
-            >
-              <template #trigger>
-                <my-icon
-                  v-if="renderColumn(row._sharing, 'string') === 'public'"
-                  class="text-gray-500 group-hover:text-orange-600"
-                  icon="sharing/public"
-                />
-                <my-icon
-                  v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
-                  class="text-gray-500 group-hover:text-yellow-600"
-                  icon="sharing/domain"
-                />
-                <my-icon
+        <tbody>
+          <tr
+            v-for="row in rawEntities"
+            :key="row._id"
+            class="group border-t border-gray-200 hover:bg-gray-50"
+          >
+            <td>
+              <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
+                <img
+                  v-if="row._thumbnail"
+                  :src="row._thumbnail"
+                  class="size-7 rounded-full group-hover:border-sky-800"
+                  :class="color()"
+                >
+
+                <div
                   v-else
-                  class="text-gray-500 group-hover:text-green-600"
-                  icon="sharing/private"
+                  class="size-8 rounded-full group-hover:border-sky-800"
+                  :class="color()"
                 />
-              </template>
+              </nuxt-link>
+            </td>
 
-              <span
-                v-if="renderColumn(row._sharing, 'string') === 'public'"
-                class="text-sm text-orange-600"
-              >{{ t('sharingPublic') }}</span>
-              <span
-                v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
-                class="text-sm text-yellow-600"
-              >{{ t('sharingDomain') }}</span>
-              <span
-                v-else
-                class="text-sm text-green-600"
-              >{{ t('sharingPrivate') }}</span>
-            </n-popover>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            <td
+              v-for="column in rawColumns"
+              :key="column.name"
+              :class="{
+                'text-right': column.type === 'number'
+              }"
+            >
+              <nuxt-link
+                class="w-full flex items-center p-3"
+                :class="{
+                  'justify-center': column.type === 'boolean',
+                  'justify-end': column.type === 'number'
+                }"
+                :to="{ path: `/${accountId}/${row._id}`, query }"
+              >
+                {{ renderColumn(row[column.name], column.type, column.decimals) }}
 
+                <my-icon
+                  v-if="column.type === 'boolean' && getValue(row[column.name], 'boolean')"
+                  icon="checkmark"
+                />
+              </nuxt-link>
+            </td>
+
+            <td>
+              <n-popover
+                class="max-w-sm"
+                placement="left"
+              >
+                <template #trigger>
+                  <my-icon
+                    v-if="renderColumn(row._sharing, 'string') === 'public'"
+                    class="text-gray-500 group-hover:text-orange-600"
+                    icon="sharing/public"
+                  />
+                  <my-icon
+                    v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
+                    class="text-gray-500 group-hover:text-yellow-600"
+                    icon="sharing/domain"
+                  />
+                  <my-icon
+                    v-else
+                    class="text-gray-500 group-hover:text-green-600"
+                    icon="sharing/private"
+                  />
+                </template>
+
+                <span
+                  v-if="renderColumn(row._sharing, 'string') === 'public'"
+                  class="text-sm text-orange-600"
+                >{{ t('sharingPublic') }}</span>
+                <span
+                  v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
+                  class="text-sm text-yellow-600"
+                >{{ t('sharingDomain') }}</span>
+                <span
+                  v-else
+                  class="text-sm text-green-600"
+                >{{ t('sharingPrivate') }}</span>
+              </n-popover>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <div
       v-if="total >= 10"
       class="w-full mt-2 flex justify-end"
