@@ -7,7 +7,7 @@ export async function cleanupEntity (entu, entity, _thumbnail) {
   if (entu.userStr && entity.access?.map(x => x.toString())?.includes(entu.userStr)) {
     result = { ...result, ...entity.private }
   } else if (entu.userStr && entity.access?.includes('domain')) {
-    result = { ...result, ...entity.public }
+    result = { ...result, ...entity.domain, ...entity.public } // must set to domain only after all is aggregated
   } else if (entity.access?.includes('public')) {
     result = { ...result, ...entity.public }
   } else {
@@ -350,14 +350,25 @@ export async function aggregateEntity (entu, entityId) {
   const newEntity = await propertiesToEntity(entu, properties)
 
   if (newEntity.private._sharing) {
+    newEntity.domain._sharing = newEntity.private._sharing
     newEntity.public._sharing = newEntity.private._sharing
   }
 
   // get info from type
   if (newEntity.private._type) {
+    newEntity.domain._type = newEntity.private._type
     newEntity.public._type = newEntity.private._type
 
     if (newEntity.private._type.at(0)?.reference) {
+      // get entity definition's _sharing
+      const definitionEntity = await entu.db.collection('entity').findOne({
+        _id: newEntity.private._type.at(0).reference
+      }, {
+        projection: { 'private._sharing': true }
+      })
+
+      const definitionSharing = definitionEntity?.private?._sharing?.at(0)?.string
+
       const definition = await entu.db.collection('entity').aggregate([
         {
           $match: {
@@ -369,7 +380,7 @@ export async function aggregateEntity (entu, entityId) {
           $project: {
             _id: false,
             name: { $arrayElemAt: ['$private.name.string', 0] },
-            public: { $arrayElemAt: ['$private.public.boolean', 0] },
+            sharing: { $arrayElemAt: ['$private._sharing.string', 0] },
             search: { $arrayElemAt: ['$private.search.boolean', 0] },
             formula: { $arrayElemAt: ['$private.formula.string', 0] }
           }
@@ -377,6 +388,15 @@ export async function aggregateEntity (entu, entityId) {
       ]).toArray()
 
       for (let d = 0; d < definition.length; d++) {
+        let sharing = definition[d].sharing
+
+        if (!definitionSharing) {
+          sharing = undefined
+        } else if (definitionSharing === 'domain' && definition[d].sharing === 'public') {
+          sharing = 'domain'
+        }
+        console.log(definition[d].name, definitionSharing, definition[d].sharing, sharing)
+
         if (definition[d].formula) {
           const formulaValue = await formula(entu, definition[d].formula, entityId)
 
@@ -393,7 +413,14 @@ export async function aggregateEntity (entu, entityId) {
             ...getValueArray(dValue)
           ]
 
-          if (definition[d].public) {
+          if (sharing === 'domain') {
+            newEntity.search.domain = [
+              ...(newEntity.search.domain || []),
+              ...getValueArray(dValue)
+            ]
+          }
+
+          if (sharing === 'public') {
             newEntity.search.public = [
               ...(newEntity.search.public || []),
               ...getValueArray(dValue)
@@ -401,7 +428,12 @@ export async function aggregateEntity (entu, entityId) {
           }
         }
 
-        if (definition[d].public && dValue) {
+        if (sharing === 'domain' && dValue) {
+          newEntity.domain[definition[d].name] = dValue
+        }
+
+        if (sharing === 'public' && dValue) {
+          newEntity.domain[definition[d].name] = dValue
           newEntity.public[definition[d].name] = dValue
         }
       }
@@ -502,7 +534,11 @@ export async function aggregateEntity (entu, entityId) {
     delete newEntity.private._parent_owner
   }
 
-  if (!['domain', 'public'].includes(newEntity.private?._sharing?.at(0)?.string) || Object.keys(newEntity.public).length === 0) {
+  if (newEntity.private?._sharing?.at(0)?.string !== 'domain' || Object.keys(newEntity.domain).length === 0) {
+    delete newEntity.domain
+  }
+
+  if (newEntity.private?._sharing?.at(0)?.string !== 'public' || Object.keys(newEntity.public).length === 0) {
     delete newEntity.public
   }
 
@@ -510,11 +546,15 @@ export async function aggregateEntity (entu, entityId) {
     newEntity.search.private = makeSearchArray(newEntity.search.private)
   }
 
+  if (newEntity.search?.domain?.length > 0 || newEntity.search?.public?.length > 0) {
+    newEntity.search.domain = makeSearchArray([...newEntity.search.domain || [], ...newEntity.search.public || []])
+  }
+
   if (newEntity.search?.public?.length > 0) {
     newEntity.search.public = makeSearchArray(newEntity.search.public)
   }
 
-  if (!newEntity.search?.private && !newEntity.search?.public) {
+  if (!newEntity.search?.private && !newEntity.search?.domain && !newEntity.search?.public) {
     delete newEntity.search
   }
 
@@ -538,6 +578,7 @@ async function propertiesToEntity (entu, properties) {
   const entity = {
     aggregated: new Date(),
     private: {},
+    domain: {},
     public: {},
     access: [],
     search: {}

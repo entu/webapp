@@ -211,6 +211,7 @@ async function newDatabase (name) {
       { key: { 'private.entu_user.string': 1 } },
       { key: { 'private.name.string': 1 } },
       { key: { 'search.private': 1 } },
+      { key: { 'search.domain': 1 } },
       { key: { 'search.public': 1 } }
     ]),
 
