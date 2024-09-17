@@ -115,6 +115,7 @@ export default defineEventHandler(async (event) => {
     const projectIds = {
       'public._count': '$_count',
       'private._count': '$_count',
+      'domain._count': '$_count',
       access: true,
       _id: false
     }
