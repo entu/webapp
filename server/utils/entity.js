@@ -349,6 +349,11 @@ export async function aggregateEntity (entu, entityId) {
 
   const newEntity = await propertiesToEntity(entu, properties)
 
+  if (newEntity.private._parent) {
+    newEntity.domain._parent = newEntity.private._parent
+    newEntity.public._parent = newEntity.private._parent
+  }
+
   if (newEntity.private._sharing) {
     newEntity.domain._sharing = newEntity.private._sharing
     newEntity.public._sharing = newEntity.private._sharing
