@@ -16,6 +16,7 @@ export default defineEventHandler(async (event) => {
       } else {
         fields[`private.${f}`] = true
         fields[`public.${f}`] = true
+        fields[`domain.${f}`] = true
       }
     })
     fields.access = true
