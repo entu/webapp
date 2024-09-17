@@ -111,7 +111,6 @@ export default defineEventHandler(async (event) => {
 
   if (group.length > 0) {
     const groupIds = {}
-    const unwinds = []
     const groupFields = { access: { $first: '$access' } }
     const projectIds = {
       'public._count': '$_count',
@@ -123,7 +122,6 @@ export default defineEventHandler(async (event) => {
 
     group.forEach((g) => {
       groupIds[g.replaceAll('.', '#')] = `$private.${g}`
-      unwinds.push({ $unwind: { path: `$private.${g.split('.').at(0)}`, preserveNullAndEmptyArrays: true } })
     })
 
     Object.keys(fields).forEach((g) => {
@@ -133,15 +131,10 @@ export default defineEventHandler(async (event) => {
 
     pipeline = [
       ...pipeline,
-      ...unwinds,
       { $group: { ...groupFields, _id: groupIds, _count: { $count: {} } } },
       { $project: projectIds },
       { $sort: sortFields }
     ]
-
-    if (!search) {
-      pipeline.push({ $sort: sortFields })
-    }
   } else {
     pipeline.push({ $sort: sortFields })
     pipeline.push({ $skip: skip })

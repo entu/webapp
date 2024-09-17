@@ -153,9 +153,11 @@ async function loadChilds () {
   })
 
   entities.forEach(async (x) => {
-    if (!x._type?.reference) return
+    const type = getValue(x._type, 'reference')
 
-    const rawType = await apiGetEntity(x._type.reference, [
+    if (!type) return
+
+    const rawType = await apiGetEntity(type, [
       'label_plural',
       'label',
       'name'
@@ -177,9 +179,11 @@ async function loadReferences () {
   })
 
   entities.forEach(async (x) => {
-    if (!x._type?.reference) return
+    const type = getValue(x._type, 'reference')
 
-    const rawType = await apiGetEntity(x._type.reference, [
+    if (!type) return
+
+    const rawType = await apiGetEntity(type, [
       'label_plural',
       'label',
       'name'
