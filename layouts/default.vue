@@ -40,6 +40,7 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
       <n-split
         v-model:size="listWidth"
         direction="horizontal"
+        pane1-class="print:hidden"
         :max="0.50"
         :min="0.20"
         :pane1-class="!menuCollapsed ? 'py-2' : ''"
@@ -51,7 +52,7 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
 
         <template #resize-trigger>
           <div
-            class="h-full"
+            class="h-full print:hidden"
             :class="menuCollapsed ? 'py-0' : 'py-2'"
           >
             <div class="h-full w-0.5 hover:bg-gray-400 bg-gray-300" />
