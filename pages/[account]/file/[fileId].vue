@@ -1,10 +1,9 @@
 <script setup>
 import { NSpin } from 'naive-ui'
 
-const route = useRoute()
-
 definePageMeta({ layout: 'blank' })
 
+const route = useRoute()
 const { t } = useI18n()
 
 onMounted(async () => {
