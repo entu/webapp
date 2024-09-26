@@ -415,20 +415,20 @@ export async function aggregateEntity (entu, entityId) {
         if (definition[d].search && dValue) {
           newEntity.search.private = [
             ...(newEntity.search.private || []),
-            ...getValueArray(dValue)
+            ...await getValueArray(entu, dValue)
           ]
 
           if (sharing === 'domain') {
             newEntity.search.domain = [
               ...(newEntity.search.domain || []),
-              ...getValueArray(dValue)
+              ...await getValueArray(entu, dValue)
             ]
           }
 
           if (sharing === 'public') {
             newEntity.search.public = [
               ...(newEntity.search.public || []),
-              ...getValueArray(dValue)
+              ...await getValueArray(entu, dValue)
             ]
           }
         }
@@ -648,7 +648,7 @@ async function formula (entu, str, entityId) {
     }
   }
 
-  valueArray = getValueArray(valueArray)
+  valueArray = await getValueArray(entu, valueArray)
 
   if (valueArray.length === 0 && !['COUNT', 'SUM'].includes(func)) {
     return undefined
@@ -878,17 +878,22 @@ function formulaContent (data, func) {
   }
 }
 
-function getValueArray (values) {
+async function getValueArray (entu, values) {
   if (!values) return []
 
-  return values.map((x) => {
+  return await Promise.all(values.map(async (x) => {
     if (x.number !== undefined && x.number !== null) return x.number
     if (x.datetime !== undefined && x.datetime !== null) return x.datetime?.toISOString()
     if (x.date !== undefined && x.date !== null) return x.date?.toISOString().substring(0, 10)
     if (x.string !== undefined && x.string !== null) return x.string
+    if (x.reference !== undefined && x.reference !== null) {
+      const entity = await entu.db.collection('entity').findOne({ _id: x.reference }, { projection: { 'private.name': true } })
+
+      return entity.private?.name?.at(0)?.string || x.reference
+    }
 
     return x._id
-  })
+  }))
 }
 
 async function getParentRights (entu, parents) {
