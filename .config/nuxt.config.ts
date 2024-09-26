@@ -12,27 +12,31 @@ export default defineNuxtConfig({
       link: [
         { rel: 'icon', type: 'image/png', href: '/logo.png' }
       ],
-      script: [
-        { src: 'https://plausible.io/js/script.js', 'data-domain': 'entu.app', defer: true }
-      ]
     }
   },
-  css: ['~/assets/tailwind.css'],
+  eslint: {
+    config: {
+      autoInit: false,
+      stylistic: true
+    }
+  },
+  future: {
+    compatibilityVersion: 4
+  },
   i18n: {
-    vueI18n: './i18n.config.ts'
+    vueI18n: '~/.config/i18n.config.ts'
   },
   modules: [
+    '@nuxt/eslint',
+    '@nuxt/fonts',
+    '@nuxt/scripts',
     '@nuxtjs/i18n',
+    '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    'nuxt-icons'
+    'nuxt-icons',
+    'nuxtjs-naive-ui'
   ],
-  postcss: {
-    plugins: {
-      tailwindcss: {},
-      autoprefixer: {}
-    }
-  },
   routeRules: {
     '/api/**': { cors: true }
   },
@@ -57,6 +61,15 @@ export default defineNuxtConfig({
     stripeKey: '',
     stripeEndpointSecret: ''
   },
+  scripts: {
+    registry: {
+      plausibleAnalytics: { domain: 'entu.app' }
+    }
+  },
   spaLoadingTemplate: false,
-  ssr: false
+  ssr: false,
+  tailwindcss: {
+    cssPath: '~/assets/tailwind.css',
+    configPath: '~/.config/tailwind.config.ts'
+  }
 })
