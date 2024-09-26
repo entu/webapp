@@ -28,8 +28,6 @@ export default defineEventHandler(async (event) => {
   const q = (query.q || '').toLowerCase().split(' ').filter(x => x.length > 0)
   let sortFields = {}
   const filter = {}
-  let search
-  const equalSearch = []
 
   for (const k in query) {
     if (!k.includes('.')) continue
@@ -76,7 +74,6 @@ export default defineEventHandler(async (event) => {
       }
     } else {
       filter[`private.${field}.${type}`] = value
-      equalSearch.push({ text: { path: `private.${field}.${type}`, query: value } })
     }
   }
 

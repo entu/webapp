@@ -215,13 +215,6 @@ async function newDatabase (name) {
       { key: { 'search.public': 1 } }
     ]),
 
-    // Add entity search index to MongoDB
-    newDb.collection('entity').createIndex({
-      'search.private': 'text'
-    }, {
-      name: 'search'
-    }),
-
     // Add property indexes to MongoDB
     newDb.collection('property').createIndexes([
       { key: { entity: 1 } },
