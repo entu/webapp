@@ -37,6 +37,11 @@ export default defineNuxtConfig({
     'nuxt-icons',
     'nuxtjs-naive-ui'
   ],
+  nitro: {
+    experimental: {
+      openAPI: true
+    }
+  }
   routeRules: {
     '/api/**': { cors: true }
   },
