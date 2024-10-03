@@ -271,6 +271,7 @@ export async function setEntity (entu, entityId, properties) {
         headers: {
           ACL: 'private',
           'Content-Disposition': contentDisposition,
+          'Content-Length': property.filesize,
           'Content-Type': property.filetype
         }
       }
