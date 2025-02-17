@@ -401,7 +401,7 @@ export async function aggregateEntity (entu, entityId) {
         } else if (definitionSharing === 'domain' && definition[d].sharing === 'public') {
           sharing = 'domain'
         }
-        console.log(definition[d].name, definitionSharing, definition[d].sharing, sharing)
+        // console.log(definition[d].name, definitionSharing, definition[d].sharing, sharing)
 
         if (definition[d].formula) {
           const formulaValue = await formula(entu, definition[d].formula, entityId)
