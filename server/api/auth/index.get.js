@@ -97,7 +97,6 @@ export default defineEventHandler(async (event) => {
   if (session?.user?.email || session?.user?.name) {
     userData.email = session?.user?.email
     userData.name = session?.user?.name
-    userData.hash = createHmac('sha256', intercomSecret).update(session?.user?.email || session?.user?._id).digest('hex')
 
     tokenData.user = userData
   }

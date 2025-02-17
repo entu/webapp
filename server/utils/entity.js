@@ -692,7 +692,7 @@ async function formula (entu, str, entityId) {
 async function formulaField (entu, str, entityId) {
   str = str.trim()
 
-  if ((str.startsWith("'") || str.startsWith('"')) && (str.endsWith("'") || str.endsWith('"'))) {
+  if ((str.startsWith('\'') || str.startsWith('"')) && (str.endsWith('\'') || str.endsWith('"'))) {
     return [{
       string: str.substring(1, str.length - 1)
     }]
