@@ -2,8 +2,8 @@ export default defineEventHandler(async (event) => {
   const entu = event.context.entu
   const query = getQuery(event)
 
-  const props = (query.props || '').split(',').filter(x => !!x)
-  const group = (query.group || '').split(',').filter(x => !!x)
+  const props = (query.props || '').split(',').filter((x) => !!x)
+  const group = (query.group || '').split(',').filter((x) => !!x)
   const fields = {}
   let getThumbnail = props.length === 0
 
@@ -13,7 +13,8 @@ export default defineEventHandler(async (event) => {
         fields['private.photo'] = true
         fields['public.photo'] = true
         getThumbnail = true
-      } else {
+      }
+      else {
         fields[`private.${f}`] = true
         fields[`public.${f}`] = true
         fields[`domain.${f}`] = true
@@ -22,10 +23,10 @@ export default defineEventHandler(async (event) => {
     fields.access = true
   }
 
-  const sort = (query.sort || '').split(',').filter(x => !!x)
+  const sort = (query.sort || '').split(',').filter((x) => !!x)
   const limit = parseInt(query.limit) || 100
   const skip = parseInt(query.skip) || 0
-  const q = (query.q || '').toLowerCase().split(' ').filter(x => x.length > 0)
+  const q = (query.q || '').toLowerCase().split(' ').filter((x) => x.length > 0)
   let sortFields = {}
   const filter = {}
 
@@ -61,9 +62,11 @@ export default defineEventHandler(async (event) => {
       default:
         if (operator === 'regex' && v.includes('/')) {
           value = new RegExp(v.split('/').at(1), v.split('/').at(2))
-        } else if (operator === 'exists') {
+        }
+        else if (operator === 'exists') {
           value = v.toLowerCase() === 'true'
-        } else {
+        }
+        else {
           value = v
         }
     }
@@ -72,14 +75,16 @@ export default defineEventHandler(async (event) => {
       filter[`private.${field}.${type}`] = {
         [`$${operator}`]: value
       }
-    } else {
+    }
+    else {
       filter[`private.${field}.${type}`] = value
     }
   }
 
   if (entu.user) {
     filter.access = { $in: [entu.user, 'domain', 'public'] }
-  } else {
+  }
+  else {
     filter.access = 'public'
   }
 
@@ -87,18 +92,21 @@ export default defineEventHandler(async (event) => {
     sort.forEach((f) => {
       if (f.startsWith('-')) {
         sortFields[`private.${f.substring(1)}`] = -1
-      } else {
+      }
+      else {
         sortFields[`private.${f}`] = 1
       }
     })
-  } else {
+  }
+  else {
     sortFields = { _id: 1 }
   }
 
   if (q.length > 0) {
     if (entu.user) {
       filter['search.private'] = { $all: q }
-    } else {
+    }
+    else {
       filter['search.public'] = { $all: q }
     }
   }
@@ -132,7 +140,8 @@ export default defineEventHandler(async (event) => {
       { $project: projectIds },
       { $sort: sortFields }
     ]
-  } else {
+  }
+  else {
     pipeline.push({ $sort: sortFields })
     pipeline.push({ $skip: skip })
     pipeline.push({ $limit: limit })
@@ -149,7 +158,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const countPipeline = [
-    ...pipeline.filter(x => !Object.keys(x).includes('$sort') && !Object.keys(x).includes('$skip') && !Object.keys(x).includes('$limit')),
+    ...pipeline.filter((x) => !Object.keys(x).includes('$sort') && !Object.keys(x).includes('$skip') && !Object.keys(x).includes('$limit')),
     { $count: '_count' }
   ]
 

@@ -34,7 +34,8 @@ export default defineEventHandler((event) => {
         entu.user = getObjectId(entu.token.accounts[entu.account])
         entu.userStr = entu.token.accounts[entu.account]
       }
-    } catch (e) {
+    }
+    catch (e) {
       throw createError({
         statusCode: 401,
         statusMessage: e.message || e

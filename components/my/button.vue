@@ -14,7 +14,7 @@ defineProps({
 <template>
   <n-popover
     v-if="!!tooltip"
-    class="max-w-sm text-sm !bg-white"
+    class="max-w-sm !bg-white text-sm"
   >
     <template #trigger>
       <n-button
@@ -24,11 +24,17 @@ defineProps({
         :round="!circle"
         v-bind="$attrs"
       >
-        <template v-if="icon" #icon>
+        <template
+          v-if="icon"
+          #icon
+        >
           <my-icon :icon="icon" />
         </template>
 
-        <template v-if="label" #default>
+        <template
+          v-if="label"
+          #default
+        >
           {{ label }}
         </template>
       </n-button>
@@ -46,11 +52,17 @@ defineProps({
     :circle="circle"
     v-bind="$attrs"
   >
-    <template v-if="icon" #icon>
+    <template
+      v-if="icon"
+      #icon
+    >
       <my-icon :icon="icon" />
     </template>
 
-    <template v-if="label" #default>
+    <template
+      v-if="label"
+      #default
+    >
       {{ label }}
     </template>
   </n-button>

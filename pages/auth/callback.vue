@@ -12,7 +12,7 @@ onMounted(async () => {
   useHead({ title: t('title') })
 
   const nextPage = useLocalStorage('next', { path: '/' })
-  const authAccount = nextPage.value?.path.split('/').filter(x => x !== 'new').at(1)
+  const authAccount = nextPage.value?.path.split('/').filter((x) => x !== 'new').at(1)
   let newUser = {}
 
   const authResponse = await apiRequest('auth', authAccount ? { account: authAccount } : {}, { Authorization: `Bearer ${route.query.key}` })
@@ -20,14 +20,16 @@ onMounted(async () => {
   if (authResponse.accounts?.length > 0) {
     accounts.value = authResponse.accounts
 
-    newUser = authResponse.accounts.find(x => x._id === authAccount)?.user || {}
-  } else {
+    newUser = authResponse.accounts.find((x) => x._id === authAccount)?.user || {}
+  }
+  else {
     accounts.value = []
   }
 
   if (authResponse.token) {
     token.value = authResponse.token
-  } else {
+  }
+  else {
     token.value = undefined
   }
 
@@ -37,14 +39,17 @@ onMounted(async () => {
 
   if (newUser.new) {
     await navigateTo({ path: `/${authAccount}/${newUser?._id}`, hash: 'edit' })
-  } else if (nextPage.value.path !== '/') {
+  }
+  else if (nextPage.value.path !== '/') {
     const to = { path: nextPage.value?.path || '/', query: nextPage.value?.query }
     nextPage.value = {}
 
     await navigateTo(to)
-  } else if (accounts.value.length > 0) {
+  }
+  else if (accounts.value.length > 0) {
     await navigateTo({ path: `/${accounts.value.at(0)._id}` })
-  } else {
+  }
+  else {
     await navigateTo({ path: '/new' })
   }
 })

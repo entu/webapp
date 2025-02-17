@@ -4,13 +4,16 @@ export async function cleanupEntity (entu, entity, _thumbnail) {
 
   let result = { _id: entity._id }
 
-  if (entu.userStr && entity.access?.map(x => x.toString())?.includes(entu.userStr)) {
+  if (entu.userStr && entity.access?.map((x) => x.toString())?.includes(entu.userStr)) {
     result = { ...result, ...entity.private }
-  } else if (entu.userStr && entity.access?.includes('domain')) {
+  }
+  else if (entu.userStr && entity.access?.includes('domain')) {
     result = { ...result, ...entity.public, ...entity.domain, ...entity.private } // must set to domain only after all is aggregated
-  } else if (entity.access?.includes('public')) {
+  }
+  else if (entity.access?.includes('public')) {
     result = { ...result, ...entity.public }
-  } else {
+  }
+  else {
     return
   }
 
@@ -93,7 +96,7 @@ export async function setEntity (entu, entityId, properties) {
       })
     }
 
-    const access = entity.private?._editor?.map(s => s.reference?.toString()) || []
+    const access = entity.private?._editor?.map((s) => s.reference?.toString()) || []
 
     if (!access.includes(entu.userStr) && !entu.systemUser) {
       throw createError({
@@ -102,8 +105,8 @@ export async function setEntity (entu, entityId, properties) {
       })
     }
 
-    const rigtsProperties = properties.filter(property => rightTypes.includes(property.type))
-    const owners = entity.private?._owner?.map(s => s.reference?.toString()) || []
+    const rigtsProperties = properties.filter((property) => rightTypes.includes(property.type))
+    const owners = entity.private?._owner?.map((s) => s.reference?.toString()) || []
 
     if (rigtsProperties.length > 0 && !owners.includes(entu.userStr) && !entu.systemUser) {
       throw createError({
@@ -154,7 +157,7 @@ export async function setEntity (entu, entityId, properties) {
         })
       }
 
-      const parentAccess = parent.private?._expander?.map(s => s.reference?.toString()) || []
+      const parentAccess = parent.private?._expander?.map((s) => s.reference?.toString()) || []
 
       if (!parentAccess.includes(entu.userStr) && !entu.systemUser) {
         throw createError({
@@ -163,7 +166,7 @@ export async function setEntity (entu, entityId, properties) {
         })
       }
 
-      if (parent.private?._sharing?.at(0).string && !properties.some(x => x.type === '_sharing')) {
+      if (parent.private?._sharing?.at(0).string && !properties.some((x) => x.type === '_sharing')) {
         properties.push({
           entity: entityId,
           type: '_sharing',
@@ -172,7 +175,7 @@ export async function setEntity (entu, entityId, properties) {
         })
       }
 
-      if (parent.private?._inheritrights?.at(0)?.boolean === true && !properties.some(x => x.type === '_inheritrights')) {
+      if (parent.private?._inheritrights?.at(0)?.boolean === true && !properties.some((x) => x.type === '_inheritrights')) {
         properties.push({
           entity: entityId,
           type: '_inheritrights',
@@ -184,7 +187,7 @@ export async function setEntity (entu, entityId, properties) {
   }
 
   if (!entityId) {
-    const entityType = properties.find(x => x.type === '_type' && x.reference)
+    const entityType = properties.find((x) => x.type === '_type' && x.reference)
 
     if (entityType) {
       const defaultParents = await entu.db.collection('entity').findOne({ _id: getObjectId(entityType.reference), 'private.default_parent': { $exists: true } }, { projection: { 'private.default_parent': true } })
@@ -218,7 +221,8 @@ export async function setEntity (entu, entityId, properties) {
         datetime: createdDt,
         created: { at: createdDt, by: entu.user }
       })
-    } else {
+    }
+    else {
       properties.push({
         entity: entityId,
         type: '_created',
@@ -335,7 +339,7 @@ export async function aggregateEntity (entu, entityId) {
   const properties = await entu.db.collection('property').find({ entity: entityId, deleted: { $exists: false } }).toArray()
 
   // delete entity
-  if (properties.some(x => x.type === '_deleted')) {
+  if (properties.some((x) => x.type === '_deleted')) {
     await entu.db.collection('entity').deleteOne({ _id: entityId })
 
     // console.log(`DELETED ${entu.account} ${entityId}`)
@@ -398,7 +402,8 @@ export async function aggregateEntity (entu, entityId) {
 
         if (!definitionSharing) {
           sharing = undefined
-        } else if (definitionSharing === 'domain' && definition[d].sharing === 'public') {
+        }
+        else if (definitionSharing === 'domain' && definition[d].sharing === 'public') {
           sharing = 'domain'
         }
         // console.log(definition[d].name, definitionSharing, definition[d].sharing, sharing)
@@ -443,10 +448,12 @@ export async function aggregateEntity (entu, entityId) {
           newEntity.public[definition[d].name] = dValue
         }
       }
-    } else {
+    }
+    else {
       console.log(`NO_REFERENCE ${entu.account} ${entityId}`)
     }
-  } else {
+  }
+  else {
     console.log(`NO_TYPE ${entu.account} ${newEntity.private._type} ${entityId}`)
   }
 
@@ -455,37 +462,37 @@ export async function aggregateEntity (entu, entityId) {
   if (newEntity.private._parent?.length > 0 && newEntity.private._inheritrights?.at(0)?.boolean === true) {
     parentRights = await getParentRights(entu, newEntity.private._parent)
 
-    if (parentRights._viewer) { newEntity.private._parent_viewer = uniqBy(parentRights._viewer, x => x.reference.toString()) }
-    if (parentRights._expander) { newEntity.private._parent_expander = uniqBy(parentRights._expander, x => x.reference.toString()) }
-    if (parentRights._editor) { newEntity.private._parent_editor = uniqBy(parentRights._editor, x => x.reference.toString()) }
-    if (parentRights._owner) { newEntity.private._parent_owner = uniqBy(parentRights._owner, x => x.reference.toString()) }
+    if (parentRights._viewer) { newEntity.private._parent_viewer = uniqBy(parentRights._viewer, (x) => x.reference.toString()) }
+    if (parentRights._expander) { newEntity.private._parent_expander = uniqBy(parentRights._expander, (x) => x.reference.toString()) }
+    if (parentRights._editor) { newEntity.private._parent_editor = uniqBy(parentRights._editor, (x) => x.reference.toString()) }
+    if (parentRights._owner) { newEntity.private._parent_owner = uniqBy(parentRights._owner, (x) => x.reference.toString()) }
   }
 
   // combine rights
-  const noRights = newEntity.private._noaccess?.map(x => x.reference.toString())
+  const noRights = newEntity.private._noaccess?.map((x) => x.reference.toString())
 
   newEntity.private._owner = uniqBy([
     ...(parentRights._owner || []),
     ...(newEntity.private._owner || [])
-  ], x => [x.reference.toString(), x.inherited || false].join('-')).filter(x => !noRights?.includes(x.reference.toString()))
+  ], (x) => [x.reference.toString(), x.inherited || false].join('-')).filter((x) => !noRights?.includes(x.reference.toString()))
 
   newEntity.private._editor = uniqBy([
     ...(parentRights._editor || []),
     ...(newEntity.private._editor || []),
     ...(newEntity.private._owner || [])
-  ], x => [x.reference.toString(), x.inherited || false].join('-')).filter(x => !noRights?.includes(x.reference.toString()))
+  ], (x) => [x.reference.toString(), x.inherited || false].join('-')).filter((x) => !noRights?.includes(x.reference.toString()))
 
   newEntity.private._expander = uniqBy([
     ...(parentRights._expander || []),
     ...(newEntity.private._expander || []),
     ...(newEntity.private._editor || [])
-  ], x => [x.reference.toString(), x.inherited || false].join('-')).filter(x => !noRights?.includes(x.reference.toString()))
+  ], (x) => [x.reference.toString(), x.inherited || false].join('-')).filter((x) => !noRights?.includes(x.reference.toString()))
 
   newEntity.private._viewer = uniqBy([
     ...(parentRights._viewer || []),
     ...(newEntity.private._viewer || []),
     ...(newEntity.private._expander || [])
-  ], x => [x.reference.toString(), x.inherited || false].join('-')).filter(x => !noRights?.includes(x.reference.toString()))
+  ], (x) => [x.reference.toString(), x.inherited || false].join('-')).filter((x) => !noRights?.includes(x.reference.toString()))
 
   const { _noaccess, _viewer, _expander, _editor, _owner } = combineRights({
     _noaccess: newEntity.private._noaccess,
@@ -503,27 +510,32 @@ export async function aggregateEntity (entu, entityId) {
 
   if (!_noaccess?.length) {
     delete newEntity.private._noaccess
-  } else {
+  }
+  else {
     newEntity.private._noaccess = _noaccess
   }
   if (!_viewer?.length) {
     delete newEntity.private._viewer
-  } else {
+  }
+  else {
     newEntity.private._viewer = _viewer
   }
   if (!_expander?.length) {
     delete newEntity.private._expander
-  } else {
+  }
+  else {
     newEntity.private._expander = _expander
   }
   if (!_editor?.length) {
     delete newEntity.private._editor
-  } else {
+  }
+  else {
     newEntity.private._editor = _editor
   }
   if (!_owner?.length) {
     delete newEntity.private._owner
-  } else {
+  }
+  else {
     newEntity.private._owner = _owner
   }
 
@@ -608,7 +620,8 @@ async function propertiesToEntity (entu, properties) {
 
       if (referenceEntity) {
         cleanProp = { ...cleanProp, property_type: prop.type, string: referenceEntity.private?.name?.at(0).string, entity_type: referenceEntity.private?._type?.at(0).string }
-      } else {
+      }
+      else {
         cleanProp = { ...cleanProp, property_type: prop.type, noReference: true }
         // console.log(`NO_REFERENCE ${entu.account} ${prop.reference.toString()}`)
       }
@@ -616,7 +629,8 @@ async function propertiesToEntity (entu, properties) {
       if (!prop.type.startsWith('_')) {
         if (entity.private._reference) {
           entity.private._reference = [...entity.private._reference, cleanProp]
-        } else {
+        }
+        else {
           entity.private._reference = [cleanProp]
         }
       }
@@ -690,14 +704,15 @@ async function formulaField (entu, str, entityId) {
     }]
   }
 
-  const strParts = str.split('.').filter(x => x !== undefined)
+  const strParts = str.split('.').filter((x) => x !== undefined)
   const [fieldRef, fieldType, fieldProperty] = strParts
 
   let result
 
   if (strParts.length === 1 && str === '_id') { // same entity _id
     result = [{ _id: entityId }]
-  } else if (strParts.length === 1 && str !== '_id') { // same entity property
+  }
+  else if (strParts.length === 1 && str !== '_id') { // same entity property
     result = await entu.db.collection('property').find({
       entity: entityId,
       type: str,
@@ -705,20 +720,23 @@ async function formulaField (entu, str, entityId) {
     }, {
       projection: { _id: true, entity: false, type: false, created: false }
     }).toArray()
-  } else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty === '_id') { // childs _id
+  }
+  else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty === '_id') { // childs _id
     result = await entu.db.collection('entity').find({
       'private._parent.reference': entityId
     }, {
       projection: { _id: true }
     }).toArray()
-  } else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty === '_id') { // childs (with type) property
+  }
+  else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty === '_id') { // childs (with type) property
     result = await entu.db.collection('entity').find({
       'private._parent.reference': entityId,
       'private._type.string': fieldType
     }, {
       projection: { _id: true }
     }).toArray()
-  } else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty !== '_id') { // childs property
+  }
+  else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty !== '_id') { // childs property
     result = await entu.db.collection('entity').aggregate([{
       $match: {
         'private._parent.reference': entityId
@@ -732,7 +750,8 @@ async function formulaField (entu, str, entityId) {
     }, {
       $replaceWith: '$property'
     }]).toArray()
-  } else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty !== '_id') { // childs (with type) property
+  }
+  else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty !== '_id') { // childs (with type) property
     result = await entu.db.collection('entity').aggregate([{
       $match: {
         'private._parent.reference': entityId,
@@ -747,7 +766,8 @@ async function formulaField (entu, str, entityId) {
     }, {
       $replaceWith: '$property'
     }]).toArray()
-  } else if (strParts.length === 3 && fieldRef !== '_child' && fieldType === '*' && fieldProperty === '_id') { // other reference _id
+  }
+  else if (strParts.length === 3 && fieldRef !== '_child' && fieldType === '*' && fieldProperty === '_id') { // other reference _id
     result = await entu.db.collection('property').aggregate([{
       $match: {
         entity: entityId,
@@ -758,7 +778,8 @@ async function formulaField (entu, str, entityId) {
     }, {
       $project: { _id: '$reference' }
     }]).toArray()
-  } else if (strParts.length === 3 && fieldRef !== '_child' && fieldType !== '*' && fieldProperty === '_id') { // other reference (with type) _id
+  }
+  else if (strParts.length === 3 && fieldRef !== '_child' && fieldType !== '*' && fieldProperty === '_id') { // other reference (with type) _id
     result = await entu.db.collection('property').aggregate([{
       $match: {
         entity: entityId,
@@ -787,7 +808,8 @@ async function formulaField (entu, str, entityId) {
     }, {
       $replaceWith: '$references'
     }]).toArray()
-  } else if (strParts.length === 3 && fieldRef !== '_child' && fieldType === '*' && fieldProperty !== '_id') { // other reference property
+  }
+  else if (strParts.length === 3 && fieldRef !== '_child' && fieldType === '*' && fieldProperty !== '_id') { // other reference property
     result = await entu.db.collection('property').aggregate([{
       $match: {
         entity: entityId,
@@ -821,7 +843,8 @@ async function formulaField (entu, str, entityId) {
     }, {
       $replaceWith: '$property'
     }]).toArray()
-  } else if (strParts.length === 3 && fieldRef !== '_child' && fieldType !== '*' && fieldProperty !== '_id') { // other references(with type) property
+  }
+  else if (strParts.length === 3 && fieldRef !== '_child' && fieldType !== '*' && fieldProperty !== '_id') { // other references(with type) property
     result = await entu.db.collection('property').aggregate([{
       $match: {
         entity: entityId,
@@ -866,7 +889,8 @@ function formulaFunction (data) {
 
   if (['CONCAT', 'CONCAT_WS', 'COUNT', 'SUM', 'SUBTRACT', 'AVERAGE', 'MIN', 'MAX'].includes(func)) {
     return func
-  } else {
+  }
+  else {
     return 'CONCAT'
   }
 }
@@ -874,7 +898,8 @@ function formulaFunction (data) {
 function formulaContent (data, func) {
   if (data.at(-1) === func) {
     return data.slice(0, -1)
-  } else {
+  }
+  else {
     return data
   }
 }
@@ -899,7 +924,7 @@ async function getValueArray (entu, values) {
 
 async function getParentRights (entu, parents) {
   const parentRights = await entu.db.collection('entity').find({
-    _id: { $in: parents.map(x => x.reference) }
+    _id: { $in: parents.map((x) => x.reference) }
   }, {
     projection: {
       _id: false,
@@ -923,35 +948,35 @@ async function getParentRights (entu, parents) {
     _owner: []
   }))
 
-  rights._noaccess = rights._noaccess?.map(x => ({ ...x, inherited: true }))
-  rights._viewer = rights._viewer?.map(x => ({ ...x, inherited: true }))
-  rights._expander = rights._expander?.map(x => ({ ...x, inherited: true }))
-  rights._editor = rights._editor?.map(x => ({ ...x, inherited: true }))
-  rights._owner = rights._owner?.map(x => ({ ...x, inherited: true }))
+  rights._noaccess = rights._noaccess?.map((x) => ({ ...x, inherited: true }))
+  rights._viewer = rights._viewer?.map((x) => ({ ...x, inherited: true }))
+  rights._expander = rights._expander?.map((x) => ({ ...x, inherited: true }))
+  rights._editor = rights._editor?.map((x) => ({ ...x, inherited: true }))
+  rights._owner = rights._owner?.map((x) => ({ ...x, inherited: true }))
 
   return rights
 }
 
 function combineRights (rights) {
-  const directNoaccess = rights._noaccess?.filter(x => x.inherited === undefined)?.map(x => x.reference.toString()) || []
-  const directViewers = rights._viewer?.filter(x => x.inherited === undefined)?.map(x => x.reference.toString()) || []
-  const directExpanders = rights._expander?.filter(x => x.inherited === undefined)?.map(x => x.reference.toString()) || []
-  const directEditors = rights._editor?.filter(x => x.inherited === undefined)?.map(x => x.reference.toString()) || []
-  const directOwners = rights._owner?.filter(x => x.inherited === undefined)?.map(x => x.reference.toString()) || []
+  const directNoaccess = rights._noaccess?.filter((x) => x.inherited === undefined)?.map((x) => x.reference.toString()) || []
+  const directViewers = rights._viewer?.filter((x) => x.inherited === undefined)?.map((x) => x.reference.toString()) || []
+  const directExpanders = rights._expander?.filter((x) => x.inherited === undefined)?.map((x) => x.reference.toString()) || []
+  const directEditors = rights._editor?.filter((x) => x.inherited === undefined)?.map((x) => x.reference.toString()) || []
+  const directOwners = rights._owner?.filter((x) => x.inherited === undefined)?.map((x) => x.reference.toString()) || []
 
-  rights._noaccess = rights._noaccess?.filter(x => x.inherited === undefined || (x.inherited === true && !directNoaccess.includes(x.reference.toString())))
-  rights._viewer = rights._viewer?.filter(x => x.inherited === undefined || (x.inherited === true && !directViewers.includes(x.reference.toString())))
-  rights._expander = rights._expander?.filter(x => x.inherited === undefined || (x.inherited === true && !directExpanders.includes(x.reference.toString())))
-  rights._editor = rights._editor?.filter(x => x.inherited === undefined || (x.inherited === true && !directEditors.includes(x.reference.toString())))
-  rights._owner = rights._owner?.filter(x => x.inherited === undefined || (x.inherited === true && !directOwners.includes(x.reference.toString())))
+  rights._noaccess = rights._noaccess?.filter((x) => x.inherited === undefined || (x.inherited === true && !directNoaccess.includes(x.reference.toString())))
+  rights._viewer = rights._viewer?.filter((x) => x.inherited === undefined || (x.inherited === true && !directViewers.includes(x.reference.toString())))
+  rights._expander = rights._expander?.filter((x) => x.inherited === undefined || (x.inherited === true && !directExpanders.includes(x.reference.toString())))
+  rights._editor = rights._editor?.filter((x) => x.inherited === undefined || (x.inherited === true && !directEditors.includes(x.reference.toString())))
+  rights._owner = rights._owner?.filter((x) => x.inherited === undefined || (x.inherited === true && !directOwners.includes(x.reference.toString())))
 
-  const noRights = rights._noaccess?.map(x => x.reference.toString()) || []
+  const noRights = rights._noaccess?.map((x) => x.reference.toString()) || []
 
   if (noRights.length > 0) {
-    rights._viewer = rights._viewer?.filter(x => !noRights.includes(x.reference.toString()))
-    rights._expander = rights._expander?.filter(x => !noRights.includes(x.reference.toString()))
-    rights._editor = rights._editor?.filter(x => !noRights.includes(x.reference.toString()))
-    rights._owner = rights._owner?.filter(x => !noRights.includes(x.reference.toString()))
+    rights._viewer = rights._viewer?.filter((x) => !noRights.includes(x.reference.toString()))
+    rights._expander = rights._expander?.filter((x) => !noRights.includes(x.reference.toString()))
+    rights._editor = rights._editor?.filter((x) => !noRights.includes(x.reference.toString()))
+    rights._owner = rights._owner?.filter((x) => !noRights.includes(x.reference.toString()))
   }
 
   return rights
@@ -959,7 +984,7 @@ function combineRights (rights) {
 
 function getAccessArray ({ private: entity }) {
   const access = []
-  const noAccess = entity._noaccess?.map(x => x.reference)
+  const noAccess = entity._noaccess?.map((x) => x.reference)
 
   if (entity._sharing?.at(0)?.string) {
     access.push(entity._sharing?.at(0)?.string.toLowerCase())
@@ -975,7 +1000,7 @@ function getAccessArray ({ private: entity }) {
     })
   })
 
-  return uniqBy(access, x => x.toString())
+  return uniqBy(access, (x) => x.toString())
 }
 
 function makeSearchArray (array) {
@@ -984,7 +1009,7 @@ function makeSearchArray (array) {
   const result = []
 
   for (const str of array) {
-    const words = `${str}`.toLowerCase().split(/\s+/).map(x => x.trim()).filter(x => x.length > 0)
+    const words = `${str}`.toLowerCase().split(/\s+/).map((x) => x.trim()).filter((x) => x.length > 0)
 
     for (const word of words) {
       for (let i = 0; i < word.length; i++) {
@@ -1000,7 +1025,7 @@ function makeSearchArray (array) {
 
 function uniqBy (array, keyFn) {
   return array.filter((v, i, a) =>
-    a.findIndex(t => keyFn(t) === keyFn(v)) === i
+    a.findIndex((t) => keyFn(t) === keyFn(v)) === i
   )
 }
 
@@ -1008,8 +1033,8 @@ async function startRelativeAggregation (entu, entity, newEntity) {
   let notEqual = false
   const rights = ['_noaccess', '_viewer', '_expander', '_editor', '_owner']
 
-  const oldName = entity.private?.name?.map(x => x.string || '') || []
-  const newName = newEntity.private?.name?.map(x => x.string || '') || []
+  const oldName = entity.private?.name?.map((x) => x.string || '') || []
+  const newName = newEntity.private?.name?.map((x) => x.string || '') || []
 
   oldName.sort()
   newName.sort()
@@ -1017,8 +1042,8 @@ async function startRelativeAggregation (entu, entity, newEntity) {
   notEqual = notEqual || oldName.join('') !== newName.join('')
 
   rights.forEach((type) => {
-    const oldRights = entity.private?.[type]?.map(x => x.reference?.toString()) || []
-    const newRights = newEntity.private?.[type]?.map(x => x.reference?.toString()) || []
+    const oldRights = entity.private?.[type]?.map((x) => x.reference?.toString()) || []
+    const newRights = newEntity.private?.[type]?.map((x) => x.reference?.toString()) || []
 
     oldRights.sort()
     newRights.sort()
@@ -1051,7 +1076,8 @@ async function getNextCounterValue (entu, property) {
       const number = parseInt(match.at(0), 10)
       return { string: property.string.replace(regex, number), number }
     }
-  } else {
+  }
+  else {
     const lastProperty = await entu.db.collection('property')
       .find({ type: property.type, deleted: { $exists: false } })
       .sort({ number: -1, _id: -1 })
@@ -1068,7 +1094,8 @@ async function getNextCounterValue (entu, property) {
     if (match) {
       const number = parseInt(match.at(0), 10) + add
       return { string: str.replace(regex, number), number }
-    } else {
+    }
+    else {
       return { string: `${str}${add}`, number: add }
     }
   }

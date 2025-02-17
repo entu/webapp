@@ -14,7 +14,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="relative h-full flex flex-col justify-center items-center">
+  <div class="relative flex h-full flex-col items-center justify-center">
     <n-button
       secondary
       size="large"
@@ -28,7 +28,7 @@ onMounted(async () => {
       {{ t('new') }}
     </n-button>
 
-    <div class="absolute bottom-0 right-0 left-0 text-sm text-center text-gray-500">
+    <div class="absolute inset-x-0 bottom-0 text-center text-sm text-gray-500">
       <a
         target="_blank"
         :href="t('termsUrl')"

@@ -15,7 +15,7 @@ const props = defineProps({
   edit: { type: Boolean, default: false }
 })
 
-const visibleProperties = computed(() => props.edit ? props.properties : props.properties.filter(x => x.mandatory || x.values))
+const visibleProperties = computed(() => props.edit ? props.properties : props.properties.filter((x) => x.mandatory || x.values))
 </script>
 
 <template>
@@ -23,11 +23,11 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
     <div
       v-for="property in visibleProperties"
       :key="property.name"
-      class="grid grid-cols-3 gap-3 border-t first-of-type:border-t-0 border-gray-100"
+      class="grid grid-cols-3 gap-3 border-t border-gray-100 first-of-type:border-t-0"
     >
       <div
-        class="py-2 flex items-top justify-end gap-1 text-right text-[#1E434C] font-medium"
-        :class="{ 'text-red-700' : property.mandatory && (edit || !property.values) }"
+        class="items-top flex justify-end gap-1 py-2 text-right font-medium text-[#1E434C]"
+        :class="{ 'text-red-700': property.mandatory && (edit || !property.values) }"
       >
         {{
           property.values && property.values.length > 1
@@ -46,7 +46,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
             <template #trigger>
               <my-icon
                 icon="info"
-                class="text-sm text-blue-600 cursor-help"
+                class="cursor-help text-sm text-blue-600"
               />
             </template>
 
@@ -66,7 +66,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
             <template #trigger>
               <my-icon
                 icon="sharing/public"
-                class="text-sm text-orange-400 float-right cursor-help"
+                class="float-right cursor-help text-sm text-orange-400"
               />
             </template>
 

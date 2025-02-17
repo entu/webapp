@@ -8,10 +8,10 @@ export const useMenueStore = defineStore('menu', () => {
 
   const menuEntities = computed(() => menuResult.value?.entities || [])
 
-  const addFromEntities = computed(() => addFromResult.value?.entities?.map(x => ({
+  const addFromEntities = computed(() => addFromResult.value?.entities?.map((x) => ({
     value: x._id,
     label: getValue(x.label) || getValue(x.name),
-    addFrom: x.add_from?.map(x => x.reference)
+    addFrom: x.add_from?.map((x) => x.reference)
   })) || [])
 
   async function get () {
@@ -43,7 +43,7 @@ export const useMenueStore = defineStore('menu', () => {
     })
 
     menuResult.value.entities?.forEach((entity) => {
-      entity.addFrom = addFromEntities.value?.filter(x => x.addFrom?.includes(entity._id))
+      entity.addFrom = addFromEntities.value?.filter((x) => x.addFrom?.includes(entity._id))
     })
   }
 
@@ -52,7 +52,7 @@ export const useMenueStore = defineStore('menu', () => {
   watch([() => route.query, menuResult], () => {
     const query = window.location.search.substring(1)
 
-    activeMenu.value = query ? menuEntities.value?.find(x => window.location.search.substring(1).startsWith(getValue(x.query))) : undefined
+    activeMenu.value = query ? menuEntities.value?.find((x) => window.location.search.substring(1).startsWith(getValue(x.query))) : undefined
   }, { immediate: true })
 
   return {

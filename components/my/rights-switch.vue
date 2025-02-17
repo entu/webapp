@@ -26,7 +26,7 @@ const rights = ref([
 
 <template>
   <div class="mb-4 flex items-center justify-between gap-2">
-    <div class="grow truncate whitespace-nowrap overflow-hidden">
+    <div class="grow overflow-hidden truncate whitespace-nowrap">
       <nuxt-link
         class="link"
         :to="to"

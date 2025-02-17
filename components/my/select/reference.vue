@@ -20,13 +20,14 @@ const searchingReferences = ref(false)
 
 const referenceOptions = computed(() => {
   if (rawReferences.value) {
-    return rawReferences.value?.filter(x => !props.exclude?.includes(x._id))?.map(x => ({
+    return rawReferences.value?.filter((x) => !props.exclude?.includes(x._id))?.map((x) => ({
       class: '!pr-2',
       label: getValue(x.name) || x._id,
       type: getValue(x._type),
       value: x._id
     })) || []
-  } else {
+  }
+  else {
     return props.options
   }
 })

@@ -39,7 +39,7 @@ const title = computed(() => {
 
 const entityType = computed(() => entityTypes.value?.[typeId.value] || {})
 
-const plugins = computed(() => entityType.value?.plugins?.filter(x => x.type === (entityId.value ? 'entity-edit' : 'entity-add')).map((x) => {
+const plugins = computed(() => entityType.value?.plugins?.filter((x) => x.type === (entityId.value ? 'entity-edit' : 'entity-add')).map((x) => {
   const url = new URL(x.url)
 
   url.searchParams.append('account', accountId.value)
@@ -68,15 +68,16 @@ const entity = computed(() => {
     _id: rawEntity.value?._id,
     name: getValue(rawEntity.value?.name),
     type: entityType.value?.type || {},
-    props: entityTypes.value[typeId.value]?.props.map(x => ({ ...x, values: [] })) || []
+    props: entityTypes.value[typeId.value]?.props.map((x) => ({ ...x, values: [] })) || []
   }
 
   for (const property in rawEntity.value) {
-    const existingProperty = result.props.find(x => x.name === property)
+    const existingProperty = result.props.find((x) => x.name === property)
 
     if (existingProperty) {
       existingProperty.values = rawEntity.value[property]
-    } else {
+    }
+    else {
       result.props.push({ name: property, values: rawEntity.value[property] })
     }
   }
@@ -190,7 +191,7 @@ async function onDelete () {
       :type="plugins?.length ? 'line' : 'bar'"
     >
       <n-tab-pane
-        class="size-full pt-0 overflow-auto"
+        class="size-full overflow-auto pt-0"
         display-directive="show:lazy"
         name="default"
         :tab="t('defaultPlugin')"
@@ -198,11 +199,11 @@ async function onDelete () {
         <div
           v-for="pg in properties"
           :key="pg.name"
-          class="py-4 px-6"
+          class="px-6 py-4"
         >
           <h2
             v-if="pg.name"
-            class="pt-6 px-1 text-center text-gray-500 font-bold uppercase"
+            class="px-1 pt-6 text-center font-bold uppercase text-gray-500"
           >
             {{ pg.name }}
           </h2>

@@ -34,8 +34,8 @@ onKeyStroke('Escape', () => emit('close'))
       header-class="w-full"
     >
       <template #header>
-        <div class="w-full flex items-center justify-between">
-          <h2 class="truncate whitespace-nowrap overflow-hidden">
+        <div class="flex w-full items-center justify-between">
+          <h2 class="overflow-hidden truncate whitespace-nowrap">
             {{ title }}
           </h2>
 
@@ -49,7 +49,7 @@ onKeyStroke('Escape', () => emit('close'))
 
       <n-spin
         :show="isLoading"
-        class="max-w-full max-h-full h-full"
+        class="h-full max-h-full max-w-full"
         content-class="size-full"
       >
         <div class="size-full">
@@ -58,7 +58,7 @@ onKeyStroke('Escape', () => emit('close'))
       </n-spin>
 
       <template #footer>
-        <div class="w-full flex items-center justify-between">
+        <div class="flex w-full items-center justify-between">
           <slot name="footer" />
 
           <div class="grow" />

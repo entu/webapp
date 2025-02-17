@@ -36,7 +36,7 @@ async function loadEntity () {
     const parentId = rawEntity.value._parent[i].reference
     const parentEntity = await apiGetEntity(parentId, ['_expander'])
 
-    if (parentEntity?._expander?.some(x => x.reference === userId.value)) {
+    if (parentEntity?._expander?.some((x) => x.reference === userId.value)) {
       canRemoveParents.value.push(parentId)
     }
   }
@@ -85,14 +85,14 @@ async function onClose () {
     :width="500"
     @close="onClose()"
   >
-    <div class="py-4 px-6">
+    <div class="px-6 py-4">
       <div
         v-for="parent in parents"
         :key="parent._id"
         class="mb-2 flex items-center justify-between gap-2"
       >
         <nuxt-link
-          class="link truncate whitespace-nowrap overflow-hidden"
+          class="link overflow-hidden truncate whitespace-nowrap"
           :to="{ path: `/${accountId}/${parent.reference}`, query }"
         >
           {{ parent.string || parent.reference }}

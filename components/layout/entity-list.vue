@@ -56,7 +56,7 @@ watch(() => route.query, () => {
 }, { deep: true, immediate: true })
 
 watch(() => route.params.entityId, (value) => {
-  scrollIdx.value = entitiesList.value.findIndex(x => x._id === value) || 0
+  scrollIdx.value = entitiesList.value.findIndex((x) => x._id === value) || 0
 })
 
 watchDebounced(searchText, async (value) => {
@@ -88,11 +88,11 @@ async function getEntities () {
     skip: skip.value
   })
 
-  entitiesList.value = [...entitiesList.value, ...entities.map(e => ({ ...e, color: color() }))]
+  entitiesList.value = [...entitiesList.value, ...entities.map((e) => ({ ...e, color: color() }))]
   entitiesCount.value = count
   skip.value += limit.value
 
-  scrollIdx.value = entitiesList.value.findIndex(x => x._id === route.params.entityId) || 0
+  scrollIdx.value = entitiesList.value.findIndex((x) => x._id === route.params.entityId) || 0
 
   isLoading.value = false
 }
@@ -107,11 +107,11 @@ function color () {
 </script>
 
 <template>
-  <div class="h-full flex flex-col print:hidden">
-    <div class="h-12 ml-3 flex items-center gap-3">
+  <div class="flex h-full flex-col print:hidden">
+    <div class="ml-3 flex h-12 items-center gap-3">
       <label
         for="search"
-        class="w-8 h-7 flex items-center justify-center"
+        class="flex h-7 w-8 items-center justify-center"
       >
         <my-icon
           class="text-gray-400"
@@ -121,14 +121,14 @@ function color () {
       <input
         id="search"
         v-model="searchText"
-        class="w-full py-3 pr-3 bg-transparent placeholder:italic placeholder:text-gray-400 focus:outline-none"
+        class="w-full bg-transparent py-3 pr-3 placeholder:italic placeholder:text-gray-400 focus:outline-none"
         :placeholder="t('search')"
       >
     </div>
 
     <div
       ref="listElement"
-      class="w-full max-h-full py-1 relative overflow-y-auto"
+      class="relative max-h-full w-full overflow-y-auto py-1"
     >
       <nuxt-link
         v-for="(entity, idx) in entitiesList"
@@ -136,7 +136,7 @@ function color () {
         class="list-item"
         :class="{
           'font-bold ': idx === scrollIdx,
-          'active': entity._id === route.params.entityId
+          'active': entity._id === route.params.entityId,
         }"
         :to="{ path: `/${accountId}/${entity._id}`, query: route.query }"
       >
@@ -162,14 +162,14 @@ function color () {
 
     <div
       v-if="isLoading && !isLoadingOnScroll"
-      class="size-full flex items-center justify-center"
+      class="flex size-full items-center justify-center"
     >
       <n-spin />
     </div>
 
     <n-spin
       v-if="entitiesCount > 0"
-      class="py-1 sticky bottom-0 text-center text-gray-400 italic bg-white"
+      class="sticky bottom-0 bg-white py-1 text-center italic text-gray-400"
       size="small"
       :show="isLoading"
     >
@@ -178,7 +178,7 @@ function color () {
 
     <div
       v-if="entitiesCount === 0"
-      class="size-full flex items-center justify-center"
+      class="flex size-full items-center justify-center"
     >
       <n-empty :description="t('noResults')" />
     </div>

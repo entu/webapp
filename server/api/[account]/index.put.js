@@ -130,7 +130,7 @@ export default defineEventHandler(async (event) => {
     'private._parent.reference': { $exists: false }
   }, { projection: { _id: true }, sort: { _id: 1 } }).toArray()
 
-  await Promise.all(noParents.map(x =>
+  await Promise.all(noParents.map((x) =>
     setEntity(entu, x._id, [
       { type: '_parent', reference: newDatabaseId }
     ])
@@ -148,7 +148,7 @@ export default defineEventHandler(async (event) => {
     }]
   }, { projection: { _id: true }, sort: { _id: 1 } }).toArray()
 
-  await Promise.all(noRights.map(x =>
+  await Promise.all(noRights.map((x) =>
     setEntity(entu, x._id, [
       { type: '_owner', reference: newPersonId }
     ])
@@ -160,12 +160,12 @@ export default defineEventHandler(async (event) => {
   await entu.db.collection('property').deleteMany({
     $and: [
       { reference: { $exists: true } },
-      { reference: { $nin: allEntities.map(x => x._id) } }
+      { reference: { $nin: allEntities.map((x) => x._id) } }
     ]
   })
 
   // Aggregate all entities
-  await Promise.all(allEntities.map(x =>
+  await Promise.all(allEntities.map((x) =>
     aggregateEntity(entu, x._id)
   ))
 
@@ -177,11 +177,11 @@ export default defineEventHandler(async (event) => {
 
 async function newDatabase (name) {
   if (
-    typeof name !== 'string' ||
-    name.length < 4 ||
-    name.length > 12 ||
-    reservedDatabases.includes(name) ||
-    name.startsWith('entu_')
+    typeof name !== 'string'
+    || name.length < 4
+    || name.length > 12
+    || reservedDatabases.includes(name)
+    || name.startsWith('entu_')
   ) {
     throw createError({
       statusCode: 400,
@@ -192,7 +192,7 @@ async function newDatabase (name) {
   const newDb = await connectDb(name, true)
   const { databases } = await newDb.admin().listDatabases()
 
-  if (databases.some(db => db.name === name)) {
+  if (databases.some((db) => db.name === name)) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Invalid database name'
@@ -243,12 +243,12 @@ async function getTypes (types = []) {
     'private.name.string': {
       $in: [
         ...defaultTypes,
-        ...optionalTypes.filter(x => types.includes(x))
+        ...optionalTypes.filter((x) => types.includes(x))
       ]
     }
   }, { projection: { _id: true } }).toArray()
 
-  const result = await Promise.all(entities.map(x =>
+  const result = await Promise.all(entities.map((x) =>
     getEntity(templateDb, x._id, ['_parent'])
   ))
 
@@ -258,8 +258,8 @@ async function getTypes (types = []) {
 async function getMenus (types = []) {
   const typesFilter = [
     ...defaultTypes,
-    ...optionalTypes.filter(x => types.includes(x))
-  ].map(x => ({ 'private.query.string': { $regex: `.*_type.string=${x}.*` } }))
+    ...optionalTypes.filter((x) => types.includes(x))
+  ].map((x) => ({ 'private.query.string': { $regex: `.*_type.string=${x}.*` } }))
 
   typesFilter.push({ 'private.query.string': { $regex: '.*/billing.*' } })
 
@@ -269,7 +269,7 @@ async function getMenus (types = []) {
     $or: typesFilter
   }, { projection: { _id: true } }).toArray()
 
-  const result = await Promise.all(entities.map(x =>
+  const result = await Promise.all(entities.map((x) =>
     getEntity(templateDb, x._id, ['_parent'])
   ))
 
@@ -282,7 +282,7 @@ async function getPlugins () {
     'private._type.string': 'plugin'
   }, { projection: { _id: true } }).toArray()
 
-  const result = await Promise.all(entities.map(x =>
+  const result = await Promise.all(entities.map((x) =>
     getEntity(templateDb, x._id, ['_parent'])
   ))
 
@@ -341,7 +341,7 @@ async function getChilds (db, _id) {
     }
   }, { projection: { _id: true } }).toArray()
 
-  return await Promise.all(childs.map(child =>
+  return await Promise.all(childs.map((child) =>
     getEntity(db, child._id)
   ))
 }
@@ -353,7 +353,7 @@ async function createEntities (entu, entities) {
 
     const { insertedId } = await entu.db.collection('entity').insertOne({ oid: entity._id })
 
-    const properties = entity.properties.map(property => ({
+    const properties = entity.properties.map((property) => ({
       entity: insertedId,
       ...property,
       created: {
@@ -367,7 +367,7 @@ async function createEntities (entu, entities) {
   const allEntities = await entu.db.collection('entity').find({}, { sort: { _id: 1 } }).toArray()
 
   // Update old references to new references
-  await Promise.all(allEntities.map(x =>
+  await Promise.all(allEntities.map((x) =>
     entu.db.collection('property').updateMany(
       { reference: x.oid },
       { $set: { reference: x._id } }
@@ -375,12 +375,12 @@ async function createEntities (entu, entities) {
   ))
 
   // Aggregate all entities
-  await Promise.all(allEntities.map(x =>
+  await Promise.all(allEntities.map((x) =>
     aggregateEntity(entu, x._id)
   ))
 
   // Aggregate all entities again
-  await Promise.all(allEntities.map(x =>
+  await Promise.all(allEntities.map((x) =>
     aggregateEntity(entu, x._id)
   ))
 }

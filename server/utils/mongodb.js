@@ -22,7 +22,7 @@ export async function connectDb (dbName, isNew) {
   }
 
   const dbs = await dbConnection.db().admin().listDatabases()
-  const dbNames = dbs.databases.map(db => db.name)
+  const dbNames = dbs.databases.map((db) => db.name)
 
   if (mongoDbSystemDbs.includes(dbName)) {
     console.log(`Database "${dbName}" is a system database`)

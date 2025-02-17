@@ -28,13 +28,13 @@ function showYaml (value) {
     :title="t('title')"
     @close="emit('close')"
   >
-    <n-collapse class="py-4 px-6">
+    <n-collapse class="px-6 py-4">
       <n-collapse-item
         name="entity"
         :title="t('entity')"
       >
         <div
-          class="p-2 text-xs whitespace-pre font-mono rounded-md bg-slate-50"
+          class="whitespace-pre rounded-md bg-slate-50 p-2 font-mono text-xs"
           v-html="showYaml(entity)"
         />
       </n-collapse-item>
@@ -44,7 +44,7 @@ function showYaml (value) {
         :title="t('properties')"
       >
         <div
-          class="p-2 text-xs whitespace-pre font-mono rounded-md bg-slate-50"
+          class="whitespace-pre rounded-md bg-slate-50 p-2 font-mono text-xs"
           v-html="showYaml(properties)"
         />
       </n-collapse-item>
@@ -54,7 +54,7 @@ function showYaml (value) {
         :title="t('rawEntity')"
       >
         <div
-          class="p-2 text-xs whitespace-pre font-mono rounded-md bg-slate-50"
+          class="whitespace-pre rounded-md bg-slate-50 p-2 font-mono text-xs"
           v-html="showYaml(rawEntity)"
         />
       </n-collapse-item>

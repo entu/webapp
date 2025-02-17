@@ -24,32 +24,32 @@ watch(entityId, loadEntity, { immediate: true })
 const entityName = computed(() => getValue(rawEntity.value?.name))
 
 const entityRights = computed(() => {
-  const owners = rawEntity.value?._owner?.map(x => x._id) || []
-  const editors = rawEntity.value?._editor?.map(x => x._id).filter(x => !owners.includes(x)) || []
-  const expanders = rawEntity.value?._expander?.map(x => x._id).filter(x => !owners.includes(x) && !editors.includes(x)) || []
-  const viewers = rawEntity.value?._viewer?.map(x => x._id).filter(x => !owners.includes(x) && !editors.includes(x) && !expanders.includes(x)) || []
-  const noaccess = rawEntity.value?._noaccess?.map(x => x._id) || []
+  const owners = rawEntity.value?._owner?.map((x) => x._id) || []
+  const editors = rawEntity.value?._editor?.map((x) => x._id).filter((x) => !owners.includes(x)) || []
+  const expanders = rawEntity.value?._expander?.map((x) => x._id).filter((x) => !owners.includes(x) && !editors.includes(x)) || []
+  const viewers = rawEntity.value?._viewer?.map((x) => x._id).filter((x) => !owners.includes(x) && !editors.includes(x) && !expanders.includes(x)) || []
+  const noaccess = rawEntity.value?._noaccess?.map((x) => x._id) || []
 
   return [
-    ...rawEntity.value?._noaccess?.filter(x => noaccess.includes(x._id)).map(x => ({ ...x, type: 'noaccess' })) || [],
-    ...rawEntity.value?._viewer?.filter(x => viewers.includes(x._id)).map(x => ({ ...x, type: 'viewer' })) || [],
-    ...rawEntity.value?._expander?.filter(x => expanders.includes(x._id)).map(x => ({ ...x, type: 'expander' })) || [],
-    ...rawEntity.value?._editor?.filter(x => editors.includes(x._id)).map(x => ({ ...x, type: 'editor' })) || [],
-    ...rawEntity.value?._owner?.filter(x => owners.includes(x._id)).map(x => ({ ...x, type: 'owner' })) || []
-  ].filter(x => !x.inherited).sort((a, b) => a.string?.localeCompare(b.string))
+    ...rawEntity.value?._noaccess?.filter((x) => noaccess.includes(x._id)).map((x) => ({ ...x, type: 'noaccess' })) || [],
+    ...rawEntity.value?._viewer?.filter((x) => viewers.includes(x._id)).map((x) => ({ ...x, type: 'viewer' })) || [],
+    ...rawEntity.value?._expander?.filter((x) => expanders.includes(x._id)).map((x) => ({ ...x, type: 'expander' })) || [],
+    ...rawEntity.value?._editor?.filter((x) => editors.includes(x._id)).map((x) => ({ ...x, type: 'editor' })) || [],
+    ...rawEntity.value?._owner?.filter((x) => owners.includes(x._id)).map((x) => ({ ...x, type: 'owner' })) || []
+  ].filter((x) => !x.inherited).sort((a, b) => a.string?.localeCompare(b.string))
 })
 
 const inheritedRights = computed(() => {
-  const owners = rawEntity.value?._parent_owner?.map(x => x._id) || []
-  const editors = rawEntity.value?._parent_editor?.map(x => x._id).filter(x => !owners.includes(x)) || []
-  const expanders = rawEntity.value?._parent_expander?.map(x => x._id).filter(x => !owners.includes(x) && !editors.includes(x)) || []
-  const viewers = rawEntity.value?._parent_viewer?.map(x => x._id).filter(x => !owners.includes(x) && !editors.includes(x) && !expanders.includes(x)) || []
+  const owners = rawEntity.value?._parent_owner?.map((x) => x._id) || []
+  const editors = rawEntity.value?._parent_editor?.map((x) => x._id).filter((x) => !owners.includes(x)) || []
+  const expanders = rawEntity.value?._parent_expander?.map((x) => x._id).filter((x) => !owners.includes(x) && !editors.includes(x)) || []
+  const viewers = rawEntity.value?._parent_viewer?.map((x) => x._id).filter((x) => !owners.includes(x) && !editors.includes(x) && !expanders.includes(x)) || []
 
   return [
-    ...rawEntity.value?._parent_viewer?.filter(x => viewers.includes(x._id)).map(x => ({ ...x, type: 'viewer' })) || [],
-    ...rawEntity.value?._parent_expander?.filter(x => expanders.includes(x._id)).map(x => ({ ...x, type: 'expander' })) || [],
-    ...rawEntity.value?._parent_editor?.filter(x => editors.includes(x._id)).map(x => ({ ...x, type: 'editor' })) || [],
-    ...rawEntity.value?._parent_owner?.filter(x => owners.includes(x._id)).map(x => ({ ...x, type: 'owner' })) || []
+    ...rawEntity.value?._parent_viewer?.filter((x) => viewers.includes(x._id)).map((x) => ({ ...x, type: 'viewer' })) || [],
+    ...rawEntity.value?._parent_expander?.filter((x) => expanders.includes(x._id)).map((x) => ({ ...x, type: 'expander' })) || [],
+    ...rawEntity.value?._parent_editor?.filter((x) => editors.includes(x._id)).map((x) => ({ ...x, type: 'editor' })) || [],
+    ...rawEntity.value?._parent_owner?.filter((x) => owners.includes(x._id)).map((x) => ({ ...x, type: 'owner' })) || []
   ].sort((a, b) => a.string?.localeCompare(b.string))
 })
 
@@ -89,10 +89,11 @@ async function updateSharing (value) {
       { _id: propertyId, type: '_sharing', string: value }
     ])
 
-    const { _id } = entity.properties.find(x => x.type === '_sharing')
+    const { _id } = entity.properties.find((x) => x.type === '_sharing')
 
     rawEntity.value._sharing = [{ _id, string: value }]
-  } else {
+  }
+  else {
     await apiDeleteProperty(propertyId)
 
     delete rawEntity.value._sharing
@@ -111,10 +112,11 @@ async function updateInheritRights (value) {
       { _id: propertyId, type: '_inheritrights', boolean: value }
     ])
 
-    const { _id } = entity.properties.find(x => x.type === '_inheritrights')
+    const { _id } = entity.properties.find((x) => x.type === '_inheritrights')
 
     rawEntity.value._inheritrights = [{ _id, boolean: true }]
-  } else {
+  }
+  else {
     await apiDeleteProperty(propertyId)
 
     delete rawEntity.value._inheritrights
@@ -145,7 +147,8 @@ async function onEditRight (_id, reference, right) {
     await apiUpsertEntity(entityId.value, [
       { _id, type: `_${right}`, reference }
     ])
-  } else {
+  }
+  else {
     await apiDeleteProperty(_id)
   }
 
@@ -170,8 +173,8 @@ async function onClose () {
     :width="600"
     @close="onClose()"
   >
-    <div class="py-4 px-6 flex flex-col gap-12">
-      <div class="w-full mt-4 flex flex-col justify-center items-center gap-4">
+    <div class="flex flex-col gap-12 px-6 py-4">
+      <div class="mt-4 flex w-full flex-col items-center justify-center gap-4">
         <n-radio-group
           v-model:value="sharing"
           name="sharing"
@@ -183,7 +186,7 @@ async function onClose () {
             size="large"
             :label="t('sharingPrivate')"
           />
-          <div class="ml-7 mb-6 text-gray-500">
+          <div class="mb-6 ml-7 text-gray-500">
             {{ t('sharingPrivateDescription') }}
           </div>
 
@@ -193,7 +196,7 @@ async function onClose () {
             size="large"
             :label="t('sharingDomain')"
           />
-          <div class="ml-7 mb-6 text-gray-500">
+          <div class="mb-6 ml-7 text-gray-500">
             {{ t('sharingDomainDescription') }}
           </div>
 
@@ -203,7 +206,7 @@ async function onClose () {
             size="large"
             :label="t('sharingPublic')"
           />
-          <div class="ml-7 mb-6 text-gray-500">
+          <div class="mb-6 ml-7 text-gray-500">
             {{ t('sharingPublicDescription') }}
           </div>
         </n-radio-group>

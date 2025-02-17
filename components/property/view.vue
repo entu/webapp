@@ -10,7 +10,7 @@ const { query } = useRoute()
 const { locale, d } = useI18n()
 const { accountId } = useAccount()
 
-const localeValues = computed(() => props.values.filter(x => !x.language || x.language === locale.value))
+const localeValues = computed(() => props.values.filter((x) => !x.language || x.language === locale.value))
 </script>
 
 <template>

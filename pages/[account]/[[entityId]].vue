@@ -39,11 +39,12 @@ const entity = computed(() => {
   for (const property in rawEntity.value) {
     if (['_id', '_thumbnail'].includes(property)) continue
 
-    const existingProperty = result.props.find(x => x.name === property)
+    const existingProperty = result.props.find((x) => x.name === property)
 
     if (existingProperty) {
       existingProperty.values = rawEntity.value[property]
-    } else {
+    }
+    else {
       result.props.push({ name: property, values: rawEntity.value[property] })
     }
   }
@@ -88,14 +89,14 @@ const properties = computed(() => {
 })
 
 const childs = computed(() => [
-  ...rawChilds.value.map(x => ({
+  ...rawChilds.value.map((x) => ({
     _id: x._id,
     type: 'child',
     label: getValue(x.label_plural) || getValue(x.label) || getValue(x.name),
     count: t('childsCount', x._count),
     referenceField: '_parent.reference'
   })),
-  ...rawReferences.value.map(x => ({
+  ...rawReferences.value.map((x) => ({
     _id: x._id,
     type: 'reference',
     label: getValue(x.label_plural) || getValue(x.label) || getValue(x.name),
@@ -105,10 +106,10 @@ const childs = computed(() => [
 ].sort((a, b) => `${a.type} - ${a.label}`.localeCompare(`${b.type} - ${b.label}`)))
 
 const right = computed(() => ({
-  owner: rawEntity.value?._owner?.some(x => x.reference === userId.value) || false,
-  editor: rawEntity.value?._editor?.some(x => x.reference === userId.value) || false,
-  expander: rawEntity.value?._expander?.some(x => x.reference === userId.value) || false,
-  viewer: rawEntity.value?._viewer?.some(x => x.reference === userId.value) || false
+  owner: rawEntity.value?._owner?.some((x) => x.reference === userId.value) || false,
+  editor: rawEntity.value?._editor?.some((x) => x.reference === userId.value) || false,
+  expander: rawEntity.value?._expander?.some((x) => x.reference === userId.value) || false,
+  viewer: rawEntity.value?._viewer?.some((x) => x.reference === userId.value) || false
 }))
 
 const drawerType = computed(() => route.hash.replace('#', '').split('-').at(0))
@@ -118,7 +119,8 @@ const addTypeId = computed(() => route.hash.split('-').at(1))
 watch(() => entity?.value?.name, (value) => {
   if (value) {
     useHead({ title: `${value} · ${accountId.value}` })
-  } else {
+  }
+  else {
     useHead({ title: accountId.value })
   }
 }, { immediate: true })
@@ -189,7 +191,8 @@ async function loadReferences () {
 async function onDrawerClose () {
   if (newEntityId.value) {
     await navigateTo({ path: `/${accountId.value}/${newEntityId.value}`, query: route.query, hash: undefined }, { replace: true })
-  } else {
+  }
+  else {
     await navigateTo({ path: route.path, query: route.query, hash: undefined }, { replace: true })
 
     loadEntity()
@@ -203,7 +206,8 @@ onMounted(async () => {
     loadEntity()
     loadChilds()
     loadReferences()
-  } else if (userId.value && !isQuery.value) {
+  }
+  else if (userId.value && !isQuery.value) {
     stats.value = await apiRequest()
   }
 
@@ -212,7 +216,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="relative h-full flex flex-col">
+  <div class="relative flex h-full flex-col">
     <entity-toolbar
       :entity-id="entityId"
       :right="right"
@@ -223,18 +227,18 @@ onMounted(async () => {
     <transition>
       <div
         v-if="rawEntity"
-        class="px-2 pb-20 flex flex-col overflow-y-auto overflow-hidden"
+        class="flex flex-col overflow-hidden overflow-y-auto px-2 pb-20"
       >
         <div
           v-if="rawEntity?._parent"
-          class="py-4 border-b border-gray-300"
+          class="border-b border-gray-300 py-4"
         >
           <entity-parent-list :parents="rawEntity._parent" />
         </div>
 
-        <div class="pt-5 pr-5 flex gap-5">
+        <div class="flex gap-5 pr-5 pt-5">
           <div class="grow">
-            <h1 class="mb-4 pl-5 text-2xl text-[#1E434C] font-bold">
+            <h1 class="mb-4 pl-5 text-2xl font-bold text-[#1E434C]">
               {{ entity.name?.trim() || entity._id }}
             </h1>
 
@@ -244,7 +248,7 @@ onMounted(async () => {
             >
               <h2
                 v-if="pg.name"
-                class="pt-6 px-1 text-center text-gray-500 font-bold uppercase"
+                class="px-1 pt-6 text-center font-bold uppercase text-gray-500"
               >
                 {{ pg.name }}
               </h2>
@@ -259,7 +263,7 @@ onMounted(async () => {
 
           <div
             v-if="userId || entity._thumbnail"
-            class="min-w-[8rem] flex flex-col gap-3"
+            class="flex min-w-32 flex-col gap-3"
           >
             <entity-thumbnail
               v-if="entity._thumbnail"
@@ -271,7 +275,7 @@ onMounted(async () => {
             <template v-if="userId">
               <nuxt-link
                 v-if="entity.type.label"
-                class="py-1 px-2 text-xs text-center bg-slate-50 border rounded-md border-slate-300 hover:bg-slate-200"
+                class="rounded-md border border-slate-300 bg-slate-50 px-2 py-1 text-center text-xs hover:bg-slate-200"
                 :to="{ path: `/${accountId}/${entity.type._id}`, query: route.query }"
               >
                 {{ entity.type.label }}
@@ -284,7 +288,7 @@ onMounted(async () => {
               >
                 <template #trigger>
                   <nuxt-link
-                    class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-green-600 bg-green-50 border rounded-md border-green-300"
+                    class="flex items-center justify-center gap-1 rounded-md border border-green-300 bg-green-50 px-2 py-1 text-center text-xs text-green-600"
                     :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
                   >
                     <my-icon icon="sharing/private" />
@@ -304,7 +308,7 @@ onMounted(async () => {
               >
                 <template #trigger>
                   <nuxt-link
-                    class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-yellow-600 bg-yellow-50 border rounded-md border-yellow-300"
+                    class="flex items-center justify-center gap-1 rounded-md border border-yellow-300 bg-yellow-50 px-2 py-1 text-center text-xs text-yellow-600"
                     :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
                   >
                     <my-icon icon="sharing/domain" />
@@ -324,7 +328,7 @@ onMounted(async () => {
               >
                 <template #trigger>
                   <nuxt-link
-                    class="py-1 px-2 flex items-center justify-center gap-1 text-xs text-center text-orange-600 bg-orange-50 border rounded-md border-orange-300"
+                    class="flex items-center justify-center gap-1 rounded-md border border-orange-300 bg-orange-50 px-2 py-1 text-center text-xs text-orange-600"
                     :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
                   >
                     <my-icon icon="sharing/public" />
@@ -367,7 +371,7 @@ onMounted(async () => {
 
     <div
       v-if="isLoading"
-      class="size-full flex items-center justify-center"
+      class="flex size-full items-center justify-center"
     >
       <n-spin />
     </div>
@@ -375,7 +379,7 @@ onMounted(async () => {
     <transition>
       <div
         v-if="!isQuery && stats"
-        class="size-full lg:w-1/2 xl:w-1/2 md:min-w-fit px-8 md:mx-auto flex flex-col justify-center"
+        class="flex size-full flex-col justify-center px-8 md:mx-auto md:min-w-fit lg:w-1/2 xl:w-1/2"
         vertical
       >
         <my-stats-bar
@@ -462,7 +466,7 @@ onMounted(async () => {
 
     <div
       v-if="!isQuery && !entityId"
-      class="absolute bottom-0 right-0 left-0 text-sm text-center text-gray-500"
+      class="absolute inset-x-0 bottom-0 text-center text-sm text-gray-500"
     >
       <a
         target="_blank"

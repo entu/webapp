@@ -11,7 +11,7 @@ export const useEntityTypeStore = defineStore('entityType', () => {
         'new_window'
       ]
     })
-    const plugins = rawPlugins?.entities?.map(p => ({
+    const plugins = rawPlugins?.entities?.map((p) => ({
       _id: p._id,
       name: getValue(p.name),
       type: getValue(p.type),
@@ -59,8 +59,8 @@ export const useEntityTypeStore = defineStore('entityType', () => {
         label: getValue(rawEntityType.label),
         description: getValue(rawEntityType.description)
       },
-      plugins: rawEntityType.plugin?.map(x => plugins.find(p => p._id === x.reference)),
-      props: rawEntityProps?.entities?.map(p => ({
+      plugins: rawEntityType.plugin?.map((x) => plugins.find((p) => p._id === x.reference)),
+      props: rawEntityProps?.entities?.map((p) => ({
         decimals: getValue(p.decimals, 'number'),
         default: getValue(p.default),
         description: getValue(p.description),
@@ -75,7 +75,7 @@ export const useEntityTypeStore = defineStore('entityType', () => {
         multilingual: getValue(p.multilingual, 'boolean'),
         name: getValue(p.name),
         ordinal: getValue(p.ordinal, 'number'),
-        plugins: p.plugin?.map(x => plugins.find(p => p._id === x.reference)),
+        plugins: p.plugin?.map((x) => plugins.find((p) => p._id === x.reference)),
         public: getValue(p.public, 'boolean'),
         readonly: getValue(p.readonly, 'boolean'),
         referenceQuery: getValue(p.reference_query),

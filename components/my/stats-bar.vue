@@ -1,5 +1,6 @@
 <script setup>
 import { NPopover } from 'naive-ui'
+
 const { t } = useI18n()
 
 const props = defineProps({
@@ -64,7 +65,7 @@ const overLimitStr = computed(() => overLimit.value && props.isBytes ? humanFile
 <template>
   <n-popover content-class="grid grid-cols-2">
     <template #trigger>
-      <div class="my-3 p-2 rounded hover:bg-gray-50 cursor-help">
+      <div class="my-3 cursor-help rounded p-2 hover:bg-gray-50">
         <div class="flex justify-between">
           <div>
             {{ label }}
@@ -78,7 +79,7 @@ const overLimitStr = computed(() => overLimit.value && props.isBytes ? humanFile
           </div>
         </div>
 
-        <div class="relative h-3 w-full mb-0.5 flex bg-gray-100">
+        <div class="relative mb-0.5 flex h-3 w-full bg-gray-100">
           <div
             class="h-full min-w-0.5"
             :color="color"
@@ -87,7 +88,7 @@ const overLimitStr = computed(() => overLimit.value && props.isBytes ? humanFile
 
           <div
             v-if="limitPercent"
-            class="absolute h-full right-0 border-l-2 border-l-red-700 bg-red-700 bg-opacity-50"
+            class="absolute right-0 h-full border-l-2 border-l-red-700 bg-red-700 bg-opacity-50"
             :style="`left:${limitPercent}%`"
           />
 
@@ -153,13 +154,13 @@ const overLimitStr = computed(() => overLimit.value && props.isBytes ? humanFile
     </template>
 
     <template v-if="overLimit">
-      <div class="flex items-center gap-2 text-red-700 font-bold">
+      <div class="flex items-center gap-2 font-bold text-red-700">
         <div
           class="size-4 bg-red-500 opacity-20"
         />
         {{ t('overLimitInfo') }}
       </div>
-      <div class="text-right text-red-700 font-bold">
+      <div class="text-right font-bold text-red-700">
         {{ overLimitStr }}
       </div>
     </template>

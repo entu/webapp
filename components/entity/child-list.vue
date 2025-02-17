@@ -39,13 +39,14 @@ async function getTypes () {
   })
 
   if (entities.length > 0) {
-    rawColumns.value = entities.map(e => ({
+    rawColumns.value = entities.map((e) => ({
       name: getValue(e.name),
       label: getValue(e.label),
       type: getValue(e.type),
       decimals: getValue(e.decimals, 'number')
     }))
-  } else {
+  }
+  else {
     const { entities } = await apiGetEntities({
       '_parent.reference': props.typeId,
       'name.string': 'name',
@@ -57,7 +58,7 @@ async function getTypes () {
       ].join(',')
     })
 
-    rawColumns.value = entities.map(e => ({
+    rawColumns.value = entities.map((e) => ({
       name: getValue(e.name),
       label: getValue(e.label),
       type: getValue(e.type),
@@ -81,20 +82,22 @@ async function getEntities (setPage, setPageSize, setSorter) {
         column: setSorter,
         order: sorter.value.order === 'ascending' ? 'descending' : 'ascending'
       }
-    } else {
+    }
+    else {
       sorter.value = {
         column: setSorter,
         order: 'ascending'
       }
     }
-  } else if (!sorter.value) {
+  }
+  else if (!sorter.value) {
     sorter.value = {
       column: rawColumns.value.at(0).name,
       order: 'ascending'
     }
   }
 
-  let field = rawColumns.value.find(c => c.name === sorter.value.column)?.type
+  let field = rawColumns.value.find((c) => c.name === sorter.value.column)?.type
 
   if (field === 'reference') {
     field = 'string'
@@ -106,7 +109,7 @@ async function getEntities (setPage, setPageSize, setSorter) {
     props: [
       '_thumbnail',
       '_sharing',
-      ...rawColumns.value.map(c => c.name)
+      ...rawColumns.value.map((c) => c.name)
     ].join(','),
     sort: `${sorter.value.order === 'descending' ? '-' : ''}${sorter.value.column}.${field}`,
     limit: tablePageSize.value,
@@ -160,7 +163,7 @@ onMounted(async () => {
 <template>
   <div>
     <div class="overflow-auto">
-      <table class="w-full text-sm table-auto">
+      <table class="w-full table-auto text-sm">
         <thead>
           <tr>
             <th class="w-7" />
@@ -168,10 +171,10 @@ onMounted(async () => {
             <th
               v-for="column in rawColumns"
               :key="column.name"
-              class="p-3 text-left hover:bg-gray-50 cursor-pointer"
+              class="cursor-pointer p-3 text-left hover:bg-gray-50"
               :class="{
                 'text-center': column.type === 'boolean',
-                'text-right': column.type === 'number'
+                'text-right': column.type === 'number',
               }"
               @click="getEntities(1, undefined, column.name)"
             >
@@ -199,7 +202,7 @@ onMounted(async () => {
                 <img
                   v-if="row._thumbnail"
                   :src="row._thumbnail"
-                  class="size-6 object-cover rounded-full group-hover:border-sky-800"
+                  class="size-6 rounded-full object-cover group-hover:border-sky-800"
                   :class="color()"
                 >
 
@@ -215,14 +218,14 @@ onMounted(async () => {
               v-for="column in rawColumns"
               :key="column.name"
               :class="{
-                'text-right': column.type === 'number'
+                'text-right': column.type === 'number',
               }"
             >
               <nuxt-link
-                class="w-full flex items-center p-3"
+                class="flex w-full items-center p-3"
                 :class="{
                   'justify-center': column.type === 'boolean',
-                  'justify-end': column.type === 'number'
+                  'justify-end': column.type === 'number',
                 }"
                 :to="{ path: `/${accountId}/${row._id}`, query }"
               >
@@ -278,7 +281,7 @@ onMounted(async () => {
     </div>
     <div
       v-if="total >= 10"
-      class="w-full mt-2 flex justify-end"
+      class="mt-2 flex w-full justify-end"
     >
       <n-pagination
         v-model:page="page"

@@ -47,18 +47,18 @@ const accountMenu = computed(() => {
       name: getValue(entity.name),
       label: () => getValue(entity.query).startsWith('http') || getValue(entity.query).startsWith('/')
         ? h(NuxtLink, { class: 'flex items-center justify-between', to: linkReplace(getValue(entity.query)), target: '_blank' },
-          () => [
-            getValue(entity.name),
-            h(MyIcon, { icon: 'external-link' })
-          ])
+            () => [
+              getValue(entity.name),
+              h(MyIcon, { icon: 'external-link' })
+            ])
         : h(NuxtLink, { to: { path: `/${account.value?._id}`, query: queryStringToObject(getValue(entity.query)) } },
-          { default: () => getValue(entity.name) }
-        ),
+            { default: () => getValue(entity.name) }
+          ),
       ordinal
     })
   })
 
-  const menuArray = Object.values(menuObject).map(m => ({
+  const menuArray = Object.values(menuObject).map((m) => ({
     ...m,
     ordinal: m.ordinal / m.children.length,
     children: m.children.sort(menuSorter)
@@ -81,7 +81,7 @@ const accountMenu = computed(() => {
             name: '            2',
             type: 'divider'
           },
-          ...accounts.value.filter(x => x._id !== account.value?._id).map(x => ({
+          ...accounts.value.filter((x) => x._id !== account.value?._id).map((x) => ({
             key: `account-${account.value?._id}-${x._id}`,
             name: x.name,
             label: () => h(NuxtLink,
@@ -90,14 +90,14 @@ const accountMenu = computed(() => {
             )
           }))
           ]
-        : accounts.value.filter(x => x._id !== account.value?._id).map(x => ({
-          key: `account-${x._id}`,
-          name: x.name,
-          label: () => h(NuxtLink,
-            { to: { path: `/${x._id}` } },
-            { default: () => x.name }
-          )
-        }))
+        : accounts.value.filter((x) => x._id !== account.value?._id).map((x) => ({
+            key: `account-${x._id}`,
+            name: x.name,
+            label: () => h(NuxtLink,
+              { to: { path: `/${x._id}` } },
+              { default: () => x.name }
+            )
+          }))
     })
 
     menu.push({
@@ -106,7 +106,8 @@ const accountMenu = computed(() => {
     })
 
     menu.push(...menuArray)
-  } else if (menuArray.length === 1) {
+  }
+  else if (menuArray.length === 1) {
     menu.push({
       key: 'account',
       icon: () => h(MyIcon, { icon: 'home' }),
@@ -121,7 +122,8 @@ const accountMenu = computed(() => {
             ...menuArray.at(0).children
           ]
     })
-  } else if (menuEntities.value.length > 0) {
+  }
+  else if (menuEntities.value.length > 0) {
     menu.push({
       key: 'account',
       icon: () => h(MyIcon, { icon: 'home' }),
@@ -296,13 +298,13 @@ function linkReplace (url) {
 </script>
 
 <template>
-  <div class="py-1 w-full min-h-full flex flex-col justify-between">
+  <div class="flex min-h-full w-full flex-col justify-between py-1">
     <div
       v-if="!menuCollapsed"
-      class="mt-1 ml-2 mr-3 mb-6 flex items-center justify-end"
+      class="mb-6 ml-2 mr-3 mt-1 flex items-center justify-end"
     >
       <div
-        class="text-sm text-white opacity-80 uppercase cursor-pointer"
+        class="cursor-pointer text-sm uppercase text-white opacity-80"
         @click="setLanguage()"
       >
         {{ t('language') }}
@@ -314,7 +316,7 @@ function linkReplace (url) {
       :href="`/${account?._id || ''}`"
     >
       <img
-        class="mx-auto h-24 w-24"
+        class="mx-auto size-24"
         src="/logo.png"
       >
     </a>

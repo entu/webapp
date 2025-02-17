@@ -16,11 +16,14 @@ const { t } = useI18n()
 const label = computed(() => {
   if (props.isChild && props.options.length === 1) {
     return t('addOneChild', { type: props.options.at(0).label?.toLowerCase() })
-  } else if (props.isChild && props.options.length > 1) {
+  }
+  else if (props.isChild && props.options.length > 1) {
     return t('addChild')
-  } else if (!props.isChild && props.options.length === 1) {
+  }
+  else if (!props.isChild && props.options.length === 1) {
     return t('addOne', { type: props.options.at(0).label?.toLowerCase() })
-  } else {
+  }
+  else {
     return t('add')
   }
 })
@@ -46,11 +49,11 @@ const label = computed(() => {
       />
     </template>
 
-    <div class="w-full flex flex-col">
+    <div class="flex w-full flex-col">
       <div
         v-for="o in options"
         :key="o.value"
-        class="py-2 px-4 hover:bg-gray-50 cursor-pointer"
+        class="cursor-pointer px-4 py-2 hover:bg-gray-50"
         @click="navigateTo({ path, query, hash: `#${isChild ? 'child' : 'add'}-${o.value}` }, { replace: true })"
       >
         {{ o.label.toLowerCase() }}

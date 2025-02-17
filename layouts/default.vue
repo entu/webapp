@@ -10,7 +10,6 @@ const siderRef = ref()
 const isHovered = useElementHover(siderRef, { delayEnter: 200, delayLeave: 600 })
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
-
 </script>
 
 <template>
@@ -35,7 +34,7 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
 
     <div
       v-if="accountId && isQuery"
-      class="flex-grow overflow-y-auto"
+      class="grow overflow-y-auto"
     >
       <n-split
         v-model:size="listWidth"
@@ -55,7 +54,7 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
             class="h-full print:hidden"
             :class="menuCollapsed ? 'py-0' : 'py-2'"
           >
-            <div class="h-full w-0.5 hover:bg-gray-400 bg-gray-300" />
+            <div class="h-full w-0.5 bg-gray-300 hover:bg-gray-400" />
           </div>
         </template>
 
@@ -67,7 +66,7 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
 
     <div
       v-else
-      class="py-2 grow overflow-y-auto"
+      class="grow overflow-y-auto py-2"
       :class="{ 'pl-4': !isQuery }"
     >
       <slot />

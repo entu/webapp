@@ -3,10 +3,11 @@ export const useAccount = () => {
   const accounts = useLocalStorage('accounts', [])
 
   const account = computed(() => {
-    const curentAccount = accounts.value.find(x => x._id === route.params.account)
+    const curentAccount = accounts.value.find((x) => x._id === route.params.account)
     if (curentAccount) {
       return curentAccount
-    } else {
+    }
+    else {
       return {
         _id: route.params.account,
         name: route.params.account

@@ -10,7 +10,10 @@ const md = computed(() => marked.parse(props.source))
 </script>
 
 <template>
-  <div class="markdown" v-html="md" />
+  <div
+    class="markdown"
+    v-html="md"
+  />
 </template>
 
 <style>

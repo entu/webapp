@@ -32,8 +32,8 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const publicProperty = entity.public?.[property.type]?.some(x => x._id.toString() === propertyId.toString())
-  const access = entity.access?.map(s => s.toString()) || []
+  const publicProperty = entity.public?.[property.type]?.some((x) => x._id.toString() === propertyId.toString())
+  const access = entity.access?.map((s) => s.toString()) || []
 
   if (publicProperty) {
     if (!access.includes('public')) {
@@ -42,7 +42,8 @@ export default defineEventHandler(async (event) => {
         statusMessage: 'Not a public property'
       })
     }
-  } else if (!access.includes(entu.userStr)) {
+  }
+  else if (!access.includes(entu.userStr)) {
     throw createError({
       statusCode: 403,
       statusMessage: 'User not in any rights property'
@@ -59,7 +60,8 @@ export default defineEventHandler(async (event) => {
 
   if (property.url && getQuery(event).download) {
     await sendRedirect(event, property.url, 302)
-  } else {
+  }
+  else {
     return property
   }
 })

@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const access = entity.access?.map(s => s.toString()) || []
+  const access = entity.access?.map((s) => s.toString()) || []
 
   if (!access.includes(entu.userStr)) {
     throw createError({

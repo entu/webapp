@@ -31,10 +31,12 @@ export default defineEventHandler(async (event) => {
 
     if (decodedState.next) {
       await sendRedirect(event, `${decodedState.next}${sessionId}`, 302)
-    } else {
+    }
+    else {
       return { key: sessionId }
     }
-  } else {
+  }
+  else {
     const state = jwt.sign({ next: getQuery(event).next }, jwtSecret, {
       audience,
       expiresIn: '5m'

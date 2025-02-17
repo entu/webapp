@@ -2,7 +2,7 @@ export default defineEventHandler(async (event) => {
   const entu = event.context.entu
   const query = getQuery(event)
 
-  const props = (query.props || '').split(',').filter(x => !!x)
+  const props = (query.props || '').split(',').filter((x) => !!x)
   const fields = {}
   let getThumbnail = props.length === 0
 
@@ -12,7 +12,8 @@ export default defineEventHandler(async (event) => {
         fields['private.photo'] = true
         fields['public.photo'] = true
         getThumbnail = true
-      } else {
+      }
+      else {
         fields[`private.${f}`] = true
         fields[`public.${f}`] = true
         fields[`domain.${f}`] = true

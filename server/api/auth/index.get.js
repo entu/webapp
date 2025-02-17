@@ -41,7 +41,8 @@ export default defineEventHandler(async (event) => {
     }
 
     authFilter['private.entu_user.string'] = session.user.email
-  } catch (e) {
+  }
+  catch (e) {
     authFilter['private.entu_api_key.string'] = createHash('sha256').update(key).digest('hex')
   }
 

@@ -18,10 +18,10 @@ const { activeMenu, addFromEntities } = storeToRefs(menuStore)
 const addByActiveMenuOptions = computed(() => activeMenu.value?.addFrom || [])
 
 const addChildOptions = computed(() => {
-  let result = addFromEntities.value?.filter(x => !['entity', 'menu'].includes(props.typeName) && x.addFrom.includes(props.entityId))
+  let result = addFromEntities.value?.filter((x) => !['entity', 'menu'].includes(props.typeName) && x.addFrom.includes(props.entityId))
 
   if (result.length === 0) {
-    result = addFromEntities.value?.filter(x => x.addFrom.includes(props.typeId))
+    result = addFromEntities.value?.filter((x) => x.addFrom.includes(props.typeId))
   }
 
   result.sort((a, b) => a.label.localeCompare(b.label))

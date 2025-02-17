@@ -66,11 +66,11 @@ async function createDatabase () {
     },
     body: JSON.stringify({
       database: databaseName.value,
-      types: types.value.filter(t => t.selected).map(t => t.value),
+      types: types.value.filter((t) => t.selected).map((t) => t.value),
       name: userName.value,
       email: userEmail.value
     })
-  }).then(response => response.json())
+  }).then((response) => response.json())
 
   if (message) {
     error.value = message
@@ -85,7 +85,7 @@ async function createDatabase () {
 
   const url = new URL('https://buy.stripe.com')
 
-  url.pathname = plans.value.find(p => p.value === plan.value).stripe
+  url.pathname = plans.value.find((p) => p.value === plan.value).stripe
   url.searchParams.set('prefilled_email', userEmail.value)
   url.searchParams.set('client_reference_id', `${database}-${person}`)
   url.searchParams.set('locale', locale.value)
@@ -119,11 +119,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="size-full bg-gray-50 overflow-auto">
-    <div class="w-full sm:w-96 my-8 px-4 sm:mx-auto flex flex-col gap-8">
+  <div class="size-full overflow-auto bg-gray-50">
+    <div class="my-8 flex w-full flex-col gap-8 px-4 sm:mx-auto sm:w-96">
       <div class="-mb-6">
         <span
-          class="float-right uppercase font-bold text-gray-500 text-xs cursor-pointer"
+          class="float-right cursor-pointer text-xs font-bold uppercase text-gray-500"
           @click="setLanguage()"
         >
           {{ t('language') }}
@@ -132,7 +132,7 @@ onMounted(() => {
 
       <a href="/">
         <img
-          class="mx-auto h-24 w-24"
+          class="mx-auto size-24"
           src="/logo.png"
         >
       </a>
@@ -180,7 +180,7 @@ onMounted(() => {
             v-for="provider in authProviders"
             :key="provider.value"
             :to="provider.to"
-            class="flex items-center py-2 border-b last-of-type:border-b-0 gap-2"
+            class="flex items-center gap-2 border-b py-2 last-of-type:border-b-0"
           >
             <my-icon :icon="provider.icon" />
             {{ t(`auth-${provider.value}`) }}
@@ -246,7 +246,7 @@ onMounted(() => {
           <div
             v-for="tp in types"
             :key="tp.value"
-            class="py-2 border-b last-of-type:border-b-0 flex justify-between items-center"
+            class="flex items-center justify-between border-b py-2 last-of-type:border-b-0"
           >
             {{ t(`typeLabel-${tp.value}`) }}
 
@@ -337,7 +337,7 @@ onMounted(() => {
         </n-button>
       </template>
     </div>
-    <div class="mb-2 px-4 text-sm text-center text-gray-500">
+    <div class="mb-2 px-4 text-center text-sm text-gray-500">
       <a
         target="_blank"
         :href="t('termsUrl')"

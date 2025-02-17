@@ -45,21 +45,21 @@ const languageOptions = [
   { value: 'et', label: 'ET' }
 ]
 
-const setOptions = computed(() => props.set.map(x => ({ value: x, label: x })).sort())
-const referenceOptions = computed(() => props.values.filter(x => x._id !== undefined).map(x => ({ value: x.reference, label: x.string })))
+const setOptions = computed(() => props.set.map((x) => ({ value: x, label: x })).sort())
+const referenceOptions = computed(() => props.values.filter((x) => x._id !== undefined).map((x) => ({ value: x.reference, label: x.string })))
 
 const fileList = computed(() => props.type === 'file'
-  ? newValues.value.filter(x => x._id !== undefined).map(x => ({
-    id: x._id,
-    name: x.filename,
-    url: `/${accountId.value}/file/${x._id}`,
-    status: 'finished'
-  }))
+  ? newValues.value.filter((x) => x._id !== undefined).map((x) => ({
+      id: x._id,
+      name: x.filename,
+      url: `/${accountId.value}/file/${x._id}`,
+      status: 'finished'
+    }))
   : []
 )
 
 async function updateValue (newValue) {
-  const oldValue = oldValues.value.find(x => x._id === newValue._id) || {}
+  const oldValue = oldValues.value.find((x) => x._id === newValue._id) || {}
 
   const _id = newValue._id
   const language = newValue.language
@@ -130,11 +130,14 @@ async function updateValue (newValue) {
 
   if (!entityId.value && value !== null && !_id) {
     entity = await addEntity(properties)
-  } else if (entityId.value && value !== null && !_id) {
+  }
+  else if (entityId.value && value !== null && !_id) {
     entity = await addValue(properties)
-  } else if (entityId.value && value !== null && _id) {
+  }
+  else if (entityId.value && value !== null && _id) {
     entity = await editValue(_id, properties)
-  } else if (entityId.value && value === null && _id) {
+  }
+  else if (entityId.value && value === null && _id) {
     entity = await deleteValue(_id)
   }
 
@@ -172,8 +175,8 @@ async function addEntity (properties) {
 async function addValue (properties) {
   const entity = await apiUpsertEntity(entityId.value, properties)
 
-  const property = entity.properties.find(x => x.type === props.property)
-  const newValue = newValues.value.find(x => x._id === undefined)
+  const property = entity.properties.find((x) => x.type === props.property)
+  const newValue = newValues.value.find((x) => x._id === undefined)
 
   newValue._id = property._id
 
@@ -188,12 +191,13 @@ async function editValue (_id, properties) {
   const entity = await apiUpsertEntity(entityId.value, properties)
 
   if (entity?.properties) {
-    const property = entity.properties.find(x => x.type === props.property)
-    const newValue = newValues.value.find(x => x._id === _id)
+    const property = entity.properties.find((x) => x.type === props.property)
+    const newValue = newValues.value.find((x) => x._id === _id)
 
     newValue._id = property._id
-  } else {
-    newValues.value = newValues.value.filter(x => x._id !== _id)
+  }
+  else {
+    newValues.value = newValues.value.filter((x) => x._id !== _id)
   }
 
   if (newValues.value.length === 0) {
@@ -206,7 +210,7 @@ async function editValue (_id, properties) {
 async function deleteValue (_id) {
   await apiDeleteProperty(_id)
 
-  const newValue = newValues.value.find(x => x._id === _id)
+  const newValue = newValues.value.find((x) => x._id === _id)
 
   delete newValue._id
 }
@@ -223,7 +227,7 @@ async function uploadFile ({ file, onProgress, onFinish, onError }) {
     filetype: file.file.type || 'application/octet-stream'
   })
 
-  const property = entity.properties.find(x => x.type === props.property)
+  const property = entity.properties.find((x) => x.type === props.property)
 
   if (!property) {
     onError()
@@ -252,7 +256,8 @@ async function uploadFile ({ file, onProgress, onFinish, onError }) {
       newFiles.value[file.id] = property._id
 
       onFinish()
-    } else {
+    }
+    else {
       onError()
     }
   })
@@ -267,7 +272,8 @@ async function deleteFile (file) {
     await deleteValue(newFiles.value[file.id])
 
     delete newFiles.value[file.id]
-  } else {
+  }
+  else {
     await deleteValue(file.id)
   }
 
@@ -283,9 +289,9 @@ function syncValues () {
 function addListValue (_id) {
   if (!props.isList) return
 
-  if (newValues.value.filter(x => x._id === undefined).length >= 2) return
+  if (newValues.value.filter((x) => x._id === undefined).length >= 2) return
 
-  if (!newValues.value.some(x => x._id === undefined)) {
+  if (!newValues.value.some((x) => x._id === undefined)) {
     newValues.value.push({})
   }
 
@@ -296,7 +302,7 @@ function addListValue (_id) {
 </script>
 
 <template>
-  <div class="w-full flex flex-col items-start gap-1">
+  <div class="flex w-full flex-col items-start gap-1">
     <div
       v-if="type === 'file'"
       class="w-full"
@@ -314,7 +320,10 @@ function addListValue (_id) {
           class="w-full text-sm"
         />
 
-        <n-upload-trigger #="{ handleClick }" abstract>
+        <n-upload-trigger
+          #="{ handleClick }"
+          abstract
+        >
           <my-button
             v-if="isList || !isList && fileList.length === 0"
             :disabled="disabled"
@@ -329,7 +338,7 @@ function addListValue (_id) {
       v-for="value in newValues"
       v-else
       :key="value._id"
-      class="w-full flex flex-row items-center justify-between gap-1"
+      class="flex w-full flex-row items-center justify-between gap-1"
     >
       <n-input
         v-if="type === 'string' && set.length === 0"
@@ -359,7 +368,7 @@ function addListValue (_id) {
         type="textarea"
         :autosize="{
           minRows: 3,
-          maxRows: 15
+          maxRows: 15,
         }"
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
