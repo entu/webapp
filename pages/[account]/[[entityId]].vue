@@ -61,8 +61,8 @@ const properties = computed(() => {
     if (property.name?.startsWith('_') && property.label === undefined) return
     if (property.name === 'name') return
 
-    const group = property.name?.startsWith('_') ? '_' : property.group || ''
-    const ordinal = property.name?.startsWith('_') ? 99999 : property.ordinal || 0
+    const group = property.group || ''
+    const ordinal = property.ordinal || 0
 
     if (!propsObject[group]) {
       propsObject[group] = {
