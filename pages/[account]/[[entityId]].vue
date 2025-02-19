@@ -58,7 +58,7 @@ const properties = computed(() => {
   const propsObject = {}
 
   entity.value.props.forEach((property) => {
-    if (property.name?.startsWith('_')) return
+    if (property.name?.startsWith('_') && property.label === undefined) return
     if (property.name === 'name') return
 
     const group = property.name?.startsWith('_') ? '_' : property.group || ''
