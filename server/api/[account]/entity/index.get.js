@@ -73,6 +73,7 @@ export default defineEventHandler(async (event) => {
 
     if (['gt', 'gte', 'lt', 'lte', 'ne', 'regex', 'exists'].includes(operator)) {
       filter[`private.${field}.${type}`] = {
+        ...filter[`private.${field}.${type}`] || {},
         [`$${operator}`]: value
       }
     }
