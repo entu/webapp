@@ -346,6 +346,7 @@ function linkReplace (url) {
       :options="userMenu"
       :root-indent="18"
     />
+
     <n-menu
       v-else
       accordion

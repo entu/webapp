@@ -56,7 +56,7 @@ export default defineNuxtConfig({
     }
   },
   i18n: {
-    vueI18n: '~/.config/i18n.config.ts'
+    vueI18n: '~~/.config/i18n.config.ts'
   },
   scripts: {
     registry: {
@@ -65,6 +65,6 @@ export default defineNuxtConfig({
   },
   tailwindcss: {
     cssPath: '~/assets/tailwind.css',
-    configPath: '~/.config/tailwind.config.ts'
+    configPath: '~~/.config/tailwind.config.ts'
   }
 })
