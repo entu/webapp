@@ -1,8 +1,8 @@
-import { createHash, createHmac } from 'crypto'
+import { createHash } from 'crypto'
 import jwt from 'jsonwebtoken'
 
 export default defineEventHandler(async (event) => {
-  const { intercomSecret, jwtSecret } = useRuntimeConfig(event)
+  const { jwtSecret } = useRuntimeConfig(event)
   const key = (getHeader(event, 'authorization') || '').replace('Bearer ', '').trim()
 
   if (!key) {
