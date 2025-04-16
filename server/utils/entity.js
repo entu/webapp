@@ -908,17 +908,24 @@ async function getValueArray (entu, values) {
   if (!values) return []
 
   return await Promise.all(values.map(async (x) => {
-    if (x.number !== undefined && x.number !== null) return x.number
-    if (x.datetime !== undefined && x.datetime !== null) return x.datetime?.toISOString()
-    if (x.date !== undefined && x.date !== null) return x.date?.toISOString().substring(0, 10)
-    if (x.string !== undefined && x.string !== null) return x.string
-    if (x.reference !== undefined && x.reference !== null) {
-      const entity = await entu.db.collection('entity').findOne({ _id: x.reference }, { projection: { 'private.name': true } })
+    try {
+      if (x.number !== undefined && x.number !== null) return x.number
+      if (x.datetime !== undefined && x.datetime !== null) return x.datetime?.toISOString()
+      if (x.date !== undefined && x.date !== null) return x.date?.toISOString().substring(0, 10)
+      if (x.string !== undefined && x.string !== null) return x.string
+      if (x.reference !== undefined && x.reference !== null) {
+        const entity = await entu.db.collection('entity').findOne({ _id: x.reference }, { projection: { 'private.name': true } })
 
-      return entity.private?.name?.at(0)?.string || x.reference
+        return entity.private?.name?.at(0)?.string || x.reference
+      }
+
+      return x._id
     }
+    catch (error) {
+      console.error('Error in getValueArray:', x, error)
 
-    return x._id
+      return x._id
+    }
   }))
 }
 
