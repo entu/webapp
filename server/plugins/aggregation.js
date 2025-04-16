@@ -18,6 +18,9 @@ async function aggregate () {
 
 async function aggregateDb (database) {
   const db = await connectDb(database)
+  const total = await db.collection('entity')
+    .countDocuments({ queued: { $exists: true } })
+
   const entities = await db.collection('entity')
     .find({ queued: { $exists: true } }, { projection: { _id: true } })
     .sort({ queued: 1 })
@@ -45,5 +48,5 @@ async function aggregateDb (database) {
     })
   )
 
-  console.log(`Aggregated ${database} - ${entities.length}/${count} entities`)
+  console.log(`Aggregated database "${database}" - ${count} of ${total} entities`)
 }
