@@ -3,7 +3,7 @@ export default defineNitroPlugin(async () => {
 
   while (runAggregation) {
     await aggregate()
-    await new Promise((resolve) => setTimeout(resolve, 3000)) // Wait 3 seconds
+    await new Promise((resolve) => setTimeout(resolve, 2000))
   }
 })
 
@@ -12,7 +12,6 @@ async function aggregate () {
   const mongoDatabases = await db.admin().listDatabases()
   const databases = mongoDatabases.databases.filter((db) => !['admin', 'config', 'local'].includes(db.name)).map((db) => db.name)
 
-  console.log(`Aggregate ${databases.length} databases`)
   await Promise.all(databases.map(aggregateDb))
 }
 
@@ -43,10 +42,10 @@ async function aggregateDb (database) {
         count++
       }
       catch (error) {
-        console.error(`Failed to aggregate entity ${_id} in ${database}:`, error)
+        console.error(`Failed to aggregate "${_id}" in "${database}": ${error.message}`)
       }
     })
   )
 
-  console.log(`Aggregated database "${database}" - ${count} of ${total} entities`)
+  console.log(`Aggregated database "${database}": ${count} of ${total} entities`)
 }
