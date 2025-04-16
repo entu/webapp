@@ -48,31 +48,26 @@ export default defineEventHandler(async (event) => {
 
   await aggregateEntity(entu, entityId)
 
-  const properties = await entu.db.collection('property').find({
+  const referrers = await entu.db.collection('property').aggregate([
+    { $match: { reference: entityId, deleted: { $exists: false } } },
+    { $group: { _id: '$entity' } }
+  ]).toArray()
+
+  const referrerIds = referrers.map((x) => x._id)
+
+  await entu.db.collection('property').updateMany({
     reference: entityId,
     deleted: { $exists: false }
   }, {
-    projection: {
-      entity: true
-    }
-  }).toArray()
-
-  for (let i = 0; i < properties.length; i++) {
-    const property = properties[i]
-
-    await entu.db.collection('property').updateOne({
-      _id: property._id
-    }, {
-      $set: {
-        deleted: {
-          at: new Date(),
-          by: entu.user
-        }
+    $set: {
+      deleted: {
+        at: new Date(),
+        by: entu.user
       }
-    })
+    }
+  })
 
-    await addAggregateQueue(entu, property.entity)
-  }
+  await addAggregateQueue(entu, referrerIds)
 
   return { deleted: true }
 })

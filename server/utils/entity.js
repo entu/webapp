@@ -304,9 +304,9 @@ export async function setEntity (entu, entityId, properties) {
   return { _id: entityId, properties: pIds }
 }
 
-export async function addAggregateQueue (entu, entityId) {
-  await entu.db.collection('entity').updateOne({
-    _id: entityId
+export async function addAggregateQueue (entu, entityIds) {
+  await entu.db.collection('entity').updateMany({
+    _id: { $in: entityIds }
   }, {
     $set: {
       queued: new Date()
@@ -1064,11 +1064,11 @@ async function startRelativeAggregation (entu, entity, newEntity) {
     { $group: { _id: '$entity' } }
   ]).toArray()
 
-  for (let j = 0; j < referrers.length; j++) {
-    await addAggregateQueue(entu, referrers[j]._id)
-  }
+  const referrerIds = referrers.map((x) => x._id)
 
-  return referrers.length
+  await addAggregateQueue(entu, referrerIds)
+
+  return referrerIds.length
 }
 
 async function getNextCounterValue (entu, property) {
