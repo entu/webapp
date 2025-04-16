@@ -306,8 +306,7 @@ export async function setEntity (entu, entityId, properties) {
 
 export async function addAggregateQueue (entu, entityId) {
   await entu.db.collection('entity').updateOne({
-    _id: entityId,
-    queued: { $exists: false }
+    _id: entityId
   }, {
     $set: {
       queued: new Date()
