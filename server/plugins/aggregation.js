@@ -18,7 +18,11 @@ async function aggregate () {
 
 async function aggregateDb (database) {
   const db = await connectDb(database)
-  const entities = await db.collection('entity').find({ queued: { $exists: true } }, { projection: { _id: true } }).limit(100).toArray()
+  const entities = await db.collection('entity')
+    .find({ queued: { $exists: true } }, { projection: { _id: true } })
+    .sort({ queued: 1 })
+    .limit(100)
+    .toArray()
 
   if (entities.length === 0) return
 
