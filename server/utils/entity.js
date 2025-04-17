@@ -1035,40 +1035,81 @@ function uniqBy (array, keyFn) {
   )
 }
 
-async function startRelativeAggregation (entu, entity, newEntity) {
-  let notEqual = false
-  const rights = ['_noaccess', '_viewer', '_expander', '_editor', '_owner']
+async function startRelativeAggregation (entu, oldEntity, newEntity) {
+  let ids = []
 
-  const oldName = entity.private?.name?.map((x) => x.string || '') || []
+  // Check if name has changed
+  const oldName = oldEntity.private?.name?.map((x) => x.string || '') || []
   const newName = newEntity.private?.name?.map((x) => x.string || '') || []
-
   oldName.sort()
   newName.sort()
 
-  notEqual = notEqual || oldName.join('') !== newName.join('')
+  if (oldName.join('|') !== newName.join('|')) {
+    const referrers = await entu.db.collection('property').aggregate([
+      { $match: { reference: oldEntity._id, deleted: { $exists: false } } },
+      { $group: { _id: '$entity' } }
+    ]).toArray()
 
-  rights.forEach((type) => {
-    const oldRights = entity.private?.[type]?.map((x) => x.reference?.toString()) || []
-    const newRights = newEntity.private?.[type]?.map((x) => x.reference?.toString()) || []
+    ids = referrers.map((x) => x._id)
+  }
 
-    oldRights.sort()
-    newRights.sort()
+  // Check if rights have changed
+  const rightProperties = ['_noaccess', '_viewer', '_expander', '_editor', '_owner']
+  const oldRights = rightProperties.map((type) => oldEntity.private?.[type]?.map((x) => x.reference?.toString() + type) || []).flat()
+  const newRights = rightProperties.map((type) => newEntity.private?.[type]?.map((x) => x.reference?.toString() + type) || []).flat()
+  oldRights.sort()
+  newRights.sort()
 
-    notEqual = notEqual || oldRights.join('') !== newRights.join('')
-  })
+  if (oldRights.join('|') !== newRights.join('|')) {
+    const childs = await entu.db.collection('entity').find({
+      'private._parent.reference': oldEntity._id,
+      'private._inheritrights.boolean': true
+    }, {
+      projection: { _id: true }
+    }).toArray()
 
-  if (!notEqual) return 0
+    ids = [...ids, ...childs.map((x) => x._id)]
+  }
 
-  const referrers = await entu.db.collection('property').aggregate([
-    { $match: { reference: entity._id, deleted: { $exists: false } } },
-    { $group: { _id: '$entity' } }
-  ]).toArray()
+  // Check formulas
+  const formulaChilds = await entu.db.collection('entity').find({
+    'private._parent.reference': oldEntity._id
+  }, {
+    projection: { _id: true }
+  }).toArray()
+  const formulaChildsIds = formulaChilds.map((x) => x._id)
+  const formulaOldParentIds = oldEntity.private?._parent?.map((x) => x.reference) || []
+  const formulaNewParentIds = newEntity.private?._parent?.map((x) => x.reference) || []
 
-  const referrerIds = referrers.map((x) => x._id)
+  const formulaEntities = await entu.db.collection('entity').find({
+    _id: { $in: [...formulaChildsIds, ...formulaOldParentIds, ...formulaNewParentIds] },
+    'private._type.reference': { $exists: true }
+  }, {
+    projection: { 'private._type.reference': true }
+  }).toArray()
 
-  await addAggregateQueue(entu, referrerIds)
+  const formulaEntityIds = await Promise.all(formulaEntities.map(async (x) => {
+    return await Promise.all(x.private?._type?.map(async (y) => {
+      const formulaProperties = await entu.db.collection('entity').countDocuments({
+        'private._parent.reference': y.reference,
+        'private.formula.string': { $exists: true }
+      })
 
-  return referrerIds.length
+      if (formulaProperties === 0) return
+
+      return x._id
+    }))
+  }))
+
+  ids = [...ids, ...formulaEntityIds.flat().filter(Boolean)]
+
+  ids = uniqBy(ids, (x) => x.toString())
+
+  if (ids.length === 0) return 0
+
+  await addAggregateQueue(entu, ids)
+
+  return ids.length
 }
 
 async function getNextCounterValue (entu, property) {
