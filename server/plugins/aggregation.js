@@ -23,7 +23,7 @@ async function aggregateDb (database) {
   const entities = await db.collection('entity')
     .find({ queued: { $exists: true } }, { projection: { _id: true } })
     .sort({ queued: 1 })
-    .limit(250)
+    .limit(100)
     .toArray()
 
   if (entities.length === 0) return
