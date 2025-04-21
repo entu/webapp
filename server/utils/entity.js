@@ -1,3 +1,5 @@
+import { stringify } from 'yaml'
+
 // Return public or private properties (based user rights)
 export async function cleanupEntity (entu, entity, _thumbnail) {
   if (!entity) return
@@ -1072,36 +1074,41 @@ async function startRelativeAggregation (entu, oldEntity, newEntity) {
   }
 
   // Check formulas
-  const formulaChilds = await entu.db.collection('entity').find({
-    'private._parent.reference': oldEntity._id
-  }, {
-    projection: { _id: true }
-  }).toArray()
-  const formulaChildsIds = formulaChilds.map((x) => x._id)
-  const formulaOldParentIds = oldEntity.private?._parent?.map((x) => x.reference) || []
-  const formulaNewParentIds = newEntity.private?._parent?.map((x) => x.reference) || []
+  const oldEntityYaml = stringify(oldEntity, { indent: 2, lineWidth: 0, sortMapEntries: true })
+  const newEntityYaml = stringify(newEntity, { indent: 2, lineWidth: 0, sortMapEntries: true })
 
-  const formulaEntities = await entu.db.collection('entity').find({
-    _id: { $in: [...formulaChildsIds, ...formulaOldParentIds, ...formulaNewParentIds] },
-    'private._type.reference': { $exists: true }
-  }, {
-    projection: { 'private._type.reference': true }
-  }).toArray()
-
-  const formulaEntityIds = await Promise.all(formulaEntities.map(async (x) => {
-    return await Promise.all(x.private?._type?.map(async (y) => {
-      const formulaProperties = await entu.db.collection('entity').countDocuments({
-        'private._parent.reference': y.reference,
-        'private.formula.string': { $exists: true }
-      })
-
-      if (formulaProperties === 0) return
-
-      return x._id
+  if (oldEntityYaml !== newEntityYaml) {
+    const formulaChilds = await entu.db.collection('entity').find({
+      'private._parent.reference': oldEntity._id
+    }, {
+      projection: { _id: true }
+    }).toArray()
+    const formulaChildsIds = formulaChilds.map((x) => x._id)
+    const formulaOldParentIds = oldEntity.private?._parent?.map((x) => x.reference) || []
+    const formulaNewParentIds = newEntity.private?._parent?.map((x) => x.reference) || []
+  
+    const formulaEntities = await entu.db.collection('entity').find({
+      _id: { $in: [...formulaChildsIds, ...formulaOldParentIds, ...formulaNewParentIds] },
+      'private._type.reference': { $exists: true }
+    }, {
+      projection: { 'private._type.reference': true }
+    }).toArray()
+  
+    const formulaEntityIds = await Promise.all(formulaEntities.map(async (x) => {
+      return await Promise.all(x.private?._type?.map(async (y) => {
+        const formulaProperties = await entu.db.collection('entity').countDocuments({
+          'private._parent.reference': y.reference,
+          'private.formula.string': { $exists: true }
+        })
+  
+        if (formulaProperties === 0) return
+  
+        return x._id
+      }))
     }))
-  }))
-
-  ids = [...ids, ...formulaEntityIds.flat().filter(Boolean)]
+  
+    ids = [...ids, ...formulaEntityIds.flat().filter(Boolean)]
+  }
 
   ids = uniqBy(ids, (x) => x.toString())
 
