@@ -1074,7 +1074,7 @@ async function startRelativeAggregation (entu, oldEntity, newEntity) {
   }
 
   // Check formulas
-  if (!isDeepStrictEqual(oldEntity.private, newEntity.private) {
+  if (!isDeepStrictEqual(oldEntity.private, newEntity.private)) {
     const formulaChilds = await entu.db.collection('entity').find({
       'private._parent.reference': oldEntity._id
     }, {
