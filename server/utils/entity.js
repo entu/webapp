@@ -1,4 +1,4 @@
-import { stringify } from 'yaml'
+import { isDeepStrictEqual } from 'node:util'
 
 // Return public or private properties (based user rights)
 export async function cleanupEntity (entu, entity, _thumbnail) {
@@ -1074,10 +1074,7 @@ async function startRelativeAggregation (entu, oldEntity, newEntity) {
   }
 
   // Check formulas
-  const oldEntityYaml = stringify(oldEntity, { indent: 2, lineWidth: 0, sortMapEntries: true })
-  const newEntityYaml = stringify(newEntity, { indent: 2, lineWidth: 0, sortMapEntries: true })
-
-  if (oldEntityYaml !== newEntityYaml) {
+  if (!isDeepStrictEqual(oldEntity.private, newEntity.private) {
     const formulaChilds = await entu.db.collection('entity').find({
       'private._parent.reference': oldEntity._id
     }, {
