@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto'
+
 // Return public or private properties (based user rights)
 export async function cleanupEntity (entu, entity, _thumbnail) {
   if (!entity) return
@@ -575,6 +577,8 @@ export async function aggregateEntity (entu, entityId) {
     delete newEntity.search
   }
 
+  newEntity.hash = getEntityHash(newEntity.private)
+
   await entu.db.collection('entity').replaceOne({ _id: entityId }, newEntity, { upsert: true })
 
   const sqsLength = await startRelativeAggregation(entu, entity, newEntity)
@@ -1146,4 +1150,28 @@ async function getNextCounterValue (entu, property) {
       return { string: `${str}${add}`, number: add }
     }
   }
+}
+
+function getEntityHash (obj) {
+  const ids = []
+
+  for (const [key, arr] of Object.entries(obj)) {
+    for (const item of arr) {
+      if (item._id) {
+        ids.push(item._id.toString())
+      }
+      else if (item.string) {
+        const hash = createHash('md5').update(`${key}: ${item.string}`).digest('hex')
+        ids.push(hash)
+      }
+      else {
+        const hash = createHash('md5').update(JSON.stringify(item)).digest('hex')
+        ids.push(hash)
+      }
+    }
+  }
+
+  const joined = ids.sort().join(',')
+
+  return createHash('md5').update(joined).digest('hex')
 }

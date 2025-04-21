@@ -1,4 +1,4 @@
-import { createHash } from 'crypto'
+import { createHash } from 'node:crypto'
 import jwt from 'jsonwebtoken'
 
 export default defineEventHandler(async (event) => {
