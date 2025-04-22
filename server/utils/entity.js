@@ -1058,22 +1058,22 @@ async function startRelativeAggregation (entu, oldEntity, newEntity) {
   }
 
   // Check if rights have changed
-  const rightProperties = ['_noaccess', '_viewer', '_expander', '_editor', '_owner']
-  const oldRights = rightProperties.map((type) => oldEntity.private?.[type]?.map((x) => x.reference?.toString() + type) || []).flat()
-  const newRights = rightProperties.map((type) => newEntity.private?.[type]?.map((x) => x.reference?.toString() + type) || []).flat()
-  oldRights.sort()
-  newRights.sort()
+  // const rightProperties = ['_noaccess', '_viewer', '_expander', '_editor', '_owner']
+  // const oldRights = rightProperties.map((type) => oldEntity.private?.[type]?.map((x) => x.reference?.toString() + type) || []).flat()
+  // const newRights = rightProperties.map((type) => newEntity.private?.[type]?.map((x) => x.reference?.toString() + type) || []).flat()
+  // oldRights.sort()
+  // newRights.sort()
 
-  if (oldRights.join('|') !== newRights.join('|')) {
-    const childs = await entu.db.collection('entity').find({
-      'private._parent.reference': oldEntity._id,
-      'private._inheritrights.boolean': true
-    }, {
-      projection: { _id: true }
-    }).toArray()
+  // if (oldRights.join('|') !== newRights.join('|')) {
+  //   const childs = await entu.db.collection('entity').find({
+  //     'private._parent.reference': oldEntity._id,
+  //     'private._inheritrights.boolean': true
+  //   }, {
+  //     projection: { _id: true }
+  //   }).toArray()
 
-    ids = [...ids, ...childs.map((x) => x._id)]
-  }
+  //   ids = [...ids, ...childs.map((x) => x._id)]
+  // }
 
   // Check formulas
   if (oldEntity.hash !== newEntity.hash) {
