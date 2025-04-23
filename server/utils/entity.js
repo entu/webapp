@@ -451,11 +451,11 @@ export async function aggregateEntity (entu, entityId) {
       }
     }
     else {
-      console.log(`NO_REFERENCE ${entu.account} ${entityId}`)
+      loggerError(`No type reference`, entu, [`entity:${entityId}`])
     }
   }
   else {
-    console.log(`NO_TYPE ${entu.account} ${newEntity.private._type} ${entityId}`)
+    loggerError(`No type ${newEntity.private._type}`, entu, [`entity:${entityId}`])
   }
 
   // get and set parent rights
@@ -583,9 +583,9 @@ export async function aggregateEntity (entu, entityId) {
 
   const sqsLength = await startRelativeAggregation(entu, entity, newEntity)
 
-  // if (sqsLength > 0) {
-  //   console.log(`UPDATED_SQS ${entu.account} ${entityId}`)
-  // }
+  if (sqsLength > 0) {
+    logger(`Added ${sqsLength} entities to aggregation`, entu, [`entity:${entityId}`])
+  }
 
   return {
     account: entu.account,
@@ -626,7 +626,7 @@ async function propertiesToEntity (entu, properties) {
       }
       else {
         cleanProp = { ...cleanProp, property_type: prop.type, noReference: true }
-        // console.log(`NO_REFERENCE ${entu.account} ${prop.reference.toString()}`)
+        loggerError(`No reference entity`, entu, [`entity:${prop.entity}`])
       }
 
       if (!prop.type.startsWith('_')) {
@@ -925,7 +925,7 @@ async function getValueArray (entu, values) {
       return x._id
     }
     catch (error) {
-      console.error('Error in getValueArray:', x, error)
+      loggerError(`getValueArray ${x._id} ${error}`, entu)
 
       return x._id
     }
@@ -1042,6 +1042,9 @@ function uniqBy (array, keyFn) {
 async function startRelativeAggregation (entu, oldEntity, newEntity) {
   let ids = []
 
+  // Check if entity has changed
+  if (Boolean(oldEntity.hash) && oldEntity.hash === newEntity.hash) return 0
+
   // Check if name has changed
   const oldName = oldEntity.private?.name?.map((x) => x.string || '') || []
   const newName = newEntity.private?.name?.map((x) => x.string || '') || []
@@ -1054,26 +1057,30 @@ async function startRelativeAggregation (entu, oldEntity, newEntity) {
       { $group: { _id: '$entity' } }
     ]).toArray()
 
+    logger(`Aggregation - Name changed`, entu, [`entity:${oldEntity._id}`])
+
     ids = referrers.map((x) => x._id)
   }
 
   // Check if rights have changed
-  // const rightProperties = ['_noaccess', '_viewer', '_expander', '_editor', '_owner']
-  // const oldRights = rightProperties.map((type) => oldEntity.private?.[type]?.map((x) => x.reference?.toString() + type) || []).flat()
-  // const newRights = rightProperties.map((type) => newEntity.private?.[type]?.map((x) => x.reference?.toString() + type) || []).flat()
-  // oldRights.sort()
-  // newRights.sort()
+  const rightProperties = ['_noaccess', '_viewer', '_expander', '_editor', '_owner']
+  const oldRights = rightProperties.map((type) => oldEntity.private?.[type]?.map((x) => `${type}:${x.reference}`) || []).flat()
+  const newRights = rightProperties.map((type) => newEntity.private?.[type]?.map((x) => `${type}:${x.reference}`) || []).flat()
+  oldRights.sort()
+  newRights.sort()
 
-  // if (oldRights.join('|') !== newRights.join('|')) {
-  //   const childs = await entu.db.collection('entity').find({
-  //     'private._parent.reference': oldEntity._id,
-  //     'private._inheritrights.boolean': true
-  //   }, {
-  //     projection: { _id: true }
-  //   }).toArray()
+  if (oldRights.join('|') !== newRights.join('|')) {
+    const childs = await entu.db.collection('entity').find({
+      'private._parent.reference': oldEntity._id,
+      'private._inheritrights.boolean': true
+    }, {
+      projection: { _id: true }
+    }).toArray()
 
-  //   ids = [...ids, ...childs.map((x) => x._id)]
-  // }
+    logger(`Aggregation - Rights changed`, entu, [`entity:${oldEntity._id}`])
+
+    ids = [...ids, ...childs.map((x) => x._id)]
+  }
 
   // Check formulas
   // if (oldEntity.hash !== newEntity.hash) {

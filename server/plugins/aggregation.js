@@ -42,10 +42,10 @@ async function aggregateDb (database) {
         count++
       }
       catch (error) {
-        console.error(`Failed to aggregate "${_id}" in "${database}": ${error.message}`)
+        loggerError(`Failed to aggregate: ${error.message}`, entu, [`entity:${_id}`])
       }
     })
   )
 
-  console.log(`Aggregated database "${database}": ${count} of ${total} entities`)
+  logger(`Aggregated ${count} of ${total} entities`, entu)
 }

@@ -14,13 +14,13 @@ export default defineEventHandler(async (event) => {
     const { customer, client_reference_id: reference } = stripeEvent.data?.object
 
     if (!customer) {
-      console.error('No customer found in checkout')
+      loggerError('No customer found in checkout')
 
       return
     }
 
     if (!reference) {
-      console.error('No reference found in checkout')
+      loggerError('No reference found in checkout')
 
       return
     }
@@ -42,6 +42,6 @@ export default defineEventHandler(async (event) => {
     ])
   }
   else {
-    console.error('Unhandled Stripe event:', stripeEvent.type)
+    loggerError(`Unhandled Stripe event "${stripeEvent.type}"`)
   }
 })

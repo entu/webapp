@@ -17,15 +17,13 @@ export async function connectDb (dbName, isNew) {
     const dbClient = new MongoClient(mongodbUrl)
 
     dbConnection = await dbClient.connect()
-
-    console.log('Connected to MongoDB')
   }
 
   const dbs = await dbConnection.db().admin().listDatabases()
   const dbNames = dbs.databases.map((db) => db.name)
 
   if (mongoDbSystemDbs.includes(dbName)) {
-    console.log(`Database "${dbName}" is a system database`)
+    logger('Database is a system database', { account: dbName })
 
     throw createError({
       statusCode: 400,
@@ -34,8 +32,7 @@ export async function connectDb (dbName, isNew) {
   }
 
   if (!isNew && !dbNames.includes(dbName)) {
-    console.log(`Database "${dbName}" not found`)
-
+    logger('Database not found', { account: dbName })
     throw createError({
       statusCode: 404,
       statusMessage: `Account ${dbName} not found`
@@ -43,7 +40,7 @@ export async function connectDb (dbName, isNew) {
   }
 
   dbConnections[dbName] = dbConnection.db(dbName)
-  console.log(`Connected to database "${dbName}"`)
+  logger('Connected to database', { account: dbName })
 
   return dbConnections[dbName]
 }
