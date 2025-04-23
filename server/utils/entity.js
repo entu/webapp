@@ -624,10 +624,6 @@ async function propertiesToEntity (entu, properties) {
       if (referenceEntity) {
         cleanProp = { ...cleanProp, property_type: prop.type, string: referenceEntity.private?.name?.at(0).string, entity_type: referenceEntity.private?._type?.at(0).string }
       }
-      else {
-        cleanProp = { ...cleanProp, property_type: prop.type, noReference: true }
-        loggerError(`No reference entity`, entu, [`entity:${prop.entity}`])
-      }
 
       if (!prop.type.startsWith('_')) {
         if (entity.private._reference) {
@@ -639,12 +635,7 @@ async function propertiesToEntity (entu, properties) {
       }
     }
 
-    delete cleanProp.property_type
-    delete cleanProp.entity_type
-
-    if (!cleanProp.noReference) {
-      entity.private[prop.type] = [...entity.private[prop.type], cleanProp]
-    }
+    entity.private[prop.type] = [...entity.private[prop.type], cleanProp]
   }
 
   return entity
