@@ -11,7 +11,7 @@ export default defineNitroPlugin((nitroApp) => {
       db: entu?.account,
       user: !entu?.systemUser && entu?.userStr ? entu?.userStr : undefined,
       method: event.method,
-      path: path ? path : undefined,
+      path: path ? path : '/',
       query: queryStr ? queryStr : undefined
     })
 
