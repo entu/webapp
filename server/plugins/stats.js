@@ -1,14 +1,18 @@
 export default defineNitroPlugin((nitroApp) => {
-  nitroApp.hooks.hook('afterResponse', async (event, { body }) => {
+  nitroApp.hooks.hook('afterResponse', async (event) => {
     const date = new Date().toISOString()
     const entu = event.context.entu
-    const messageTags = [
-      `method:${event.method.toLowerCase()}`,
-      `path:${event.path.split('?').at(0).replace(`/api/${entu.account}`, '')}`,
-      event.path.split('?').at(1) ? `query:${decodeURIComponent(event.path.split('?').at(1))}` : undefined
-    ]
+    const query = getQuery(event)
+    const queryStr = new URLSearchParams(query).toString()
 
-    logger(undefined, entu, messageTags.filter(Boolean))
+    await indexOpenSearchDb('entu-requests', {
+      '@timestamp': date,
+      db: entu?.account,
+      user: !entu?.systemUser && entu?.userStr ? entu?.userStr : undefined,
+      method: event.method,
+      path: event.path.split('?').at(0).replace('/api', '').replace(`/${entu.account}`, ''),
+      query: queryStr ? queryStr : undefined
+    })
 
     if (!entu?.db) return
 
