@@ -5,6 +5,7 @@ export default defineNitroPlugin((nitroApp) => {
     const path = event.path.split('?').at(0).replace('/api', '').replace(`/${entu.account}`, '')
     const query = getQuery(event)
     const queryStr = new URLSearchParams(query).toString()
+    const ip = getRequestIP(event)
 
     await indexOpenSearchDb('entu-requests', {
       '@timestamp': date,
@@ -13,7 +14,7 @@ export default defineNitroPlugin((nitroApp) => {
       method: event.method,
       path: path ? path : '/',
       query: queryStr ? queryStr : undefined,
-      ip: getRequestIP(event),
+      ip: ip ? ip.replace(/^::ffff:/, '') : undefined,
       browser: getHeader(event, 'user-agent')
     })
 
