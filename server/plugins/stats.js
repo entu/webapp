@@ -12,7 +12,9 @@ export default defineNitroPlugin((nitroApp) => {
       user: !entu?.systemUser && entu?.userStr ? entu?.userStr : undefined,
       method: event.method,
       path: path ? path : '/',
-      query: queryStr ? queryStr : undefined
+      query: queryStr ? queryStr : undefined,
+      ip: getRequestIP(event),
+      browser: getHeader(event, 'user-agent')
     })
 
     if (!entu?.db) return

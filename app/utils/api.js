@@ -84,7 +84,7 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
 export function getValue (valueList = [], type = 'string') {
   const locale = localStorage.getItem('locale')
 
-  return valueList.find((x) => x.language === locale)?.[type] || valueList.find((x) => !x.language)?.[type] || valueList?.at(0)?.[type]
+  return valueList?.find((x) => x.language === locale)?.[type] || valueList?.find((x) => !x.language)?.[type] || valueList?.at(0)?.[type]
 }
 
 export function propsSorter (a, b) {
