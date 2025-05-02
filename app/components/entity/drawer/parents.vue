@@ -32,7 +32,7 @@ async function loadEntity () {
     '_parent'
   ])
 
-  for (let i = 0; i < rawEntity.value._parent.length; i++) {
+  for (let i = 0; i < rawEntity.value._parent?.length; i++) {
     const parentId = rawEntity.value._parent[i].reference
     const parentEntity = await apiGetEntity(parentId, ['_expander'])
 
