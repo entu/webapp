@@ -45,7 +45,7 @@ const accountMenu = computed(() => {
     menuObject[group].children.push({
       key: getValue(entity.query) || entity._id,
       name: getValue(entity.name),
-      label: () => getValue(entity.query).startsWith('http') || getValue(entity.query).startsWith('/')
+      label: () => getValue(entity.query)?.startsWith('http') || getValue(entity.query)?.startsWith('/')
         ? h(NuxtLink, { class: 'flex items-center justify-between', to: linkReplace(getValue(entity.query)), target: '_blank' },
             () => [
               getValue(entity.name),
