@@ -52,8 +52,8 @@ export default defineEventHandler(async (event) => {
       limit: database?.private?.billing_entities_limit?.at(0)?.number || 0
     },
     properties: {
-      usage: deletedProperties || 0,
-      deleted: properties || 0
+      usage: properties || 0,
+      deleted: deletedProperties || 0
     },
     requests: {
       usage: requests?.count || 0,
