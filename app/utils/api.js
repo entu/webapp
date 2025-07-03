@@ -113,3 +113,7 @@ export function queryStringToObject (q) {
 
   return params
 }
+
+export async function apiDuplicateEntity (entityId, count = 1, ignoredProperties = []) {
+  return await apiRequest(`entity/${entityId}/duplicate`, { count, ignoredProperties }, {}, 'POST')
+}

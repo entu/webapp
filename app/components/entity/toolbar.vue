@@ -55,8 +55,7 @@ const addChildOptions = computed(() => {
       />
 
       <my-button
-        v-if="right.editor"
-        disabled
+        v-if="right.owner"
         icon="copy"
         :label="t('duplicate')"
         @click="navigateTo({ path, query, hash: `#duplicate` }, { replace: true })"
