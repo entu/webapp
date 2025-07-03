@@ -15,11 +15,12 @@ const rawEntity = ref()
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const duplicateCount = ref(1)
-const selectedProperties = ref({})
+const ignoredProperties = ref([])
 
 const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
 const entityType = computed(() => entityTypes.value?.[typeId.value] || {})
 const entityName = computed(() => getValue(rawEntity.value?.name))
+const selectedCount = computed(() => availableProperties.value.length - ignoredProperties.value.length)
 
 const availableProperties = computed(() => {
   if (!rawEntity.value) return []
@@ -28,29 +29,22 @@ const availableProperties = computed(() => {
 
   for (const property in rawEntity.value) {
     if (property.startsWith('_')) continue
+    if (!rawEntity.value[property]?.length) continue
 
-    const hasValues = rawEntity.value[property] && rawEntity.value[property].length > 0
+    const propertyDef = entityType.value?.props?.find((p) => p.name === property) || {}
 
-    if (hasValues) {
-      // Get property definition from entity type if available
-      const propertyDef = entityType.value?.props?.find((p) => p.name === property) || {}
+    // Skip formula properties
+    if (propertyDef?.formula) continue
 
-      // Skip formula properties
-      if (propertyDef?.formula) continue
-
-      result.push({
-        name: property,
-        label: propertyDef?.label || property,
-        values: rawEntity.value[property],
-        mandatory: propertyDef?.mandatory || false,
-        readonly: propertyDef?.readonly || false,
-        formula: propertyDef?.formula || false,
-        ordinal: propertyDef?.ordinal || 0
-      })
-    }
+    result.push({
+      name: property,
+      label: propertyDef?.label || property,
+      values: rawEntity.value[property],
+      ordinal: propertyDef?.ordinal || 0,
+      type: propertyDef?.type
+    })
   }
 
-  // Show all non-formula properties, sort by ordinal then alphabetically
   return result.sort((a, b) => {
     // Sort by ordinal first
     if (a.ordinal !== b.ordinal) {
@@ -60,14 +54,6 @@ const availableProperties = computed(() => {
     return a.label.localeCompare(b.label)
   })
 })
-
-watch(availableProperties, (newProps) => {
-  const selected = {}
-  newProps.forEach((prop) => {
-    selected[prop.name] = true
-  })
-  selectedProperties.value = selected
-}, { immediate: true })
 
 watch(entityId, loadEntity, { immediate: true })
 
@@ -85,6 +71,11 @@ async function loadEntity () {
     await entityTypeStore.get(typeId.value)
   }
 
+  // Reset ignored properties and add file properties (since backend ignores them anyway)
+  ignoredProperties.value = availableProperties.value
+    .filter((prop) => prop.type === 'file')
+    .map((prop) => prop.name)
+
   isLoading.value = false
 }
 
@@ -93,18 +84,29 @@ async function onDuplicate () {
 
   isUpdating.value = true
 
-  const ignoredProperties = Object.keys(selectedProperties.value).filter((propName) => !selectedProperties.value[propName])
+  await apiDuplicateEntity(entityId.value, duplicateCount.value, ignoredProperties.value)
 
-  await apiDuplicateEntity(entityId.value, duplicateCount.value, ignoredProperties)
-
-  // Close the drawer, parent will handle page refresh
   emit('close')
   isUpdating.value = false
 }
 
 async function onClose () {
-  await until(isUpdating).not.toBeTruthy()
   emit('close')
+}
+
+function toggleProperty (propertyName) {
+  if (ignoredProperties.value.includes(propertyName)) {
+    // Remove from ignored array (include the property)
+    ignoredProperties.value = ignoredProperties.value.filter((p) => p !== propertyName)
+  }
+  else {
+    // Add to ignored array (ignore the property)
+    ignoredProperties.value.push(propertyName)
+  }
+}
+
+function isPropertyDisabled (property) {
+  return isUpdating.value || property.type === 'file' || (!ignoredProperties.value.includes(property.name) && selectedCount.value === 1)
 }
 </script>
 
@@ -131,51 +133,42 @@ async function onClose () {
           />
         </div>
 
-        <!-- Properties selection -->
-        <div class="mb-6">
-          <h3 class="mb-3 px-6 font-medium text-gray-700">
-            {{ t('propertiesToInclude') }}
-          </h3>
+        <h3 class="px-6 font-medium text-gray-700">
+          {{ t('propertiesToInclude') }}
+        </h3>
 
-          <div
-            v-for="property in availableProperties"
-            :key="property.name"
-            class="hover:bg-gray-50"
-          >
-            <div class="flex items-start gap-3 px-6 py-2">
-              <n-checkbox
-                v-model:checked="selectedProperties[property.name]"
-                :disabled="isUpdating"
-                class="mt-0.5"
-              />
+        <div
+          v-for="property in availableProperties"
+          :key="property.name"
+          class="hover:bg-gray-50"
+        >
+          <div class="px-6 py-2">
+            <n-checkbox
+              :checked="!ignoredProperties.includes(property.name)"
+              :disabled="isPropertyDisabled(property)"
+              :label="property.label"
+              class="mt-0.5"
+              @update:checked="() => toggleProperty(property.name)"
+            />
 
-              <div class="flex-1 pb-2">
-                <div
-                  class="flex cursor-default items-center gap-2"
-                  @click="selectedProperties[property.name] = !selectedProperties[property.name]"
-                >
-                  <span class="font-medium">
-                    {{ property.label }}
-                  </span>
-                </div>
+            <div
+              class="mb-2 ml-6 mt-1 flex flex-wrap gap-1"
+              :class="{ 'opacity-50': isPropertyDisabled(property) }"
+            >
+              <span
+                v-for="(value, index) in property.values.slice(0, 3)"
+                :key="index"
+                class="max-w-[300px] truncate rounded bg-gray-100 px-2 py-0.5 text-xs"
+              >
+                {{ value.string || value.number || value.filename || value.date || value.datetime || value.boolean }}
+              </span>
 
-                <!-- Preview of values -->
-                <div class="mt-1 flex flex-wrap gap-1">
-                  <span
-                    v-for="(value, index) in property.values.slice(0, 3)"
-                    :key="index"
-                    class="max-w-[300px] truncate rounded bg-gray-100 px-2 py-0.5 text-xs"
-                  >
-                    {{ value.string || value.reference || value.filename || value.datetime }}
-                  </span>
-                  <span
-                    v-if="property.values.length > 3"
-                    class="px-2 py-0.5 text-xs text-gray-500"
-                  >
-                    +{{ property.values.length - 3 }} {{ t('more') }}
-                  </span>
-                </div>
-              </div>
+              <span
+                v-if="property.values.length > 3"
+                class="px-2 py-0.5 text-xs text-gray-500"
+              >
+                {{ t('more', { count: property.values.length - 3 }) }}
+              </span>
             </div>
           </div>
         </div>
@@ -200,14 +193,14 @@ en:
   title: "Duplicate - {name}"
   numberOfCopies: "Number of duplicates"
   propertiesToInclude: "Properties to include in duplicates"
-  more: "more"
+  more: "+{count} more"
   createDuplicate: "Create Duplicate"
   createDuplicates: "Create {count} Duplicates"
 et:
   title: "Dubleeri - {name}"
   numberOfCopies: "Koopiate arv"
   propertiesToInclude: "Parameetrid, mis lisada koopiatesse"
-  more: "veel"
+  more: "+{count} veel"
   createDuplicate: "Loo koopia"
   createDuplicates: "Loo {count} koopiat"
 </i18n>
