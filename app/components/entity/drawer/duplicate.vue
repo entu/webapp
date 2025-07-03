@@ -31,10 +31,16 @@ const availableProperties = computed(() => {
     if (property.startsWith('_')) continue
     if (!rawEntity.value[property]?.length) continue
 
+    // Skip sensitive properties
+    if (property === 'entu_api_key' || property === 'entu_user') continue
+
     const propertyDef = entityType.value?.props?.find((p) => p.name === property) || {}
 
     // Skip formula properties
     if (propertyDef?.formula) continue
+
+    // Skip file properties (backend handles these automatically)
+    if (propertyDef?.type === 'file') continue
 
     result.push({
       name: property,
@@ -71,10 +77,8 @@ async function loadEntity () {
     await entityTypeStore.get(typeId.value)
   }
 
-  // Reset ignored properties and add file properties (since backend ignores them anyway)
-  ignoredProperties.value = availableProperties.value
-    .filter((prop) => prop.type === 'file')
-    .map((prop) => prop.name)
+  // Reset ignored properties (all properties start as included)
+  ignoredProperties.value = []
 
   isLoading.value = false
 }
@@ -106,7 +110,7 @@ function toggleProperty (propertyName) {
 }
 
 function isPropertyDisabled (property) {
-  return isUpdating.value || property.type === 'file' || (!ignoredProperties.value.includes(property.name) && selectedCount.value === 1)
+  return isUpdating.value || (!ignoredProperties.value.includes(property.name) && selectedCount.value === 1)
 }
 </script>
 

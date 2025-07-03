@@ -42,12 +42,12 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Get all non-deleted properties for this entity (excluding ignored properties)
+  // Get all non-deleted properties for this entity (excluding ignored properties and sensitive properties)
   const oldProperties = await entu.db.collection('property').find({
     entity: entityId,
     deleted: { $exists: false },
     filename: { $exists: false },
-    type: { $nin: [...ignoredProperties, '_created', '_mid'] }
+    type: { $nin: [...ignoredProperties, '_created', '_mid', 'entu_api_key', 'entu_user'] }
   }, {
     projection: {
       _id: false,
