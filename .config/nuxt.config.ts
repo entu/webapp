@@ -69,7 +69,8 @@ export default defineNuxtConfig({
           route: '/docs/api',
           theme: 'default',
           hideDownloadButton: true,
-        }
+        },
+        swagger: false
       }
     }
   },
