@@ -1,7 +1,8 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Property'],
-    description: 'Get property details',
+    description: 'Get property details or redirect to file download URL',
+    security: [{ bearerAuth: [] }],
     parameters: [
       {
         name: 'account',
@@ -20,8 +21,155 @@ defineRouteMeta({
           type: 'string',
           description: 'Property ID'
         }
+      },
+      {
+        name: 'download',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'If set and property is a file, redirects to file download URL'
+        }
       }
-    ]
+    ],
+    responses: {
+      200: {
+        description: 'Property details with creation metadata',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                _id: {
+                  type: 'string',
+                  description: 'Property ID',
+                  example: '6798938532faaba00f8fc761'
+                },
+                type: {
+                  type: 'string',
+                  description: 'Property type',
+                  example: 'manufacturer'
+                },
+                string: {
+                  type: 'string',
+                  description: 'String value (if property type is string)',
+                  example: 'Prusament'
+                },
+                number: {
+                  type: 'number',
+                  description: 'Numeric value (if property type is number)'
+                },
+                boolean: {
+                  type: 'boolean',
+                  description: 'Boolean value (if property type is boolean)'
+                },
+                reference: {
+                  type: 'string',
+                  description: 'Reference to another entity (if property type is reference)'
+                },
+                date: {
+                  type: 'string',
+                  format: 'date',
+                  description: 'Date value (if property type is date)'
+                },
+                datetime: {
+                  type: 'string',
+                  format: 'date-time',
+                  description: 'DateTime value (if property type is datetime)'
+                },
+                filename: {
+                  type: 'string',
+                  description: 'File name (if property type is file)'
+                },
+                filesize: {
+                  type: 'integer',
+                  description: 'File size in bytes (if property type is file)'
+                },
+                filetype: {
+                  type: 'string',
+                  description: 'MIME type (if property type is file)'
+                },
+                language: {
+                  type: 'string',
+                  description: 'Language code for multilingual properties'
+                },
+                entity: {
+                  type: 'string',
+                  description: 'Entity ID this property belongs to',
+                  example: '6798938532faaba00f8fc75f'
+                },
+                created: {
+                  type: 'object',
+                  description: 'Property creation metadata',
+                  properties: {
+                    at: {
+                      type: 'string',
+                      format: 'date-time',
+                      description: 'Creation timestamp',
+                      example: '2025-01-28T08:21:25.637Z'
+                    },
+                    by: {
+                      type: 'string',
+                      description: 'ID of user who created the property',
+                      example: '506e7c33dcb4b5c4fde735d0'
+                    }
+                  },
+                  required: ['at', 'by']
+                }
+              },
+              required: ['_id', 'type', 'entity', 'created']
+            }
+          }
+        }
+      },
+      302: {
+        description: 'Redirect to file download URL (when download parameter is set and property is a file)'
+      },
+      401: {
+        description: 'Unauthorized - Invalid or missing JWT token',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 401 },
+                statusMessage: { type: 'string', example: 'Unauthorized' }
+              }
+            }
+          }
+        }
+      },
+      403: {
+        description: 'Forbidden - Insufficient permissions to view property',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 403 },
+                statusMessage: { type: 'string', example: 'Forbidden' }
+              }
+            }
+          }
+        }
+      },
+      404: {
+        description: 'Property not found',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 404 },
+                statusMessage: { type: 'string', example: 'Not Found' }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 })
 

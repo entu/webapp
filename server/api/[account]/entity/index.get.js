@@ -1,7 +1,8 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Get entities list',
+    description: 'Get entities list with advanced filtering, sorting, and grouping capabilities',
+    security: [{ bearerAuth: [] }],
     parameters: [
       {
         name: 'account',
@@ -65,14 +66,99 @@ defineRouteMeta({
     ],
     responses: {
       200: {
-        description: 'List of entities',
+        description: 'List of entities with their properties',
         content: {
           'application/json': {
             schema: {
-              type: 'array',
-              items: {
-                type: 'object',
-                description: 'Entity object with properties'
+              type: 'object',
+              properties: {
+                entities: {
+                  type: 'array',
+                  description: 'Array of entity objects',
+                  items: {
+                    type: 'object',
+                    description: 'Entity with flattened properties',
+                    properties: {
+                      _id: { type: 'string', description: 'Unique entity identifier' },
+                      _type: {
+                        type: 'array',
+                        items: {
+                          type: 'object',
+                          properties: {
+                            _id: { type: 'string', description: 'Property ID' },
+                            reference: { type: 'string', description: 'Reference to entity type' },
+                            string: { type: 'string', description: 'Entity type name' }
+                          }
+                        }
+                      }
+                    },
+                    additionalProperties: {
+                      type: 'array',
+                      description: 'Dynamic properties with values',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          _id: { type: 'string', description: 'Property ID' },
+                          string: { type: 'string', description: 'String value' },
+                          number: { type: 'number', description: 'Numeric value' },
+                          boolean: { type: 'boolean', description: 'Boolean value' },
+                          reference: { type: 'string', description: 'Reference to another entity' },
+                          date: { type: 'string', format: 'date', description: 'Date value' },
+                          datetime: { type: 'string', format: 'date-time', description: 'DateTime value' },
+                          filename: { type: 'string', description: 'File name' },
+                          filesize: { type: 'integer', description: 'File size in bytes' },
+                          filetype: { type: 'string', description: 'MIME type' },
+                          language: { type: 'string', description: 'Language code' }
+                        }
+                      }
+                    }
+                  }
+                },
+                count: {
+                  type: 'integer',
+                  description: 'Total number of entities matching the query',
+                  example: 14
+                },
+                limit: {
+                  type: 'integer',
+                  description: 'Maximum entities returned in this response',
+                  example: 100
+                },
+                skip: {
+                  type: 'integer',
+                  description: 'Number of entities skipped',
+                  example: 0
+                }
+              }
+            }
+          }
+        }
+      },
+      401: {
+        description: 'Unauthorized - Invalid or missing JWT token',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 401 },
+                statusMessage: { type: 'string', example: 'Unauthorized' }
+              }
+            }
+          }
+        }
+      },
+      403: {
+        description: 'Forbidden - Insufficient permissions',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 403 },
+                statusMessage: { type: 'string', example: 'Forbidden' }
               }
             }
           }

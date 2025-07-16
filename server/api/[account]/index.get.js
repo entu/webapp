@@ -1,7 +1,8 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Account'],
-    description: 'Get account statistics',
+    description: 'Get account usage statistics and limits',
+    security: [{ bearerAuth: [] }],
     parameters: [
       {
         name: 'account',

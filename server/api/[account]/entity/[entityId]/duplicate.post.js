@@ -3,7 +3,8 @@ import { setEntity } from '~~/server/utils/entity'
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Duplicate entity',
+    description: 'Duplicate entity with optional property filtering and multiple copies',
+    security: [{ bearerAuth: [] }],
     parameters: [
       {
         name: 'account',
@@ -34,12 +35,85 @@ defineRouteMeta({
               count: {
                 type: 'number',
                 description: 'Number of duplicates to create',
-                default: 1
+                default: 1,
+                minimum: 1,
+                maximum: 100
               },
               ignoredProperties: {
                 type: 'array',
                 items: { type: 'string' },
-                description: 'Properties to ignore during duplication'
+                description: 'Property types to ignore during duplication (e.g., ["unique_id", "created_at"])'
+              }
+            }
+          }
+        }
+      }
+    },
+    responses: {
+      200: {
+        description: 'Entity duplicated successfully',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                duplicated: {
+                  type: 'array',
+                  description: 'Array of duplicated entity IDs',
+                  items: {
+                    type: 'string',
+                    description: 'New entity ID'
+                  }
+                },
+                count: {
+                  type: 'integer',
+                  description: 'Number of entities created'
+                }
+              }
+            }
+          }
+        }
+      },
+      401: {
+        description: 'Unauthorized - Invalid or missing JWT token',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 401 },
+                statusMessage: { type: 'string', example: 'Unauthorized' }
+              }
+            }
+          }
+        }
+      },
+      403: {
+        description: 'Forbidden - Insufficient permissions to duplicate entity',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 403 },
+                statusMessage: { type: 'string', example: 'Forbidden' }
+              }
+            }
+          }
+        }
+      },
+      404: {
+        description: 'Entity not found',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 404 },
+                statusMessage: { type: 'string', example: 'Not Found' }
               }
             }
           }

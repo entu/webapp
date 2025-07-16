@@ -3,7 +3,8 @@ import jwt from 'jsonwebtoken'
 defineRouteMeta({
   openAPI: {
     tags: ['Authentication'],
-    description: 'OAuth callback for authentication providers',
+    description: 'OAuth callback for authentication providers - redirects to OAuth.ee for authentication',
+    security: [], // No authentication required for OAuth callback
     parameters: [
       {
         name: 'provider',
@@ -11,7 +12,7 @@ defineRouteMeta({
         required: true,
         schema: {
           type: 'string',
-          enum: ['google', 'apple'],
+          enum: ['google', 'apple', 'smart-id', 'mobile-id', 'id-card'],
           description: 'OAuth provider'
         }
       },
@@ -20,7 +21,7 @@ defineRouteMeta({
         in: 'query',
         schema: {
           type: 'string',
-          description: 'OAuth authorization code'
+          description: 'OAuth authorization code from provider'
         }
       },
       {
@@ -28,7 +29,7 @@ defineRouteMeta({
         in: 'query',
         schema: {
           type: 'string',
-          description: 'OAuth error'
+          description: 'OAuth error message if authentication failed'
         }
       },
       {
@@ -36,10 +37,55 @@ defineRouteMeta({
         in: 'query',
         schema: {
           type: 'string',
-          description: 'OAuth state parameter'
+          description: 'OAuth state parameter for CSRF protection'
+        }
+      },
+      {
+        name: 'next',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'URL to redirect to after successful authentication'
         }
       }
-    ]
+    ],
+    responses: {
+      200: {
+        description: 'Authentication successful - returns temporary API key',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                key: {
+                  type: 'string',
+                  description: 'Temporary API key (single use)',
+                  example: 'M2s8xKpwxG77JYxbx7xw4cS9'
+                }
+              }
+            }
+          }
+        }
+      },
+      302: {
+        description: 'Redirect to next URL with temporary API key appended'
+      },
+      400: {
+        description: 'Authentication error',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 400 },
+                statusMessage: { type: 'string', example: 'Bad Request' }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 })
 

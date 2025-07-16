@@ -1,7 +1,8 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Property'],
-    description: 'Delete property',
+    description: 'Delete property with given ID',
+    security: [{ bearerAuth: [] }],
     parameters: [
       {
         name: 'account',
@@ -18,10 +19,74 @@ defineRouteMeta({
         required: true,
         schema: {
           type: 'string',
-          description: 'Property ID'
+          description: 'Property ID to delete'
         }
       }
-    ]
+    ],
+    responses: {
+      200: {
+        description: 'Property deleted successfully',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                deleted: {
+                  type: 'boolean',
+                  example: true,
+                  description: 'Confirmation that property was deleted'
+                }
+              }
+            }
+          }
+        }
+      },
+      401: {
+        description: 'Unauthorized - Invalid or missing JWT token',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 401 },
+                statusMessage: { type: 'string', example: 'Unauthorized' }
+              }
+            }
+          }
+        }
+      },
+      403: {
+        description: 'Forbidden - Insufficient permissions to delete property',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 403 },
+                statusMessage: { type: 'string', example: 'Forbidden' }
+              }
+            }
+          }
+        }
+      },
+      404: {
+        description: 'Property not found',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 404 },
+                statusMessage: { type: 'string', example: 'Not Found' }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 })
 

@@ -1,7 +1,8 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Account'],
-    description: 'Update account information',
+    description: 'Create new account/database with initial setup',
+    security: [{ bearerAuth: [] }],
     parameters: [
       {
         name: 'account',
@@ -9,7 +10,7 @@ defineRouteMeta({
         required: true,
         schema: {
           type: 'string',
-          description: 'Account ID'
+          description: 'Account ID (database name to create)'
         }
       }
     ],
@@ -18,44 +19,113 @@ defineRouteMeta({
       content: {
         'application/json': {
           schema: {
-            type: 'array',
-            items: {
-              type: 'object',
-              properties: {
-                type: { type: 'string', description: 'Property type' },
-                string: { type: 'string', description: 'String value' },
-                number: { type: 'number', description: 'Number value' },
-                boolean: { type: 'boolean', description: 'Boolean value' },
-                reference: { type: 'string', description: 'Reference to another entity' }
+            type: 'object',
+            description: 'Account creation configuration',
+            properties: {
+              database: {
+                type: 'string',
+                description: 'Database name (4-12 characters, no reserved names)',
+                example: 'mycompany',
+                minLength: 4,
+                maxLength: 12
+              },
+              name: {
+                type: 'string',
+                description: 'Full name of the account owner',
+                example: 'John Doe'
+              },
+              email: {
+                type: 'string',
+                format: 'email',
+                description: 'Email address of the account owner',
+                example: 'john@example.com'
+              },
+              types: {
+                type: 'array',
+                description: 'Optional entity types to include',
+                items: {
+                  type: 'string',
+                  enum: ['audiovideo', 'book', 'department', 'document', 'folder', 'lending']
+                },
+                example: ['document', 'folder']
               }
-            }
+            },
+            required: ['database', 'name', 'email']
           }
         }
       }
     },
     responses: {
       200: {
-        description: 'Updated account',
+        description: 'Account created successfully',
         content: {
           'application/json': {
             schema: {
               type: 'object',
               properties: {
-                _id: { type: 'string', description: 'Account ID' },
-                properties: {
-                  type: 'array',
-                  items: {
-                    type: 'object',
-                    description: 'Account property'
-                  }
+                database: {
+                  type: 'string',
+                  description: 'Created database name',
+                  example: 'mycompany'
+                },
+                person: {
+                  type: 'string',
+                  description: 'ID of the created person entity',
+                  example: '6798938532faaba00f8fc75f'
                 }
               }
             }
           }
         }
       },
+      400: {
+        description: 'Bad Request - Invalid database name, missing required fields, or database already exists',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 400 },
+                statusMessage: {
+                  type: 'string',
+                  enum: ['No database', 'Invalid database name', 'No name', 'No email', 'Invalid types'],
+                  example: 'Invalid database name'
+                }
+              }
+            }
+          }
+        }
+      },
+      401: {
+        description: 'Unauthorized - Invalid or missing JWT token',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 401 },
+                statusMessage: { type: 'string', example: 'Unauthorized' }
+              }
+            }
+          }
+        }
+      },
       403: {
-        description: 'No user authenticated'
+        description: 'Forbidden - No user authenticated or insufficient permissions',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 403 },
+                statusMessage: { type: 'string', example: 'Forbidden' }
+              }
+            }
+          }
+        }
       }
     }
   }

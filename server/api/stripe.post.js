@@ -3,14 +3,30 @@ import stripe from 'stripe'
 defineRouteMeta({
   openAPI: {
     tags: ['Payment'],
-    description: 'Handle Stripe webhook events',
+    description: 'Handle Stripe webhook events for payment processing',
+    security: [], // No authentication required for webhooks
     requestBody: {
       required: true,
       content: {
         'application/json': {
           schema: {
             type: 'object',
-            description: 'Stripe webhook payload'
+            description: 'Stripe webhook payload',
+            properties: {
+              id: { type: 'string', description: 'Event ID' },
+              object: { type: 'string', example: 'event' },
+              type: { type: 'string', description: 'Event type', example: 'checkout.session.completed' },
+              data: {
+                type: 'object',
+                description: 'Event data',
+                properties: {
+                  object: {
+                    type: 'object',
+                    description: 'The object that triggered the event'
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -22,10 +38,30 @@ defineRouteMeta({
         required: true,
         schema: {
           type: 'string',
-          description: 'Stripe webhook signature'
+          description: 'Stripe webhook signature for verification'
         }
       }
-    ]
+    ],
+    responses: {
+      200: {
+        description: 'Webhook processed successfully'
+      },
+      400: {
+        description: 'Invalid webhook signature or payload',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 400 },
+                statusMessage: { type: 'string', example: 'Bad Request' }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 })
 

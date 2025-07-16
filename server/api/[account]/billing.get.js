@@ -3,7 +3,8 @@ import stripe from 'stripe'
 defineRouteMeta({
   openAPI: {
     tags: ['Account'],
-    description: 'Get account billing information',
+    description: 'Get account billing information and Stripe portal URL',
+    security: [{ bearerAuth: [] }],
     parameters: [
       {
         name: 'account',
@@ -19,29 +20,73 @@ defineRouteMeta({
         in: 'query',
         schema: {
           type: 'string',
-          description: 'Locale for billing portal'
+          description: 'Locale for billing portal (e.g., en, et)',
+          example: 'en'
         }
       }
     ],
     responses: {
       200: {
-        description: 'Billing portal URL',
+        description: 'Billing portal URL for Stripe customer portal',
         content: {
           'application/json': {
             schema: {
               type: 'object',
               properties: {
-                url: { type: 'string', description: 'Stripe billing portal URL' }
+                url: {
+                  type: 'string',
+                  description: 'Stripe billing portal URL',
+                  example: 'https://billing.stripe.com/p/session/...'
+                }
+              }
+            }
+          }
+        }
+      },
+      401: {
+        description: 'Unauthorized - Invalid or missing JWT token',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 401 },
+                statusMessage: { type: 'string', example: 'Unauthorized' }
               }
             }
           }
         }
       },
       403: {
-        description: 'No user authenticated'
+        description: 'Forbidden - No user authenticated or insufficient permissions',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 403 },
+                statusMessage: { type: 'string', example: 'Forbidden' }
+              }
+            }
+          }
+        }
       },
       404: {
-        description: 'Database not found'
+        description: 'Account not found',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 404 },
+                statusMessage: { type: 'string', example: 'Not Found' }
+              }
+            }
+          }
+        }
       }
     }
   }

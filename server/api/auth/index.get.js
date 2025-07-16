@@ -4,7 +4,8 @@ import jwt from 'jsonwebtoken'
 defineRouteMeta({
   openAPI: {
     tags: ['Authentication'],
-    description: 'Get authentication information',
+    description: 'Authenticates user by API key. Returns array of objects containing JWT tokens for accessing databases where user exists.',
+    security: [], // Uses API key, not JWT
     parameters: [
       {
         name: 'authorization',
@@ -12,13 +13,22 @@ defineRouteMeta({
         required: true,
         schema: {
           type: 'string',
-          description: 'Bearer token'
+          description: 'Bearer token (temporary API key or permanent API key)',
+          example: 'Bearer nEkPYET5fYjJqktNz9yfLxPF'
+        }
+      },
+      {
+        name: 'account',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Account key. Optional. If set, authentication is done only for this account.'
         }
       }
     ],
     responses: {
       200: {
-        description: 'Authentication data',
+        description: 'Authentication data with JWT tokens',
         content: {
           'application/json': {
             schema: {
@@ -26,31 +36,70 @@ defineRouteMeta({
               properties: {
                 accounts: {
                   type: 'array',
+                  description: 'Array of accounts user has access to',
                   items: {
                     type: 'object',
                     properties: {
-                      account: { type: 'string', description: 'Account ID' },
-                      name: { type: 'string', description: 'Account name' },
-                      person: { type: 'string', description: 'Person ID' }
+                      _id: { type: 'string', description: 'Account ID', example: 'account1' },
+                      name: { type: 'string', description: 'Account name', example: 'account1' },
+                      user: {
+                        type: 'object',
+                        properties: {
+                          _id: { type: 'string', description: 'User ID', example: 'npfwb8fv4ku7tzpq5yjarncc' },
+                          name: { type: 'string', description: 'User name', example: 'User 1' }
+                        }
+                      }
                     }
                   }
                 },
                 user: {
                   type: 'object',
+                  description: 'User information',
                   properties: {
                     name: { type: 'string', description: 'User name' },
                     email: { type: 'string', description: 'User email' },
                     picture: { type: 'string', description: 'User picture URL' }
                   }
                 },
-                token: { type: 'string', description: 'JWT token' }
+                token: {
+                  type: 'string',
+                  description: 'JWT token for API access',
+                  example: 'hNGcQgaeKh7ptWF5FVPbfKgpR5ZHCzT5cbA4BQWtmWGkfdQHg5HLDMCB8GwKw8gG'
+                }
               }
             }
           }
         }
       },
       400: {
-        description: 'No key provided'
+        description: 'No API key provided',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 400 },
+                statusMessage: { type: 'string', example: 'Bad Request' }
+              }
+            }
+          }
+        }
+      },
+      401: {
+        description: 'Invalid API key',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 401 },
+                statusMessage: { type: 'string', example: 'Unauthorized' }
+              }
+            }
+          }
+        }
       }
     }
   }

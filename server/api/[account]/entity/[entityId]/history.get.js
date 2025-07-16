@@ -1,7 +1,8 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Get entity change history',
+    description: 'Get entity change history (changelog) showing all modifications over time',
+    security: [{ bearerAuth: [] }],
     parameters: [
       {
         name: 'account',
@@ -21,7 +22,78 @@ defineRouteMeta({
           description: 'Entity ID'
         }
       }
-    ]
+    ],
+    responses: {
+      200: {
+        description: 'Entity change history',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'array',
+              description: 'Array of history entries showing entity changes',
+              items: {
+                type: 'object',
+                properties: {
+                  _id: { type: 'string', description: 'History entry ID' },
+                  entity: { type: 'string', description: 'Entity ID' },
+                  property: { type: 'string', description: 'Property ID that was changed' },
+                  action: { type: 'string', enum: ['create', 'update', 'delete'], description: 'Action performed' },
+                  user: { type: 'string', description: 'User who made the change' },
+                  timestamp: { type: 'string', format: 'date-time', description: 'When the change occurred' },
+                  before: { type: 'object', description: 'Property value before change' },
+                  after: { type: 'object', description: 'Property value after change' }
+                }
+              }
+            }
+          }
+        }
+      },
+      401: {
+        description: 'Unauthorized - Invalid or missing JWT token',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 401 },
+                statusMessage: { type: 'string', example: 'Unauthorized' }
+              }
+            }
+          }
+        }
+      },
+      403: {
+        description: 'Forbidden - Insufficient permissions to view entity history',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 403 },
+                statusMessage: { type: 'string', example: 'Forbidden' }
+              }
+            }
+          }
+        }
+      },
+      404: {
+        description: 'Entity not found',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                error: { type: 'string', description: 'Error message' },
+                statusCode: { type: 'integer', example: 404 },
+                statusMessage: { type: 'string', example: 'Not Found' }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 })
 
