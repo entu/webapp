@@ -385,7 +385,7 @@ function addListValue (_id) {
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         :precision="decimals"
-        :format="value => value?.toLocaleString(locale)"
+        :format="value => value?.toLocaleString(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })"
         :parse="value => parseFloat(value?.replace(/,/g, '.'))"
         @blur="updateValue(value)"
         @focus="addListValue(value._id)"
