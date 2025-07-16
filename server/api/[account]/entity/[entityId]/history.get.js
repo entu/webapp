@@ -1,3 +1,30 @@
+defineRouteMeta({
+  openAPI: {
+    tags: ['Entity'],
+    description: 'Get entity change history',
+    parameters: [
+      {
+        name: 'account',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Account ID'
+        }
+      },
+      {
+        name: 'entityId',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Entity ID'
+        }
+      }
+    ]
+  }
+})
+
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
 

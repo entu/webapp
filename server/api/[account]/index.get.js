@@ -1,3 +1,66 @@
+defineRouteMeta({
+  openAPI: {
+    tags: ['Account'],
+    description: 'Get account statistics',
+    parameters: [
+      {
+        name: 'account',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Account ID'
+        }
+      }
+    ],
+    responses: {
+      200: {
+        description: 'Account statistics',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                entities: {
+                  type: 'object',
+                  properties: {
+                    usage: { type: 'number', description: 'Number of entities used' },
+                    deleted: { type: 'number', description: 'Number of deleted entities' },
+                    limit: { type: 'number', description: 'Entity limit for account' }
+                  }
+                },
+                properties: {
+                  type: 'object',
+                  properties: {
+                    usage: { type: 'number', description: 'Number of properties used' },
+                    deleted: { type: 'number', description: 'Number of deleted properties' }
+                  }
+                },
+                requests: {
+                  type: 'object',
+                  properties: {
+                    usage: { type: 'number', description: 'Number of API requests' },
+                    limit: { type: 'number', description: 'Request limit for account' }
+                  }
+                },
+                files: {
+                  type: 'object',
+                  properties: {
+                    usage: { type: 'number', description: 'File storage used in bytes' },
+                    deleted: { type: 'number', description: 'Deleted file storage in bytes' },
+                    limit: { type: 'number', description: 'Storage limit in bytes' }
+                  }
+                },
+                dbSize: { type: 'number', description: 'Database size in bytes' }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+})
+
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
   const date = new Date().toISOString()

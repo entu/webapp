@@ -1,6 +1,61 @@
 import { createHash } from 'node:crypto'
 import jwt from 'jsonwebtoken'
 
+defineRouteMeta({
+  openAPI: {
+    tags: ['Authentication'],
+    description: 'Get authentication information',
+    parameters: [
+      {
+        name: 'authorization',
+        in: 'header',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Bearer token'
+        }
+      }
+    ],
+    responses: {
+      200: {
+        description: 'Authentication data',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                accounts: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      account: { type: 'string', description: 'Account ID' },
+                      name: { type: 'string', description: 'Account name' },
+                      person: { type: 'string', description: 'Person ID' }
+                    }
+                  }
+                },
+                user: {
+                  type: 'object',
+                  properties: {
+                    name: { type: 'string', description: 'User name' },
+                    email: { type: 'string', description: 'User email' },
+                    picture: { type: 'string', description: 'User picture URL' }
+                  }
+                },
+                token: { type: 'string', description: 'JWT token' }
+              }
+            }
+          }
+        }
+      },
+      400: {
+        description: 'No key provided'
+      }
+    }
+  }
+})
+
 export default defineEventHandler(async (event) => {
   const { jwtSecret } = useRuntimeConfig(event)
   const key = (getHeader(event, 'authorization') || '').replace('Bearer ', '').trim()

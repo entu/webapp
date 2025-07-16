@@ -1,3 +1,87 @@
+defineRouteMeta({
+  openAPI: {
+    tags: ['Entity'],
+    description: 'Get entities list',
+    parameters: [
+      {
+        name: 'account',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Account ID'
+        }
+      },
+      {
+        name: 'props',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Comma-separated list of properties to include'
+        }
+      },
+      {
+        name: 'group',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Comma-separated list of grouping fields'
+        }
+      },
+      {
+        name: 'sort',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Comma-separated list of sort fields'
+        }
+      },
+      {
+        name: 'limit',
+        in: 'query',
+        schema: {
+          type: 'integer',
+          default: 100,
+          description: 'Maximum number of results to return'
+        }
+      },
+      {
+        name: 'skip',
+        in: 'query',
+        schema: {
+          type: 'integer',
+          default: 0,
+          description: 'Number of results to skip'
+        }
+      },
+      {
+        name: 'q',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Search query string'
+        }
+      }
+    ],
+    responses: {
+      200: {
+        description: 'List of entities',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'array',
+              items: {
+                type: 'object',
+                description: 'Entity object with properties'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+})
+
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
   const query = getQuery(event)

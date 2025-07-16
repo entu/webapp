@@ -1,5 +1,52 @@
 import stripe from 'stripe'
 
+defineRouteMeta({
+  openAPI: {
+    tags: ['Account'],
+    description: 'Get account billing information',
+    parameters: [
+      {
+        name: 'account',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Account ID'
+        }
+      },
+      {
+        name: 'locale',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Locale for billing portal'
+        }
+      }
+    ],
+    responses: {
+      200: {
+        description: 'Billing portal URL',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                url: { type: 'string', description: 'Stripe billing portal URL' }
+              }
+            }
+          }
+        }
+      },
+      403: {
+        description: 'No user authenticated'
+      },
+      404: {
+        description: 'Database not found'
+      }
+    }
+  }
+})
+
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
 

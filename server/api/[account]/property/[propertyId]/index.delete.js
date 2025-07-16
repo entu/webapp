@@ -1,3 +1,30 @@
+defineRouteMeta({
+  openAPI: {
+    tags: ['Property'],
+    description: 'Delete property',
+    parameters: [
+      {
+        name: 'account',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Account ID'
+        }
+      },
+      {
+        name: 'propertyId',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Property ID'
+        }
+      }
+    ]
+  }
+})
+
 const rightTypes = [
   '_noaccess',
   '_viewer',

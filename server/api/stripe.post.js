@@ -1,5 +1,34 @@
 import stripe from 'stripe'
 
+defineRouteMeta({
+  openAPI: {
+    tags: ['Payment'],
+    description: 'Handle Stripe webhook events',
+    requestBody: {
+      required: true,
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            description: 'Stripe webhook payload'
+          }
+        }
+      }
+    },
+    parameters: [
+      {
+        name: 'stripe-signature',
+        in: 'header',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Stripe webhook signature'
+        }
+      }
+    ]
+  }
+})
+
 export default defineEventHandler(async (event) => {
   const { stripeKey, stripeEndpointSecret } = useRuntimeConfig()
 

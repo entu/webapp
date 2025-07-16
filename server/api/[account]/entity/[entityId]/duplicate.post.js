@@ -1,5 +1,54 @@
 import { setEntity } from '~~/server/utils/entity'
 
+defineRouteMeta({
+  openAPI: {
+    tags: ['Entity'],
+    description: 'Duplicate entity',
+    parameters: [
+      {
+        name: 'account',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Account ID'
+        }
+      },
+      {
+        name: 'entityId',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Entity ID to duplicate'
+        }
+      }
+    ],
+    requestBody: {
+      required: false,
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              count: {
+                type: 'number',
+                description: 'Number of duplicates to create',
+                default: 1
+              },
+              ignoredProperties: {
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Properties to ignore during duplication'
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+})
+
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
   const { count = 1, ignoredProperties = [] } = await readBody(event)

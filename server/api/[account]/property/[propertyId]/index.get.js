@@ -1,3 +1,30 @@
+defineRouteMeta({
+  openAPI: {
+    tags: ['Property'],
+    description: 'Get property details',
+    parameters: [
+      {
+        name: 'account',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Account ID'
+        }
+      },
+      {
+        name: 'propertyId',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Property ID'
+        }
+      }
+    ]
+  }
+})
+
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
 

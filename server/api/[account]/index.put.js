@@ -1,3 +1,66 @@
+defineRouteMeta({
+  openAPI: {
+    tags: ['Account'],
+    description: 'Update account information',
+    parameters: [
+      {
+        name: 'account',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Account ID'
+        }
+      }
+    ],
+    requestBody: {
+      required: true,
+      content: {
+        'application/json': {
+          schema: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                type: { type: 'string', description: 'Property type' },
+                string: { type: 'string', description: 'String value' },
+                number: { type: 'number', description: 'Number value' },
+                boolean: { type: 'boolean', description: 'Boolean value' },
+                reference: { type: 'string', description: 'Reference to another entity' }
+              }
+            }
+          }
+        }
+      }
+    },
+    responses: {
+      200: {
+        description: 'Updated account',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                _id: { type: 'string', description: 'Account ID' },
+                properties: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    description: 'Account property'
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      403: {
+        description: 'No user authenticated'
+      }
+    }
+  }
+})
+
 const reservedDatabases = [
   'admin',
   'api',

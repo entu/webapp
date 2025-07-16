@@ -1,5 +1,48 @@
 import jwt from 'jsonwebtoken'
 
+defineRouteMeta({
+  openAPI: {
+    tags: ['Authentication'],
+    description: 'OAuth callback for authentication providers',
+    parameters: [
+      {
+        name: 'provider',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          enum: ['google', 'apple'],
+          description: 'OAuth provider'
+        }
+      },
+      {
+        name: 'code',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'OAuth authorization code'
+        }
+      },
+      {
+        name: 'error',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'OAuth error'
+        }
+      },
+      {
+        name: 'state',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'OAuth state parameter'
+        }
+      }
+    ]
+  }
+})
+
 export default defineEventHandler(async (event) => {
   const provider = getRouterParam(event, 'provider')
   const { jwtSecret, oauthId, oauthSecret } = useRuntimeConfig(event)

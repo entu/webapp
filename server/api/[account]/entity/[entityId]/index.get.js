@@ -1,3 +1,61 @@
+defineRouteMeta({
+  openAPI: {
+    tags: ['Entity'],
+    description: 'Get single entity',
+    parameters: [
+      {
+        name: 'account',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Account ID'
+        }
+      },
+      {
+        name: 'entityId',
+        in: 'path',
+        required: true,
+        schema: {
+          type: 'string',
+          description: 'Entity ID'
+        }
+      },
+      {
+        name: 'props',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Comma-separated list of properties to include'
+        }
+      }
+    ],
+    responses: {
+      200: {
+        description: 'Entity details',
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                _id: { type: 'string', description: 'Entity ID' },
+                access: { type: 'array', items: { type: 'string' }, description: 'Access permissions' },
+                properties: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    description: 'Entity property'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+})
+
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
   const query = getQuery(event)
