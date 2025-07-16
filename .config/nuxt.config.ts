@@ -54,6 +54,11 @@ export default defineNuxtConfig({
     compatibilityVersion: 4
   },
   compatibilityDate: '2024-08-05',
+  nitro: {
+    experimental: {
+      openAPI: true
+    }
+  },
   eslint: {
     config: {
       autoInit: false,
