@@ -58,8 +58,8 @@ export default defineNuxtConfig({
     },
     openAPI: {
       meta: {
-        title: 'Entu API',
-        description: 'RESTful API for Entu - a flexible entity management platform that allows you to create, manage, and organize structured data with powerful authentication, access control, and file handling capabilities. Features OAuth-based authentication with multiple providers (Apple, Google, Smart-ID, Mobile-ID, ID-card), comprehensive entity CRUD operations with advanced querying and filtering, property management with multiple data types, and secure file upload handling.',
+        title: 'Entu API Documentation',
+        description: 'REST API for Entu - a flexible entity-property database system with hierarchical data structures, permission management, and file handling capabilities.',
       },
       production: 'prerender',
       route: '/api/docs/openapi.json',
