@@ -52,7 +52,7 @@ const rights = ref([
         :key="r"
         :class="{ '!bg-blue-400 !text-white': value === r }"
         :disabled="disabled"
-        :icon="`rights/${r}`"
+        :icon="`rights-${r}`"
         :tooltip="t(r)"
         @click="value = r; emit('update:value', r)"
       />

@@ -4,12 +4,12 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/fonts',
+    '@nuxt/icon',
     '@nuxt/scripts',
     '@nuxtjs/i18n',
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    'nuxt-icons',
     'nuxtjs-naive-ui'
   ],
   ssr: false,
@@ -61,7 +61,13 @@ export default defineNuxtConfig({
     }
   },
   i18n: {
-    vueI18n: '~~/.config/i18n.config.ts'
+    vueI18n: './.config/i18n.config.ts'
+  },
+  icon: {
+    customCollections: [{
+      prefix: 'local',
+      dir: './app/assets/icons'
+    }]
   },
   scripts: {
     registry: {
@@ -69,7 +75,7 @@ export default defineNuxtConfig({
     }
   },
   tailwindcss: {
-    cssPath: '~/assets/tailwind.css',
-    configPath: '~~/.config/tailwind.config.ts'
+    cssPath: './app/assets/tailwind.css',
+    configPath: './.config/tailwind.config.ts'
   }
 })

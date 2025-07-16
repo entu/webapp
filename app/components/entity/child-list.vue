@@ -183,7 +183,7 @@ onMounted(async () => {
 
                 <my-icon
                   v-if="sorter && sorter.column === column.name"
-                  :icon="`sort/${sorter.order}`"
+                  :icon="`sort-${sorter.order}`"
                 />
               </div>
             </th>
@@ -247,17 +247,17 @@ onMounted(async () => {
                   <my-icon
                     v-if="renderColumn(row._sharing, 'string') === 'public'"
                     class="text-gray-500 group-hover:text-orange-600"
-                    icon="sharing/public"
+                    icon="sharing-public"
                   />
                   <my-icon
                     v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
                     class="text-gray-500 group-hover:text-yellow-600"
-                    icon="sharing/domain"
+                    icon="sharing-domain"
                   />
                   <my-icon
                     v-else
                     class="text-gray-500 group-hover:text-green-600"
-                    icon="sharing/private"
+                    icon="sharing-private"
                   />
                 </template>
 

@@ -291,7 +291,7 @@ onMounted(async () => {
                     class="flex items-center justify-center gap-1 rounded-md border border-green-300 bg-green-50 px-2 py-1 text-center text-xs text-green-600"
                     :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
                   >
-                    <my-icon icon="sharing/private" />
+                    <my-icon icon="sharing-private" />
 
                     {{ t('sharingPrivate') }}
                   </nuxt-link>
@@ -311,7 +311,7 @@ onMounted(async () => {
                     class="flex items-center justify-center gap-1 rounded-md border border-yellow-300 bg-yellow-50 px-2 py-1 text-center text-xs text-yellow-600"
                     :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
                   >
-                    <my-icon icon="sharing/domain" />
+                    <my-icon icon="sharing-domain" />
 
                     {{ t('sharingDomain') }}
                   </nuxt-link>
@@ -331,7 +331,7 @@ onMounted(async () => {
                     class="flex items-center justify-center gap-1 rounded-md border border-orange-300 bg-orange-50 px-2 py-1 text-center text-xs text-orange-600"
                     :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
                   >
-                    <my-icon icon="sharing/public" />
+                    <my-icon icon="sharing-public" />
 
                     {{ t('sharingPublic') }}
                   </nuxt-link>

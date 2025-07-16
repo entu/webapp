@@ -65,7 +65,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
           >
             <template #trigger>
               <my-icon
-                icon="sharing/public"
+                icon="sharing-public"
                 class="float-right cursor-help text-sm text-orange-400"
               />
             </template>

@@ -1,20 +1,21 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-defineProps({
+const props = defineProps({
   icon: { type: String, required: true }
 })
+
+const iconName = computed(() => props.icon.includes(':') ? props.icon : `local:${props.icon}`)
 </script>
 
 <template>
-  <nuxt-icon
-    class="text-md"
-    filled
-    :name="icon"
+  <Icon
+    class="text-base"
+    :name="iconName"
   />
 </template>
 
 <style>
-.nuxt-icon svg {
+:deep(svg) {
   @apply m-0;
 }
 </style>
