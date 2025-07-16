@@ -57,6 +57,20 @@ export default defineNuxtConfig({
   nitro: {
     experimental: {
       openAPI: true
+    },
+    openAPI: {
+      meta: {
+        title: 'Entu API documentation',
+      },
+      production: 'prerender',
+      route: '/docs/api/openapi.json',
+      ui: {
+        scalar: {
+          route: '/docs/api',
+          theme: 'default',
+          hideDownloadButton: true,
+        }
+      }
     }
   },
   eslint: {
