@@ -1,6 +1,6 @@
 export default defineEventHandler(async () => {
   // Get the original OpenAPI spec from the default route
-  const openapi = await $fetch('/docs/api/openapi.json')
+  const openapi = await $fetch('/api/docs/openapi.json')
 
   // Filter out paths that include /_
   if (openapi.paths) {
