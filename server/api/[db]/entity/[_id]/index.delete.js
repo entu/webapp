@@ -14,7 +14,7 @@ defineRouteMeta({
         }
       },
       {
-        name: 'entityId',
+        name: '_id',
         in: 'path',
         required: true,
         schema: {
@@ -105,7 +105,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const entityId = getObjectId(getRouterParam(event, 'entityId'))
+  const entityId = getObjectId(getRouterParam(event, '_id'))
 
   const entity = await entu.db.collection('entity').findOne({
     _id: entityId

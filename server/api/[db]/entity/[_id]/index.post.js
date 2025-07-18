@@ -16,7 +16,7 @@ defineRouteMeta({
         }
       },
       {
-        name: 'entityId',
+        name: '_id',
         in: 'path',
         required: true,
         schema: {
@@ -163,7 +163,7 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  const entityId = getObjectId(getRouterParam(event, 'entityId'))
+  const entityId = getObjectId(getRouterParam(event, '_id'))
 
   const { _id, properties } = await setEntity(entu, entityId, body)
 

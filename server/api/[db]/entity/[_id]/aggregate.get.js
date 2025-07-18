@@ -14,7 +14,7 @@ defineRouteMeta({
         }
       },
       {
-        name: 'entityId',
+        name: '_id',
         in: 'path',
         required: true,
         schema: {
@@ -100,7 +100,7 @@ defineRouteMeta({
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
 
-  const entityId = getObjectId(getRouterParam(event, 'entityId'))
+  const entityId = getObjectId(getRouterParam(event, '_id'))
 
   return await aggregateEntity(entu, entityId)
 })
