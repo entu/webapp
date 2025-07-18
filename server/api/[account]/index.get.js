@@ -1,16 +1,16 @@
 defineRouteMeta({
   openAPI: {
-    tags: ['Account'],
-    description: 'Get account usage statistics and limits',
+    tags: ['Database'],
+    description: 'Get database usage statistics and limits',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
-        name: 'account',
+        name: 'db',
         in: 'path',
         required: true,
         schema: {
           type: 'string',
-          description: 'Account ID'
+          description: 'Database name'
         }
       }
     ],

@@ -2,17 +2,17 @@ import stripe from 'stripe'
 
 defineRouteMeta({
   openAPI: {
-    tags: ['Account'],
+    tags: ['Database'],
     description: 'Get account billing information and Stripe portal URL',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
-        name: 'account',
+        name: 'db',
         in: 'path',
         required: true,
         schema: {
           type: 'string',
-          description: 'Account ID'
+          description: 'Database name'
         }
       },
       {

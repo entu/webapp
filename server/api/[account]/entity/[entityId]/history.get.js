@@ -5,12 +5,12 @@ defineRouteMeta({
     security: [{ bearerAuth: [] }],
     parameters: [
       {
-        name: 'account',
+        name: 'db',
         in: 'path',
         required: true,
         schema: {
           type: 'string',
-          description: 'Account ID'
+          description: 'Database name'
         }
       },
       {

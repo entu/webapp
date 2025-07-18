@@ -51,12 +51,7 @@ defineRouteMeta({
         content: {
           'application/json': {
             schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 400 },
-                statusMessage: { type: 'string', example: 'Bad Request' }
-              }
+              $ref: '#/components/schemas/Error'
             }
           }
         }

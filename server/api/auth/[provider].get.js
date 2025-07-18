@@ -17,6 +17,14 @@ defineRouteMeta({
         }
       },
       {
+        name: 'next',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'URL to redirect to after successful authentication'
+        }
+      },
+      {
         name: 'code',
         in: 'query',
         schema: {
@@ -38,14 +46,6 @@ defineRouteMeta({
         schema: {
           type: 'string',
           description: 'OAuth state parameter for CSRF protection'
-        }
-      },
-      {
-        name: 'next',
-        in: 'query',
-        schema: {
-          type: 'string',
-          description: 'URL to redirect to after successful authentication'
         }
       }
     ],

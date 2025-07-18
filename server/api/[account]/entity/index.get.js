@@ -5,12 +5,12 @@ defineRouteMeta({
     security: [{ bearerAuth: [] }],
     parameters: [
       {
-        name: 'account',
+        name: 'db',
         in: 'path',
         required: true,
         schema: {
           type: 'string',
-          description: 'Account ID'
+          description: 'Database name'
         }
       },
       {
@@ -71,65 +71,35 @@ defineRouteMeta({
           'application/json': {
             schema: {
               type: 'object',
+              description: 'Paginated list of entities with metadata',
               properties: {
                 entities: {
                   type: 'array',
                   description: 'Array of entity objects',
                   items: {
-                    type: 'object',
-                    description: 'Entity with flattened properties',
-                    properties: {
-                      _id: { type: 'string', description: 'Unique entity identifier' },
-                      _type: {
-                        type: 'array',
-                        items: {
-                          type: 'object',
-                          properties: {
-                            _id: { type: 'string', description: 'Property ID' },
-                            reference: { type: 'string', description: 'Reference to entity type' },
-                            string: { type: 'string', description: 'Entity type name' }
-                          }
-                        }
-                      }
-                    },
-                    additionalProperties: {
-                      type: 'array',
-                      description: 'Dynamic properties with values',
-                      items: {
-                        type: 'object',
-                        properties: {
-                          _id: { type: 'string', description: 'Property ID' },
-                          string: { type: 'string', description: 'String value' },
-                          number: { type: 'number', description: 'Numeric value' },
-                          boolean: { type: 'boolean', description: 'Boolean value' },
-                          reference: { type: 'string', description: 'Reference to another entity' },
-                          date: { type: 'string', format: 'date', description: 'Date value' },
-                          datetime: { type: 'string', format: 'date-time', description: 'DateTime value' },
-                          filename: { type: 'string', description: 'File name' },
-                          filesize: { type: 'integer', description: 'File size in bytes' },
-                          filetype: { type: 'string', description: 'MIME type' },
-                          language: { type: 'string', description: 'Language code' }
-                        }
-                      }
-                    }
+                    $ref: '#/components/schemas/Entity'
                   }
                 },
                 count: {
                   type: 'integer',
                   description: 'Total number of entities matching the query',
+                  minimum: 0,
                   example: 14
                 },
                 limit: {
                   type: 'integer',
                   description: 'Maximum entities returned in this response',
+                  minimum: 1,
                   example: 100
                 },
                 skip: {
                   type: 'integer',
                   description: 'Number of entities skipped',
+                  minimum: 0,
                   example: 0
                 }
-              }
+              },
+              required: ['entities', 'count', 'limit', 'skip']
             }
           }
         }
@@ -139,12 +109,7 @@ defineRouteMeta({
         content: {
           'application/json': {
             schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 401 },
-                statusMessage: { type: 'string', example: 'Unauthorized' }
-              }
+              $ref: '#/components/schemas/Error'
             }
           }
         }
@@ -154,12 +119,7 @@ defineRouteMeta({
         content: {
           'application/json': {
             schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 403 },
-                statusMessage: { type: 'string', example: 'Forbidden' }
-              }
+              $ref: '#/components/schemas/Error'
             }
           }
         }

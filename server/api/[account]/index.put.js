@@ -1,16 +1,16 @@
 defineRouteMeta({
   openAPI: {
-    tags: ['Account'],
-    description: 'Create new account/database with initial setup',
+    tags: ['Database'],
+    description: 'Create new database with initial setup',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
-        name: 'account',
+        name: 'db',
         in: 'path',
         required: true,
         schema: {
           type: 'string',
-          description: 'Account ID (database name to create)'
+          description: 'Name of the database to create'
         }
       }
     ],

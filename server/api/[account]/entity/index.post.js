@@ -5,12 +5,12 @@ defineRouteMeta({
     security: [{ bearerAuth: [] }],
     parameters: [
       {
-        name: 'account',
+        name: 'db',
         in: 'path',
         required: true,
         schema: {
           type: 'string',
-          description: 'Account ID'
+          description: 'Database name'
         }
       }
     ],
@@ -82,12 +82,7 @@ defineRouteMeta({
         content: {
           'application/json': {
             schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 400 },
-                statusMessage: { type: 'string', example: 'Bad Request' }
-              }
+              $ref: '#/components/schemas/Error'
             }
           }
         }
@@ -97,12 +92,7 @@ defineRouteMeta({
         content: {
           'application/json': {
             schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 401 },
-                statusMessage: { type: 'string', example: 'Unauthorized' }
-              }
+              $ref: '#/components/schemas/Error'
             }
           }
         }
@@ -112,12 +102,7 @@ defineRouteMeta({
         content: {
           'application/json': {
             schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 403 },
-                statusMessage: { type: 'string', example: 'No user' }
-              }
+              $ref: '#/components/schemas/Error'
             }
           }
         }
