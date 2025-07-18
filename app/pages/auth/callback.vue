@@ -15,7 +15,7 @@ onMounted(async () => {
   const authAccount = nextPage.value?.path.split('/').filter((x) => x !== 'new').at(1)
   let newUser = {}
 
-  const authResponse = await apiRequest('auth', authAccount ? { account: authAccount } : {}, { Authorization: `Bearer ${route.query.key}` })
+  const authResponse = await apiRequest('auth', authAccount ? { db: authAccount } : {}, { Authorization: `Bearer ${route.query.key}` })
 
   if (authResponse.accounts?.length > 0) {
     accounts.value = authResponse.accounts

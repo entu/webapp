@@ -18,11 +18,11 @@ defineRouteMeta({
         }
       },
       {
-        name: 'account',
+        name: 'db',
         in: 'query',
         schema: {
           type: 'string',
-          description: 'Account key. Optional. If set, authentication is done only for this account.'
+          description: 'Database name. Optional. If set, authentication is done only for this database.'
         }
       }
     ],
@@ -36,12 +36,12 @@ defineRouteMeta({
               properties: {
                 accounts: {
                   type: 'array',
-                  description: 'Array of accounts user has access to',
+                  description: 'Array of databases user has access to',
                   items: {
                     type: 'object',
                     properties: {
-                      _id: { type: 'string', description: 'Account ID', example: 'account1' },
-                      name: { type: 'string', description: 'Account name', example: 'account1' },
+                      _id: { type: 'string', description: 'Database ID', example: 'mydatabase' },
+                      name: { type: 'string', description: 'Database name', example: 'mydatabase' },
                       user: {
                         type: 'object',
                         properties: {
@@ -150,7 +150,8 @@ export default defineEventHandler(async (event) => {
     authFilter['private.entu_api_key.string'] = createHash('sha256').update(key).digest('hex')
   }
 
-  const onlyForAccount = getQuery(event).account
+  const query = getQuery(event)
+  const onlyForAccount = query.db || query.account
 
   const dbs = await connection.admin().listDatabases()
   const accounts = []
