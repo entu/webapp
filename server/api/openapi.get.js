@@ -37,6 +37,10 @@ export default defineEventHandler(async () => {
 
   // Tags
   openapi.tags = [
+    { name: 'Authentication' },
+    { name: 'Database' },
+    { name: 'Entity' },
+    { name: 'Property' },
     {
       name: 'System properties',
       description: `Entu system properties begin with _. Those properties are:
