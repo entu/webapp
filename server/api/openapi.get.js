@@ -35,6 +35,26 @@ export default defineEventHandler(async () => {
     }
   }
 
+  // Tags
+  if (!openapi.tags) {
+    openapi.tags = {}
+  }
+
+  openapi.tags.Property = {
+    name: 'Property',
+    description: `Entu system properties begin with _. Those properties are:
+
+- _type - Reference to entity's type.
+- _parent - Reference to parent entity.
+- _sharing - *private*, *domain* or *public*.
+- _inheritrights - Inherits rights from the parent entity. Entity-specific rights override inherited rights.
+- _viewer - Reference to who can view this entity.
+- _expander - Reference to who can add new entitys under this entity.
+- _editor - Reference to who can change this entity's properties (except rights!).
+- _owner - Reference to who can do anything with this entity (view, change, delete and manage rights).
+`
+  }
+
   // Models - Core data structures for the Entu API
   if (!openapi.components.schemas) {
     openapi.components.schemas = {}
