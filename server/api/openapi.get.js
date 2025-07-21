@@ -38,7 +38,7 @@ export default defineEventHandler(async () => {
   // Tags
   openapi.tags = [
     {
-      name: 'Property',
+      name: 'System properties',
       description: `Entu system properties begin with _. Those properties are:
 
 - _type - Reference to entity's type.
