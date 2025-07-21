@@ -71,6 +71,7 @@ export default defineNuxtConfig({
           },
           theme: 'default',
           hideDownloadButton: true,
+          hideModels: true,
           tagsSorter: 'alpha',
           operationsSorter: 'alpha'
         },
