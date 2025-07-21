@@ -36,13 +36,10 @@ export default defineEventHandler(async () => {
   }
 
   // Tags
-  if (!openapi.tags) {
-    openapi.tags = {}
-  }
-
-  openapi.tags.Property = {
-    name: 'Property',
-    description: `Entu system properties begin with _. Those properties are:
+  openapi.tags = [
+    {
+      name: 'Property',
+      description: `Entu system properties begin with _. Those properties are:
 
 - _type - Reference to entity's type.
 - _parent - Reference to parent entity.
@@ -53,7 +50,8 @@ export default defineEventHandler(async () => {
 - _editor - Reference to who can change this entity's properties (except rights!).
 - _owner - Reference to who can do anything with this entity (view, change, delete and manage rights).
 `
-  }
+    }
+  ]
 
   // Models - Core data structures for the Entu API
   if (!openapi.components.schemas) {
