@@ -3,7 +3,6 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxt/fonts',
     '@nuxt/icon',
-    '@nuxt/scripts',
     '@nuxtjs/i18n',
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
@@ -17,7 +16,10 @@ export default defineNuxtConfig({
       title: process.env.NUXT_PUBLIC_TITLE || 'Entu',
       link: [
         { rel: 'icon', type: 'image/png', href: '/logo.png' }
-      ]
+      ],
+      script: [
+        { src: 'https://analytics.entu.dev/ea.min.js', 'data-site': 'entu.app', crossorigin: 'anonymous', defer: true }
+      ]    
     }
   },
   spaLoadingTemplate: false,
@@ -93,11 +95,6 @@ export default defineNuxtConfig({
       prefix: 'local',
       dir: './app/assets/icons'
     }]
-  },
-  scripts: {
-    registry: {
-      plausibleAnalytics: { domain: 'entu.app' }
-    }
   },
   tailwindcss: {
     cssPath: './app/assets/tailwind.css',
