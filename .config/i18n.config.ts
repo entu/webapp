@@ -10,10 +10,10 @@ export default defineI18nConfig(() => ({
     }
   },
   detectBrowserLanguage: {
-    useCookie: false
+    useCookie: false,
+    redirectOn: 'root'
   },
   fallbackWarn: false,
   missingWarn: false,
-  legacy: false,
-  strategy: 'no_prefix'
+  legacy: false
 }))

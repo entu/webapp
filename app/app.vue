@@ -4,26 +4,47 @@ import { NConfigProvider, NGlobalStyle, enUS, etEE, dateEnUS, dateEtEE } from 'n
 const runtimeConfig = useRuntimeConfig()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 
-if (!localStorage.getItem('locale')) {
-  const defaultLocale = navigator?.language?.split('-')?.at(0) || 'en'
-  localStorage.setItem('locale', defaultLocale)
-}
-
-setLocale(localStorage.getItem('locale'))
-
 const currentLocale = ref(enUS)
 const currentDateLocale = ref(dateEnUS)
+
+function updateNaiveUILocale (localeValue) {
+  if (localeValue === 'et') {
+    currentLocale.value = etEE
+    currentDateLocale.value = dateEtEE
+  }
+  else {
+    currentLocale.value = enUS
+    currentDateLocale.value = dateEnUS
+  }
+}
+
+// Set initial locale from localStorage or browser language
+onMounted(() => {
+  let targetLocale = localStorage.getItem('locale')
+
+  if (!targetLocale) {
+    const defaultLocale = navigator?.language?.split('-')?.at(0) || 'en'
+    targetLocale = ['en', 'et'].includes(defaultLocale) ? defaultLocale : 'en'
+    localStorage.setItem('locale', targetLocale)
+  }
+
+  // Only set locale if it's different from current
+  if (locale.value !== targetLocale) {
+    setLocale(targetLocale)
+  }
+
+  // Update Naive UI locale
+  updateNaiveUILocale(targetLocale)
+})
+
+// Watch for locale changes and update Naive UI accordingly
+watch(locale, (newLocale) => {
+  updateNaiveUILocale(newLocale)
+}, { immediate: true })
 
 useHead({
   titleTemplate: (title) => {
     return (!title || title === runtimeConfig.public.title) ? runtimeConfig.public.title : `${title} · ${runtimeConfig.public.title}`
-  }
-})
-
-onMounted(() => {
-  if (locale.value === 'et') {
-    currentLocale.value = etEE
-    currentDateLocale.value = dateEtEE
   }
 })
 
