@@ -66,10 +66,9 @@ export const themeOverrides = {
   }
 }
 
-export function humanFileSize (bytes, si = true, dp = 2) {
+export function humanFileSize (n, bytes, si = true, dp = 2) {
   if (bytes === null) return
 
-  const { n } = useI18n()
   const thresh = si ? 1000 : 1024
 
   if (Math.abs(bytes) < thresh) return bytes + ' B'

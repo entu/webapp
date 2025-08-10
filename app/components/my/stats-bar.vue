@@ -1,7 +1,7 @@
 <script setup>
 import { NPopover } from 'naive-ui'
 
-const { t } = useI18n()
+const { n, t } = useI18n()
 
 const props = defineProps({
   label: { type: String, default: null },
@@ -12,8 +12,6 @@ const props = defineProps({
   color: { type: String, default: null },
   deletedColor: { type: String, default: null }
 })
-
-const { n } = useI18n()
 
 const usagePercent = computed(() => {
   const { usage, deleted, limit } = props
@@ -53,13 +51,15 @@ const overLimit = computed(() => {
   const over = usage + deleted - limit
 
   if (over > 0) return over
+
+  return undefined
 })
 
-const usageStr = computed(() => props.isBytes ? humanFileSize(props.usage) : n(props.usage))
-const deletedStr = computed(() => props.isBytes ? humanFileSize(props.deleted) : n(props.deleted))
-const totalStr = computed(() => props.isBytes ? humanFileSize(props.usage + props.deleted) : n(props.usage + props.deleted))
-const limitStr = computed(() => props.isBytes ? humanFileSize(props.limit) : n(props.limit))
-const overLimitStr = computed(() => overLimit.value && props.isBytes ? humanFileSize(overLimit.value) : n(overLimit.value))
+const usageStr = computed(() => props.isBytes ? humanFileSize(n, props.usage) : n(props.usage))
+const deletedStr = computed(() => props.isBytes ? humanFileSize(n, props.deleted) : n(props.deleted))
+const totalStr = computed(() => props.isBytes ? humanFileSize(n, props.usage + props.deleted) : n(props.usage + props.deleted))
+const limitStr = computed(() => props.isBytes ? humanFileSize(n, props.limit) : n(props.limit))
+const overLimitStr = computed(() => overLimit.value && props.isBytes ? humanFileSize(n, overLimit.value) : n(overLimit.value))
 </script>
 
 <template>

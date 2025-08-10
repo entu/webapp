@@ -7,7 +7,7 @@ const props = defineProps({
 })
 
 const { query } = useRoute()
-const { locale, d } = useI18n()
+const { locale, d, n } = useI18n()
 const { accountId } = useAccount()
 
 const localeValues = computed(() => props.values.filter((x) => !x.language || x.language === locale.value))
@@ -53,7 +53,7 @@ const localeValues = computed(() => props.values.filter((x) => !x.language || x.
         v-if="v.filesize"
         class="ml-2"
       >
-        {{ humanFileSize(v.filesize) }}
+        {{ humanFileSize(n, v.filesize) }}
       </span>
     </template>
 
