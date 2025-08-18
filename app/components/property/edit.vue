@@ -38,13 +38,13 @@ watch(() => props.values, () => {
   }))
 
   newValues.value = cloneData(oldValues.value)
-  
+
   // For multilingual properties, ensure we have empty fields for each language
   if (props.isMultilingual) {
     const existingLanguages = newValues.value
       .filter(x => x._id !== undefined)
       .map(x => x.language)
-    
+
     // Add empty values for missing languages
     languageOptions.forEach(langOption => {
       const hasLanguage = newValues.value.some(x => x.language === langOption.value)
@@ -304,24 +304,29 @@ function syncValues () {
 }
 
 function addListValue (_id) {
-  if (!props.isList) return
-
-  // For multilingual list properties, ensure all languages have empty fields
+  // For multilingual properties (both list and non-list), ensure all languages have empty fields
   if (props.isMultilingual) {
     languageOptions.forEach(langOption => {
-      const hasEmptyForLanguage = newValues.value.some(x => 
+      const hasEmptyForLanguage = newValues.value.some(x =>
         x._id === undefined && x.language === langOption.value
       )
+
       if (!hasEmptyForLanguage) {
         newValues.value.push({ language: langOption.value })
       }
     })
+
+    // For non-list multilingual properties, we're done
+    if (!props.isList) return
     return
   }
 
+  // For non-multilingual properties, only proceed if it's a list
+  if (!props.isList) return
+
   // For non-multilingual list properties
   const emptyCount = newValues.value.filter((x) => x._id === undefined).length
-  
+
   // Don't add more than one empty value at a time
   if (emptyCount >= 1) return
 
