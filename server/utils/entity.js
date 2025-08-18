@@ -1013,9 +1013,13 @@ function makeSearchArray (array) {
     const words = `${str}`.toLowerCase().split(/\s+/).map((x) => x.trim()).filter((x) => x.length > 0)
 
     for (const word of words) {
-      for (let i = 0; i < word.length; i++) {
-        for (let j = i + 1; j <= word.length; j++) {
-          result.push(word.slice(i, j))
+      // Generate all substrings up to 20 characters long
+      for (let startIndex = 0; startIndex < word.length; startIndex++) {
+        const maxEndIndex = Math.min(word.length, startIndex + 20)
+        
+        for (let endIndex = startIndex + 1; endIndex <= maxEndIndex; endIndex++) {
+          const substring = word.slice(startIndex, endIndex)
+          result.push(substring)
         }
       }
     }
