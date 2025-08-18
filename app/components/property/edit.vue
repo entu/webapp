@@ -108,6 +108,8 @@ async function updateValue (newValue) {
 
   if (!newValue.counter && value === oldValue[property] && language === oldValue.language) return
 
+  if (!_id && (value === null || value === undefined || value === '')) return
+
   loadingInputs.value.push(_id)
   isUpdating.value = true
 
@@ -367,6 +369,17 @@ function addListValue (_id) {
       :key="value._id"
       class="flex w-full flex-row items-center justify-between gap-1"
     >
+      <n-select
+        v-if="isMultilingual"
+        v-model:value="value.language"
+        class="!w-20 self-start"
+        placeholder=""
+        :loading="loadingInputs.includes(value._id)"
+        :readonly="disabled"
+        :options="languageOptions"
+        @update:value="updateValue(value)"
+      />
+
       <n-input
         v-if="type === 'string' && set.length === 0"
         v-model:value="value.string"
@@ -481,17 +494,6 @@ function addListValue (_id) {
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @click="updateValue({ counter: 1 })"
-      />
-
-      <n-select
-        v-if="isMultilingual"
-        v-model:value="value.language"
-        class="!w-20 self-start"
-        placeholder=""
-        :loading="loadingInputs.includes(value._id)"
-        :readonly="disabled"
-        :options="languageOptions"
-        @update:value="updateValue(value)"
       />
     </div>
   </div>
