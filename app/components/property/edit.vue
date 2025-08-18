@@ -39,19 +39,23 @@ watch(() => props.values, () => {
 
   newValues.value = cloneData(oldValues.value)
 
-  // For multilingual properties, ensure we have empty fields for each language
+  // Ensure empty fields are always available for user input
   if (props.isMultilingual) {
-    const existingLanguages = newValues.value
-      .filter(x => x._id !== undefined)
-      .map(x => x.language)
-
-    // Add empty values for missing languages
+    // Add empty field for each language if missing
     languageOptions.forEach(langOption => {
-      const hasLanguage = newValues.value.some(x => x.language === langOption.value)
-      if (!hasLanguage) {
+      const condition = props.isList 
+        ? x => x._id === undefined && x.language === langOption.value  // List: need empty field per language
+        : x => x.language === langOption.value                         // Non-list: need any field per language
+      
+      if (!newValues.value.some(condition)) {
         newValues.value.push({ language: langOption.value })
       }
     })
+  } else if (props.isList) {
+    // Add empty field if none exists for non-multilingual lists
+    if (!newValues.value.some(x => x._id === undefined)) {
+      newValues.value.push({})
+    }
   }
 }, { immediate: true, deep: true })
 
