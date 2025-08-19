@@ -1010,7 +1010,7 @@ function makeSearchArray (array) {
   const result = []
 
   for (const str of array) {
-    const words = `${str}`.toLowerCase().split(/\s+/).map((x) => x.trim()).filter((x) => x.length > 0)
+    const words = `${str}`.toLowerCase().split(/[\s,;]+/).map((x) => x.trim()).filter(Boolean)
 
     for (const word of words) {
       // Generate all substrings up to 20 characters long
