@@ -85,12 +85,9 @@ function manageEmptyFields () {
         }
       }
       else {
-        // Non-list: only show two empty fields if no existing value for this language
-        if (!hasExistingValue && emptyFieldsForLanguage.length < 2) {
-          const fieldsToAdd = 2 - emptyFieldsForLanguage.length
-          for (let i = 0; i < fieldsToAdd; i++) {
-            newValues.value.push({ language: langOption.value })
-          }
+        // Non-list: only show one empty field if no existing value for this language
+        if (!hasExistingValue && emptyFieldsForLanguage.length === 0) {
+          newValues.value.push({ language: langOption.value })
         }
         else if (hasExistingValue && emptyFieldsForLanguage.length > 0) {
           // Remove empty fields for languages that have existing values
@@ -99,9 +96,9 @@ function manageEmptyFields () {
             if (index > -1) newValues.value.splice(index, 1)
           })
         }
-        else if (!hasExistingValue && emptyFieldsForLanguage.length > 2) {
-          // Keep only two empty fields for languages without existing values
-          emptyFieldsForLanguage.slice(2).forEach((field) => {
+        else if (!hasExistingValue && emptyFieldsForLanguage.length > 1) {
+          // Keep only one empty field for languages without existing values
+          emptyFieldsForLanguage.slice(1).forEach((field) => {
             const index = newValues.value.indexOf(field)
             if (index > -1) newValues.value.splice(index, 1)
           })
@@ -130,12 +127,9 @@ function manageEmptyFields () {
       }
     }
     else {
-      // Non-list: only show two empty fields if no existing value
-      if (!hasExistingValue && emptyFields.length < 2) {
-        const fieldsToAdd = 2 - emptyFields.length
-        for (let i = 0; i < fieldsToAdd; i++) {
-          newValues.value.push({})
-        }
+      // Non-list: only show one empty field if no existing value
+      if (!hasExistingValue && emptyFields.length === 0) {
+        newValues.value.push({})
       }
       else if (hasExistingValue && emptyFields.length > 0) {
         // Remove empty fields when there are existing values
@@ -144,9 +138,9 @@ function manageEmptyFields () {
           if (index > -1) newValues.value.splice(index, 1)
         })
       }
-      else if (!hasExistingValue && emptyFields.length > 2) {
-        // Keep only two empty fields when no existing values
-        emptyFields.slice(2).forEach((field) => {
+      else if (!hasExistingValue && emptyFields.length > 1) {
+        // Keep only one empty field when no existing values
+        emptyFields.slice(1).forEach((field) => {
           const index = newValues.value.indexOf(field)
           if (index > -1) newValues.value.splice(index, 1)
         })
