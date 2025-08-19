@@ -429,8 +429,7 @@ function syncValues () {
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @blur="updateValue(value)"
-        @focus="manageEmptyFields()"
-        @update:value="manageEmptyFields()"
+        @keyup.once="manageEmptyFields()"
       />
 
       <n-select
@@ -441,7 +440,6 @@ function syncValues () {
         :options="setOptions"
         :readonly="disabled"
         @update:value="updateValue(value)"
-        @focus="manageEmptyFields()"
       />
 
       <n-input
@@ -456,8 +454,7 @@ function syncValues () {
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @blur="updateValue(value)"
-        @focus="manageEmptyFields()"
-        @update:value="manageEmptyFields()"
+        @keyup.once="manageEmptyFields()"
       />
 
       <n-input-number
@@ -472,8 +469,7 @@ function syncValues () {
         :format="value => value?.toLocaleString(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })"
         :parse="value => parseFloat(value?.replace(/,/g, '.'))"
         @blur="updateValue(value)"
-        @focus="manageEmptyFields()"
-        @update:value="manageEmptyFields()"
+        @keyup.once="manageEmptyFields()"
       />
 
       <div
@@ -519,7 +515,6 @@ function syncValues () {
         :readonly="disabled"
         :query="referenceQuery"
         :options="referenceOptions"
-        @focus="manageEmptyFields()"
         @update:value="updateValue(value)"
       />
 
@@ -530,8 +525,7 @@ function syncValues () {
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @blur="updateValue(value)"
-        @focus="manageEmptyFields()"
-        @update:value="manageEmptyFields()"
+        @keyup.once="manageEmptyFields()"
       />
 
       <my-button
