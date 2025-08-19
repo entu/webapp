@@ -63,34 +63,73 @@ watch(() => props.values, () => {
 function manageEmptyFields () {
   if (props.isMultilingual) {
     languageOptions.forEach((langOption) => {
+      const hasExistingValue = newValues.value.some(x => x._id !== undefined && x.language === langOption.value)
       const emptyFieldsForLanguage = newValues.value.filter((x) =>
         x._id === undefined && x.language === langOption.value
       )
 
-      if (emptyFieldsForLanguage.length === 0) {
-        newValues.value.push({ language: langOption.value })
+      if (props.isList) {
+        // List: always need exactly one empty field per language
+        if (emptyFieldsForLanguage.length === 0) {
+          newValues.value.push({ language: langOption.value })
+        } else {
+          // Remove extra empty fields, keep only the first one
+          emptyFieldsForLanguage.slice(1).forEach((field) => {
+            const index = newValues.value.indexOf(field)
+            if (index > -1) newValues.value.splice(index, 1)
+          })
+        }
+      } else {
+        // Non-list: only show empty field if no existing value for this language
+        if (!hasExistingValue && emptyFieldsForLanguage.length === 0) {
+          newValues.value.push({ language: langOption.value })
+        } else if (hasExistingValue && emptyFieldsForLanguage.length > 0) {
+          // Remove empty fields for languages that have existing values
+          emptyFieldsForLanguage.forEach((field) => {
+            const index = newValues.value.indexOf(field)
+            if (index > -1) newValues.value.splice(index, 1)
+          })
+        } else if (!hasExistingValue && emptyFieldsForLanguage.length > 1) {
+          // Keep only one empty field for languages without existing values
+          emptyFieldsForLanguage.slice(1).forEach((field) => {
+            const index = newValues.value.indexOf(field)
+            if (index > -1) newValues.value.splice(index, 1)
+          })
+        }
       }
-      else {
-        // Remove all extra empty fields, keep only the first one
-        emptyFieldsForLanguage.slice(1).forEach((field) => {
+    })
+  } else {
+    const emptyFields = newValues.value.filter((x) => x._id === undefined)
+    const hasExistingValue = newValues.value.some(x => x._id !== undefined)
+
+    if (props.isList) {
+      // List: always need exactly one empty field
+      if (emptyFields.length === 0) {
+        newValues.value.push({})
+      } else {
+        // Remove extra empty fields, keep only the first one
+        emptyFields.slice(1).forEach((field) => {
           const index = newValues.value.indexOf(field)
           if (index > -1) newValues.value.splice(index, 1)
         })
       }
-    })
-  }
-  else {
-    const emptyFields = newValues.value.filter((x) => x._id === undefined)
-
-    if (emptyFields.length === 0) {
-      newValues.value.push({})
-    }
-    else {
-      // Remove extra empty fields, keep only the first one
-      emptyFields.slice(1).forEach((field) => {
-        const index = newValues.value.indexOf(field)
-        if (index > -1) newValues.value.splice(index, 1)
-      })
+    } else {
+      // Non-list: only show empty field if no existing value
+      if (!hasExistingValue && emptyFields.length === 0) {
+        newValues.value.push({})
+      } else if (hasExistingValue && emptyFields.length > 0) {
+        // Remove empty fields when there are existing values
+        emptyFields.forEach((field) => {
+          const index = newValues.value.indexOf(field)
+          if (index > -1) newValues.value.splice(index, 1)
+        })
+      } else if (!hasExistingValue && emptyFields.length > 1) {
+        // Keep only one empty field when no existing values
+        emptyFields.slice(1).forEach((field) => {
+          const index = newValues.value.indexOf(field)
+          if (index > -1) newValues.value.splice(index, 1)
+        })
+      }
     }
   }
 }
