@@ -19,7 +19,7 @@ export default defineNuxtConfig({
       ],
       script: [
         { src: 'https://analytics.entu.dev/ea.min.js', 'data-site': 'entu.app', crossorigin: 'anonymous', defer: true }
-      ]    
+      ]
     }
   },
   spaLoadingTemplate: false,

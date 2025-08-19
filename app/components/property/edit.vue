@@ -62,51 +62,32 @@ watch(() => props.values, () => {
 
 function manageEmptyFields () {
   if (props.isMultilingual) {
-    languageOptions.forEach(langOption => {
-      const hasExistingValue = newValues.value.some(x => x._id !== undefined && x.language === langOption.value)
-      const emptyFieldsForLanguage = newValues.value.filter(x => x._id === undefined && x.language === langOption.value)
-      
-      if (props.isList) {
-        // List: always need exactly one empty field per language
-        if (emptyFieldsForLanguage.length === 0) {
-          newValues.value.push({ language: langOption.value })
-        } else if (emptyFieldsForLanguage.length > 1) {
-          // Remove extra empty fields, keep only the first one
-          const fieldsToRemove = emptyFieldsForLanguage.slice(1)
-          fieldsToRemove.forEach(field => {
-            const index = newValues.value.indexOf(field)
-            if (index > -1) newValues.value.splice(index, 1)
-          })
-        }
-      } else {
-        // Non-list: only show empty field for languages without existing values
-        if (!hasExistingValue && emptyFieldsForLanguage.length === 0) {
-          newValues.value.push({ language: langOption.value })
-        } else if (hasExistingValue && emptyFieldsForLanguage.length > 0) {
-          // Remove all empty fields for languages that have existing values
-          emptyFieldsForLanguage.forEach(field => {
-            const index = newValues.value.indexOf(field)
-            if (index > -1) newValues.value.splice(index, 1)
-          })
-        } else if (!hasExistingValue && emptyFieldsForLanguage.length > 1) {
-          // For languages without existing values, keep only one empty field
-          const fieldsToRemove = emptyFieldsForLanguage.slice(1)
-          fieldsToRemove.forEach(field => {
-            const index = newValues.value.indexOf(field)
-            if (index > -1) newValues.value.splice(index, 1)
-          })
-        }
+    languageOptions.forEach((langOption) => {
+      const emptyFieldsForLanguage = newValues.value.filter((x) =>
+        x._id === undefined && x.language === langOption.value
+      )
+
+      if (emptyFieldsForLanguage.length === 0) {
+        newValues.value.push({ language: langOption.value })
+      }
+      else {
+        // Remove all extra empty fields, keep only the first one
+        emptyFieldsForLanguage.slice(1).forEach((field) => {
+          const index = newValues.value.indexOf(field)
+          if (index > -1) newValues.value.splice(index, 1)
+        })
       }
     })
-  } else if (props.isList) {
-    // Non-multilingual list: always need exactly one empty field
-    const emptyFields = newValues.value.filter(x => x._id === undefined)
+  }
+  else {
+    const emptyFields = newValues.value.filter((x) => x._id === undefined)
+
     if (emptyFields.length === 0) {
       newValues.value.push({})
-    } else if (emptyFields.length > 1) {
+    }
+    else {
       // Remove extra empty fields, keep only the first one
-      const fieldsToRemove = emptyFields.slice(1)
-      fieldsToRemove.forEach(field => {
+      emptyFields.slice(1).forEach((field) => {
         const index = newValues.value.indexOf(field)
         if (index > -1) newValues.value.splice(index, 1)
       })

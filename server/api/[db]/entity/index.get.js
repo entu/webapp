@@ -158,7 +158,7 @@ export default defineEventHandler(async (event) => {
   const skip = parseInt(query.skip) || 0
   const q = (query.q || '').toLowerCase().split(' ')
     .filter((x) => x.length > 0)
-    .map(term => term.substring(0, 20))  // Truncate search terms to match index limit
+    .map((term) => term.substring(0, 20)) // Truncate search terms to match index limit
   let sortFields = {}
   const filter = {}
 

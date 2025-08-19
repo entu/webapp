@@ -1016,7 +1016,7 @@ function makeSearchArray (array) {
       // Generate all substrings up to 20 characters long
       for (let startIndex = 0; startIndex < word.length; startIndex++) {
         const maxEndIndex = Math.min(word.length, startIndex + 20)
-        
+
         for (let endIndex = startIndex + 1; endIndex <= maxEndIndex; endIndex++) {
           const substring = word.slice(startIndex, endIndex)
           result.push(substring)
