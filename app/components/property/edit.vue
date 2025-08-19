@@ -29,20 +29,6 @@ const oldValues = ref()
 const newValues = ref()
 const loadingInputs = ref([])
 
-watch(() => props.values, () => {
-  oldValues.value = cloneData(props.values.map((x) => {
-    if (x.date) x.date = new Date(x.date).getTime()
-    if (x.datetime) x.datetime = new Date(x.datetime).getTime()
-
-    return x
-  }))
-
-  newValues.value = cloneData(oldValues.value)
-
-  // Ensure empty fields are properly managed
-  manageEmptyFields()
-}, { immediate: true, deep: true })
-
 const languageOptions = [
   { value: 'en', label: 'EN' },
   { value: 'et', label: 'ET' }
@@ -60,6 +46,19 @@ const fileList = computed(() => props.type === 'file'
     }))
   : []
 )
+
+watch(() => props.values, () => {
+  oldValues.value = cloneData(props.values.map((x) => {
+    if (x.date) x.date = new Date(x.date).getTime()
+    if (x.datetime) x.datetime = new Date(x.datetime).getTime()
+
+    return x
+  }))
+
+  newValues.value = cloneData(oldValues.value)
+
+  manageEmptyFields()
+}, { immediate: true, deep: true })
 
 function manageEmptyFields () {
   if (props.isMultilingual) {
