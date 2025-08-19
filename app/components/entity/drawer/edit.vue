@@ -122,6 +122,8 @@ const properties = computed(() => {
       property.values.push(empty)
     }
 
+    property.values.sort(propertyValuesSorter)
+
     propsObject[group].ordinal += ordinal
     propsObject[group].children.push(property)
   })

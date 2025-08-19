@@ -100,6 +100,28 @@ export function propsSorter (a, b) {
   return 0
 }
 
+export function propertyValuesSorter (a, b) {
+  if (a.language && b.language && a.language < b.language) return -1
+  if (a.language && b.language && a.language > b.language) return 1
+
+  if (!a.language && b.language) return -1
+  if (a.language && !b.language) return 1
+
+  if (a.ordinal && b.ordinal && a.ordinal < b.ordinal) return -1
+  if (a.ordinal && b.ordinal && a.ordinal > b.ordinal) return 1
+
+  if (!a.ordinal && b.ordinal) return -1
+  if (a.ordinal && !b.ordinal) return 1
+
+  if (a._id && b._id && a._id < b._id) return -1
+  if (a._id && b._id && a._id > b._id) return 1
+
+  if (!a._id && b._id) return -1
+  if (a._id && !b._id) return 1
+
+  return 0
+}
+
 export function queryStringToObject (q) {
   if (!q) return {}
 

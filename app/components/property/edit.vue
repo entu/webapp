@@ -39,24 +39,8 @@ watch(() => props.values, () => {
 
   newValues.value = cloneData(oldValues.value)
 
-  // Ensure empty fields are always available for user input
-  if (props.isMultilingual) {
-    // Add empty field for each language if missing
-    languageOptions.forEach(langOption => {
-      const condition = props.isList 
-        ? x => x._id === undefined && x.language === langOption.value  // List: need empty field per language
-        : x => x.language === langOption.value                         // Non-list: need any field per language
-      
-      if (!newValues.value.some(condition)) {
-        newValues.value.push({ language: langOption.value })
-      }
-    })
-  } else if (props.isList) {
-    // Add empty field if none exists for non-multilingual lists
-    if (!newValues.value.some(x => x._id === undefined)) {
-      newValues.value.push({})
-    }
-  }
+  // Ensure empty fields are properly managed
+  manageEmptyFields()
 }, { immediate: true, deep: true })
 
 const languageOptions = [
@@ -76,6 +60,60 @@ const fileList = computed(() => props.type === 'file'
     }))
   : []
 )
+
+function manageEmptyFields () {
+  if (props.isMultilingual) {
+    languageOptions.forEach(langOption => {
+      const hasExistingValue = newValues.value.some(x => x._id !== undefined && x.language === langOption.value)
+      const emptyFieldsForLanguage = newValues.value.filter(x => x._id === undefined && x.language === langOption.value)
+      
+      if (props.isList) {
+        // List: always need exactly one empty field per language
+        if (emptyFieldsForLanguage.length === 0) {
+          newValues.value.push({ language: langOption.value })
+        } else if (emptyFieldsForLanguage.length > 1) {
+          // Remove extra empty fields, keep only the first one
+          const fieldsToRemove = emptyFieldsForLanguage.slice(1)
+          fieldsToRemove.forEach(field => {
+            const index = newValues.value.indexOf(field)
+            if (index > -1) newValues.value.splice(index, 1)
+          })
+        }
+      } else {
+        // Non-list: only show empty field for languages without existing values
+        if (!hasExistingValue && emptyFieldsForLanguage.length === 0) {
+          newValues.value.push({ language: langOption.value })
+        } else if (hasExistingValue && emptyFieldsForLanguage.length > 0) {
+          // Remove all empty fields for languages that have existing values
+          emptyFieldsForLanguage.forEach(field => {
+            const index = newValues.value.indexOf(field)
+            if (index > -1) newValues.value.splice(index, 1)
+          })
+        } else if (!hasExistingValue && emptyFieldsForLanguage.length > 1) {
+          // For languages without existing values, keep only one empty field
+          const fieldsToRemove = emptyFieldsForLanguage.slice(1)
+          fieldsToRemove.forEach(field => {
+            const index = newValues.value.indexOf(field)
+            if (index > -1) newValues.value.splice(index, 1)
+          })
+        }
+      }
+    })
+  } else if (props.isList) {
+    // Non-multilingual list: always need exactly one empty field
+    const emptyFields = newValues.value.filter(x => x._id === undefined)
+    if (emptyFields.length === 0) {
+      newValues.value.push({})
+    } else if (emptyFields.length > 1) {
+      // Remove extra empty fields, keep only the first one
+      const fieldsToRemove = emptyFields.slice(1)
+      fieldsToRemove.forEach(field => {
+        const index = newValues.value.indexOf(field)
+        if (index > -1) newValues.value.splice(index, 1)
+      })
+    }
+  }
+}
 
 async function updateValue (newValue) {
   const oldValue = oldValues.value.find((x) => x._id === newValue._id) || {}
@@ -111,6 +149,13 @@ async function updateValue (newValue) {
   }
 
   if (!newValue.counter && value === oldValue[property] && language === oldValue.language) return
+
+  // Handle language change on empty field for multilingual properties
+  if (props.isMultilingual && !_id && (value === null || value === undefined || value === '') && language !== oldValue.language) {
+    // Just update the language locally, no API call needed
+    manageEmptyFields()
+    return
+  }
 
   if (!_id && (value === null || value === undefined || value === '')) return
 
@@ -163,7 +208,7 @@ async function updateValue (newValue) {
   }
 
   syncValues()
-  addListValue(_id)
+  manageEmptyFields()
 
   isUpdating.value = false
   loadingInputs.value.splice(loadingInputs.value.indexOf(_id), 1)
@@ -306,37 +351,6 @@ async function deleteFile (file) {
 function syncValues () {
   oldValues.value = cloneData(newValues.value)
 }
-
-function addListValue (_id) {
-  // For multilingual properties (both list and non-list), ensure all languages have empty fields
-  if (props.isMultilingual) {
-    languageOptions.forEach(langOption => {
-      const hasEmptyForLanguage = newValues.value.some(x =>
-        x._id === undefined && x.language === langOption.value
-      )
-
-      if (!hasEmptyForLanguage) {
-        newValues.value.push({ language: langOption.value })
-      }
-    })
-
-    // For non-list multilingual properties, we're done
-    if (!props.isList) return
-    return
-  }
-
-  // For non-multilingual properties, only proceed if it's a list
-  if (!props.isList) return
-
-  // For non-multilingual list properties
-  const emptyCount = newValues.value.filter((x) => x._id === undefined).length
-
-  // Don't add more than one empty value at a time
-  if (emptyCount >= 1) return
-
-  // Add empty value only if none exists
-  newValues.value.push({})
-}
 </script>
 
 <template>
@@ -396,7 +410,8 @@ function addListValue (_id) {
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @blur="updateValue(value)"
-        @focus="addListValue(value._id)"
+        @focus="manageEmptyFields()"
+        @update:value="manageEmptyFields()"
       />
 
       <n-select
@@ -407,7 +422,7 @@ function addListValue (_id) {
         :options="setOptions"
         :readonly="disabled"
         @update:value="updateValue(value)"
-        @focus="addListValue(value._id)"
+        @focus="manageEmptyFields()"
       />
 
       <n-input
@@ -422,7 +437,8 @@ function addListValue (_id) {
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @blur="updateValue(value)"
-        @focus="addListValue(value._id)"
+        @focus="manageEmptyFields()"
+        @update:value="manageEmptyFields()"
       />
 
       <n-input-number
@@ -437,7 +453,8 @@ function addListValue (_id) {
         :format="value => value?.toLocaleString(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })"
         :parse="value => parseFloat(value?.replace(/,/g, '.'))"
         @blur="updateValue(value)"
-        @focus="addListValue(value._id)"
+        @focus="manageEmptyFields()"
+        @update:value="manageEmptyFields()"
       />
 
       <div
@@ -483,7 +500,7 @@ function addListValue (_id) {
         :readonly="disabled"
         :query="referenceQuery"
         :options="referenceOptions"
-        @focus="addListValue(value._id)"
+        @focus="manageEmptyFields()"
         @update:value="updateValue(value)"
       />
 
@@ -494,7 +511,8 @@ function addListValue (_id) {
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @blur="updateValue(value)"
-        @focus="addListValue(value._id)"
+        @focus="manageEmptyFields()"
+        @update:value="manageEmptyFields()"
       />
 
       <my-button
