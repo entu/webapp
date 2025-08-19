@@ -69,16 +69,13 @@ function manageEmptyFields () {
       )
 
       if (props.isList) {
-        // List: always need exactly two empty fields per language
-        if (emptyFieldsForLanguage.length < 2) {
-          const fieldsToAdd = 2 - emptyFieldsForLanguage.length
-          for (let i = 0; i < fieldsToAdd; i++) {
-            newValues.value.push({ language: langOption.value })
-          }
+        // List: always need exactly one empty field per language
+        if (emptyFieldsForLanguage.length === 0) {
+          newValues.value.push({ language: langOption.value })
         }
-        else if (emptyFieldsForLanguage.length > 2) {
-          // Remove extra empty fields, keep only the first two
-          emptyFieldsForLanguage.slice(2).forEach((field) => {
+        else if (emptyFieldsForLanguage.length > 1) {
+          // Remove extra empty fields, keep only the first one
+          emptyFieldsForLanguage.slice(1).forEach((field) => {
             const index = newValues.value.indexOf(field)
             if (index > -1) newValues.value.splice(index, 1)
           })
