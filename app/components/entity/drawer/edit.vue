@@ -108,20 +108,6 @@ const properties = computed(() => {
       }
     }
 
-    if (property.list || property.values?.length === 0) {
-      const empty = {}
-
-      if (property.multilingual) {
-        empty.language = locale.value
-      }
-
-      if (property.default) {
-        empty.string = property.default
-      }
-
-      property.values.push(empty)
-    }
-
     property.values.sort(propertyValuesSorter)
 
     propsObject[group].ordinal += ordinal
