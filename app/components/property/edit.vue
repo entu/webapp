@@ -447,6 +447,7 @@ function syncValues () {
       <n-select
         v-else-if="type === 'string' && set.length > 0"
         v-model:value="value.string"
+        clearable
         placeholder=""
         :loading="loadingInputs.includes(value._id)"
         :options="setOptions"
