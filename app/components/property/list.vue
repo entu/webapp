@@ -35,7 +35,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
             : (property.label || property.name)
         }}
         <div
-          v-if="property.description || property.sharing === 'public'"
+          v-if="property.description || property.sharing === 'public' || property.sharing === 'domain'"
           class="-mt-0.5 flex flex-col gap-0.5"
         >
           <n-popover
@@ -72,6 +72,23 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
 
             <div class="text-sm">
               {{ t('publicProperty') }}
+            </div>
+          </n-popover>
+
+          <n-popover
+            v-if="userId && property.sharing === 'domain'"
+            class="max-w-sm text-sm"
+            placement="top"
+          >
+            <template #trigger>
+              <my-icon
+                icon="sharing-domain"
+                class="cursor-help text-sm text-yellow-600"
+              />
+            </template>
+
+            <div class="text-sm">
+              {{ t('domainProperty') }}
             </div>
           </n-popover>
         </div>
@@ -113,6 +130,8 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
 <i18n lang="yaml">
   en:
     publicProperty: If entity is public, then this property is visible to everyone.
+    domainProperty: If entity is visible to anyone with account, then this property is visible to them.
   et:
     publicProperty: Kui objekt on avalik, siis see parameeter on kõigile nähtav.
+    domainProperty: Kui objekt on nähtav kõigile sisse logitud kasutajatele, siis see parameeter on neile nähtav.
 </i18n>
