@@ -94,7 +94,7 @@ export default defineNuxtConfig({
     ],
     defaultLocale: 'en',
     strategy: 'no_prefix',
-    vueI18n: './.config/i18n.config.ts'
+    vueI18n: '~~/.config/i18n.config.ts'
   },
   icon: {
     customCollections: [{
@@ -104,6 +104,6 @@ export default defineNuxtConfig({
   },
   tailwindcss: {
     cssPath: './app/assets/tailwind.css',
-    configPath: './.config/tailwind.config.ts'
+    configPath: '~~/.config/tailwind.config.ts'
   }
 })
