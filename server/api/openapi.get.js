@@ -5,11 +5,12 @@ export default defineEventHandler(async () => {
   // Filter out paths that include /_
   if (openapi.paths) {
     const filteredPaths = Object.fromEntries(
-      Object.entries(openapi.paths).filter(([path]) => !path.includes('/_')
-        && path.startsWith('/api/')
+      Object.entries(openapi.paths).filter(([path]) => path.startsWith('/api/')
+        && !path.includes('/_')
         && !path.startsWith('/api/docs')
-        && path !== '/api/openapi'
-        && path !== '/api/stripe'
+        && !path.startsWith('/api/openapi')
+        && !path.startsWith('/api/passkey')
+        && !path.startsWith('/api/stripe')
       )
     )
     openapi.paths = filteredPaths
