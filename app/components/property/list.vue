@@ -35,7 +35,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
             : (property.label || property.name)
         }}
         <div
-          v-if="property.description || property.public"
+          v-if="property.description || property.sharing === 'public'"
           class="-mt-0.5 flex flex-col gap-0.5"
         >
           <n-popover
@@ -59,7 +59,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
           </n-popover>
 
           <n-popover
-            v-if="userId && property.public"
+            v-if="userId && property.sharing === 'public'"
             class="max-w-sm text-sm"
             placement="top"
           >
