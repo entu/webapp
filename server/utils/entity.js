@@ -10,7 +10,7 @@ export async function cleanupEntity (entu, entity, _thumbnail) {
     result = { ...result, ...entity.private }
   }
   else if (entu.userStr && entity.access?.includes('domain')) {
-    result = { ...result, ...entity.public, ...entity.domain, ...entity.private } // must set to domain only after all is aggregated
+    result = { ...result, ...entity.domain }
   }
   else if (entity.access?.includes('public')) {
     result = { ...result, ...entity.public }
