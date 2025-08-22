@@ -35,6 +35,9 @@ export default defineEventHandler((event) => {
       if (entu.token.accounts?.[entu.account]) {
         entu.user = getObjectId(entu.token.accounts[entu.account])
         entu.userStr = entu.token.accounts[entu.account]
+      }
+
+      if (entu.token?.user?.email) {
         entu.email = entu.token.user.email
       }
     }
