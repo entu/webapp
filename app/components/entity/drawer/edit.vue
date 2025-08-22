@@ -35,6 +35,8 @@ const title = computed(() => {
   if (!entityParentId.value && entityId.value) {
     return t('titleEdit', { name: entity.value.type?.label?.toLowerCase() })
   }
+
+  return ''
 })
 
 const entityType = computed(() => entityTypes.value?.[typeId.value] || {})
@@ -66,6 +68,7 @@ const plugins = computed(() => entityType.value?.plugins?.filter((x) => x.type =
 const entity = computed(() => {
   const result = {
     _id: rawEntity.value?._id,
+    _sharing: getValue(rawEntity.value?._sharing),
     name: getValue(rawEntity.value?.name),
     type: entityType.value?.type || {},
     props: entityTypes.value[typeId.value]?.props.map((x) => ({ ...x, values: [] })) || []
@@ -202,6 +205,7 @@ async function onDelete () {
             v-model:entity-parent-id="entityParentId"
             v-model:entity-type-id="entityTypeId"
             v-model:is-updating="isUpdating"
+            :entity-sharing="entity._sharing"
             edit
           />
         </div>

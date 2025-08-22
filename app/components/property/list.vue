@@ -11,6 +11,7 @@ const entityTypeId = defineModel('entityTypeId', { type: String, default: undefi
 const isUpdating = defineModel('isUpdating', { type: Boolean, default: false })
 
 const props = defineProps({
+  entitySharing: { type: String, default: undefined },
   properties: { type: Array, required: true },
   edit: { type: Boolean, default: false }
 })
@@ -23,10 +24,10 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
     <div
       v-for="property in visibleProperties"
       :key="property.name"
-      class="grid grid-cols-3 gap-3 border-t border-gray-100 first-of-type:border-t-0"
+      class="grid grid-cols-3 gap-2 border-t border-gray-100 first-of-type:border-t-0"
     >
       <div
-        class="items-top flex justify-end gap-1 py-2 text-right font-medium text-[#1E434C]"
+        class="flex justify-end gap-2 py-2 text-right font-medium text-[#1E434C]"
         :class="{ 'text-red-700': property.mandatory && (edit || !property.values) }"
       >
         {{
@@ -35,9 +36,62 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
             : (property.label || property.name)
         }}
         <div
-          v-if="property.description || property.sharing === 'public' || property.sharing === 'domain'"
-          class="-mt-0.5 flex flex-col gap-0.5"
+          class="mt-1.5 flex w-2.5 flex-col gap-0.5"
+          :class="{ '!-my-0.5': userId && entitySharing && property.description && property.sharing }"
         >
+          <template v-if="userId && entitySharing && property.sharing">
+            <n-popover
+              v-if="entitySharing === 'public' && property.sharing === 'public'"
+              class="max-w-sm text-sm"
+              placement="top"
+            >
+              <template #trigger>
+                <my-icon
+                  icon="sharing-public"
+                  class="cursor-help text-sm text-orange-400"
+                />
+              </template>
+
+              <div class="text-sm">
+                {{ t('publicProperty') }}
+              </div>
+            </n-popover>
+
+            <n-popover
+              v-if="entitySharing === 'public' && property.sharing === 'domain'"
+              class="max-w-sm text-sm"
+              placement="top"
+            >
+              <template #trigger>
+                <my-icon
+                  icon="sharing-domain"
+                  class="cursor-help text-sm text-yellow-600"
+                />
+              </template>
+
+              <div class="text-sm">
+                {{ t('domainProperty') }}
+              </div>
+            </n-popover>
+
+            <n-popover
+              v-if="entitySharing === 'domain' && ['domain', 'public'].includes(property.sharing)"
+              class="max-w-sm text-sm"
+              placement="top"
+            >
+              <template #trigger>
+                <my-icon
+                  icon="sharing-domain"
+                  class="cursor-help text-sm text-yellow-600"
+                />
+              </template>
+
+              <div class="text-sm">
+                {{ t('domainProperty') }}
+              </div>
+            </n-popover>
+          </template>
+
           <n-popover
             v-if="property.description"
             class="max-w-sm text-sm"
@@ -57,46 +111,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
               {{ property.description }}
             </div>
           </n-popover>
-
-          <n-popover
-            v-if="userId && property.sharing === 'public'"
-            class="max-w-sm text-sm"
-            placement="top"
-          >
-            <template #trigger>
-              <my-icon
-                icon="sharing-public"
-                class="float-right cursor-help text-sm text-orange-400"
-              />
-            </template>
-
-            <div class="text-sm">
-              {{ t('publicProperty') }}
-            </div>
-          </n-popover>
-
-          <n-popover
-            v-if="userId && property.sharing === 'domain'"
-            class="max-w-sm text-sm"
-            placement="top"
-          >
-            <template #trigger>
-              <my-icon
-                icon="sharing-domain"
-                class="cursor-help text-sm text-yellow-600"
-              />
-            </template>
-
-            <div class="text-sm">
-              {{ t('domainProperty') }}
-            </div>
-          </n-popover>
         </div>
-
-        <div
-          v-else
-          class="size-3"
-        />
       </div>
 
       <div class="col-span-2 py-1">
@@ -129,9 +144,9 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
 
 <i18n lang="yaml">
   en:
-    publicProperty: If entity is public, then this property is visible to everyone.
-    domainProperty: If entity is visible to anyone with account, then this property is visible to them.
+    publicProperty: This property is public and visible to everyone.
+    domainProperty: This property is visible to anyone who is logged in.
   et:
-    publicProperty: Kui objekt on avalik, siis see parameeter on kõigile nähtav.
-    domainProperty: Kui objekt on nähtav kõigile sisse logitud kasutajatele, siis see parameeter on neile nähtav.
+    publicProperty: See parameeter on avalik ja kõigile nähtav.
+    domainProperty: See parameeter on nähtav kõigile sisse logitud kasutajatele.
 </i18n>
