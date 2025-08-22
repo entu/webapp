@@ -257,6 +257,7 @@ onMounted(async () => {
                 v-if="pg.children && pg.children.some(x => x.mandatory || x.values)"
                 class="pl-5"
                 :properties="pg.children"
+                :entity-sharing="entity._sharing"
               />
             </template>
           </div>
