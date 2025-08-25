@@ -174,22 +174,22 @@ export default defineEventHandler(async (event) => {
 
     switch (type) {
       case 'reference':
-        value = getObjectId(v)
+        value = operator === 'in' ? v.split(',').map(getObjectId) : getObjectId(v)
         break
       case 'boolean':
-        value = v.toLowerCase() === 'true'
+        value = operator === 'in' ? v.split(',').map((x) => x.toLowerCase() === 'true') : v.toLowerCase() === 'true'
         break
       case 'number':
-        value = Number(v)
+        value = operator === 'in' ? v.split(',').map(Number) : Number(v)
         break
       case 'filesize':
-        value = Number(v)
+        value = operator === 'in' ? v.split(',').map(Number) : Number(v)
         break
       case 'date':
-        value = new Date(v)
+        value = operator === 'in' ? v.split(',').map((x) => new Date(x)) : new Date(v)
         break
       case 'datetime':
-        value = new Date(v)
+        value = operator === 'in' ? v.split(',').map((x) => new Date(x)) : new Date(v)
         break
       default:
         if (operator === 'regex' && v.includes('/')) {
@@ -198,12 +198,15 @@ export default defineEventHandler(async (event) => {
         else if (operator === 'exists') {
           value = v.toLowerCase() === 'true'
         }
+        else if (operator === 'in') {
+          value = v.split(',')
+        }
         else {
           value = v
         }
     }
 
-    if (['gt', 'gte', 'lt', 'lte', 'ne', 'regex', 'exists'].includes(operator)) {
+    if (['gt', 'gte', 'lt', 'lte', 'ne', 'regex', 'exists', 'in'].includes(operator)) {
       filter[`private.${field}.${type}`] = {
         ...filter[`private.${field}.${type}`] || {},
         [`$${operator}`]: value
