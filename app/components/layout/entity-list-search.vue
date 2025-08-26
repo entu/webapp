@@ -108,10 +108,10 @@ watch(() => searchForm.value.types, async (newTypes) => {
   })
 
   const propOptions = response.entities?.map((x) => ({
-    value: `${getValue(x.name).trim()}.${getPropertySearchField(getValue(x.type).trim())}`,
-    label: getValue(x.label).trim() || getValue(x.name).trim(),
-    parent: getValue(x._parent).trim(),
-    name: getValue(x.name).trim(),
+    value: `${getValue(x.name)?.trim()}.${getPropertySearchField(getValue(x.type).trim())}`,
+    label: getValue(x.label)?.trim() || getValue(x.name)?.trim(),
+    parent: getValue(x._parent)?.trim(),
+    name: getValue(x.name)?.trim(),
     type: getValue(x.type).trim()
   }))?.reduce((acc, curr) => {
     const existingValue = acc.find((x) => x.value === curr.value)

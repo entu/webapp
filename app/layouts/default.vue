@@ -40,13 +40,14 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
         v-model:size="listWidth"
         direction="horizontal"
         pane1-class="print:hidden"
-        :max="0.50"
-        :min="0.20"
+        :max="1"
+        :min="0.2"
         :pane1-class="!menuCollapsed ? 'py-2' : ''"
         :pane2-class="!isQuery ? 'pl-4 py-2 grow overflow-y-auto' : 'py-2 grow overflow-y-auto'"
       >
         <template #1>
-          <layout-entity-list />
+          <layout-entity-list v-if="listWidth < 0.5" />
+          <layout-entity-table v-else />
         </template>
 
         <template #resize-trigger>
