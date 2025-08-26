@@ -57,9 +57,6 @@ watch(() => route.query, () => {
     if (['q', '_type.string', '_type.string.in', 'sort', 'limit', 'skip'].includes(key)) return
 
     const fieldArray = key.split('.')
-    const field = fieldArray.join('.')
-    const fieldType = getPropertyType(field)
-
     let operator = fieldArray.at(-1)
     let value = route.query[key]
 
@@ -69,6 +66,9 @@ watch(() => route.query, () => {
     else {
       fieldArray.pop()
     }
+
+    const field = fieldArray.join('.')
+    const fieldType = getPropertyType(field)
 
     if (fieldType === 'boolean' && operator !== 'exists') {
       value = value.toLowerCase() === 'true'
