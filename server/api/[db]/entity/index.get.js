@@ -310,6 +310,8 @@ export default defineEventHandler(async (event) => {
   }
 
   return {
+    pipeline,
+    pipelineCount: entities.length,
     entities: cleanedEntities,
     count: count?.at(0)?._count || 0,
     limit,

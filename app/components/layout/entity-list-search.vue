@@ -23,8 +23,9 @@ const loading = ref(false)
 
 // Sort options with common fields
 const sortOptions = [
-  { value: '_id', label: t('created') },
-  { value: '_changed', label: t('changed') },
+  { value: '', label: t('id') },
+  { value: '_created.datetime', label: t('created') },
+  { value: '_changed.datetime', label: t('changed') },
   { value: 'name.string', label: t('name') }
 ]
 
@@ -56,7 +57,11 @@ watch(() => route.query, () => {
     if (['q', '_type.string', '_type.string.in', 'sort', 'limit', 'skip'].includes(key)) return
 
     const fieldArray = key.split('.')
+    const field = fieldArray.join('.')
+    const fieldType = getPropertyType(field)
+
     let operator = fieldArray.at(-1)
+    let value = route.query[key]
 
     if (!['exists', 'gt', 'gte', 'lt', 'lte', 'ne', 'regex'].includes(operator)) {
       operator = ''
@@ -65,10 +70,20 @@ watch(() => route.query, () => {
       fieldArray.pop()
     }
 
+    if (fieldType === 'boolean' && operator !== 'exists') {
+      value = value.toLowerCase() === 'true'
+    }
+    else if (fieldType === 'number' || fieldType === 'filesize') {
+      value = Number(value)
+    }
+    else if (fieldType === 'date' || fieldType === 'datetime') {
+      value = Number(value)
+    }
+
     searchForm.value.properties.push({
-      field: fieldArray.join('.'),
+      field,
       operator,
-      value: route.query[key]
+      value
     })
   })
 
@@ -473,6 +488,7 @@ onMounted(async () => {
     sortBy: Sort By
     ascending: Ascending
     descending: Descending
+    id: ID
     created: Created
     changed: Changed
     name: Name
@@ -510,6 +526,7 @@ onMounted(async () => {
     sortBy: Järjesta
     ascending: Kasvav
     descending: Kahanev
+    id: ID
     created: Loodud
     changed: Muudetud
     name: Nimi
