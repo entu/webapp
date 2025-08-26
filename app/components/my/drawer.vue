@@ -27,6 +27,8 @@ onKeyStroke('Escape', () => emit('close'))
     :close-on-esc="false"
     :default-width="width"
     :mask-closable="false"
+    :max-width="1000"
+    :min-width="500"
     @mask-click="emit('close')"
   >
     <n-drawer-content
