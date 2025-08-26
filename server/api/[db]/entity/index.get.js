@@ -186,10 +186,10 @@ export default defineEventHandler(async (event) => {
         value = operator === 'in' ? v.split(',').map(Number) : Number(v)
         break
       case 'date':
-        value = operator === 'in' ? v.split(',').map((x) => new Date(x)) : new Date(v)
+        value = operator === 'in' ? v.split(',').map(parseDate) : parseDate(v)
         break
       case 'datetime':
-        value = operator === 'in' ? v.split(',').map((x) => new Date(x)) : new Date(v)
+        value = operator === 'in' ? v.split(',').map(parseDate) : parseDate(v)
         break
       default:
         if (operator === 'regex' && v.includes('/')) {
@@ -318,3 +318,21 @@ export default defineEventHandler(async (event) => {
     skip
   }
 })
+
+function parseDate (dateValue) {
+  try {
+    const timestampValue = Number(dateValue)
+
+    if (isNaN(timestampValue)) {
+      return new Date(dateValue)
+    }
+    else {
+      return new Date(timestampValue)
+    }
+  }
+  catch (e) {
+    console.error('Error parsing date:', dateValue)
+
+    return null
+  }
+}
