@@ -519,9 +519,9 @@ onMounted(async () => {
   et:
     title: Otsing
 
-    searchQuery: Otsi tekst
+    searchQuery: Teksti otsing
     searchQueryPlaceholder: Sisesta otsinguterminid...
-    entityTypes: Olemitüübid
+    entityTypes: Objekti tüüp
     entityTypesPlaceholder: Vali objekti tüüp
     sortBy: Järjesta
     ascending: Kasvav
