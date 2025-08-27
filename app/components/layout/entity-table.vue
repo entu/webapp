@@ -101,13 +101,13 @@ async function getEntities () {
 
     <div
       ref="listElement"
-      class="relative max-h-full w-full overflow-auto"
+      class="relative grow overflow-auto border-t border-gray-200"
     >
       <table
         v-if="entitiesList.length > 0"
-        class="w-full border-collapse"
+        class="w-full border-collapse "
       >
-        <thead class="sticky top-0 z-10 border-y border-gray-200 bg-gray-50">
+        <thead class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50">
           <tr>
             <th
               v-for="column in tableColumns"
@@ -190,7 +190,8 @@ async function getEntities () {
 
     <layout-entity-list-loading
       v-if="entitiesCount !== 0"
-      :is-loading="isLoading || isLoadingOnScroll"
+      class="max-w-96"
+      :is-loading="isLoadingOnScroll"
       :loaded-count="entitiesList.length"
       :total-count="entitiesCount"
     />

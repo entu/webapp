@@ -16,15 +16,13 @@ const progressPercentage = computed(() => {
 </script>
 
 <template>
-  <div class="sticky bottom-0 mx-auto w-full max-w-96 space-y-1 bg-gradient-to-t from-white to-transparent px-2 py-2.5 text-center">
-    <div class="flex justify-between text-sm">
+  <div class="sticky bottom-0 mx-auto w-full space-y-1 bg-gradient-to-t from-white to-transparent px-2 py-2.5 text-center">
+    <div
+      v-if="totalCount !== null"
+      class="flex justify-between text-sm"
+    >
       <span
-        v-if="totalCount === null"
-        class="w-full text-center"
-      >{{ t('loading') }}</span>
-
-      <span
-        v-else-if="totalCount === loadedCount"
+        v-if="totalCount === loadedCount"
         class="w-full text-center font-semibold"
       >{{ t('foundTotal', { total: totalCount }) }}</span>
 
@@ -42,18 +40,16 @@ const progressPercentage = computed(() => {
       :height="6"
       :percentage="progressPercentage"
       :show-indicator="false"
-      :processing="isLoading || isLoadingOnScroll"
+      :processing="isLoading"
     />
   </div>
 </template>
 
 <i18n lang="yaml">
   en:
-    loading: Loading...
     foundTotal: 'Found {total}'
     loadedCount: 'Loaded {loaded}'
   et:
-    loading: Laadimine...
     foundTotal: 'Leiti {total}'
     loadedCount: 'Laaditud {loaded}'
 </i18n>

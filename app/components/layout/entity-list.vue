@@ -103,7 +103,7 @@ function color () {
 
     <div
       ref="listElement"
-      class="relative max-h-full w-full overflow-y-auto py-1"
+      class="relative grow overflow-y-auto py-1"
     >
       <nuxt-link
         v-for="(entity, idx) in entitiesList"
@@ -144,7 +144,7 @@ function color () {
 
     <layout-entity-list-loading
       v-if="entitiesCount !== 0"
-      :is-loading="isLoading || isLoadingOnScroll"
+      :is-loading="isLoadingOnScroll"
       :loaded-count="entitiesList.length"
       :total-count="entitiesCount"
     />
