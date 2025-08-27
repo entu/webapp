@@ -390,45 +390,56 @@ onMounted(async () => {
     <transition>
       <div
         v-if="!isQuery && stats"
-        class="flex size-full flex-col justify-center px-8 md:mx-auto md:min-w-fit lg:w-1/2 xl:w-1/2"
+        class="flex size-full flex-col gap-24 px-8 md:mx-auto md:min-w-fit lg:w-1/2 xl:w-1/2"
         vertical
       >
-        <my-stats-bar
-          class="my-3"
-          color="rgb(23,162,184)"
-          deleted-color="rgba(23,162,184,.3)"
-          :label="t('entities')"
-          :usage="stats.entities.usage"
-          :deleted="stats.entities.deleted"
-          :limit="stats.entities.limit"
-        />
-        <my-stats-bar
-          class="my-3"
-          color="rgb(255,193,7)"
-          deleted-color="rgba(255,193,7,.3)"
-          :label="t('properties')"
-          :usage="stats.properties.usage"
-          :deleted="stats.properties.deleted"
-        />
-        <my-stats-bar
-          class="my-3"
-          is-bytes
-          color="rgb(40,167,69)"
-          deleted-color="rgba(40,167,69,.3)"
-          :label="t('files')"
-          :usage="stats.files.usage"
-          :deleted="stats.files.deleted"
-          :limit="stats.files.limit"
-        />
-        <my-stats-bar
-          class="my-3"
-          color="rgb(108,117,125)"
-          deleted-color="rgba(108,117,125,.3)"
-          show-total
-          :label="t('requests')"
-          :usage="stats.requests.usage"
-          :limit="stats.requests.limit"
-        />
+        <div class="flex grow flex-col justify-center">
+          <my-stats-bar
+            class="my-3"
+            color="rgb(23,162,184)"
+            deleted-color="rgba(23,162,184,.3)"
+            :label="t('entities')"
+            :usage="stats.entities.usage"
+            :deleted="stats.entities.deleted"
+            :limit="stats.entities.limit"
+          />
+          <my-stats-bar
+            class="my-3"
+            color="rgb(255,193,7)"
+            deleted-color="rgba(255,193,7,.3)"
+            :label="t('properties')"
+            :usage="stats.properties.usage"
+            :deleted="stats.properties.deleted"
+          />
+          <my-stats-bar
+            class="my-3"
+            is-bytes
+            color="rgb(40,167,69)"
+            deleted-color="rgba(40,167,69,.3)"
+            :label="t('files')"
+            :usage="stats.files.usage"
+            :deleted="stats.files.deleted"
+            :limit="stats.files.limit"
+          />
+          <my-stats-bar
+            class="my-3"
+            color="rgb(108,117,125)"
+            deleted-color="rgba(108,117,125,.3)"
+            show-total
+            :label="t('requests')"
+            :usage="stats.requests.usage"
+            :limit="stats.requests.limit"
+          />
+
+          <changelog class="mt-24 border-t px-2 pt-2" />
+        </div>
+
+        <div class="pb-4 text-center text-sm text-gray-500">
+          <a
+            target="_blank"
+            :href="t('termsUrl')"
+          >{{ t('terms') }}</a>
+        </div>
       </div>
     </transition>
 
@@ -474,16 +485,6 @@ onMounted(async () => {
       :raw-entity="rawEntity"
       @close="onDrawerClose()"
     />
-
-    <div
-      v-if="!isQuery && !entityId"
-      class="absolute inset-x-0 bottom-0 text-center text-sm text-gray-500"
-    >
-      <a
-        target="_blank"
-        :href="t('termsUrl')"
-      >{{ t('terms') }}</a>
-    </div>
   </div>
 </template>
 

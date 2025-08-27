@@ -10,8 +10,11 @@ body,
   @apply antialiased;
 }
 
-a.link {
+.link {
   @apply text-sky-800;
+}
+
+a.link {
   @apply hover:underline;
 }
 
