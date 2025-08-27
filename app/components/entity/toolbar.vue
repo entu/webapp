@@ -17,23 +17,24 @@ const { width: windowWidth } = useWindowSize()
 
 const isOverflowing = ref(true)
 const minWidthForLabels = ref(0)
+const isMeasuring = ref(false)
 
 let resizeObserver = null
 
-// Try to show labels, measure, and decide
 const checkOverflow = useDebounceFn(() => {
   if (!toolbarRef.value) return
 
   const element = toolbarRef.value
 
   if (isOverflowing.value) {
-    // Currently showing small buttons - try showing labels to test if they fit
+    isMeasuring.value = true
     isOverflowing.value = false
 
     nextTick(() => {
       if (!toolbarRef.value) return
 
       const fitsWithLabels = toolbarRef.value.scrollWidth <= toolbarRef.value.clientWidth
+      isMeasuring.value = false
 
       if (fitsWithLabels) {
         // Labels fit! Store this width as minimum needed
@@ -62,13 +63,6 @@ const checkOverflow = useDebounceFn(() => {
   }
 }, 200)
 
-// Only trigger overflow check when window gets bigger than our stored minimum
-watch(windowWidth, (newWidth) => {
-  if (isOverflowing.value && newWidth <= minWidthForLabels.value) return
-
-  checkOverflow()
-})
-
 const menuStore = useMenueStore()
 const { activeMenu, addFromEntities } = storeToRefs(menuStore)
 
@@ -84,6 +78,16 @@ const addChildOptions = computed(() => {
   result.sort((a, b) => a.label.localeCompare(b.label))
 
   return result
+})
+
+watch(windowWidth, (newWidth) => {
+  if (isOverflowing.value && newWidth <= minWidthForLabels.value) return
+
+  checkOverflow()
+})
+
+watch(() => props.right, () => {
+  checkOverflow()
 })
 
 onMounted(() => {
@@ -104,6 +108,7 @@ onUnmounted(() => {
   <div
     ref="toolbarRef"
     class="mx-2 flex gap-2 print:hidden"
+    :class="{ 'opacity-0': isMeasuring }"
   >
     <div class="grow">
       <entity-toolbar-add
