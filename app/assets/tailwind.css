@@ -19,7 +19,7 @@ a.link {
 }
 
 @media print {
-  *:not(.iconify) {
+  *:not(.print-as-is) {
     @apply !h-auto;
   }
 }

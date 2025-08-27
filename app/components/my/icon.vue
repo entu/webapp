@@ -9,7 +9,7 @@ const iconName = computed(() => props.icon.includes(':') ? props.icon : `local:$
 
 <template>
   <Icon
-    class="text-base"
+    class="print-as-is text-base"
     :name="iconName"
   />
 </template>

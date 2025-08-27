@@ -293,7 +293,7 @@ onMounted(async () => {
           >
             <entity-thumbnail
               v-if="entity._thumbnail"
-              class="w-full flex-none"
+              class="print-as-is w-full flex-none"
               :thumbnail="entity._thumbnail"
               :photos="rawEntity.photo"
             />

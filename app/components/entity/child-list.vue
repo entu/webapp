@@ -202,13 +202,13 @@ onMounted(async () => {
                 <img
                   v-if="row._thumbnail"
                   :src="row._thumbnail"
-                  class="size-6 rounded-full object-cover group-hover:border-sky-800"
+                  class="print-as-is size-6 rounded-full object-cover group-hover:border-sky-800"
                   :class="color()"
                 >
 
                 <div
                   v-else
-                  class="size-6 rounded-full group-hover:border-sky-800"
+                  class="print-as-is size-6 rounded-full group-hover:border-sky-800"
                   :class="color()"
                 />
               </nuxt-link>
