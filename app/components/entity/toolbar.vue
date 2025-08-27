@@ -12,6 +12,63 @@ const props = defineProps({
 const { path, query } = useRoute()
 const { t } = useI18n()
 
+const toolbarRef = ref()
+const { width: windowWidth } = useWindowSize()
+
+const isOverflowing = ref(true)
+const minWidthForLabels = ref(0)
+
+let resizeObserver = null
+
+// Try to show labels, measure, and decide
+const checkOverflow = useDebounceFn(() => {
+  if (!toolbarRef.value) return
+
+  const element = toolbarRef.value
+
+  if (isOverflowing.value) {
+    // Currently showing small buttons - try showing labels to test if they fit
+    isOverflowing.value = false
+
+    nextTick(() => {
+      if (!toolbarRef.value) return
+
+      const fitsWithLabels = toolbarRef.value.scrollWidth <= toolbarRef.value.clientWidth
+
+      if (fitsWithLabels) {
+        // Labels fit! Store this width as minimum needed
+        minWidthForLabels.value = windowWidth.value
+      }
+      else {
+        // Labels don't fit - go back to small buttons
+        isOverflowing.value = true
+        minWidthForLabels.value = windowWidth.value + 100
+      }
+    })
+  }
+  else {
+    // Currently showing labels - check if they still fit
+    const stillFits = element.scrollWidth <= element.clientWidth
+
+    if (stillFits) {
+      // Labels still fit - update our minimum width requirement
+      minWidthForLabels.value = Math.min(minWidthForLabels.value, windowWidth.value)
+    }
+    else {
+      // Labels no longer fit - switch to small buttons
+      isOverflowing.value = true
+      minWidthForLabels.value = windowWidth.value + 50
+    }
+  }
+}, 200)
+
+// Only trigger overflow check when window gets bigger than our stored minimum
+watch(windowWidth, (newWidth) => {
+  if (isOverflowing.value && newWidth <= minWidthForLabels.value) return
+
+  checkOverflow()
+})
+
 const menuStore = useMenueStore()
 const { activeMenu, addFromEntities } = storeToRefs(menuStore)
 
@@ -28,12 +85,31 @@ const addChildOptions = computed(() => {
 
   return result
 })
+
+onMounted(() => {
+  if (!toolbarRef.value) return
+
+  resizeObserver = new ResizeObserver(checkOverflow)
+  resizeObserver.observe(toolbarRef.value)
+
+  nextTick(checkOverflow)
+})
+
+onUnmounted(() => {
+  resizeObserver?.disconnect()
+})
 </script>
 
 <template>
-  <div class="mx-2 flex gap-2 print:hidden">
+  <div
+    ref="toolbarRef"
+    class="mx-2 flex gap-2 print:hidden"
+  >
     <div class="grow">
-      <entity-toolbar-add :options="addByActiveMenuOptions" />
+      <entity-toolbar-add
+        :options="addByActiveMenuOptions"
+        :show-label="!isOverflowing"
+      />
     </div>
 
     <n-button-group
@@ -45,33 +121,34 @@ const addChildOptions = computed(() => {
         icon="expand"
         is-child
         :options="addChildOptions"
+        :show-label="!isOverflowing"
       />
 
       <my-button
         v-if="right.editor"
         icon="edit"
-        :label="t('edit')"
+        :label="isOverflowing ? undefined : t('edit')"
         @click="navigateTo({ path, query, hash: `#edit` }, { replace: true })"
       />
 
       <my-button
         v-if="right.owner"
         icon="copy"
-        :label="t('duplicate')"
+        :label="isOverflowing ? undefined : t('duplicate')"
         @click="navigateTo({ path, query, hash: `#duplicate` }, { replace: true })"
       />
 
       <my-button
         v-if="right.editor"
         icon="tree-view"
-        :label="t('parents')"
+        :label="isOverflowing ? undefined : t('parents')"
         @click="navigateTo({ path, query, hash: `#parents` }, { replace: true })"
       />
 
       <my-button
         v-if="right.owner"
         icon="user-multiple"
-        :label="t('rights')"
+        :label="isOverflowing ? undefined : t('rights')"
         @click="navigateTo({ path, query, hash: `#rights` }, { replace: true })"
       />
     </n-button-group>

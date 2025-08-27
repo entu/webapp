@@ -174,7 +174,7 @@ function color () {
 
 .list-item-text {
   @apply py-3;
-  @apply flex-auto truncate whitespace-nowrap overflow-hidden;
+  @apply flex-auto truncate;
   @apply border-t border-white;
 }
 

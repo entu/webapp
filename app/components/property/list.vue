@@ -30,11 +30,19 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
         class="flex justify-end gap-2 py-2 text-right font-medium text-[#1E434C]"
         :class="{ 'text-red-700': property.mandatory && (edit || !property.values) }"
       >
-        {{
-          property.values && property.values.length > 1
-            ? (property.labelPlural || property.label || property.name)
-            : (property.label || property.name)
-        }}
+        <span
+          v-if="property.values && property.values.length > 1"
+          class="truncate"
+        >
+          {{ property.labelPlural || property.label || property.name }}
+        </span>
+        <span
+          v-else
+          class="truncate"
+        >
+          {{ property.label || property.name }}
+        </span>
+
         <div
           class="mt-1.5 flex w-2.5 flex-col gap-0.5"
           :class="{ '!-my-0.5': userId && entitySharing && property.description && property.sharing }"

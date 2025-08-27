@@ -7,7 +7,8 @@ const { userId } = useUser()
 const props = defineProps({
   options: { type: Array, required: true },
   isChild: { type: Boolean, default: false },
-  icon: { type: String, default: 'add' }
+  icon: { type: String, default: 'add' },
+  showLabel: { type: Boolean, default: false }
 })
 
 const { path, query } = useRoute()
@@ -33,7 +34,7 @@ const label = computed(() => {
   <my-button
     v-if="userId && options.length === 1"
     :icon="icon"
-    :label="label"
+    :label="showLabel ? label : undefined"
     @click="navigateTo({ path, query, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}` }, { replace: true })"
   />
 
@@ -45,7 +46,7 @@ const label = computed(() => {
     <template #trigger>
       <my-button
         :icon="icon"
-        :label="label"
+        :label="showLabel ? label : undefined"
       />
     </template>
 

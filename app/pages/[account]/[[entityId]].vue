@@ -5,6 +5,9 @@ const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 
+const viewRef = ref()
+const { width } = useElementSize(viewRef)
+
 const { accountId } = useAccount()
 const { userId } = useUser()
 
@@ -216,12 +219,16 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="relative flex h-full flex-col">
+  <div
+    ref="viewRef"
+    class="relative flex h-full flex-col"
+  >
     <entity-toolbar
       :entity-id="entityId"
       :right="right"
       :type-id="typeId"
       :type-name="typeName"
+      :max-width="width"
     />
 
     <transition>
