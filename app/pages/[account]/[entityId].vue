@@ -11,7 +11,7 @@ const { userId } = useUser()
 const entityTypeStore = useEntityTypeStore()
 const { entityTypes } = storeToRefs(entityTypeStore)
 
-const entityId = ref(route.params.entity)
+const entityId = ref(route.params.entityId)
 const newEntityId = ref()
 const rawEntity = ref()
 const rawChilds = ref([])

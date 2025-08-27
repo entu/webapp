@@ -88,7 +88,7 @@ const overLimitStr = computed(() => overLimit.value && props.isBytes ? humanFile
 
           <div
             v-if="limitPercent"
-            class="absolute right-0 h-full border-l-2 border-l-red-700 bg-red-700 bg-opacity-50"
+            class="absolute right-0 h-full border-l-2 border-l-red-700 bg-red-700/50"
             :style="`left:${limitPercent}%`"
           />
 

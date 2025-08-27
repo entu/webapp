@@ -53,20 +53,21 @@ onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
   debouncedScroll()
 })
 
-watch(() => route.query, () => {
-  if (locationSearch.value === window.location.search) return
+watch(() => route.query, (value) => {
+  const newSearch = new URLSearchParams(value).toString()
+  if (locationSearch.value === newSearch) return
 
   skip.value = 0
   entitiesCount.value = null
   entitiesList.value = []
-  locationSearch.value = window.location.search
+  locationSearch.value = newSearch
 
   getEntities(true)
 }, { deep: true, immediate: true })
 
 watch(() => route.params.entityId, (value) => {
   scrollIdx.value = entitiesList.value.findIndex((x) => x._id === value) || 0
-})
+}, { immediate: true })
 
 async function getEntities () {
   if (entitiesCount.value > 0 && entitiesCount.value <= skip.value) return

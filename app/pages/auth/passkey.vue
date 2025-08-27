@@ -1,5 +1,5 @@
 <script setup>
-import { NCard, NButton, NSpace, NDivider } from 'naive-ui'
+import { NCard, NButton, NDivider } from 'naive-ui'
 
 const { t } = useI18n()
 const { user } = useUser()

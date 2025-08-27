@@ -152,10 +152,6 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  // Check if user is in _owner
-  console.log(entity.private?._owner)
-  console.log(entu.userStr)
-
   const isOwner = entity.private?._owner?.some((owner) => owner.reference?.toString() === entu.userStr)
 
   if (!isOwner) {

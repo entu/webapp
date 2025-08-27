@@ -8,7 +8,6 @@ const { accountId } = useAccount()
 const { userId } = useUser()
 
 const stats = ref()
-const entityId = ref(route.params.entityId)
 const isLoading = ref(false)
 const newEntityId = ref()
 
@@ -30,18 +29,18 @@ async function onDrawerClose () {
   else {
     await navigateTo({ path: route.path, query: route.query, hash: undefined }, { replace: true })
 
-    loadEntity()
+    loadStats()
   }
 }
 
-watch(() => accountId.value, (value) => {
-  if (value) {
-    useHead({ title: accountId.value })
-  }
+watch(accountId, (value) => {
+  if (!value) return
+
+  useHead({ title: accountId.value })
 }, { immediate: true })
 
-async function loadEntity () {
-  if (!userId.value || isQuery.value || entityId.value) return
+async function loadStats () {
+  if (!userId.value || isQuery.value) return
 
   isLoading.value = true
   stats.value = await apiRequest()
@@ -49,7 +48,7 @@ async function loadEntity () {
 }
 
 onMounted(async () => {
-  await loadEntity()
+  await loadStats()
 })
 </script>
 
@@ -66,7 +65,7 @@ onMounted(async () => {
 
     <transition>
       <div
-        v-if="!isQuery && stats && !entityId"
+        v-if="!isQuery && stats"
         class="flex size-full flex-col gap-8 px-8 md:mx-auto md:min-w-fit lg:w-1/2 xl:w-1/2"
         vertical
       >
