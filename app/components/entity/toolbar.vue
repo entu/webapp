@@ -17,24 +17,24 @@ const { width: windowWidth } = useWindowSize()
 
 const isOverflowing = ref(true)
 const minWidthForLabels = ref(0)
-const isMeasuring = ref(false)
+const isMeasuring = ref(true)
 
 let resizeObserver = null
 
 const checkOverflow = useDebounceFn(() => {
   if (!toolbarRef.value) return
 
+  isMeasuring.value = true
+
   const element = toolbarRef.value
 
   if (isOverflowing.value) {
-    isMeasuring.value = true
     isOverflowing.value = false
 
     nextTick(() => {
       if (!toolbarRef.value) return
 
       const fitsWithLabels = toolbarRef.value.scrollWidth <= toolbarRef.value.clientWidth
-      isMeasuring.value = false
 
       if (fitsWithLabels) {
         // Labels fit! Store this width as minimum needed
@@ -61,6 +61,8 @@ const checkOverflow = useDebounceFn(() => {
       minWidthForLabels.value = windowWidth.value + 50
     }
   }
+
+  isMeasuring.value = false
 }, 200)
 
 const menuStore = useMenueStore()

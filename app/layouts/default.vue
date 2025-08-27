@@ -41,7 +41,7 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
         v-model:size="listWidth"
         direction="horizontal"
         :max="1"
-        :min="0.2"
+        :min="0.25"
         :pane1-class="!menuCollapsed ? 'py-2 print:hidden' : 'print:hidden'"
         :pane2-class="!isQuery ? 'pl-4 py-2 grow overflow-y-auto' : 'py-2 grow overflow-y-auto'"
       >
