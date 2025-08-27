@@ -5,17 +5,13 @@ const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 
-const viewRef = ref()
-const { width } = useElementSize(viewRef)
-
 const { accountId } = useAccount()
 const { userId } = useUser()
 
 const entityTypeStore = useEntityTypeStore()
 const { entityTypes } = storeToRefs(entityTypeStore)
 
-const stats = ref()
-const entityId = ref(route.params.entityId)
+const entityId = ref(route.params.entity)
 const newEntityId = ref()
 const rawEntity = ref()
 const rawChilds = ref([])
@@ -24,8 +20,6 @@ const isLoading = ref(false)
 
 const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
 const typeName = computed(() => getValue(rawEntity.value?._type, 'string'))
-
-const isQuery = computed(() => Object.keys(route.query).length > 0)
 
 const entity = computed(() => {
   if (!rawEntity.value) return {}
@@ -115,9 +109,9 @@ const right = computed(() => ({
   viewer: rawEntity.value?._viewer?.some((x) => x.reference === userId.value) || false
 }))
 
-const drawerType = computed(() => route.hash.replace('#', '').split('-').at(0))
+const drawerType = computed(() => userId.value ? route.hash.replace('#', '').split('-').at(0) : undefined)
 
-const addTypeId = computed(() => route.hash.split('-').at(1))
+const addTypeId = computed(() => userId.value ? route.hash.split('-').at(1) : undefined)
 
 // Drawer visibility computed properties
 const showAddDrawer = computed({
@@ -235,30 +229,21 @@ async function onDrawerClose () {
 onMounted(async () => {
   isLoading.value = true
 
-  if (entityId.value) {
-    loadEntity()
-    loadChilds()
-    loadReferences()
-  }
-  else if (userId.value && !isQuery.value) {
-    stats.value = await apiRequest()
-  }
+  loadEntity()
+  loadChilds()
+  loadReferences()
 
   isLoading.value = false
 })
 </script>
 
 <template>
-  <div
-    ref="viewRef"
-    class="relative flex h-full flex-col"
-  >
+  <div class="relative flex h-full flex-col">
     <entity-toolbar
       :entity-id="entityId"
       :right="right"
       :type-id="typeId"
       :type-name="typeName"
-      :max-width="width"
     />
 
     <transition>
@@ -417,62 +402,6 @@ onMounted(async () => {
       <n-spin />
     </div>
 
-    <transition>
-      <div
-        v-if="!isQuery && stats"
-        class="flex size-full flex-col gap-24 px-8 md:mx-auto md:min-w-fit lg:w-1/2 xl:w-1/2"
-        vertical
-      >
-        <div class="flex grow flex-col justify-center">
-          <my-stats-bar
-            class="my-3"
-            color="rgb(23,162,184)"
-            deleted-color="rgba(23,162,184,.3)"
-            :label="t('entities')"
-            :usage="stats.entities.usage"
-            :deleted="stats.entities.deleted"
-            :limit="stats.entities.limit"
-          />
-          <my-stats-bar
-            class="my-3"
-            color="rgb(255,193,7)"
-            deleted-color="rgba(255,193,7,.3)"
-            :label="t('properties')"
-            :usage="stats.properties.usage"
-            :deleted="stats.properties.deleted"
-          />
-          <my-stats-bar
-            class="my-3"
-            is-bytes
-            color="rgb(40,167,69)"
-            deleted-color="rgba(40,167,69,.3)"
-            :label="t('files')"
-            :usage="stats.files.usage"
-            :deleted="stats.files.deleted"
-            :limit="stats.files.limit"
-          />
-          <my-stats-bar
-            class="my-3"
-            color="rgb(108,117,125)"
-            deleted-color="rgba(108,117,125,.3)"
-            show-total
-            :label="t('requests')"
-            :usage="stats.requests.usage"
-            :limit="stats.requests.limit"
-          />
-
-          <changelog class="mt-24 border-t px-2 pt-2" />
-        </div>
-
-        <div class="pb-4 text-center text-sm text-gray-500">
-          <a
-            target="_blank"
-            :href="t('termsUrl')"
-          >{{ t('terms') }}</a>
-        </div>
-      </div>
-    </transition>
-
     <entity-drawer-edit
       v-model:show="showAddDrawer"
       v-model:entity-id="newEntityId"
@@ -513,10 +442,6 @@ onMounted(async () => {
 
 <i18n lang="yaml">
   en:
-    entities: Entities
-    properties: Properties
-    files: Files
-    requests: Requests in this month
     sharingPrivate: Private
     sharingPrivateDescription: Only authorized users (below) can view this entity. Login is required.
     sharingDomain: Anyone with account
@@ -526,13 +451,7 @@ onMounted(async () => {
     childsCount: 'no childs | {n} child | {n} childs'
     referrersCount: 'no referrers | {n} referrer | {n} referrers'
     error404: Entity not found or you do not have access to it
-    terms: Terms of Service
-    termsUrl: https://www.entu.app/terms
   et:
-    entities: Objekte
-    properties: Parameetreid
-    files: Faile
-    requests: Päringuid selles kuus
     sharingPrivate: Privaatne
     sharingPrivateDescription: Seda objekti saavad vaadata ainult õigustega kasutajad. Sisselogimine on vajalik.
     sharingDomain: Kõik kasutajad
@@ -542,8 +461,6 @@ onMounted(async () => {
     childsCount: 'alamobjekte pole | {n} alamobjekt | {n} alamobjekti'
     referrersCount: 'viitajaid pole | {n} viitaja | {n} viitajat'
     error404: Objekti ei leitud või sul puudub ligipääs sellele
-    terms: Kasutustingimused
-    termsUrl: https://www.entu.app/et/tingimused
 </i18n>
 
 <style scoped>
