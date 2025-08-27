@@ -9,6 +9,7 @@ const { userId } = useUser()
 
 const emit = defineEmits(['close'])
 
+const show = defineModel('show', { type: Boolean, default: true })
 const entityId = defineModel('entityId', { type: String, required: true })
 
 const rawEntity = ref()
@@ -80,6 +81,7 @@ async function onClose () {
 
 <template>
   <my-drawer
+    v-model:show="show"
     :is-loading="isLoading || isUpdating"
     :title="t('title', { name: entityName })"
     :width="500"

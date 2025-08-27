@@ -6,6 +6,7 @@ const { t } = useI18n()
 
 const emit = defineEmits(['close'])
 
+const show = defineModel('show', { type: Boolean, default: true })
 const entityId = defineModel('entityId', { type: String, required: true })
 
 const entityTypeStore = useEntityTypeStore()
@@ -116,6 +117,7 @@ function isPropertyDisabled (property) {
 
 <template>
   <my-drawer
+    v-model:show="show"
     :is-loading="isLoading"
     :title="t('title', { name: entityName })"
     :width="500"

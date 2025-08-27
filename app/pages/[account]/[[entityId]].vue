@@ -119,6 +119,36 @@ const drawerType = computed(() => route.hash.replace('#', '').split('-').at(0))
 
 const addTypeId = computed(() => route.hash.split('-').at(1))
 
+// Drawer visibility computed properties
+const showAddDrawer = computed({
+  get: () => drawerType.value === 'add',
+  set: (value) => { if (!value) onDrawerClose() }
+})
+const showChildDrawer = computed({
+  get: () => drawerType.value === 'child',
+  set: (value) => { if (!value) onDrawerClose() }
+})
+const showEditDrawer = computed({
+  get: () => drawerType.value === 'edit',
+  set: (value) => { if (!value) onDrawerClose() }
+})
+const showDuplicateDrawer = computed({
+  get: () => drawerType.value === 'duplicate',
+  set: (value) => { if (!value) onDrawerClose() }
+})
+const showParentsDrawer = computed({
+  get: () => drawerType.value === 'parents',
+  set: (value) => { if (!value) onDrawerClose() }
+})
+const showRightsDrawer = computed({
+  get: () => drawerType.value === 'rights',
+  set: (value) => { if (!value) onDrawerClose() }
+})
+const showDebugDrawer = computed({
+  get: () => drawerType.value === 'debug',
+  set: (value) => { if (!value) onDrawerClose() }
+})
+
 watch(() => entity?.value?.name, (value) => {
   if (value) {
     useHead({ title: `${value} · ${accountId.value}` })
@@ -444,46 +474,39 @@ onMounted(async () => {
     </transition>
 
     <entity-drawer-edit
-      v-if="drawerType === 'add'"
+      v-model:show="showAddDrawer"
       v-model:entity-id="newEntityId"
       :entity-type-id="addTypeId"
-      @close="onDrawerClose()"
     />
     <entity-drawer-edit
-      v-if="drawerType === 'child'"
+      v-model:show="showChildDrawer"
       v-model:entity-id="newEntityId"
       :entity-parent-id="entityId"
       :entity-type-id="addTypeId"
-      @close="onDrawerClose()"
     />
     <entity-drawer-edit
-      v-if="drawerType === 'edit'"
+      v-model:show="showEditDrawer"
       v-model:entity-id="entityId"
       :can-delete="right.owner"
-      @close="onDrawerClose()"
       @delete="router.back()"
     />
     <entity-drawer-duplicate
-      v-if="drawerType === 'duplicate'"
+      v-model:show="showDuplicateDrawer"
       v-model:entity-id="entityId"
-      @close="onDrawerClose()"
     />
     <entity-drawer-parents
-      v-if="drawerType === 'parents'"
+      v-model:show="showParentsDrawer"
       v-model:entity-id="entityId"
-      @close="onDrawerClose()"
     />
     <entity-drawer-rights
-      v-if="drawerType === 'rights'"
+      v-model:show="showRightsDrawer"
       v-model:entity-id="entityId"
-      @close="onDrawerClose()"
     />
     <entity-drawer-debug
-      v-if="drawerType === 'debug'"
+      v-model:show="showDebugDrawer"
       :entity="entity"
       :properties="properties"
       :raw-entity="rawEntity"
-      @close="onDrawerClose()"
     />
   </div>
 </template>

@@ -4,6 +4,7 @@ import { NDrawer, NDrawerContent, NSpin } from 'naive-ui'
 
 const { t } = useI18n()
 
+const show = defineModel('show', { type: Boolean, default: true })
 const width = defineModel('width', { type: Number, default: window.innerWidth / 2 })
 const isLoading = defineModel('isLoading', { type: Boolean, default: false })
 
@@ -16,20 +17,25 @@ defineProps({
 const closeRef = ref()
 useFocus(closeRef, { initialValue: true })
 
-onKeyStroke('Escape', () => emit('close'))
+function close () {
+  show.value = false
+  emit('close')
+}
+
+onKeyStroke('Escape', close)
 </script>
 
 <template>
   <n-drawer
+    v-model:show="show"
     placement="right"
     resizable
-    show
     :close-on-esc="false"
     :default-width="width"
     :mask-closable="false"
     :max-width="1000"
     :min-width="500"
-    @mask-click="emit('close')"
+    @mask-click="close"
   >
     <n-drawer-content
       body-content-class="!p-0"
@@ -44,7 +50,7 @@ onKeyStroke('Escape', () => emit('close'))
           <my-icon
             class="cursor-pointer hover:bg-slate-100"
             icon="close"
-            @click="emit('close')"
+            @click="close"
           />
         </div>
       </template>
@@ -68,7 +74,7 @@ onKeyStroke('Escape', () => emit('close'))
           <my-button
             ref="closeRef"
             :label="t('close')"
-            @click="emit('close')"
+            @click="close"
           />
         </div>
       </template>

@@ -28,7 +28,7 @@
 
     <!-- Changelog drawer -->
     <my-drawer
-      v-if="showChangelogDrawer"
+      v-model:show="showChangelogDrawer"
       closable
       :title="t('changelog')"
       :width="500"

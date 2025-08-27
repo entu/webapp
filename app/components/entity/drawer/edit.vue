@@ -8,6 +8,7 @@ const { accountId } = useAccount()
 
 const emit = defineEmits(['close', 'delete'])
 
+const show = defineModel('show', { type: Boolean, default: true })
 const entityId = defineModel('entityId', { type: String, default: undefined })
 const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
 const entityTypeId = defineModel('entityTypeId', { type: String, default: undefined })
@@ -166,6 +167,7 @@ async function onDelete () {
 
 <template>
   <my-drawer
+    v-model:show="show"
     :is-loading="isLoading"
     :title="title"
     @close="onClose()"

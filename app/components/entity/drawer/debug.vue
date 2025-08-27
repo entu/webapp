@@ -11,6 +11,8 @@ const { t } = useI18n()
 
 const emit = defineEmits(['close'])
 
+const show = defineModel('show', { type: Boolean, default: true })
+
 defineProps({
   entity: { type: Object, default: () => ({}) },
   properties: { type: Array, default: () => ([]) },
@@ -25,6 +27,7 @@ function showYaml (value) {
 
 <template>
   <my-drawer
+    v-model:show="show"
     :title="t('title')"
     @close="emit('close')"
   >
