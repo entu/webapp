@@ -245,7 +245,10 @@ onMounted(async () => {
 
         <div class="flex gap-5 pr-5 pt-5">
           <div class="grow">
-            <h1 class="mb-4 pl-5 text-2xl font-bold text-[#1E434C]">
+            <h1
+              class="mb-4 pl-5 text-2xl font-bold text-[#1E434C]"
+              @click="$event.altKey && navigateTo({ path: route.path, query: route.query, hash: '#debug' }, { replace: true })"
+            >
               {{ entity.name?.trim() || entity._id }}
             </h1>
 

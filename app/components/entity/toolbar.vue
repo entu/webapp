@@ -152,13 +152,6 @@ onUnmounted(() => {
         @click="navigateTo({ path, query, hash: `#rights` }, { replace: true })"
       />
     </n-button-group>
-
-    <my-button
-      v-if="right.viewer"
-      icon="debug"
-      :bg="false"
-      @click="navigateTo({ path, query, hash: `#debug` }, { replace: true })"
-    />
   </div>
 </template>
 
