@@ -18,6 +18,8 @@ a.link {
   @apply hover:underline;
 }
 
-aside.n-layout-sider {
-  @apply print:hidden;
+@media print {
+  * {
+    @apply !h-auto;
+  }
 }

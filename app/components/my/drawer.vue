@@ -82,15 +82,15 @@ onKeyStroke('Escape', close)
   </n-drawer>
 </template>
 
+<style>
+.n-drawer-header__main {
+  @apply w-full;
+}
+</style>
+
 <i18n lang="yaml">
   en:
     close: Close
   et:
     close: Sulge
 </i18n>
-
-<style>
-.n-drawer-header__main {
-  @apply w-full;
-}
-</style>

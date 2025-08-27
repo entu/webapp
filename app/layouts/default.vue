@@ -19,6 +19,7 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
   >
     <n-layout-sider
       ref="siderRef"
+      class="print:hidden"
       collapse-mode="width"
       collapsed-trigger-class="!top-7.5 !text-white !bg-[#1E434C] !shaddow-none !border-white"
       trigger-class="!top-5 !-left-1 !text-white !opacity-80 !bg-transparent !shaddow-none !border-transparent hover:!border-white"
@@ -39,10 +40,9 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
       <n-split
         v-model:size="listWidth"
         direction="horizontal"
-        pane1-class="print:hidden"
         :max="1"
         :min="0.2"
-        :pane1-class="!menuCollapsed ? 'py-2' : ''"
+        :pane1-class="!menuCollapsed ? 'py-2 print:hidden' : 'print:hidden'"
         :pane2-class="!isQuery ? 'pl-4 py-2 grow overflow-y-auto' : 'py-2 grow overflow-y-auto'"
       >
         <template #1>

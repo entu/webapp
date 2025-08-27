@@ -1,3 +1,36 @@
+<script setup>
+import changelog from '~~/CHANGELOG.md?raw'
+
+const { t, d } = useI18n()
+
+// Drawer state
+const showChangelogDrawer = ref(false)
+
+// Extract the latest changelog entry
+const latestChangelogEntry = computed(() => {
+  if (!changelog) return null
+
+  const sections = changelog.split('## ').filter(Boolean)
+  if (!sections.length) return null
+
+  const firstSection = sections.at(0)
+  const lines = firstSection.split('\n')
+  const dateString = lines[0]
+  const content = lines.slice(1).join('\n').replace(/\*\*:/g, '**<br>')
+
+  // Parse date string (YYYY-MM-DD format)
+  const date = new Date(dateString)
+
+  return { date, content }
+})
+
+const fullChangelogEntry = computed(() => {
+  if (!changelog) return null
+
+  return changelog.replace(/\*\*:/g, '**<br>')
+})
+</script>
+
 <template>
   <div>
     <!-- Latest changelog entry in top right corner -->
@@ -42,39 +75,6 @@
     </my-drawer>
   </div>
 </template>
-
-<script setup>
-import changelog from '~~/CHANGELOG.md?raw'
-
-const { t, d } = useI18n()
-
-// Drawer state
-const showChangelogDrawer = ref(false)
-
-// Extract the latest changelog entry
-const latestChangelogEntry = computed(() => {
-  if (!changelog) return null
-
-  const sections = changelog.split('## ').filter(Boolean)
-  if (!sections.length) return null
-
-  const firstSection = sections.at(0)
-  const lines = firstSection.split('\n')
-  const dateString = lines[0]
-  const content = lines.slice(1).join('\n').replace(/\*\*:/g, '**<br>')
-
-  // Parse date string (YYYY-MM-DD format)
-  const date = new Date(dateString)
-
-  return { date, content }
-})
-
-const fullChangelogEntry = computed(() => {
-  if (!changelog) return null
-
-  return changelog.replace(/\*\*:/g, '**<br>')
-})
-</script>
 
 <style scoped>
 :deep(h2) {

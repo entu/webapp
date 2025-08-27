@@ -2,6 +2,7 @@
 - **Improved toolbar design**: Made the entity toolbar responsive and adaptive to screen width
 - **New debug shortcut**: Removed the debug button and added Alt+click on entity names to access debug info
 - **Changelog**: Added changelog component that displays latest changes with expandable full history drawer
+- **Print functionality**: Fixed print issues where content beyond the first page was not visible
 - **Better component structure**: Refactored property values into reusable components for cleaner code
 
 ## 2025-08-26

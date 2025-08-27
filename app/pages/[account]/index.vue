@@ -67,7 +67,7 @@ onMounted(async () => {
     <transition>
       <div
         v-if="!isQuery && stats && !entityId"
-        class="flex size-full flex-col gap-24 px-8 md:mx-auto md:min-w-fit lg:w-1/2 xl:w-1/2"
+        class="flex size-full flex-col gap-8 px-8 md:mx-auto md:min-w-fit lg:w-1/2 xl:w-1/2"
         vertical
       >
         <div class="flex grow flex-col justify-center">
@@ -107,9 +107,9 @@ onMounted(async () => {
             :usage="stats.requests.usage"
             :limit="stats.requests.limit"
           />
-
-          <changelog class="mt-24 border-t px-2 pt-2" />
         </div>
+
+        <changelog class="px-2" />
 
         <div class="pb-4 text-center text-sm text-gray-500">
           <a
@@ -128,6 +128,18 @@ onMounted(async () => {
   </div>
 </template>
 
+<style scoped>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>
+
 <i18n lang="yaml">
   en:
     entities: Entities
@@ -144,15 +156,3 @@ onMounted(async () => {
     terms: Kasutustingimused
     termsUrl: https://www.entu.app/et/tingimused
 </i18n>
-
-<style scoped>
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
-</style>

@@ -118,6 +118,12 @@ function renderReferenceOption (option) {
   </n-select>
 </template>
 
+<style>
+.n-base-select-option__content {
+  @apply w-full;
+}
+</style>
+
 <i18n lang="yaml">
   en:
     doSearch: Search Entity
@@ -128,9 +134,3 @@ function renderReferenceOption (option) {
     count: 'Objekte ei leitud | Lisaks leiti veel {n} objekt. Täpsusta otsingut. | Leiti veel {n} objekti. Täpsusta otsingut.'
     noResults: Objekte ei leitud
 </i18n>
-
-<style>
-.n-base-select-option__content {
-  @apply w-full;
-}
-</style>

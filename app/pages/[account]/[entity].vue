@@ -249,7 +249,7 @@ onMounted(async () => {
     <transition>
       <div
         v-if="rawEntity"
-        class="flex flex-col overflow-hidden overflow-y-auto px-2 pb-20"
+        class="flex flex-col overflow-hidden overflow-y-auto px-2 pb-20 print:pb-0"
       >
         <div
           v-if="rawEntity?._parent"
@@ -440,6 +440,18 @@ onMounted(async () => {
   </div>
 </template>
 
+<style scoped>
+.v-enter-active,
+.v-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.v-enter-from,
+.v-leave-to {
+  opacity: 0;
+}
+</style>
+
 <i18n lang="yaml">
   en:
     sharingPrivate: Private
@@ -462,15 +474,3 @@ onMounted(async () => {
     referrersCount: 'viitajaid pole | {n} viitaja | {n} viitajat'
     error404: Objekti ei leitud või sul puudub ligipääs sellele
 </i18n>
-
-<style scoped>
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.5s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
-</style>
