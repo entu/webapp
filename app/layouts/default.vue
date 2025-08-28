@@ -68,7 +68,6 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
     <div
       v-else
       class="grow overflow-y-auto py-2"
-      :class="{ 'pl-4': !isQuery }"
     >
       <slot />
     </div>

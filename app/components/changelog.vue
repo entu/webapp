@@ -15,19 +15,12 @@ const latestChangelogEntry = computed(() => {
 
   const firstSection = sections.at(0)
   const lines = firstSection.split('\n')
-  const dateString = lines[0]
-  const content = lines.slice(1).join('\n').replace(/\*\*:/g, '**<br>')
+  const dateString = lines.at(0)
+  const content = lines.slice(1).join('\n')
 
-  // Parse date string (YYYY-MM-DD format)
   const date = new Date(dateString)
 
   return { date, content }
-})
-
-const fullChangelogEntry = computed(() => {
-  if (!changelog) return null
-
-  return changelog.replace(/\*\*:/g, '**<br>')
 })
 </script>
 
@@ -68,9 +61,9 @@ const fullChangelogEntry = computed(() => {
       @close="showChangelogDrawer = false"
     >
       <my-markdown
-        v-if="fullChangelogEntry"
+        v-if="changelog"
         class="p-5"
-        :source="fullChangelogEntry"
+        :source="changelog"
       />
     </my-drawer>
   </div>

@@ -20,7 +20,7 @@ const localeValues = computed(() => {
   return props.values.filter((x) => !x.language || x.language === locale.value)
 })
 
-const firstValue = computed(() => localeValues.value[0])
+const firstValue = computed(() => localeValues.value.at(0))
 const hasMultipleValues = computed(() => localeValues.value.length > 1)
 </script>
 

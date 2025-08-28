@@ -66,7 +66,7 @@ onMounted(async () => {
     <transition>
       <div
         v-if="!isQuery && stats"
-        class="flex size-full flex-col gap-8 px-8 md:mx-auto md:min-w-fit lg:w-1/2 xl:w-1/2"
+        class="flex size-full flex-col gap-8 px-2 md:mx-auto md:max-w-lg"
         vertical
       >
         <div class="flex grow flex-col justify-center">
