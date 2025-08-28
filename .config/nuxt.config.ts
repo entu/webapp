@@ -87,6 +87,9 @@ export default defineNuxtConfig({
       stylistic: true
     }
   },
+  experimental: {
+    checkOutdatedBuildInterval: 10 * 1000
+  },
   i18n: {
     locales: [
       { code: 'en', name: 'English' },

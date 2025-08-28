@@ -1,7 +1,11 @@
 <script setup>
-import { NLayout, NLayoutSider, NSplit } from 'naive-ui'
+import { NLayout, NLayoutSider, NSplit, NButton, useNotification } from 'naive-ui'
+
+const nuxtApp = useNuxtApp()
+const notification = useNotification()
 
 const route = useRoute()
+const { t } = useI18n()
 
 const { accountId } = useAccount()
 const { menuCollapsed, listWidth } = useUser()
@@ -10,6 +14,27 @@ const siderRef = ref()
 const isHovered = useElementHover(siderRef, { delayEnter: 200, delayLeave: 600 })
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
+
+let updateNotification
+nuxtApp.hooks.hook('app:manifest:update', (a) => {
+  if (updateNotification) return
+
+  updateNotification = notification.info({
+    content: t('updateContent'),
+    meta: new Date(a.timestamp).toISOString().substring(0, 19).replace('T', ' '),
+    action: () => h(NButton, {
+      type: 'primary',
+      round: true,
+      secondary: true,
+      strong: true,
+      onClick: () => {
+        window.location.reload()
+      }
+    }, {
+      default: () => t('updateBtn')
+    })
+  })
+})
 </script>
 
 <template>
@@ -73,3 +98,12 @@ const isQuery = computed(() => Object.keys(route.query).length > 0)
     </div>
   </n-layout>
 </template>
+
+<i18n lang="yaml">
+  en:
+    updateContent: A new version of the Entu is available.
+    updateBtn: Refresh
+  et:
+    updateContent: Uus versioon Entust on saadaval.
+    updateBtn: Värskenda
+</i18n>
