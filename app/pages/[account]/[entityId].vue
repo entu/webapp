@@ -116,8 +116,11 @@ const addTypeId = computed(() => userId.value ? route.hash.split('-').at(1) : un
 // Drawer visibility computed properties
 const showAddDrawer = computed({
   get: () => {
-    useAnalytics('show_add')
-    return drawerType.value === 'add'
+    if (drawerType.value === 'add') {
+      useAnalytics('show_add')
+      return true
+    }
+    return false
   },
   set: (value) => {
     if (!value) onDrawerClose()
@@ -125,8 +128,11 @@ const showAddDrawer = computed({
 })
 const showChildDrawer = computed({
   get: () => {
-    useAnalytics('show_child')
-    return drawerType.value === 'child'
+    if (drawerType.value === 'child') {
+      useAnalytics('show_child')
+      return true
+    }
+    return false
   },
   set: (value) => {
     if (!value) onDrawerClose()
@@ -134,8 +140,11 @@ const showChildDrawer = computed({
 })
 const showEditDrawer = computed({
   get: () => {
-    useAnalytics('show_edit')
-    return drawerType.value === 'edit'
+    if (drawerType.value === 'edit') {
+      useAnalytics('show_edit')
+      return true
+    }
+    return false
   },
   set: (value) => {
     if (!value) onDrawerClose()
@@ -143,8 +152,11 @@ const showEditDrawer = computed({
 })
 const showDuplicateDrawer = computed({
   get: () => {
-    useAnalytics('show_duplicate')
-    return drawerType.value === 'duplicate'
+    if (drawerType.value === 'duplicate') {
+      useAnalytics('show_duplicate')
+      return true
+    }
+    return false
   },
   set: (value) => {
     if (!value) onDrawerClose()
@@ -152,8 +164,11 @@ const showDuplicateDrawer = computed({
 })
 const showParentsDrawer = computed({
   get: () => {
-    useAnalytics('show_parents')
-    return drawerType.value === 'parents'
+    if (drawerType.value === 'parents') {
+      useAnalytics('show_parents')
+      return true
+    }
+    return false
   },
   set: (value) => {
     if (!value) onDrawerClose()
@@ -161,8 +176,11 @@ const showParentsDrawer = computed({
 })
 const showRightsDrawer = computed({
   get: () => {
-    useAnalytics('show_rights')
-    return drawerType.value === 'rights'
+    if (drawerType.value === 'rights') {
+      useAnalytics('show_rights')
+      return true
+    }
+    return false
   },
   set: (value) => {
     if (!value) onDrawerClose()
@@ -170,8 +188,11 @@ const showRightsDrawer = computed({
 })
 const showDebugDrawer = computed({
   get: () => {
-    useAnalytics('show_debug')
-    return drawerType.value === 'debug'
+    if (drawerType.value === 'debug') {
+      useAnalytics('show_debug')
+      return true
+    }
+    return false
   },
   set: (value) => {
     if (!value) onDrawerClose()
