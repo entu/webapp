@@ -1,3 +1,7 @@
+## 2025-08-28
+- **Version notifications**: Added update notification system to alert users when new app versions are available
+- **Analytics enhancements**: Added analytics tracking to key UI actions for better user behavior insights
+
 ## 2025-08-27
 - **Improved toolbar design**: Made the entity toolbar responsive and adaptive to screen width
 - **New debug shortcut**: Removed the debug button and added Alt+click on entity names to access debug info
