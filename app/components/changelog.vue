@@ -24,8 +24,7 @@ const latestChangelogEntry = computed(() => {
 })
 
 function showAllChanges () {
-  useAnalytics('click_changelog')
-
+  useAnalytics('show_changelog')
   showChangelogDrawer.value = true
 }
 </script>

@@ -1,4 +1,5 @@
 <script setup>
+import { use } from 'marked'
 import { useAnalytics } from '~/utils/analytics'
 
 const { t } = useI18n()
@@ -12,6 +13,8 @@ watch(() => route.query.q, (newValue) => {
 })
 
 watchDebounced(searchText, async (value) => {
+  useAnalytics('search', { q: value })
+
   const routeConfig = { ...route, query: { ...route.query, q: value } }
 
   if (!value) delete routeConfig.query.q
@@ -20,8 +23,7 @@ watchDebounced(searchText, async (value) => {
 }, { debounce: 500, maxWait: 5000 })
 
 function openAdvancedSearch () {
-  useAnalytics('click_open_search')
-
+  useAnalytics('show_search')
   showSearchModal.value = true
 }
 

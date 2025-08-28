@@ -13,7 +13,19 @@ const { menuCollapsed, listWidth } = useUser()
 const siderRef = ref()
 const isHovered = useElementHover(siderRef, { delayEnter: 200, delayLeave: 600 })
 
+const showTable = ref(false)
+
 const isQuery = computed(() => Object.keys(route.query).length > 0)
+
+watch(listWidth, (value) => {
+  if (value > 0.5 && !showTable.value) {
+    useAnalytics('show_table')
+    showTable.value = true
+  }
+  else if (value <= 0.5) {
+    showTable.value = false
+  }
+}, { immediate: true })
 
 let updateNotification
 nuxtApp.hooks.hook('app:manifest:update', (a) => {
@@ -29,7 +41,6 @@ nuxtApp.hooks.hook('app:manifest:update', (a) => {
       strong: true,
       onClick: () => {
         useAnalytics('click_update')
-
         window.location.reload()
       }
     }, {
@@ -73,8 +84,8 @@ nuxtApp.hooks.hook('app:manifest:update', (a) => {
         :pane2-class="!isQuery ? 'pl-4 py-2 grow overflow-y-auto' : 'py-2 grow overflow-y-auto'"
       >
         <template #1>
-          <layout-entity-list v-if="listWidth < 0.5" />
-          <layout-entity-table v-else />
+          <layout-entity-table v-if="showTable" />
+          <layout-entity-list v-else />
         </template>
 
         <template #resize-trigger>

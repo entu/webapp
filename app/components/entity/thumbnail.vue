@@ -13,6 +13,8 @@ const urlsLoaded = ref(false)
 const urls = ref([])
 
 async function loadImages () {
+  useAnalytics('show_photo')
+
   if (!props.photos) return
   if (urlsLoaded.value) {
     imageRef.value.click()

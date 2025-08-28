@@ -115,32 +115,67 @@ const addTypeId = computed(() => userId.value ? route.hash.split('-').at(1) : un
 
 // Drawer visibility computed properties
 const showAddDrawer = computed({
-  get: () => drawerType.value === 'add',
-  set: (value) => { if (!value) onDrawerClose() }
+  get: () => {
+    useAnalytics('show_add')
+    return drawerType.value === 'add'
+  },
+  set: (value) => {
+    if (!value) onDrawerClose()
+  }
 })
 const showChildDrawer = computed({
-  get: () => drawerType.value === 'child',
-  set: (value) => { if (!value) onDrawerClose() }
+  get: () => {
+    useAnalytics('show_child')
+    return drawerType.value === 'child'
+  },
+  set: (value) => {
+    if (!value) onDrawerClose()
+  }
 })
 const showEditDrawer = computed({
-  get: () => drawerType.value === 'edit',
-  set: (value) => { if (!value) onDrawerClose() }
+  get: () => {
+    useAnalytics('show_edit')
+    return drawerType.value === 'edit'
+  },
+  set: (value) => {
+    if (!value) onDrawerClose()
+  }
 })
 const showDuplicateDrawer = computed({
-  get: () => drawerType.value === 'duplicate',
-  set: (value) => { if (!value) onDrawerClose() }
+  get: () => {
+    useAnalytics('show_duplicate')
+    return drawerType.value === 'duplicate'
+  },
+  set: (value) => {
+    if (!value) onDrawerClose()
+  }
 })
 const showParentsDrawer = computed({
-  get: () => drawerType.value === 'parents',
-  set: (value) => { if (!value) onDrawerClose() }
+  get: () => {
+    useAnalytics('show_parents')
+    return drawerType.value === 'parents'
+  },
+  set: (value) => {
+    if (!value) onDrawerClose()
+  }
 })
 const showRightsDrawer = computed({
-  get: () => drawerType.value === 'rights',
-  set: (value) => { if (!value) onDrawerClose() }
+  get: () => {
+    useAnalytics('show_rights')
+    return drawerType.value === 'rights'
+  },
+  set: (value) => {
+    if (!value) onDrawerClose()
+  }
 })
 const showDebugDrawer = computed({
-  get: () => drawerType.value === 'debug',
-  set: (value) => { if (!value) onDrawerClose() }
+  get: () => {
+    useAnalytics('show_debug')
+    return drawerType.value === 'debug'
+  },
+  set: (value) => {
+    if (!value) onDrawerClose()
+  }
 })
 
 watch(() => entity?.value?.name, (value) => {
