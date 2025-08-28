@@ -62,7 +62,7 @@ const availableProperties = computed(() => {
   })
 })
 
-watch(entityId, loadEntity, { immediate: true })
+watch([show, entityId], loadEntity, { immediate: true })
 
 async function loadEntity () {
   if (!show.value) return

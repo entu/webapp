@@ -21,7 +21,7 @@ const isUpdating = ref(false)
 const entityName = computed(() => getValue(rawEntity.value?.name))
 const parents = computed(() => rawEntity.value?._parent?.sort((a, b) => a.string?.localeCompare(b.string)) || [])
 
-watch(entityId, loadEntity, { immediate: true })
+watch([show, entityId], loadEntity, { immediate: true })
 
 async function loadEntity () {
   if (!show.value) return

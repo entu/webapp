@@ -52,7 +52,7 @@ const inheritedRights = computed(() => {
   ].sort((a, b) => a.string?.localeCompare(b.string))
 })
 
-watch(entityId, loadEntity, { immediate: true })
+watch([show, entityId], loadEntity, { immediate: true })
 
 async function loadEntity () {
   if (!show.value) return

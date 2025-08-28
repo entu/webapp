@@ -130,7 +130,7 @@ const properties = computed(() => {
   return result
 })
 
-watch([entityId, () => props.entityTypeId], loadEntity, { immediate: true })
+watch([show, entityId, () => props.entityTypeId], loadEntity, { immediate: true })
 
 async function loadEntity () {
   if (!show.value) return
