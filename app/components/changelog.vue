@@ -22,6 +22,12 @@ const latestChangelogEntry = computed(() => {
 
   return { date, content }
 })
+
+function showAllChanges () {
+  useAnalytics('click_changelog')
+
+  showChangelogDrawer.value = true
+}
 </script>
 
 <template>
@@ -45,7 +51,7 @@ const latestChangelogEntry = computed(() => {
       <div class="mt-3 text-center">
         <button
           class="link text-xs font-semibold"
-          @click="showChangelogDrawer = true"
+          @click="showAllChanges()"
         >
           {{ t('showAllChanges') }}
         </button>

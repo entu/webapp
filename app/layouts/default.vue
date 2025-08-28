@@ -28,6 +28,8 @@ nuxtApp.hooks.hook('app:manifest:update', (a) => {
       secondary: true,
       strong: true,
       onClick: () => {
+        useAnalytics('click_update')
+
         window.location.reload()
       }
     }, {

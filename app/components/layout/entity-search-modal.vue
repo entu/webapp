@@ -215,6 +215,8 @@ function getOperatorOptions (fieldName) {
 }
 
 function handleSearch () {
+  useAnalytics('click_search')
+
   const query = {}
 
   if (searchForm.value.q) {

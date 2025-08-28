@@ -1,4 +1,6 @@
 <script setup>
+import { useAnalytics } from '~/utils/analytics'
+
 const { t } = useI18n()
 const route = useRoute()
 
@@ -18,6 +20,8 @@ watchDebounced(searchText, async (value) => {
 }, { debounce: 500, maxWait: 5000 })
 
 function openAdvancedSearch () {
+  useAnalytics('click_open_search')
+
   showSearchModal.value = true
 }
 
@@ -47,7 +51,7 @@ function handleAdvancedSearch (query) {
     <button
       class="mr-1 flex h-7 w-12 items-center justify-center rounded hover:bg-gray-100"
       :title="t('advancedSearch')"
-      @click="openAdvancedSearch"
+      @click="openAdvancedSearch()"
     >
       <my-icon
         class="text-gray-600"
@@ -57,7 +61,7 @@ function handleAdvancedSearch (query) {
   </div>
 
   <!-- Advanced Search Modal -->
-  <layout-entity-list-search
+  <layout-entity-search-modal
     v-model:show="showSearchModal"
     @search="handleAdvancedSearch"
   />
