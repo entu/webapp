@@ -281,6 +281,10 @@ async function addValue (properties) {
     newValue.string = property.string
   }
 
+  if (props.property === 'entu_api_key') {
+    newValue.string = property.string
+  }
+
   return entity
 }
 
@@ -382,6 +386,10 @@ async function deleteFile (file) {
 function syncValues () {
   oldValues.value = cloneData(newValues.value)
 }
+
+async function copyToClipboard (text) {
+  await navigator.clipboard.writeText(text)
+}
 </script>
 
 <template>
@@ -434,8 +442,39 @@ function syncValues () {
         @update:value="updateValue(value)"
       />
 
+      <my-button
+        v-if="type === 'string' && props.property === 'entu_api_key' && value._id && value.string === '***'"
+        icon="delete"
+        :label="t('deleteApiKey')"
+        :loading="loadingInputs.includes(value._id)"
+        :readonly="disabled"
+        @click="updateValue({ ...value, string: null })"
+      />
+
+      <template v-else-if="type === 'string' && props.property === 'entu_api_key' && value._id && value.string !== '***'">
+        <n-input
+          v-model:value="value.string"
+          placeholder=""
+          readonly
+          :loading="loadingInputs.includes(value._id)"
+        />
+        <my-button
+          icon="copy"
+          @click="copyToClipboard(value.string)"
+        />
+      </template>
+
+      <my-button
+        v-else-if="type === 'string' && props.property === 'entu_api_key' && !value._id"
+        icon="add"
+        :label="t('generateApiKey')"
+        :loading="loadingInputs.includes(value._id)"
+        :readonly="disabled"
+        @click="updateValue({ ...value, string: 'generate' })"
+      />
+
       <n-input
-        v-if="type === 'string' && set.length === 0"
+        v-else-if="type === 'string' && set.length === 0"
         v-model:value="value.string"
         placeholder=""
         :loading="loadingInputs.includes(value._id)"
@@ -556,7 +595,11 @@ function syncValues () {
   en:
     upload: Upload
     counter: Generate
+    generateApiKey: Generate API Key
+    deleteApiKey: Delete API Key
   et:
     upload: Laadi üles
     counter: Genereeri
+    generateApiKey: Loo API võti
+    deleteApiKey: Kustuta API võti
 </i18n>

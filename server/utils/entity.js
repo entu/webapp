@@ -1,4 +1,6 @@
-import { createHash } from 'node:crypto'
+import { createHash, randomBytes } from 'node:crypto'
+
+const charsForKey = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*-_=+'
 
 // Return public or private properties (based user rights)
 export async function cleanupEntity (entu, entity, _thumbnail) {
@@ -238,15 +240,22 @@ export async function setEntity (entu, entityId, properties) {
   const oldPIds = []
   for (let i = 0; i < properties.length; i++) {
     const property = properties[i]
+    let apiKey
 
     if (property._id) {
       oldPIds.push(getObjectId(property._id))
 
       delete property._id
     }
-    if (property.reference) { property.reference = getObjectId(property.reference) }
-    if (property.date) { property.date = new Date(property.date) }
-    if (property.datetime) { property.datetime = new Date(property.datetime) }
+    if (property.reference) {
+      property.reference = getObjectId(property.reference)
+    }
+    if (property.date) {
+      property.date = new Date(property.date)
+    }
+    if (property.datetime) {
+      property.datetime = new Date(property.datetime)
+    }
     if (property.counter) {
       const nextCounter = await getNextCounterValue(entu, property)
 
@@ -254,6 +263,11 @@ export async function setEntity (entu, entityId, properties) {
       property.number = nextCounter.number
 
       delete property.counter
+    }
+    if (property.type === 'entu_api_key') {
+      apiKey = Array.from(randomBytes(32), (byte) => charsForKey[byte % charsForKey.length]).join('')
+
+      property.string = createHash('sha256').update(apiKey).digest('hex')
     }
 
     property.entity = entityId
@@ -263,7 +277,7 @@ export async function setEntity (entu, entityId, properties) {
     }
 
     const insertedProperty = await entu.db.collection('property').insertOne(property)
-    const newProperty = { _id: insertedProperty.insertedId, ...property }
+    const newProperty = { _id: insertedProperty.insertedId, ...property, string: apiKey }
 
     delete newProperty.entity
     delete newProperty.created
