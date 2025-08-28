@@ -1,6 +1,7 @@
 ## 2025-08-28
 - **Version notifications**: Added update notification system to alert users when new app versions are available
 - **Analytics enhancements**: Added analytics tracking to key UI actions for better user behavior insights
+- **Child entity editing**: Added edit button to edit entity children directly from child table on row hover
 
 ## 2025-08-27
 - **Improved toolbar design**: Made the entity toolbar responsive and adaptive to screen width
