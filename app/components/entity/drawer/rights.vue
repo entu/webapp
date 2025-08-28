@@ -10,7 +10,7 @@ const { userId } = useUser()
 
 const emit = defineEmits(['close'])
 
-const show = defineModel('show', { type: Boolean, default: true })
+const show = defineModel('show', { type: Boolean, default: false })
 const entityId = defineModel('entityId', { type: String, required: true })
 
 const rawEntity = ref()
@@ -19,8 +19,6 @@ const sharing = ref()
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const inheritRights = ref(false)
-
-watch(entityId, loadEntity, { immediate: true })
 
 const entityName = computed(() => getValue(rawEntity.value?.name))
 
@@ -54,25 +52,28 @@ const inheritedRights = computed(() => {
   ].sort((a, b) => a.string?.localeCompare(b.string))
 })
 
+watch(entityId, loadEntity, { immediate: true })
+
 async function loadEntity () {
+  if (!show.value) return
+  if (!entityId.value) return
+
   isLoading.value = true
 
-  if (entityId.value) {
-    rawEntity.value = await apiGetEntity(entityId.value, [
-      'name',
-      '_noaccess',
-      '_viewer',
-      '_expander',
-      '_editor',
-      '_owner',
-      '_parent_viewer',
-      '_parent_expander',
-      '_parent_editor',
-      '_parent_owner',
-      '_sharing',
-      '_inheritrights'
-    ])
-  }
+  rawEntity.value = await apiGetEntity(entityId.value, [
+    'name',
+    '_noaccess',
+    '_viewer',
+    '_expander',
+    '_editor',
+    '_owner',
+    '_parent_viewer',
+    '_parent_expander',
+    '_parent_editor',
+    '_parent_owner',
+    '_sharing',
+    '_inheritrights'
+  ])
 
   sharing.value = getValue(rawEntity.value?._sharing) || 'private'
   inheritRights.value = getValue(rawEntity.value?._inheritrights, 'boolean') || false

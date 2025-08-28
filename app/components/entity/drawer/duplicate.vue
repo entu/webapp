@@ -6,7 +6,7 @@ const { t } = useI18n()
 
 const emit = defineEmits(['close'])
 
-const show = defineModel('show', { type: Boolean, default: true })
+const show = defineModel('show', { type: Boolean, default: false })
 const entityId = defineModel('entityId', { type: String, required: true })
 
 const entityTypeStore = useEntityTypeStore()
@@ -65,10 +65,8 @@ const availableProperties = computed(() => {
 watch(entityId, loadEntity, { immediate: true })
 
 async function loadEntity () {
-  if (!entityId.value) {
-    isLoading.value = false
-    return
-  }
+  if (!show.value) return
+  if (!entityId.value) return
 
   isLoading.value = true
 
@@ -84,21 +82,6 @@ async function loadEntity () {
   isLoading.value = false
 }
 
-async function onDuplicate () {
-  if (duplicateCount.value < 1) return
-
-  isUpdating.value = true
-
-  await apiDuplicateEntity(entityId.value, duplicateCount.value, ignoredProperties.value)
-
-  emit('close')
-  isUpdating.value = false
-}
-
-async function onClose () {
-  emit('close')
-}
-
 function toggleProperty (propertyName) {
   if (ignoredProperties.value.includes(propertyName)) {
     // Remove from ignored array (include the property)
@@ -112,6 +95,21 @@ function toggleProperty (propertyName) {
 
 function isPropertyDisabled (property) {
   return isUpdating.value || (!ignoredProperties.value.includes(property.name) && selectedCount.value === 1)
+}
+
+async function onDuplicate () {
+  if (duplicateCount.value < 1) return
+
+  isUpdating.value = true
+
+  await apiDuplicateEntity(entityId.value, duplicateCount.value, ignoredProperties.value)
+
+  emit('close')
+  isUpdating.value = false
+}
+
+async function onClose () {
+  emit('close')
 }
 </script>
 

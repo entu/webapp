@@ -4,7 +4,7 @@ import { NDrawer, NDrawerContent, NSpin } from 'naive-ui'
 
 const { t } = useI18n()
 
-const show = defineModel('show', { type: Boolean, default: true })
+const show = defineModel('show', { type: Boolean, default: false })
 const width = defineModel('width', { type: Number, default: window.innerWidth / 2 })
 const isLoading = defineModel('isLoading', { type: Boolean, default: false })
 

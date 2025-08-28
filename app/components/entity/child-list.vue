@@ -8,7 +8,7 @@ const props = defineProps({
   referenceField: { type: String, required: true }
 })
 
-const { query } = useRoute()
+const { path, query } = useRoute()
 const { locale, d, t } = useI18n()
 const { accountId } = useAccount()
 const { tablePageSize } = useUser()
@@ -198,20 +198,28 @@ onMounted(async () => {
             class="group border-t border-gray-200 hover:bg-gray-50"
           >
             <td>
-              <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
-                <img
-                  v-if="row._thumbnail"
-                  :src="row._thumbnail"
-                  class="print-as-is size-6 rounded-full object-cover group-hover:border-sky-800"
-                  :class="color()"
-                >
+              <div class="relative size-6">
+                <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
+                  <img
+                    v-if="row._thumbnail"
+                    :src="row._thumbnail"
+                    class="print-as-is size-6 rounded-full object-cover transition-opacity group-hover:opacity-0"
+                    :class="color()"
+                  >
 
-                <div
-                  v-else
-                  class="print-as-is size-6 rounded-full group-hover:border-sky-800"
-                  :class="color()"
+                  <div
+                    v-else
+                    class="print-as-is size-6 rounded-full transition-opacity group-hover:opacity-0"
+                    :class="color()"
+                  />
+                </nuxt-link>
+
+                <my-button
+                  class="absolute inset-0 size-7 rounded-full bg-white opacity-0 transition-opacity group-hover:opacity-100"
+                  icon="edit"
+                  @click.stop="navigateTo({ path, query, hash: `#edit-${row._id}` }, { replace: true })"
                 />
-              </nuxt-link>
+              </div>
             </td>
 
             <td

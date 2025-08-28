@@ -113,7 +113,6 @@ const drawerType = computed(() => userId.value ? route.hash.replace('#', '').spl
 
 const addTypeId = computed(() => userId.value ? route.hash.split('-').at(1) : undefined)
 
-// Drawer visibility computed properties
 const showAddDrawer = computed({
   get: () => {
     if (drawerType.value === 'add') {
@@ -142,6 +141,18 @@ const showEditDrawer = computed({
   get: () => {
     if (drawerType.value === 'edit') {
       useAnalytics('show_edit')
+      return true
+    }
+    return false
+  },
+  set: (value) => {
+    if (!value) onDrawerClose()
+  }
+})
+const showEditChildDrawer = computed({
+  get: () => {
+    if (drawerType.value === 'edit' && addTypeId.value) {
+      useAnalytics('show_edit_child')
       return true
     }
     return false
@@ -280,6 +291,10 @@ async function onDrawerClose () {
 
     loadEntity()
   }
+}
+
+async function onChildEditClose (_id) {
+  await navigateTo({ path: route.path, query: route.query, hash: undefined }, { replace: true })
 }
 
 onMounted(async () => {
@@ -474,6 +489,11 @@ onMounted(async () => {
       v-model:entity-id="entityId"
       :can-delete="right.owner"
       @delete="router.back()"
+    />
+    <entity-drawer-edit
+      v-model:show="showEditChildDrawer"
+      v-model:entity-id="addTypeId"
+      @close="onChildEditClose()"
     />
     <entity-drawer-duplicate
       v-model:show="showDuplicateDrawer"

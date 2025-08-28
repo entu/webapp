@@ -8,7 +8,7 @@ const { accountId } = useAccount()
 
 const emit = defineEmits(['close', 'delete'])
 
-const show = defineModel('show', { type: Boolean, default: true })
+const show = defineModel('show', { type: Boolean, default: false })
 const entityId = defineModel('entityId', { type: String, default: undefined })
 const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
 const entityTypeId = defineModel('entityTypeId', { type: String, default: undefined })
@@ -133,6 +133,8 @@ const properties = computed(() => {
 watch([entityId, () => props.entityTypeId], loadEntity, { immediate: true })
 
 async function loadEntity () {
+  if (!show.value) return
+
   isLoading.value = true
 
   if (entityId.value) {
@@ -146,12 +148,6 @@ async function loadEntity () {
   isLoading.value = false
 }
 
-async function onClose () {
-  await until(isUpdating).not.toBeTruthy()
-
-  emit('close')
-}
-
 async function onDelete () {
   if (!entityId.value) return
 
@@ -162,6 +158,12 @@ async function onDelete () {
   isUpdating.value = false
 
   emit('delete')
+}
+
+async function onClose () {
+  await until(isUpdating).not.toBeTruthy()
+
+  emit('close')
 }
 </script>
 

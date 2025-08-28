@@ -9,7 +9,7 @@ const { userId } = useUser()
 
 const emit = defineEmits(['close'])
 
-const show = defineModel('show', { type: Boolean, default: true })
+const show = defineModel('show', { type: Boolean, default: false })
 const entityId = defineModel('entityId', { type: String, required: true })
 
 const rawEntity = ref()
@@ -18,12 +18,13 @@ const canRemoveParents = ref([])
 const isLoading = ref(false)
 const isUpdating = ref(false)
 
-watch(entityId, loadEntity, { immediate: true })
-
 const entityName = computed(() => getValue(rawEntity.value?.name))
 const parents = computed(() => rawEntity.value?._parent?.sort((a, b) => a.string?.localeCompare(b.string)) || [])
 
+watch(entityId, loadEntity, { immediate: true })
+
 async function loadEntity () {
+  if (!show.value) return
   if (!entityId.value) return
 
   isLoading.value = true

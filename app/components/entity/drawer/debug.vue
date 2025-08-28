@@ -11,7 +11,7 @@ const { t } = useI18n()
 
 const emit = defineEmits(['close'])
 
-const show = defineModel('show', { type: Boolean, default: true })
+const show = defineModel('show', { type: Boolean, default: false })
 
 defineProps({
   entity: { type: Object, default: () => ({}) },
