@@ -18,8 +18,16 @@ const drawerType = computed(() => userId.value ? route.hash.replace('#', '').spl
 const addTypeId = computed(() => userId.value ? route.hash.split('-').at(1) : undefined)
 
 const showAddDrawer = computed({
-  get: () => drawerType.value === 'add',
-  set: (value) => { if (!value) onDrawerClose() }
+  get: () => {
+    if (drawerType.value === 'add') {
+      useAnalytics('show_add')
+      return true
+    }
+    return false
+  },
+  set: (value) => {
+    if (!value) onDrawerClose()
+  }
 })
 
 async function onDrawerClose () {

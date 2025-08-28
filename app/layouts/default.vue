@@ -48,6 +48,11 @@ nuxtApp.hooks.hook('app:manifest:update', (a) => {
     })
   })
 })
+
+function changeMenu (collapsed) {
+  useAnalytics('click_menu', { collapsed })
+  menuCollapsed.value = collapsed
+}
 </script>
 
 <template>
@@ -65,8 +70,8 @@ nuxtApp.hooks.hook('app:manifest:update', (a) => {
       :collapsed="menuCollapsed"
       :collapsed-width="60"
       :show-trigger="!menuCollapsed || isHovered ? 'arrow-circle' : undefined"
-      @collapse="menuCollapsed = true"
-      @expand="menuCollapsed = false"
+      @collapse="changeMenu(true)"
+      @expand="changeMenu(false)"
     >
       <layout-side-menu :collapsed="menuCollapsed" />
     </n-layout-sider>

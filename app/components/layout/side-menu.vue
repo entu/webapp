@@ -274,6 +274,9 @@ const userMenu = computed(() => {
 
 function setLanguage () {
   setLocale(locale.value === 'en' ? 'et' : 'en')
+
+  useAnalytics('click_language', { language: locale.value })
+
   reloadNuxtApp()
 }
 
@@ -314,6 +317,7 @@ function linkReplace (url) {
     <a
       v-if="!menuCollapsed"
       :href="`/${account?._id || ''}`"
+      @click="useAnalytics('click_logo')"
     >
       <img
         class="mx-auto size-24"
