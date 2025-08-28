@@ -198,18 +198,18 @@ onMounted(async () => {
             class="group border-t border-gray-200 hover:bg-gray-50"
           >
             <td>
-              <div class="relative size-6">
+              <div class="relative ml-1">
                 <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
                   <img
                     v-if="row._thumbnail"
                     :src="row._thumbnail"
-                    class="print-as-is size-6 rounded-full object-cover transition-opacity group-hover:opacity-0"
+                    class="print-as-is size-7 rounded-full object-cover transition-opacity group-hover:opacity-0"
                     :class="color()"
                   >
 
                   <div
                     v-else
-                    class="print-as-is size-6 rounded-full transition-opacity group-hover:opacity-0"
+                    class="print-as-is size-7 rounded-full transition-opacity group-hover:opacity-0"
                     :class="color()"
                   />
                 </nuxt-link>
@@ -230,7 +230,7 @@ onMounted(async () => {
               }"
             >
               <nuxt-link
-                class="flex w-full items-center p-3"
+                class="flex size-full items-center px-3 py-2"
                 :class="{
                   'justify-center': column.type === 'boolean',
                   'justify-end': column.type === 'number',
@@ -239,6 +239,10 @@ onMounted(async () => {
               >
                 {{ renderColumn(row[column.name], column.type, column.decimals) }}
 
+                <span v-if="column.name === 'name' && !renderColumn(row[column.name], column.type, column.decimals)">
+                  {{ row._id }}
+                </span>
+
                 <my-icon
                   v-if="column.type === 'boolean' && getValue(row[column.name], 'boolean')"
                   icon="checkmark"
@@ -246,7 +250,7 @@ onMounted(async () => {
               </nuxt-link>
             </td>
 
-            <td>
+            <td class="pr-1 pt-1">
               <n-popover
                 class="max-w-sm"
                 placement="left"
@@ -287,6 +291,7 @@ onMounted(async () => {
         </tbody>
       </table>
     </div>
+
     <div
       v-if="total >= 10"
       class="mt-2 flex w-full justify-end"
