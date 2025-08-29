@@ -14,6 +14,8 @@ const isLoading = ref(false)
 const isLoadingOnScroll = ref(false)
 const locationSearch = ref(null)
 const scrollIdx = ref(0)
+const sortField = ref(null)
+const sortDirection = ref('asc')
 
 const { y: listElementScroll } = useScroll(listElement)
 
@@ -23,14 +25,71 @@ const debouncedScroll = useDebounceFn(async () => {
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
-const tableColumns = computed(() => {
-  if (!entitiesList.value.length) return ['name']
+const tableColumnsWithTypes = computed(() => {
+  if (!entitiesList.value.length) return [{ name: 'name', type: 'string' }]
 
+  const columnsWithTypes = []
+
+  // Always add name first
+  columnsWithTypes.push({ name: 'name', type: 'string' })
+
+  // Get all unique property names (excluding name and system properties)
   const allKeys = entitiesList.value
     .flatMap((entity) => Object.keys(entity))
-    .filter((key) => !key.startsWith('_'))
+    .filter((key) => !key.startsWith('_') && key !== 'name')
 
-  return ['name', ...new Set(allKeys.filter((key) => key !== 'name'))]
+  const uniqueKeys = [...new Set(allKeys)]
+
+  // For each property, determine its type by examining the values
+  uniqueKeys.forEach((propertyName) => {
+    let detectedType = 'string' // default fallback
+
+    // Look through entities to find the first non-empty value for this property
+    for (const entity of entitiesList.value) {
+      const propertyValues = entity[propertyName]
+      if (propertyValues && propertyValues.length > 0) {
+        const firstValue = propertyValues[0]
+
+        // Determine type based on which property exists in the value object
+        if (firstValue.number !== undefined) {
+          detectedType = 'number'
+          break
+        }
+        else if (firstValue.boolean !== undefined) {
+          detectedType = 'boolean'
+          break
+        }
+        else if (firstValue.reference !== undefined) {
+          detectedType = 'reference'
+          break
+        }
+        else if (firstValue.date !== undefined) {
+          detectedType = 'date'
+          break
+        }
+        else if (firstValue.datetime !== undefined) {
+          detectedType = 'datetime'
+          break
+        }
+        else if (firstValue.filename !== undefined) {
+          detectedType = 'filename'
+          break
+        }
+        else if (firstValue.filesize !== undefined) {
+          detectedType = 'filesize'
+          break
+        }
+        else if (firstValue.string !== undefined) {
+          detectedType = 'string'
+          break
+        }
+      }
+    }
+
+    columnsWithTypes.push({ name: propertyName, type: detectedType })
+  })
+
+  return columnsWithTypes
 })
 
 useInfiniteScroll(listElement, async () => {
@@ -56,6 +115,20 @@ onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
 watch(() => route.query, (value) => {
   const newSearch = new URLSearchParams(value).toString()
   if (locationSearch.value === newSearch) return
+
+  // Update sort state from URL
+  if (value.sort) {
+    const sortParam = value.sort
+    const isDescending = sortParam.startsWith('-')
+    const fieldName = isDescending ? sortParam.substring(1) : sortParam
+
+    sortDirection.value = isDescending ? 'desc' : 'asc'
+    sortField.value = fieldName.includes('.') ? fieldName.split('.')[0] : fieldName
+  }
+  else {
+    sortField.value = null
+    sortDirection.value = 'asc'
+  }
 
   skip.value = 0
   entitiesCount.value = null
@@ -94,6 +167,23 @@ async function getEntities () {
 
   isLoading.value = false
 }
+
+function handleSort (column) {
+  // If clicking the same column, toggle direction; otherwise start with 'asc'
+  const newSortDirection = sortField.value === column && sortDirection.value === 'asc' ? 'desc' : 'asc'
+
+  sortField.value = column
+  sortDirection.value = newSortDirection
+
+  // Find the column type to build proper sort parameter
+  const propertyType = tableColumnsWithTypes.value.find((col) => col.name === column)?.type || 'string'
+
+  // Build sort parameter for API with property type
+  const sortParam = `${newSortDirection === 'desc' ? '-' : ''}${column}.${propertyType}`
+
+  // Update URL with new sort parameter
+  navigateTo({ query: { ...route.query, sort: sortParam } })
+}
 </script>
 
 <template>
@@ -111,11 +201,25 @@ async function getEntities () {
         <thead class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50">
           <tr>
             <th
-              v-for="column in tableColumns"
-              :key="column"
-              class="border-r border-gray-200 px-3 py-2 text-left text-sm font-medium text-gray-700 last:border-r-0"
+              v-for="column in tableColumnsWithTypes"
+              :key="column.name"
+              class="cursor-pointer select-none border-r border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 last:border-r-0 hover:bg-gray-100"
+              @click="handleSort(column.name)"
             >
-              {{ column }}
+              <div class="flex items-center justify-between">
+                {{ column.name }}
+
+                <my-icon
+                  v-if="sortField === column.name"
+                  :icon="sortDirection === 'desc' ? 'sort-descending' : 'sort-ascending'"
+                  class="ml-2 size-3 text-gray-600"
+                />
+                <my-icon
+                  v-else
+                  icon="sort-ascending"
+                  class="ml-2 size-3 text-gray-400 opacity-0 group-hover:opacity-30"
+                />
+              </div>
             </th>
             <th class="w-1" />
           </tr>
@@ -128,13 +232,13 @@ async function getEntities () {
             :class="{ 'bg-zinc-100 hover:bg-zinc-100': entity._id === route.params.entityId }"
           >
             <td
-              v-for="column in tableColumns"
-              :key="`${entity._id}-${column}`"
+              v-for="column in tableColumnsWithTypes"
+              :key="`${entity._id}-${column.name}`"
               class="max-w-xs border-r border-gray-200 px-3 py-2 text-sm last:border-r-0"
             >
               <layout-entity-table-cell
-                :values="entity[column] || []"
-                :is-name="column === 'name'"
+                :values="entity[column.name] || []"
+                :is-name="column.name === 'name'"
                 :entity-id="entity._id"
                 :fallback-id="entity._id"
               />
