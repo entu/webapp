@@ -1,3 +1,6 @@
+## 2025-08-29
+- **Table sorting**: Added clickable column headers to sort data with visual indicators for sort direction
+
 ## 2025-08-28
 - **Version notifications**: Added update notification system to alert users when new app versions are available
 - **Analytics enhancements**: Added analytics tracking to key UI actions for better user behavior insights
