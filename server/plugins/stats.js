@@ -20,6 +20,9 @@ export default defineNitroPlugin((nitroApp) => {
 
     if (!entu?.db) return
 
+    const collections = await entu.db.listCollections({ name: 'entity' }).toArray()
+    if (collections.length === 0) return
+
     await Promise.all([
       entu.db.collection('stats').updateOne(
         { date: date.substring(0, 10), function: 'ALL' },
