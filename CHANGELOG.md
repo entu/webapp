@@ -1,5 +1,6 @@
 ## 2025-09-01
 - **Formula enhancements**: Added MULTIPLY and DIVIDE formula functions for mathematical operations
+- **Referrer formula support**: Added support for "_referrer.*.*" formula pattern to access entities that reference the current entity
 
 ## 2025-08-29
 - **Table sorting**: Added clickable column headers to sort data with visual indicators for sort direction
