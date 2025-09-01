@@ -687,6 +687,9 @@ async function formula (entu, str, entityId) {
     case 'MULTIPLY':
       return { number: valueArray.reduce((a, b) => a * b, 1) }
     case 'DIVIDE':
+      if (valueArray.slice(1).some((val) => val === 0)) {
+        return undefined
+      }
       return { number: valueArray.slice(1).reduce((a, b) => a / b, valueArray.at(0)) }
     case 'AVERAGE':
       return { number: valueArray.reduce((a, b) => a + b, 0) / valueArray.length }
@@ -725,12 +728,10 @@ async function formulaField (entu, str, entityId) {
     result = [{ _id: entityId }]
   }
   else if (strParts.length === 1 && str !== '_id') { // same entity property
-    result = await entu.db.collection('property').find({
-      entity: entityId,
-      type: str,
-      deleted: { $exists: false }
+    result = await entu.db.collection('entity').findOne({
+      _id: entityId
     }, {
-      projection: { _id: true, entity: false, type: false, created: false }
+      projection: { [`private.${str}`]: true }
     }).toArray()
   }
   else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty === '_id') { // childs _id
