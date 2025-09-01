@@ -746,7 +746,7 @@ async function formulaField (entu, str, entityId) {
   else if (strParts.length === 3 && fieldRef === '_referrer' && fieldType !== '*' && fieldProperty === '_id') { // referrer entities (with type) _id
     result = await entu.db.collection('entity').find({
       'private._reference.reference': entityId,
-      'private._reference.entity_type': fieldType
+      'private._type.string': fieldType
     }, {
       projection: { _id: true }
     }).toArray()
@@ -770,7 +770,7 @@ async function formulaField (entu, str, entityId) {
     result = await entu.db.collection('entity').aggregate([{
       $match: {
         'private._reference.reference': entityId,
-        'private._reference.entity_type': fieldType
+        'private._type.string': fieldType
       }
     }, {
       $project: {
