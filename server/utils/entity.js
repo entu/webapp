@@ -728,7 +728,7 @@ async function formulaField (entu, str, entityId) {
     result = [{ _id: entityId }]
   }
   else if (strParts.length === 1 && str !== '_id') { // same entity property
-    result = await entu.db.collection('entity').findOne({
+    result = await entu.db.collection('entity').find({
       _id: entityId
     }, {
       projection: { [`private.${str}`]: true }
