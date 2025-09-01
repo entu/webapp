@@ -172,13 +172,15 @@ onMounted(async () => {
               v-for="column in rawColumns"
               :key="column.name"
               class="cursor-pointer p-3 text-left hover:bg-gray-50"
-              :class="{
-                'text-center': column.type === 'boolean',
-                'text-right': column.type === 'number',
-              }"
               @click="getEntities(1, undefined, column.name)"
             >
-              <div class="flex items-center gap-2">
+              <div
+                class="flex items-center gap-2"
+                :class="{
+                  'justify-center': column.type === 'boolean',
+                  'justify-end': column.type === 'number',
+                }"
+              >
                 {{ column.label }}
 
                 <my-icon
