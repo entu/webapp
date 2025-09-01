@@ -736,6 +736,52 @@ async function formulaField (entu, str, entityId) {
       projection: { _id: true, entity: false, type: false, created: false }
     }).toArray()
   }
+  else if (strParts.length === 3 && fieldRef === '_referrer' && fieldType === '*' && fieldProperty === '_id') { // referrer entities _id
+    result = await entu.db.collection('entity').find({
+      'private._reference.reference': entityId
+    }, {
+      projection: { _id: true }
+    }).toArray()
+  }
+  else if (strParts.length === 3 && fieldRef === '_referrer' && fieldType !== '*' && fieldProperty === '_id') { // referrer entities (with type) _id
+    result = await entu.db.collection('entity').find({
+      'private._reference.reference': entityId,
+      'private._reference.entity_type': fieldType
+    }, {
+      projection: { _id: true }
+    }).toArray()
+  }
+  else if (strParts.length === 3 && fieldRef === '_referrer' && fieldType === '*' && fieldProperty !== '_id') { // referrer entities property
+    result = await entu.db.collection('entity').aggregate([{
+      $match: {
+        'private._reference.reference': entityId
+      }
+    }, {
+      $project: {
+        property: `$private.${fieldProperty}`
+      }
+    }, {
+      $unwind: '$property'
+    }, {
+      $replaceWith: '$property'
+    }]).toArray()
+  }
+  else if (strParts.length === 3 && fieldRef === '_referrer' && fieldType !== '*' && fieldProperty !== '_id') { // referrer entities (with type) property
+    result = await entu.db.collection('entity').aggregate([{
+      $match: {
+        'private._reference.reference': entityId,
+        'private._reference.entity_type': fieldType
+      }
+    }, {
+      $project: {
+        property: `$private.${fieldProperty}`
+      }
+    }, {
+      $unwind: '$property'
+    }, {
+      $replaceWith: '$property'
+    }]).toArray()
+  }
   else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty === '_id') { // childs _id
     result = await entu.db.collection('entity').find({
       'private._parent.reference': entityId
