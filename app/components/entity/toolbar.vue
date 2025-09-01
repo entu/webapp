@@ -130,7 +130,12 @@ onUnmounted(() => {
         :options="addChildOptions"
         :show-label="!isOverflowing"
       />
+    </n-button-group>
 
+    <n-button-group
+      v-if="entityId"
+      class="flex items-center"
+    >
       <my-button
         v-if="right.editor"
         icon="edit"
