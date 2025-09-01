@@ -673,7 +673,7 @@ async function formula (entu, str, entityId) {
 
   valueArray = await getValueArray(entu, valueArray)
 
-  if (valueArray.length === 0 && !['COUNT', 'SUM'].includes(func)) {
+  if (valueArray.length === 0 && !['COUNT', 'SUM', 'MULTIPLY'].includes(func)) {
     return undefined
   }
 
@@ -684,6 +684,10 @@ async function formula (entu, str, entityId) {
       return { number: valueArray.reduce((a, b) => a + b, 0) }
     case 'SUBTRACT':
       return { number: valueArray.slice(1).reduce((a, b) => a - b, valueArray.at(0)) }
+    case 'MULTIPLY':
+      return { number: valueArray.reduce((a, b) => a * b, 1) }
+    case 'DIVIDE':
+      return { number: valueArray.slice(1).reduce((a, b) => a / b, valueArray.at(0)) }
     case 'AVERAGE':
       return { number: valueArray.reduce((a, b) => a + b, 0) / valueArray.length }
     case 'MIN':
@@ -895,7 +899,7 @@ async function formulaField (entu, str, entityId) {
 function formulaFunction (data) {
   const func = data.at(-1)
 
-  if (['CONCAT', 'CONCAT_WS', 'COUNT', 'SUM', 'SUBTRACT', 'AVERAGE', 'MIN', 'MAX'].includes(func)) {
+  if (['CONCAT', 'CONCAT_WS', 'COUNT', 'SUM', 'SUBTRACT', 'MULTIPLY', 'DIVIDE', 'AVERAGE', 'MIN', 'MAX'].includes(func)) {
     return func
   }
   else {
