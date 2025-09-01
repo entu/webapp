@@ -728,10 +728,12 @@ async function formulaField (entu, str, entityId) {
     result = [{ _id: entityId }]
   }
   else if (strParts.length === 1 && str !== '_id') { // same entity property
-    result = await entu.db.collection('entity').find({
-      _id: entityId
+    result = await entu.db.collection('property').find({
+      entity: entityId,
+      type: str,
+      deleted: { $exists: false }
     }, {
-      projection: { [`private.${str}`]: true }
+      projection: { _id: true, entity: false, type: false, created: false }
     }).toArray()
   }
   else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty === '_id') { // childs _id
