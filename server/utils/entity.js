@@ -735,6 +735,22 @@ async function formulaField (entu, str, entityId) {
     }, {
       projection: { _id: true, entity: false, type: false, created: false }
     }).toArray()
+
+    if (result.length === 0) { // No property found. Try to get entity property (formulas for example)
+      result = await entu.db.collection('entity').aggregate([{
+        $match: {
+          _id: entityId
+        }
+      }, {
+        $project: {
+          property: `$private.${str}`
+        }
+      }, {
+        $unwind: '$property'
+      }, {
+        $replaceWith: '$property'
+      }]).toArray()
+    }
   }
   else if (strParts.length === 3 && fieldRef === '_referrer' && fieldType === '*' && fieldProperty === '_id') { // referrer entities _id
     result = await entu.db.collection('entity').find({
