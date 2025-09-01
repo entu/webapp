@@ -19,7 +19,10 @@ const isLoading = ref(false)
 const isUpdating = ref(false)
 
 const entityName = computed(() => getValue(rawEntity.value?.name))
-const parents = computed(() => rawEntity.value?._parent?.sort((a, b) => a.string?.localeCompare(b.string)) || [])
+const parents = computed(() => {
+  const parentList = rawEntity.value?._parent || []
+  return [...parentList].sort((a, b) => a.string?.localeCompare(b.string))
+})
 
 watch([show, entityId], loadEntity, { immediate: true })
 
