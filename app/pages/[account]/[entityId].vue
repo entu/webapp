@@ -222,6 +222,8 @@ watch(() => entity?.value?.name, (value) => {
 async function loadEntity () {
   if (!entityId.value) return
 
+  isLoading.value = true
+
   rawEntity.value = await apiGetEntity(entityId.value)
 
   if (!rawEntity.value) return showError({ statusCode: 404, statusMessage: t('error404') })
@@ -229,6 +231,8 @@ async function loadEntity () {
   if (typeId.value && !entityTypes.value[typeId.value]) {
     entityTypeStore.get(typeId.value)
   }
+
+  isLoading.value = false
 }
 
 async function loadChilds () {
@@ -298,13 +302,9 @@ async function onChildEditClose (_id) {
 }
 
 onMounted(async () => {
-  isLoading.value = true
-
   loadEntity()
   loadChilds()
   loadReferences()
-
-  isLoading.value = false
 })
 </script>
 
