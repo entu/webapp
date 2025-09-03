@@ -357,6 +357,7 @@ function linkReplace (url) {
       collapse-mode="width"
       :collapsed-width="60"
       :collapsed="menuCollapsed"
+      :default-expanded-keys="['auth-group']"
       :indent="0"
       :options="authMenu"
       :root-indent="18"
