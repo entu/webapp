@@ -7,16 +7,12 @@ export async function apiGetEntities (params) {
 }
 
 export async function apiGetEntity (entityId, props = []) {
-  const { entity } = await apiRequest('entity/' + entityId, props.length
-    ? {
-        props: props?.join(',')
-      }
-    : undefined)
+  const { entity } = await apiRequest(`entity/${entityId}`, props.length ? { props: props?.join(',') } : undefined)
   return entity
 }
 
 export async function apiDeleteEntity (entityId) {
-  const { deleted } = await apiRequest('entity/' + entityId, {}, {}, 'DELETE')
+  const { deleted } = await apiRequest(`entity/${entityId}`, {}, {}, 'DELETE')
   return deleted
 }
 

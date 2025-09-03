@@ -9,7 +9,7 @@ const { t } = useI18n()
 onMounted(async () => {
   const { url } = await apiGetProperty(route.params.fileId)
 
-  if (!url) return showError({ statusCode: 404, statusMessage: t('error404') })
+  if (!url) return showError({ statusCode: 404, message: t('error404') })
 
   await navigateTo(url, { external: true })
 })

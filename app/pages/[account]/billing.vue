@@ -6,10 +6,7 @@ onMounted(async () => {
 
   const { billingUrl } = await apiRequest('billing')
 
-  if (!billingUrl) {
-    showError({ statusCode: 404, message: t('error404') })
-    return
-  }
+  if (!billingUrl) return showError({ statusCode: 404, message: t('error404') })
 
   await navigateTo(`${billingUrl}?locale=${locale.value}`, { external: true })
 })
