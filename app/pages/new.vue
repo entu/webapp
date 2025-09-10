@@ -433,7 +433,7 @@ onMounted(() => {
     price3label: 100,000 objects
     price3info: |
       - Up to 100,000 objects
-      - Up to 5GB storage
+      - Up to 10GB storage
       - Unlimited users
       - Daily backup
       - ID-card and Mobile-ID authentication
@@ -531,7 +531,7 @@ onMounted(() => {
     price3label: 100 000 objekti
     price3info: |
       - Kuni 100 000 objekti
-      - Kuni 5GB andmeid
+      - Kuni 10GB andmeid
       - Piiramatult kasutajaid
       - Igapäevane varukoopia
       - ID-kaardi ja Mobiil-ID tugi
