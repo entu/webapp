@@ -420,20 +420,20 @@ onMounted(() => {
     price1label: 1,000 objects
     price1info: |
       - Up to 1,000 objects
-      - Up to 100MB storage
+      - Up to 1GB storage
       - Unlimited users
     price2price: 10 €
     price2label: 10,000 objects
     price2info: |
       - Up to 10,000 objects
-      - Up to 1GB storage
+      - Up to 10GB storage
       - Unlimited users
       - Daily backup
     price3price: 40 €
     price3label: 100,000 objects
     price3info: |
       - Up to 100,000 objects
-      - Up to 10GB storage
+      - Up to 100GB storage
       - Unlimited users
       - Daily backup
       - ID-card and Mobile-ID authentication
@@ -442,7 +442,7 @@ onMounted(() => {
     price4label: 500,000 objects
     price4info: |
       - Up to 500,000 objects
-      - Up to 50GB storage
+      - Up to 500GB storage
       - Unlimited users
       - Daily backup
       - ID-card and Mobile-ID authentication
@@ -518,20 +518,20 @@ onMounted(() => {
     price1label: 1000 objekti
     price1info: |
       - Kuni 1000 objekti
-      - Kuni 100MB andmeid
+      - Kuni 1GB andmeid
       - Piiramatult kasutajaid
     price2price: 10 €
     price2label: 10 000 objekti
     price2info: |
       - Kuni 10 000 objekti
-      - Kuni 1GB andmeid
+      - Kuni 10GB andmeid
       - Piiramatult kasutajaid
       - Igapäevane varukoopia
     price3price: 40 €
     price3label: 100 000 objekti
     price3info: |
       - Kuni 100 000 objekti
-      - Kuni 10GB andmeid
+      - Kuni 100GB andmeid
       - Piiramatult kasutajaid
       - Igapäevane varukoopia
       - ID-kaardi ja Mobiil-ID tugi
@@ -540,7 +540,7 @@ onMounted(() => {
     price4label: 500 000 objekti
     price4info: |
       - Kuni 500 000 objekti
-      - Kuni 50GB andmeid
+      - Kuni 500GB andmeid
       - Piiramatult kasutajaid
       - Igapäevane varukoopia
       - ID-kaardi ja Mobiil-ID tugi
