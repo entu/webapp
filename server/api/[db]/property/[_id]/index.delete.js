@@ -187,5 +187,7 @@ export default defineEventHandler(async (event) => {
 
   await aggregateEntity(entu, property.entity)
 
+  await triggerWebhooks(entu, property.entity, 'entity-edit-webhook')
+
   return { deleted: true }
 })

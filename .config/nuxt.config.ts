@@ -53,6 +53,9 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4
   },
+  experimental: {
+    checkOutdatedBuildInterval: 10 * 1000
+  },
   compatibilityDate: '2024-08-05',
   nitro: {
     experimental: {
@@ -86,9 +89,6 @@ export default defineNuxtConfig({
       autoInit: false,
       stylistic: true
     }
-  },
-  experimental: {
-    checkOutdatedBuildInterval: 10 * 1000
   },
   i18n: {
     locales: [
