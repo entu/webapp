@@ -145,6 +145,8 @@ export default defineEventHandler(async (event) => {
 
   await aggregateEntity(entu, entityId)
 
+  await triggerWebhooks(entu, entityId, 'entity-delete-webhook')
+
   const referrers = await entu.db.collection('property').aggregate([
     { $match: { reference: entityId, deleted: { $exists: false } } },
     { $group: { _id: '$entity' } }
