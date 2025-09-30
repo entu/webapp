@@ -139,7 +139,7 @@ const showChildDrawer = computed({
 })
 const showEditDrawer = computed({
   get: () => {
-    if (drawerType.value === 'edit') {
+    if (drawerType.value === 'edit' && !addTypeId.value) {
       useAnalytics('show_edit')
       return true
     }
