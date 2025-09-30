@@ -167,5 +167,7 @@ export default defineEventHandler(async (event) => {
 
   const { _id, properties } = await setEntity(entu, entityId, body)
 
+  await triggerWebhooks(entu, _id, 'entity-edit-webhook')
+
   return { _id, properties }
 })

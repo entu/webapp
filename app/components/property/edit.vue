@@ -34,7 +34,7 @@ const languageOptions = [
   { value: 'et', label: 'ET' }
 ]
 
-const setOptions = computed(() => props.set.map((x) => ({ value: x, label: x })).sort())
+const setOptions = computed(() => [...props.set].sort().map((x) => ({ value: x, label: x })))
 const referenceOptions = computed(() => props.values.filter((x) => x._id !== undefined).map((x) => ({ value: x.reference, label: x.string })))
 
 const fileList = computed(() => props.type === 'file'
