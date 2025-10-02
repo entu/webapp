@@ -23,9 +23,10 @@ export default defineEventHandler((event) => {
   if (!event.path.startsWith('/api/auth') && entu.tokenStr) {
     try {
       const { jwtSecret } = useRuntimeConfig(event)
-      entu.token = jwt.verify(entu.tokenStr, jwtSecret, { audience: entu.ip })
+      entu.token = jwt.verify(entu.tokenStr, jwtSecret)
 
-      if (entu.token.aud !== entu.ip) {
+      // Only verify audience if token contains it (for IP-restricted tokens)
+      if (entu.token.aud && entu.token.aud !== entu.ip) {
         throw createError({
           statusCode: 401,
           statusMessage: 'Invalid JWT audience'
