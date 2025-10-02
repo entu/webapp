@@ -1,3 +1,21 @@
+## 2025-10-02
+- **Webhook authentication**: Added temporary JWT token generation for webhooks with 1-minute expiration and no IP restrictions, allowing webhook recipients to make authenticated API calls on behalf of the user
+
+## 2025-09-12
+- **Webhook triggers**: Added webhook triggers for entity edit and delete operations
+- **Plugin webhooks**: Implemented POST data delivery to plugin URLs for webhook integrations
+
+## 2025-09-10
+- **Webhook creation trigger**: Added webhook trigger after entity creation
+- **Set property fixes**: Fixed sorting of set property options
+- **Storage limit increase**: Updated storage limits from 5GB to 10GB in pricing plans
+
+## 2025-09-03
+- **Loading indicators**: Added loading spinner to authentication provider and exit pages
+- **Authentication UI**: Auth menu now displays in open state by default
+- **Error handling improvements**: Refactored error handling and API utility functions for better reliability
+- **Entity page fixes**: Fixed loading state handling in entity page
+
 ## 2025-09-01
 - **Formula enhancements**: Added MULTIPLY and DIVIDE formula functions for mathematical operations
 - **Referrer formula support**: Added support for "_referrer.*.*" formula pattern to access entities that reference the current entity

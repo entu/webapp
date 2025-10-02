@@ -1,3 +1,5 @@
+import jwt from 'jsonwebtoken'
+
 export async function triggerWebhooks (entu, entityId, pluginType) {
   // Get all plugins of the specified type
   const plugins = await entu.db.collection('entity').find({
@@ -31,6 +33,25 @@ export async function triggerWebhooks (entu, entityId, pluginType) {
     return plugins.find((p) => p._id.toString() === x.reference.toString())?.private?.url?.map((url) => url.string)
   }).filter(Boolean)
 
+  // Generate temporary token for webhook (1 minute expiration, no IP restriction)
+  const { jwtSecret } = useRuntimeConfig()
+  const tokenData = {}
+
+  // Add user email if available
+  if (entu.email) {
+    tokenData.user = {
+      email: entu.email
+    }
+  }
+
+  tokenData.accounts = {
+    [entu.account]: entu.userStr
+  }
+
+  const token = jwt.sign(tokenData, jwtSecret, {
+    expiresIn: '1m'
+  })
+
   // Make POST requests to each webhook without waiting
   webhooks.forEach((webhookUrl) => {
     console.log(`Triggering webhook for ${entityId} ${webhookUrl}`)
@@ -43,12 +64,10 @@ export async function triggerWebhooks (entu, entityId, pluginType) {
       body: JSON.stringify({
         db: entu.account,
         plugin: pluginType,
-        user: {
-          _id: entu.user
-        },
         entity: {
           _id: entityId
-        }
+        },
+        token
       })
     }).catch((error) => {
       console.error(`Webhook request failed for ${entityId} ${webhookUrl}:`, error)
