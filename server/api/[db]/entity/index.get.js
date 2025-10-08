@@ -135,14 +135,12 @@ export default defineEventHandler(async (event) => {
   const props = (query.props || '').split(',').filter((x) => !!x)
   const group = (query.group || '').split(',').filter((x) => !!x)
   const fields = {}
-  let getThumbnail = props.length === 0
 
   if (props.length > 0) {
     props.forEach((f) => {
       if (f === '_thumbnail' && !props.includes('photo')) {
         fields['private.photo'] = true
         fields['public.photo'] = true
-        getThumbnail = true
       }
       else {
         fields[`private.${f}`] = true
@@ -304,7 +302,7 @@ export default defineEventHandler(async (event) => {
   ])
 
   for (let i = 0; i < entities.length; i++) {
-    const entity = await cleanupEntity(entu, entities[i], getThumbnail)
+    const entity = await cleanupEntity(entu, entities[i], props.includes('_thumbnail'))
 
     if (entity) cleanedEntities.push(entity)
   }
