@@ -179,7 +179,7 @@ async function updateValue (newValue) {
     value = new Date(value) || null
   }
 
-  if (!newValue.counter && value === oldValue[property] && language === oldValue.language) return
+  if (props.type !== 'counter' && value === oldValue[property] && language === oldValue.language) return
 
   // Handle language change on empty field for multilingual properties
   if (props.isMultilingual && !_id && (value === null || value === undefined || value === '') && language !== oldValue.language) {
@@ -188,7 +188,7 @@ async function updateValue (newValue) {
     return
   }
 
-  if (!_id && (value === null || value === undefined || value === '')) return
+  if (props.type !== 'counter' && !_id && (value === null || value === undefined || value === '')) return
 
   loadingInputs.value.push(_id)
   isUpdating.value = true
@@ -571,7 +571,7 @@ async function copyToClipboard (text) {
       />
 
       <n-input
-        v-else-if="type === 'counter' && value.string"
+        v-else-if="type === 'counter' && value._id"
         v-model:value="value.string"
         placeholder=""
         :loading="loadingInputs.includes(value._id)"

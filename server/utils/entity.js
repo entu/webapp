@@ -277,10 +277,14 @@ export async function setEntity (entu, entityId, properties) {
     }
 
     const insertedProperty = await entu.db.collection('property').insertOne(property)
-    const newProperty = { _id: insertedProperty.insertedId, ...property, string: apiKey }
+    const newProperty = { _id: insertedProperty.insertedId, ...property }
 
     delete newProperty.entity
     delete newProperty.created
+
+    if (apiKey) {
+      newProperty.string = apiKey
+    }
 
     if (property.filename && property.filesize && property.filetype) {
       const contentDisposition = `inline;filename="${encodeURI(property.filename.replace('"', '\"'))}"`
