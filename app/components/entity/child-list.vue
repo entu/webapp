@@ -99,7 +99,7 @@ async function getEntities (setPage, setPageSize, setSorter) {
 
   let field = rawColumns.value.find((c) => c.name === sorter.value.column)?.type
 
-  if (field === 'reference') {
+  if (['text', 'reference'].includes(field)) {
     field = 'string'
   }
 
@@ -149,6 +149,10 @@ function renderColumn (value, type, decimals) {
 
   if (type === 'reference') {
     return getValue(value) || getValue(value, 'reference')
+  }
+
+  if (type === 'text') {
+    return getValue(value)
   }
 
   return getValue(value, type)
