@@ -204,7 +204,7 @@ onMounted(async () => {
             class="group border-t border-gray-200 hover:bg-gray-50"
           >
             <td>
-              <div class="relative ml-1">
+              <div class="relative ml-1 w-7">
                 <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
                   <img
                     v-if="row._thumbnail"
