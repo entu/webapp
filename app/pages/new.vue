@@ -413,7 +413,7 @@ onMounted(() => {
 
     price: Package
     priceInfo: |
-      Price per month including VAT.
+      Price per month excluding VAT.
 
       **First 14 days are free** (no credit card required).
     price1price: 2 €
@@ -511,7 +511,7 @@ onMounted(() => {
 
     price: Pakett
     priceInfo: |
-      Hind kuus koos käibemaksuga.
+      Hind kuus ilma käibemaksuta.
 
       **Esimesed 14 päeva on tasuta** (krediitkaarti pole vaja).
     price1price: 2 €
