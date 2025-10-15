@@ -1,3 +1,11 @@
+## 2025-10-15
+- **Email authentication**: Added email authentication option as an alternative login method
+
+## 2025-10-08
+- **Pricing updates**: Updated pricing information to clearly indicate that prices exclude VAT
+- **UI improvements**: Fixed child list image container width, improved text field handling, and refactored thumbnail generation logic
+- **Bug fixes**: Fixed counter property handling in edit and entity utilities, and relaxed JWT audience verification in authentication middleware
+
 ## 2025-10-02
 - **Webhook authentication**: Added temporary JWT token generation for webhooks with 1-minute expiration and no IP restrictions, allowing webhook recipients to make authenticated API calls on behalf of the user
 
