@@ -160,6 +160,14 @@ const authMenu = computed(() => {
       type: 'divider'
     },
     {
+      key: 'auth-email',
+      icon: () => h(MyIcon, { icon: 'e-mail' }),
+      label: () => h(NuxtLink,
+        { to: { path: '/auth/e-mail' } },
+        { default: () => t('email') }
+      )
+    },
+    {
       key: 'auth-apple',
       icon: () => h(MyIcon, { icon: 'apple' }),
       label: () => h(NuxtLink,
@@ -370,6 +378,7 @@ function linkReplace (url) {
     language: Eesti keel
     signIn: Sign In
     signOut: Sign Out
+    email: E-mail
     mid: Mobile-ID
     sid: Smart-ID
     idc: ID-Card
@@ -378,6 +387,7 @@ function linkReplace (url) {
     language: English
     signIn: Sisene
     signOut: Välju
+    email: E-post
     mid: Mobiil-ID
     sid: Smart-ID
     idc: ID-kaart
