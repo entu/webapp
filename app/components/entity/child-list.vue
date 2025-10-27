@@ -155,6 +155,10 @@ function renderColumn (value, type, decimals) {
     return getValue(value)
   }
 
+  if (type === 'file') {
+    return getValue(value, 'filename')
+  }
+
   return getValue(value, type)
 }
 
