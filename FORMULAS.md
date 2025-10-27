@@ -15,6 +15,7 @@ This document describes the available formula functions that can be used in enti
 - **[MIN](#min)** - Returns the minimum value
 - **[MAX](#max)** - Returns the maximum value
 - **[ABS](#abs)** - Returns the absolute value of the first value
+- **[ROUND](#round)** - Rounds the first value to specified decimal places (last value)
 
 ## Syntax
 
@@ -184,6 +185,22 @@ Returns the absolute value of the first value.
 balance ABS
 ```
 
+### ROUND
+Rounds the first value to the number of decimal places specified by the last value.
+
+**Returns:** Number
+
+**Example:**
+```
+price 2 ROUND
+```
+Returns: price rounded to 2 decimal places
+
+```
+(total quantity DIVIDE) 3 ROUND
+```
+Returns: total/quantity rounded to 3 decimal places
+
 ## Examples
 
 ### Calculate total price
@@ -219,4 +236,9 @@ revenue expenses SUBTRACT
 ### Get absolute value
 ```
 temperature ABS
+```
+
+### Round to 2 decimal places
+```
+price 2 ROUND
 ```
