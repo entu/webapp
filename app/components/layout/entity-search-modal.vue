@@ -70,7 +70,10 @@ watch(() => route.query, () => {
     const field = fieldArray.join('.')
     const fieldType = getPropertyType(field)
 
-    if (fieldType === 'boolean' && operator !== 'exists') {
+    if (operator === 'exists') {
+      value = value.toLowerCase() === 'true'
+    }
+    else if (fieldType === 'boolean') {
       value = value.toLowerCase() === 'true'
     }
     else if (fieldType === 'number' || fieldType === 'filesize') {
@@ -159,8 +162,20 @@ watch(() => searchForm.value.properties.map((f) => f.field), (newFields, oldFiel
   })
 }, { deep: true })
 
+watch(() => searchForm.value.properties.map((f) => f.operator), (newOperators, oldOperators) => {
+  if (!oldOperators) return
+
+  newOperators.forEach((newOperator, index) => {
+    const oldOperator = oldOperators[index]
+
+    if (oldOperator !== newOperator && newOperator === 'exists') {
+      searchForm.value.properties[index].value = true
+    }
+  })
+}, { deep: true })
+
 function addCustomFilter () {
-  searchForm.value.properties.push({ field: '', operator: '' })
+  searchForm.value.properties.push({ field: '', operator: '', value: undefined })
 }
 
 function removeCustomFilter (index) {
@@ -231,7 +246,8 @@ function handleSearch () {
   }
 
   searchForm.value.properties.forEach((filter) => {
-    if (filter.value === undefined || filter.value === '') return
+    if (!filter.field) return
+    if (filter.value === undefined || filter.value === null || filter.value === '') return
 
     const key = [filter.field, filter.operator].filter(Boolean).join('.')
 
