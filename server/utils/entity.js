@@ -169,24 +169,6 @@ export async function setEntity (entu, entityId, properties) {
           statusMessage: 'User not in parent _owner, _editor nor _expander property'
         })
       }
-
-      if (parent.private?._sharing?.at(0).string && !properties.some((x) => x.type === '_sharing')) {
-        properties.push({
-          entity: entityId,
-          type: '_sharing',
-          string: parent.private?._sharing.at(0).string.toLowerCase(),
-          created: { at: createdDt, by: entu.user || 'entu' }
-        })
-      }
-
-      if (parent.private?._inheritrights?.at(0)?.boolean === true && !properties.some((x) => x.type === '_inheritrights')) {
-        properties.push({
-          entity: entityId,
-          type: '_inheritrights',
-          boolean: true,
-          created: { at: createdDt, by: entu.user || 'entu' }
-        })
-      }
     }
   }
 
@@ -205,6 +187,62 @@ export async function setEntity (entu, entityId, properties) {
             created: { at: createdDt, by: entu.user || 'entu' }
           })
         })
+      }
+    }
+
+    // Inherit _sharing from any parent (direct or default_parent)
+    const sharingProperty = properties.find((x) => x.type === '_sharing')
+    if (!sharingProperty) {
+      const parentReferences = properties.filter((x) => x.type === '_parent' && x.reference).map((x) => x.reference)
+
+      if (parentReferences.length > 0) {
+        const parents = await entu.db.collection('entity').find(
+          { _id: { $in: parentReferences.map(getObjectId) } },
+          { projection: { 'private._sharing': true } }
+        ).toArray()
+
+        const parentSharings = parents
+          .map((p) => p.private?._sharing?.at(0)?.string)
+          .filter(Boolean)
+
+        if (parentSharings.includes('public')) {
+          properties.push({
+            entity: entityId,
+            type: '_sharing',
+            string: 'public',
+            created: { at: createdDt, by: entu.user || 'entu' }
+          })
+        }
+        else if (parentSharings.includes('domain')) {
+          properties.push({
+            entity: entityId,
+            type: '_sharing',
+            string: 'domain',
+            created: { at: createdDt, by: entu.user || 'entu' }
+          })
+        }
+      }
+    }
+
+    // Inherit _inheritrights from any parent (direct or default_parent)
+    const inheritRightsProperty = properties.find((x) => x.type === '_inheritrights')
+    if (!inheritRightsProperty) {
+      const parentReferences = properties.filter((x) => x.type === '_parent' && x.reference).map((x) => x.reference)
+
+      if (parentReferences.length > 0) {
+        const parentsWithInheritRights = await entu.db.collection('entity').find(
+          { _id: { $in: parentReferences.map(getObjectId) }, 'private._inheritrights.boolean': true },
+          { projection: { _id: true } }
+        ).toArray()
+
+        if (parentsWithInheritRights.length > 0) {
+          properties.push({
+            entity: entityId,
+            type: '_inheritrights',
+            boolean: true,
+            created: { at: createdDt, by: entu.user || 'entu' }
+          })
+        }
       }
     }
 
