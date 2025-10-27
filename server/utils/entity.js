@@ -660,7 +660,27 @@ async function propertiesToEntity (entu, properties) {
 }
 
 async function formula (entu, str, entityId) {
-  const strArray = str.trim().match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g)
+  const strArray = await parseFormulaTokens(entu, str, entityId)
+
+  // If single value and it's a nested formula result, return it directly
+  if (strArray.length === 1) {
+    const token = strArray.at(0)
+    const value = await formulaField(entu, token, entityId)
+
+    if (value !== undefined && value !== null) {
+      const valueArray = await getValueArray(entu, value)
+
+      if (valueArray.length === 1) {
+        const val = valueArray.at(0)
+
+        if (typeof val === 'number') {
+          return { number: val }
+        }
+
+        return { string: val }
+      }
+    }
+  }
 
   const func = formulaFunction(strArray)
   const data = formulaContent(strArray, func)
@@ -708,6 +728,87 @@ async function formula (entu, str, entityId) {
     default: // CONCAT
       return { string: valueArray.join('') }
   }
+}
+
+async function parseFormulaTokens (entu, str, entityId) {
+  const tokens = []
+  let current = ''
+  let inQuote = null
+  let parenDepth = 0
+  let parenStart = -1
+
+  for (let i = 0; i < str.length; i++) {
+    const char = str.at(i)
+    const prevChar = str.at(i - 1)
+
+    // Handle quoted strings
+    if (inQuote) {
+      current += char
+
+      if (char === inQuote && prevChar !== '\\') {
+        inQuote = null
+      }
+
+      continue
+    }
+
+    if (char === '"' || char === '\'') {
+      inQuote = char
+      current += char
+
+      continue
+    }
+
+    // Handle parentheses (nested formulas)
+    if (char === '(') {
+      if (parenDepth === 0) {
+        if (current.trim()) tokens.push(current.trim())
+        current = ''
+        parenStart = i
+      }
+
+      parenDepth++
+
+      continue
+    }
+
+    if (char === ')') {
+      parenDepth--
+
+      if (parenDepth === 0) {
+        const nestedFormula = str.substring(parenStart + 1, i)
+        const result = await formula(entu, nestedFormula, entityId)
+
+        if (result?.number !== undefined) {
+          tokens.push(result.number.toString())
+        }
+        else if (result?.string !== undefined) {
+          tokens.push(`"${result.string}"`)
+        }
+
+        current = ''
+      }
+
+      continue
+    }
+
+    // Skip content inside parentheses
+    if (parenDepth > 0) continue
+
+    // Handle regular tokens
+    if (/\s/.test(char)) {
+      if (current.trim()) tokens.push(current.trim())
+
+      current = ''
+    }
+    else {
+      current += char
+    }
+  }
+
+  if (current.trim()) tokens.push(current.trim())
+
+  return tokens
 }
 
 async function formulaField (entu, str, entityId) {

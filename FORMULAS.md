@@ -12,6 +12,21 @@ field1 field2 field3 FUNCTION
 
 If no function is specified, `CONCAT` is used by default.
 
+### Nested Formulas
+
+You can nest formulas using parentheses to create complex calculations:
+
+```
+(field1 field2 SUM) (field3 field4 SUM) MULTIPLY
+```
+
+This evaluates the inner formulas first, then uses their results in the outer formula. Nesting can be multiple levels deep.
+
+**Examples:**
+- `(price tax SUM) quantity MULTIPLY` - Calculate total with tax per quantity
+- `((a b SUM) (c d SUM) MULTIPLY) 100 DIVIDE` - Complex nested calculation
+- `(min_value max_value SUM) 2 DIVIDE` - Calculate average of min and max
+
 ## Field References
 
 ### Same Entity
