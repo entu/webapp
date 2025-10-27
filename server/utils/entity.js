@@ -701,6 +701,8 @@ async function formula (entu, str, entityId) {
       return { number: Math.min(...valueArray) }
     case 'MAX':
       return { number: Math.max(...valueArray) }
+    case 'ABS':
+      return { number: Math.abs(valueArray.at(0)) }
     case 'CONCAT_WS':
       return { string: valueArray.slice(0, -1).join(valueArray.at(-1)) }
     default: // CONCAT
@@ -968,7 +970,7 @@ async function formulaField (entu, str, entityId) {
 function formulaFunction (data) {
   const func = data.at(-1)
 
-  if (['CONCAT', 'CONCAT_WS', 'COUNT', 'SUM', 'SUBTRACT', 'MULTIPLY', 'DIVIDE', 'AVERAGE', 'MIN', 'MAX'].includes(func)) {
+  if (['CONCAT', 'CONCAT_WS', 'COUNT', 'SUM', 'SUBTRACT', 'MULTIPLY', 'DIVIDE', 'AVERAGE', 'MIN', 'MAX', 'ABS'].includes(func)) {
     return func
   }
   else {
