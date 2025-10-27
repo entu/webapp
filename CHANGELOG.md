@@ -1,3 +1,9 @@
+## 2025-10-27
+- **Property inheritance improvements**: Enhanced `_sharing` and `_inheritrights` to check all parent entities (direct and default parents) with proper priority handling
+- **Formula enhancements**: Added `ROUND` and `ABS` functions, nested formula support, and comprehensive FORMULAS.md documentation
+- **Search improvements**: Improved 'exists' operator handling in search modal
+- **UI improvements**: Enhanced child list to handle 'file' type properties
+
 ## 2025-10-15
 - **Email authentication**: Added email authentication option as an alternative login method
 
