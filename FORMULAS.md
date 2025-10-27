@@ -2,6 +2,20 @@
 
 This document describes the available formula functions that can be used in entity properties.
 
+## Available Functions
+
+- **[CONCAT](#concat-default)** - Concatenates all values into a single string (default)
+- **[CONCAT_WS](#concat_ws)** - Concatenates values with a separator (last value is separator)
+- **[COUNT](#count)** - Counts the number of values
+- **[SUM](#sum)** - Calculates the sum of all numeric values
+- **[SUBTRACT](#subtract)** - Subtracts all subsequent values from the first value
+- **[MULTIPLY](#multiply)** - Multiplies all values together
+- **[DIVIDE](#divide)** - Divides the first value by all subsequent values
+- **[AVERAGE](#average)** - Calculates the arithmetic mean of all values
+- **[MIN](#min)** - Returns the minimum value
+- **[MAX](#max)** - Returns the maximum value
+- **[ABS](#abs)** - Returns the absolute value of the first value
+
 ## Syntax
 
 Formulas are written as space-separated values followed by an optional function name:
@@ -179,7 +193,7 @@ price quantity MULTIPLY
 
 ### Get full name
 ```
-first_name ' ' last_name CONCAT_WS
+first_name last_name ' ' CONCAT_WS
 ```
 
 ### Count child entities
