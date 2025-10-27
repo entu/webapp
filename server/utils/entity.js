@@ -481,10 +481,18 @@ export async function aggregateEntity (entu, entityId) {
   if (newEntity.private._parent?.length > 0 && newEntity.private._inheritrights?.at(0)?.boolean === true) {
     parentRights = await getParentRights(entu, newEntity.private._parent)
 
-    if (parentRights._viewer) { newEntity.private._parent_viewer = uniqBy(parentRights._viewer, (x) => x.reference.toString()) }
-    if (parentRights._expander) { newEntity.private._parent_expander = uniqBy(parentRights._expander, (x) => x.reference.toString()) }
-    if (parentRights._editor) { newEntity.private._parent_editor = uniqBy(parentRights._editor, (x) => x.reference.toString()) }
-    if (parentRights._owner) { newEntity.private._parent_owner = uniqBy(parentRights._owner, (x) => x.reference.toString()) }
+    if (parentRights._viewer) {
+      newEntity.private._parent_viewer = uniqBy(parentRights._viewer, (x) => x.reference.toString())
+    }
+    if (parentRights._expander) {
+      newEntity.private._parent_expander = uniqBy(parentRights._expander, (x) => x.reference.toString())
+    }
+    if (parentRights._editor) {
+      newEntity.private._parent_editor = uniqBy(parentRights._editor, (x) => x.reference.toString())
+    }
+    if (parentRights._owner) {
+      newEntity.private._parent_owner = uniqBy(parentRights._owner, (x) => x.reference.toString())
+    }
   }
 
   // combine rights

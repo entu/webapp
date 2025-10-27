@@ -1,5 +1,4 @@
 <script setup>
-import { use } from 'marked'
 import { useAnalytics } from '~/utils/analytics'
 
 const { t } = useI18n()
