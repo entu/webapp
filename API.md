@@ -1,5 +1,57 @@
 # Entu API Documentation
 
+## Overview
+
+The Entu API provides RESTful endpoints for managing entities, properties, and databases. All API responses are in JSON format.
+
+**Base URL:** `https://entu.app/api`
+
+**Authentication:** Most endpoints require JWT authentication via Bearer token in the Authorization header.
+
+## Data Model
+
+### Entity Structure
+Entities in Entu have a flattened property structure where each property type is an array:
+
+```json
+{
+  "_id": "entity-id",
+  "_type": [
+    {
+      "_id": "property-id",
+      "reference": "type-entity-id",
+      "string": "book"
+    }
+  ],
+  "title": [
+    {
+      "_id": "property-id",
+      "string": "The Hobbit",
+      "language": "en"
+    }
+  ],
+  "price": [
+    {
+      "_id": "property-id",
+      "number": 29.99
+    }
+  ]
+}
+```
+
+### Property Types
+Each property can have the following value types:
+- **string** - Text value (also used as display name for references)
+- **number** - Numeric value
+- **boolean** - Boolean value
+- **reference** - Reference to another entity ID
+- **date** - Date value (YYYY-MM-DD)
+- **datetime** - DateTime value (ISO 8601 format)
+- **filename** - File name
+- **filesize** - File size in bytes
+- **filetype** - MIME type
+- **language** - Language code for multilingual properties
+
 ## Authentication
 
 ### GET /api/auth
@@ -69,6 +121,87 @@ Use this temporary API key to get JWT tokens from [/auth](#get-auth). This key c
 
 
 
+## Passkey Authentication
+
+### GET /api/passkey/authenticate
+Generate WebAuthn authentication options for passkey login. No authentication required.
+
+#### Example response
+```json
+{
+  "challenge": "base64url-encoded-challenge",
+  "rpId": "entu.app",
+  "allowCredentials": [],
+  "userVerification": "preferred"
+}
+```
+
+
+### GET /api/passkey/register
+Generate WebAuthn registration options for passkey registration. Requires JWT authentication.
+
+#### Example response
+```json
+{
+  "challenge": "base64url-encoded-challenge",
+  "rp": {
+    "name": "Entu",
+    "id": "entu.app"
+  },
+  "user": {
+    "id": "base64url-encoded-user-id",
+    "name": "user@example.com",
+    "displayName": "user@example.com"
+  },
+  "pubKeyCredParams": [
+    { "alg": -7, "type": "public-key" },
+    { "alg": -257, "type": "public-key" }
+  ],
+  "authenticatorSelection": {
+    "userVerification": "preferred",
+    "residentKey": "preferred"
+  }
+}
+```
+
+
+### POST /api/passkey/register
+Complete WebAuthn passkey registration. Requires JWT authentication.
+
+#### Request body
+```json
+{
+  "id": "credential-id",
+  "rawId": "raw-credential-id",
+  "response": {
+    "clientDataJSON": "base64-encoded-client-data",
+    "attestationObject": "base64-encoded-attestation"
+  },
+  "type": "public-key",
+  "expectedChallenge": "challenge-from-registration-options",
+  "deviceName": "iPhone 15 Pro"
+}
+```
+
+#### Example response
+```json
+{
+  "success": true,
+  "_id": "user-entity-id",
+  "properties": {
+    "entu_passkey": [
+      {
+        "_id": "property-id",
+        "device": "iPhone 15 Pro"
+      }
+    ]
+  }
+}
+```
+
+
+
+
 ## Database
 
 ### GET /api/{ db }
@@ -112,7 +245,7 @@ Authorization: Bearer c3H8gHLk9hjf6323n8dPHzXb
 
 
 ### PUT /api/{ db }
-Create new database with initial setup
+Create new database with initial setup. Database name must be 4-12 characters, alphanumeric (can contain underscores), and cannot be a reserved name.
 
 #### Path parameters
 - **db** - Name of the database to create.
@@ -122,15 +255,22 @@ Create new database with initial setup
 {
   "database": "mycompany",
   "name": "John Doe",
-  "email": "john@example.com"
+  "email": "john@example.com",
+  "types": ["document", "folder"]
 }
 ```
+
+**Parameters:**
+- **database** (required) - Database name (4-12 characters, no reserved names)
+- **name** (required) - Full name of the account owner
+- **email** (required) - Email address of the account owner
+- **types** (optional) - Array of entity types to include: `audiovideo`, `book`, `department`, `document`, `folder`, `lending`
 
 #### Example response
 ```json
 {
-  "created": true,
-  "_id": "64a5c8e7f123456789abcdef"
+  "database": "mycompany",
+  "person": "6798938532faaba00f8fc75f"
 }
 ```
 
@@ -167,21 +307,43 @@ Get list of entities.
 - **props** - Comma separated list of properties to get. If not set all properties are returned (except on group request).
 - **group** - Comma separated list of properties to group by. If set, then parameters limit and skip are ignored. Will return only group's count and properties set in props parameter.
 - **sort** - Comma separated list of properties to use for sorting. Use - (minus) sign before property name for descending sort. If not set sorts by \_id.
-- **limit** - How many entities to return.
-- **skip** - How many entities to skip in result.
+- **limit** - How many entities to return (default: 100).
+- **skip** - How many entities to skip in result (default: 0).
 
-To filter entities by property value. Use dot separated list of *property key*, *data type* and *operator* as query parameter(s). Operator is optional, but must be one of following:
-- **gt** - Matches values that are greater than a specified value.
-- **gte** - Matches values that are greater than or equal to a specified value.
-- **lt** - Matches values that are less than a specified value.
-- **lte** - Matches values that are less than or equal to a specified value.
-- **ne** - Matches all values that are not equal to a specified value.
-- **regex** - Provides regular expression capabilities for pattern matching strings in queries.
-- **exists** - Value must be true or false. When value is true, returns entities that contain the property, including entities where the property value is *null*. If value is false, the query returns only the entities that do not contain the property.
+#### Dynamic filter parameters
+To filter entities by property value, use dot-separated query parameters in the format: `{property}.{type}[.{operator}]={value}`
+
+**Supported types:**
+- **string** - Text values
+- **number** - Numeric values
+- **boolean** - Boolean values (true/false)
+- **reference** - Entity ID references
+- **date** - Date values (YYYY-MM-DD)
+- **datetime** - DateTime values (ISO 8601)
+- **filesize** - File sizes in bytes
+
+**Supported operators** (optional, for comparison):
+- **gt** - Greater than
+- **gte** - Greater than or equal to
+- **lt** - Less than
+- **lte** - Less than or equal to
+- **ne** - Not equal to
+- **in** - Match any value in comma-separated list
+- **regex** - Regular expression pattern matching (format: `/pattern/flags`)
+- **exists** - Check if property exists (value: `true` or `false`)
+
+**Examples:**
+- `name.string=John` - Exact string match
+- `price.number.gte=100` - Numbers greater than or equal to 100
+- `status.string.in=active,pending` - Match multiple values
+- `title.string.regex=/^The/i` - Case-insensitive regex
+- `photo.filesize.exists=true` - Has a photo
+- `created.date.gte=2025-01-01` - Created after date
+- `active.boolean=true` - Boolean exact match
 
 #### Example request
 ```http
-GET /api/account1/entity?forename.string=John&file.size.gte=1024&surname.string.regex=/^Apple/i&photo._id.exists=false&sort=-file.size&limit=12 HTTP/1.1
+GET /api/account1/entity?forename.string=John&file.filesize.gte=1024&surname.string.regex=/^Apple/i&photo.string.exists=false&sort=-file.filesize&limit=12 HTTP/1.1
 Host: entu.app
 Accept-Encoding: deflate
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
@@ -190,8 +352,17 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 #### Example response
 ```json
 {
+  "pipeline": [
+    { "$match": { "access": { "$in": ["user123", "domain", "public"] } } },
+    { "$sort": { "private.file.filesize": -1 } },
+    { "$skip": 0 },
+    { "$limit": 12 }
+  ],
+  "pipelineCount": 0,
+  "entities": [],
   "count": 0,
-  "entities": []
+  "limit": 12,
+  "skip": 0
 }
 ```
 
@@ -286,9 +457,30 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 #### Example response
 ```json
 {
-  "_id": "7WgtgYnNgktpzP4jzP4jzP4j",
-  "_type": "book",
-  "title": "Hobbit"
+  "entity": {
+    "_id": "7WgtgYnNgktpzP4jzP4jzP4j",
+    "_type": [
+      {
+        "_id": "6798938432faaba00f8fc72e",
+        "string": "book",
+        "reference": "6798938432faaba00f8fc72e"
+      }
+    ],
+    "title": [
+      {
+        "_id": "92eVbRk2xxFun2gXsxXaxWFk",
+        "string": "Hobbit"
+      }
+    ],
+    "_created": [
+      {
+        "_id": "92eVbRk2xx44n2gXsxXaxQcd",
+        "datetime": "2025-01-28T08:21:25.637Z",
+        "reference": "npfwb8fv4ku7tzpq5yjarncc",
+        "string": "User 1"
+      }
+    ]
+  }
 }
 ```
 
@@ -325,7 +517,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 #### Example response
 ```json
 {
-  "deleted": 1
+  "deleted": true
 }
 ```
 
@@ -333,7 +525,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 
 
 ### GET /api/{ db }/entity/{ _id }/history
-Get entity history.
+Get entity change history showing all property modifications over time.
 
 #### Path parameters
 - **db** - Database name.
@@ -341,76 +533,98 @@ Get entity history.
 
 #### Example response
 ```json
-{
-  "history": [
-    {
-      "action": "created",
-      "at": "2023-01-15T10:30:00.000Z",
-      "by": {
-        "_id": "user123",
-        "name": "John Doe"
-      }
-    },
-    {
-      "action": "property-added",
-      "at": "2023-01-15T10:35:00.000Z",
-      "by": {
-        "_id": "user123",
-        "name": "John Doe"
-      },
-      "property": {
-        "_id": "prop456",
-        "type": "title",
-        "string": "New Title"
-      }
+[
+  {
+    "type": "_type",
+    "at": "2025-01-28T08:21:25.637Z",
+    "by": "npfwb8fv4ku7tzpq5yjarncc",
+    "new": {
+      "reference": "6798938432faaba00f8fc72e",
+      "string": "book"
     }
-  ]
-}
+  },
+  {
+    "type": "title",
+    "at": "2025-01-28T08:21:25.637Z",
+    "by": "npfwb8fv4ku7tzpq5yjarncc",
+    "new": {
+      "string": "Hobbit"
+    }
+  },
+  {
+    "type": "title",
+    "at": "2025-01-28T10:30:00.000Z",
+    "by": "npfwb8fv4ku7tzpq5yjarncc",
+    "old": {
+      "string": "Hobbit"
+    },
+    "new": {
+      "string": "The Hobbit"
+    }
+  }
+]
 ```
 
 
 
 
 ### POST /api/{ db }/entity/{ _id }/duplicate
-Duplicate entity with all properties.
+Duplicate entity with optional property filtering and multiple copies.
 
 #### Path parameters
 - **db** - Database name.
 - **_id** - Entity ID to duplicate.
 
-#### Example response
+#### Request body (optional)
 ```json
 {
-  "_id": "newEntityId123",
-  "duplicated": true
+  "count": 1,
+  "ignoredProperties": ["unique_id", "created_at"]
 }
+```
+
+**Parameters:**
+- **count** (optional) - Number of duplicates to create (default: 1, max: 100)
+- **ignoredProperties** (optional) - Array of property types to exclude from duplication
+
+**Note:** The following properties are automatically excluded: `_created`, `_mid`, `entu_api_key`, `entu_user`, and file properties.
+
+#### Example response
+```json
+[
+  {
+    "_id": "newEntityId123",
+    "properties": {
+      "_type": [
+        {
+          "_id": "propId1",
+          "reference": "6798938432faaba00f8fc72e",
+          "string": "book"
+        }
+      ],
+      "title": [
+        {
+          "_id": "propId2",
+          "string": "Hobbit"
+        }
+      ]
+    }
+  }
+]
 ```
 
 
 
 
 ### GET /api/{ db }/entity/{ _id }/aggregate
-Get aggregated data for entity.
+Trigger entity aggregation to update computed fields and search indexes. This endpoint is typically used internally after entity modifications.
 
 #### Path parameters
 - **db** - Database name.
 - **_id** - Entity ID.
 
-#### Query parameters
-- **pipeline** - MongoDB aggregation pipeline as JSON string.
-
 #### Example response
-```json
-{
-  "result": [
-    {
-      "_id": "group1",
-      "count": 5,
-      "total": 150
-    }
-  ]
-}
-```
+Returns the aggregation result from the MongoDB aggregation pipeline execution.
 
 
 
@@ -484,7 +698,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 #### Example response
 ```json
 {
-  "deleted": 1
+  "deleted": true
 }
 ```
 
@@ -493,20 +707,46 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
 
 ## System properties
 
-System properties are read only and set by the system. Property names begin with underscore (\_).
+System properties begin with underscore (\_). These are special properties that control entity behavior, access rights, and metadata.
 
 | Property | Type | Description |
 | :--- | :--- | :--- |
-| **\_id** | *string* | Unique ID of entity. |
-| **\_type** | *string* | Entity type. |
-| **\_parent** | *reference* | A parent entity ID. |
-| **\_owner** | *string* | Entity owner (user or API key). |
-| **\_viewer** | *string* | Entity viewer (user or API key). |
-| **\_expander** | *string* | Entity expander (user or API key). |
-| **\_editor** | *string* | Entity editor (user or API key). |
-| **\_public** | *boolean* | If true, then entity is public. |
-| **\_sharing** | *string* | Entity sharing level. Inherits from parent by default. |
-| **\_inheritrights** | *boolean* | If true, inherits rights from parent. |
-| **\_deleted** | *date* | If set, entity is deleted. |
-| **\_created** | *date* | Entity creation date. |
-| **\_changed** | *date* | Entity modification date. |
+| **\_id** | *string* | Unique ID of entity (read-only). |
+| **\_type** | *reference* | Reference to entity's type definition (required). |
+| **\_parent** | *reference* | Reference to parent entity. |
+| **\_sharing** | *string* | Sharing level: `private`, `domain`, or `public`. |
+| **\_inheritrights** | *boolean* | If true, inherits rights from parent entity. Entity-specific rights override inherited rights. |
+| **\_viewer** | *reference* | Reference to users/groups who can view this entity. |
+| **\_expander** | *reference* | Reference to users/groups who can add new entities under this entity. |
+| **\_editor** | *reference* | Reference to users/groups who can change properties (except rights). |
+| **\_owner** | *reference* | Reference to users/groups who can do anything with this entity (view, change, delete, and manage rights). |
+| **\_created** | *datetime* | Entity creation timestamp (read-only). |
+| **\_deleted** | *datetime* | Deletion timestamp. If set, entity is marked as deleted (read-only). |
+
+**Access Rights Hierarchy:**
+- **\_owner** - Full control (view, edit, delete, manage rights)
+- **\_editor** - Can modify properties but not rights
+- **\_expander** - Can create child entities
+- **\_viewer** - Read-only access
+
+
+
+
+## Error Responses
+
+All API endpoints return standard error responses with the following structure:
+
+```json
+{
+  "error": "Error message describing what went wrong",
+  "statusCode": 400,
+  "statusMessage": "Bad Request"
+}
+```
+
+**Common HTTP Status Codes:**
+- **400 Bad Request** - Invalid request parameters or missing required fields
+- **401 Unauthorized** - Invalid or missing JWT token
+- **403 Forbidden** - Insufficient permissions or no authenticated user
+- **404 Not Found** - Entity, property, or resource not found
+- **500 Internal Server Error** - Server-side error
