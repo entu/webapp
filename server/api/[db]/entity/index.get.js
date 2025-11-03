@@ -62,6 +62,367 @@ defineRouteMeta({
           type: 'string',
           description: 'Search query string'
         }
+      },
+      {
+        name: '{property}.string',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Filter by string property value (e.g., name.string=John)',
+          example: 'name.string=John'
+        }
+      },
+      {
+        name: '{property}.string.regex',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Filter by string property using regex (e.g., name.string.regex=/john/i)',
+          example: 'name.string.regex=/john/i'
+        }
+      },
+      {
+        name: '{property}.string.in',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Filter by multiple string values (comma-separated, e.g., status.string.in=active,pending)',
+          example: 'status.string.in=active,pending'
+        }
+      },
+      {
+        name: '{property}.reference',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Filter by reference property (entity ID, e.g., _type.reference=507f1f77bcf86cd799439011)',
+          example: '_type.reference=507f1f77bcf86cd799439011'
+        }
+      },
+      {
+        name: '{property}.reference.in',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Filter by multiple reference values (comma-separated entity IDs)',
+          example: '_type.reference.in=507f1f77bcf86cd799439011,507f1f77bcf86cd799439012'
+        }
+      },
+      {
+        name: '{property}.reference.exists',
+        in: 'query',
+        schema: {
+          type: 'boolean',
+          description: 'Check if reference property exists (e.g., _parent.reference.exists=true)',
+          example: '_parent.reference.exists=true'
+        }
+      },
+      {
+        name: '{property}.number',
+        in: 'query',
+        schema: {
+          type: 'number',
+          description: 'Filter by exact number value (e.g., price.number=100)',
+          example: 'price.number=100'
+        }
+      },
+      {
+        name: '{property}.number.gt',
+        in: 'query',
+        schema: {
+          type: 'number',
+          description: 'Filter by number greater than (e.g., price.number.gt=100)',
+          example: 'price.number.gt=100'
+        }
+      },
+      {
+        name: '{property}.number.gte',
+        in: 'query',
+        schema: {
+          type: 'number',
+          description: 'Filter by number greater than or equal (e.g., price.number.gte=100)',
+          example: 'price.number.gte=100'
+        }
+      },
+      {
+        name: '{property}.number.lt',
+        in: 'query',
+        schema: {
+          type: 'number',
+          description: 'Filter by number less than (e.g., price.number.lt=100)',
+          example: 'price.number.lt=100'
+        }
+      },
+      {
+        name: '{property}.number.lte',
+        in: 'query',
+        schema: {
+          type: 'number',
+          description: 'Filter by number less than or equal (e.g., price.number.lte=100)',
+          example: 'price.number.lte=100'
+        }
+      },
+      {
+        name: '{property}.number.ne',
+        in: 'query',
+        schema: {
+          type: 'number',
+          description: 'Filter by number not equal (e.g., price.number.ne=0)',
+          example: 'price.number.ne=0'
+        }
+      },
+      {
+        name: '{property}.number.in',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Filter by multiple number values (comma-separated, e.g., quantity.number.in=10,20,30)',
+          example: 'quantity.number.in=10,20,30'
+        }
+      },
+      {
+        name: '{property}.number.exists',
+        in: 'query',
+        schema: {
+          type: 'boolean',
+          description: 'Check if number property exists (e.g., price.number.exists=true)',
+          example: 'price.number.exists=true'
+        }
+      },
+      {
+        name: '{property}.boolean',
+        in: 'query',
+        schema: {
+          type: 'boolean',
+          description: 'Filter by boolean value (e.g., active.boolean=true)',
+          example: 'active.boolean=true'
+        }
+      },
+      {
+        name: '{property}.boolean.in',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Filter by multiple boolean values (comma-separated, e.g., active.boolean.in=true,false)',
+          example: 'active.boolean.in=true,false'
+        }
+      },
+      {
+        name: '{property}.boolean.exists',
+        in: 'query',
+        schema: {
+          type: 'boolean',
+          description: 'Check if boolean property exists (e.g., active.boolean.exists=true)',
+          example: 'active.boolean.exists=true'
+        }
+      },
+      {
+        name: '{property}.date',
+        in: 'query',
+        schema: {
+          type: 'string',
+          format: 'date',
+          description: 'Filter by exact date value (e.g., created_date.date=2025-01-28)',
+          example: 'created_date.date=2025-01-28'
+        }
+      },
+      {
+        name: '{property}.date.gt',
+        in: 'query',
+        schema: {
+          type: 'string',
+          format: 'date',
+          description: 'Filter by date greater than (e.g., created_date.date.gt=2025-01-01)',
+          example: 'created_date.date.gt=2025-01-01'
+        }
+      },
+      {
+        name: '{property}.date.gte',
+        in: 'query',
+        schema: {
+          type: 'string',
+          format: 'date',
+          description: 'Filter by date greater than or equal (e.g., created_date.date.gte=2025-01-01)',
+          example: 'created_date.date.gte=2025-01-01'
+        }
+      },
+      {
+        name: '{property}.date.lt',
+        in: 'query',
+        schema: {
+          type: 'string',
+          format: 'date',
+          description: 'Filter by date less than (e.g., created_date.date.lt=2025-12-31)',
+          example: 'created_date.date.lt=2025-12-31'
+        }
+      },
+      {
+        name: '{property}.date.lte',
+        in: 'query',
+        schema: {
+          type: 'string',
+          format: 'date',
+          description: 'Filter by date less than or equal (e.g., created_date.date.lte=2025-12-31)',
+          example: 'created_date.date.lte=2025-12-31'
+        }
+      },
+      {
+        name: '{property}.date.in',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Filter by multiple date values (comma-separated, e.g., event_date.date.in=2025-01-01,2025-02-01)',
+          example: 'event_date.date.in=2025-01-01,2025-02-01'
+        }
+      },
+      {
+        name: '{property}.date.exists',
+        in: 'query',
+        schema: {
+          type: 'boolean',
+          description: 'Check if date property exists (e.g., birthdate.date.exists=true)',
+          example: 'birthdate.date.exists=true'
+        }
+      },
+      {
+        name: '{property}.datetime',
+        in: 'query',
+        schema: {
+          type: 'string',
+          format: 'date-time',
+          description: 'Filter by exact datetime value (e.g., created_at.datetime=2025-01-28T08:21:25.637Z)',
+          example: 'created_at.datetime=2025-01-28T08:21:25.637Z'
+        }
+      },
+      {
+        name: '{property}.datetime.gt',
+        in: 'query',
+        schema: {
+          type: 'string',
+          format: 'date-time',
+          description: 'Filter by datetime greater than',
+          example: 'created_at.datetime.gt=2025-01-01T00:00:00.000Z'
+        }
+      },
+      {
+        name: '{property}.datetime.gte',
+        in: 'query',
+        schema: {
+          type: 'string',
+          format: 'date-time',
+          description: 'Filter by datetime greater than or equal',
+          example: 'created_at.datetime.gte=2025-01-01T00:00:00.000Z'
+        }
+      },
+      {
+        name: '{property}.datetime.lt',
+        in: 'query',
+        schema: {
+          type: 'string',
+          format: 'date-time',
+          description: 'Filter by datetime less than',
+          example: 'created_at.datetime.lt=2025-12-31T23:59:59.999Z'
+        }
+      },
+      {
+        name: '{property}.datetime.lte',
+        in: 'query',
+        schema: {
+          type: 'string',
+          format: 'date-time',
+          description: 'Filter by datetime less than or equal',
+          example: 'created_at.datetime.lte=2025-12-31T23:59:59.999Z'
+        }
+      },
+      {
+        name: '{property}.datetime.in',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Filter by multiple datetime values (comma-separated)',
+          example: 'created_at.datetime.in=2025-01-01T00:00:00.000Z,2025-02-01T00:00:00.000Z'
+        }
+      },
+      {
+        name: '{property}.datetime.exists',
+        in: 'query',
+        schema: {
+          type: 'boolean',
+          description: 'Check if datetime property exists (e.g., created_at.datetime.exists=true)',
+          example: 'created_at.datetime.exists=true'
+        }
+      },
+      {
+        name: '{property}.filesize',
+        in: 'query',
+        schema: {
+          type: 'number',
+          description: 'Filter by exact file size in bytes (e.g., photo.filesize=1024000)',
+          example: 'photo.filesize=1024000'
+        }
+      },
+      {
+        name: '{property}.filesize.gt',
+        in: 'query',
+        schema: {
+          type: 'number',
+          description: 'Filter by file size greater than (in bytes)',
+          example: 'photo.filesize.gt=1000000'
+        }
+      },
+      {
+        name: '{property}.filesize.gte',
+        in: 'query',
+        schema: {
+          type: 'number',
+          description: 'Filter by file size greater than or equal (in bytes)',
+          example: 'photo.filesize.gte=1000000'
+        }
+      },
+      {
+        name: '{property}.filesize.lt',
+        in: 'query',
+        schema: {
+          type: 'number',
+          description: 'Filter by file size less than (in bytes)',
+          example: 'photo.filesize.lt=5000000'
+        }
+      },
+      {
+        name: '{property}.filesize.lte',
+        in: 'query',
+        schema: {
+          type: 'number',
+          description: 'Filter by file size less than or equal (in bytes)',
+          example: 'photo.filesize.lte=5000000'
+        }
+      },
+      {
+        name: '{property}.filesize.in',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Filter by multiple file size values (comma-separated)',
+          example: 'photo.filesize.in=1024000,2048000'
+        }
+      },
+      {
+        name: '{property}.filesize.exists',
+        in: 'query',
+        schema: {
+          type: 'boolean',
+          description: 'Check if filesize property exists (e.g., photo.filesize.exists=true)',
+          example: 'photo.filesize.exists=true'
+        }
+      },
+      {
+        name: '{property}.string.exists',
+        in: 'query',
+        schema: {
+          type: 'boolean',
+          description: 'Check if string property exists (e.g., name.string.exists=true)',
+          example: 'name.string.exists=true'
+        }
       }
     ],
     responses: {
@@ -73,6 +434,19 @@ defineRouteMeta({
               type: 'object',
               description: 'Paginated list of entities with metadata',
               properties: {
+                pipeline: {
+                  type: 'array',
+                  description: 'MongoDB aggregation pipeline used for the query',
+                  items: {
+                    type: 'object'
+                  }
+                },
+                pipelineCount: {
+                  type: 'integer',
+                  description: 'Number of entities returned by the pipeline',
+                  minimum: 0,
+                  example: 14
+                },
                 entities: {
                   type: 'array',
                   description: 'Array of entity objects',
@@ -99,7 +473,7 @@ defineRouteMeta({
                   example: 0
                 }
               },
-              required: ['entities', 'count', 'limit', 'skip']
+              required: ['pipeline', 'pipelineCount', 'entities', 'count', 'limit', 'skip']
             }
           }
         }

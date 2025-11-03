@@ -31,15 +31,10 @@ defineRouteMeta({
             schema: {
               type: 'object',
               properties: {
-                acknowledged: {
+                deleted: {
                   type: 'boolean',
-                  description: 'Deletion acknowledgment',
+                  description: 'Deletion confirmation',
                   example: true
-                },
-                deletedCount: {
-                  type: 'integer',
-                  description: 'Number of entities deleted',
-                  example: 1
                 }
               }
             }

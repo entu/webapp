@@ -33,7 +33,7 @@ defineRouteMeta({
             schema: {
               type: 'object',
               properties: {
-                url: {
+                billingUrl: {
                   type: 'string',
                   description: 'Stripe billing portal URL',
                   example: 'https://billing.stripe.com/p/session/...'

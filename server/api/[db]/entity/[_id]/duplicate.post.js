@@ -55,20 +55,35 @@ defineRouteMeta({
         content: {
           'application/json': {
             schema: {
-              type: 'object',
-              properties: {
-                duplicated: {
-                  type: 'array',
-                  description: 'Array of duplicated entity IDs',
-                  items: {
+              type: 'array',
+              description: 'Array of created entities with their properties',
+              items: {
+                type: 'object',
+                properties: {
+                  _id: {
                     type: 'string',
-                    description: 'New entity ID'
+                    description: 'New entity ID',
+                    example: '6798938432faaba00f8fc72f'
+                  },
+                  properties: {
+                    type: 'object',
+                    description: 'Entity properties indexed by property name',
+                    additionalProperties: {
+                      type: 'array',
+                      items: {
+                        type: 'object',
+                        properties: {
+                          _id: { type: 'string', description: 'Property ID' },
+                          string: { type: 'string', description: 'String value' },
+                          number: { type: 'number', description: 'Numeric value' },
+                          boolean: { type: 'boolean', description: 'Boolean value' },
+                          reference: { type: 'string', description: 'Reference to another entity' }
+                        }
+                      }
+                    }
                   }
                 },
-                count: {
-                  type: 'integer',
-                  description: 'Number of entities created'
-                }
+                required: ['_id', 'properties']
               }
             }
           }
