@@ -1290,7 +1290,7 @@ async function startRelativeAggregation (entu, oldEntity, newEntity) {
       { $group: { _id: '$entity' } }
     ]).toArray()
 
-    logger(`Aggregation - Name changed`, entu, [`entity:${oldEntity._id}`])
+    // logger(`Aggregation - Name changed`, entu, [`entity:${oldEntity._id}`])
 
     ids = referrers.map((x) => x._id)
   }
@@ -1310,7 +1310,7 @@ async function startRelativeAggregation (entu, oldEntity, newEntity) {
       projection: { _id: true }
     }).toArray()
 
-    logger(`Aggregation - Rights changed`, entu, [`entity:${oldEntity._id}`])
+    // logger(`Aggregation - Rights changed`, entu, [`entity:${oldEntity._id}`])
 
     ids = [...ids, ...childs.map((x) => x._id)]
   }
