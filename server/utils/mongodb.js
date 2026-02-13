@@ -1,18 +1,23 @@
 import { MongoClient, ObjectId } from 'mongodb'
 
-export const mongoDbSystemDbs = [
-  'admin',
-  'analytics',
-  'api',
-  'config',
-  'local'
-]
+export const mongoDbSystemDbs = ['admin', 'config', 'local']
 
 const dbConnections = {}
 let dbConnection
 
 export async function connectDb (dbName, isNew) {
   if (!dbName) return
+
+  if (dbConnections[dbName]) {
+    return dbConnections[dbName]
+  }
+
+  if (!dbConnection) {
+    const { mongodbUrl } = useRuntimeConfig()
+    const dbClient = new MongoClient(mongodbUrl)
+
+    dbConnection = await dbClient.connect()
+  }
 
   const dbs = await dbConnection.db().admin().listDatabases()
   const dbNames = dbs.databases.map((db) => db.name)
@@ -32,17 +37,6 @@ export async function connectDb (dbName, isNew) {
       statusCode: 404,
       statusMessage: `Account ${dbName} not found`
     })
-  }
-
-  if (dbConnections[dbName]) {
-    return dbConnections[dbName]
-  }
-
-  if (!dbConnection) {
-    const { mongodbUrl } = useRuntimeConfig()
-    const dbClient = new MongoClient(mongodbUrl)
-
-    dbConnection = await dbClient.connect()
   }
 
   dbConnections[dbName] = dbConnection.db(dbName)
