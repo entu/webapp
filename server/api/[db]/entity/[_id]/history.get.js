@@ -203,6 +203,11 @@ export default defineEventHandler(async (event) => {
       if (x.new.string) x.new.string = '***'
     }
 
+    if (x.type === 'entu_passkey') {
+      if (x.old.string) x.old.string = `${x.old.passkey_device || ''} ${x._id.toString().slice(-4).toUpperCase()}`.trim()
+      if (x.new.string) x.new.string = `${x.new.passkey_device || ''} ${x._id.toString().slice(-4).toUpperCase()}`.trim()
+    }
+
     if (x.at === null) delete x.at
     if (x.by === null) delete x.by
     if (x.old === null) delete x.old

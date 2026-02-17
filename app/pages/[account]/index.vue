@@ -116,8 +116,6 @@ onMounted(async () => {
           />
         </div>
 
-        <changelog class="mx-2 rounded border px-4 py-3" />
-
         <div class="pb-4 text-center text-sm text-gray-500">
           <a
             target="_blank"

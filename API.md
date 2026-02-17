@@ -123,7 +123,7 @@ Use this temporary API key to get JWT tokens from [/auth](#get-auth). This key c
 
 ## Passkey Authentication
 
-### GET /api/passkey/authenticate
+### GET /api/auth/passkey
 Generate WebAuthn authentication options for passkey login. No authentication required.
 
 #### Example response
@@ -137,8 +137,55 @@ Generate WebAuthn authentication options for passkey login. No authentication re
 ```
 
 
-### GET /api/passkey/register
-Generate WebAuthn registration options for passkey registration. Requires JWT authentication.
+### POST /api/auth/passkey
+Complete WebAuthn passkey authentication. Searches all databases to find the user and returns JWT token with access to all accounts.
+
+#### Request body
+```json
+{
+  "id": "credential-id",
+  "rawId": "raw-credential-id",
+  "response": {
+    "clientDataJSON": "base64-encoded-client-data",
+    "authenticatorData": "base64-encoded-authenticator-data",
+    "signature": "base64-encoded-signature"
+  },
+  "type": "public-key",
+  "expectedChallenge": "challenge-from-authentication-options"
+}
+```
+
+#### Example response
+```json
+{
+  "accounts": [
+    {
+      "_id": "database1",
+      "name": "database1",
+      "user": {
+        "_id": "user-entity-id",
+        "name": "John Doe"
+      }
+    },
+    {
+      "_id": "database2",
+      "name": "database2",
+      "user": {
+        "_id": "user-entity-id",
+        "name": "John Doe"
+      }
+    }
+  ],
+  "token": "jwt-token-string"
+}
+```
+
+
+### GET /api/{ db }/passkey
+Generate WebAuthn registration options for passkey registration in current database. Requires JWT authentication.
+
+#### Path parameters
+- **db** - Database name.
 
 #### Example response
 ```json
@@ -165,8 +212,11 @@ Generate WebAuthn registration options for passkey registration. Requires JWT au
 ```
 
 
-### POST /api/passkey/register
-Complete WebAuthn passkey registration. Requires JWT authentication.
+### POST /api/{ db }/passkey
+Complete WebAuthn passkey registration. Requires JWT authentication. Stores the passkey in the current database.
+
+#### Path parameters
+- **db** - Database name.
 
 #### Request body
 ```json
@@ -188,14 +238,13 @@ Complete WebAuthn passkey registration. Requires JWT authentication.
 {
   "success": true,
   "_id": "user-entity-id",
-  "properties": {
-    "entu_passkey": [
-      {
-        "_id": "property-id",
-        "device": "iPhone 15 Pro"
-      }
-    ]
-  }
+  "properties": [
+    {
+      "_id": "property-id",
+      "type": "entu_passkey",
+      "string": "iPhone 15 Pro A1B2"
+    }
+  ]
 }
 ```
 

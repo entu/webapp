@@ -1,5 +1,3 @@
-import { setEntity } from '~~/server/utils/entity'
-
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],

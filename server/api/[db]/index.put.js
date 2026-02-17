@@ -335,16 +335,16 @@ async function newDatabase (name) {
   await Promise.all([
     // Add entity indexes to MongoDB
     newDb.collection('entity').createIndexes([
-      { key: { oid: 1 } },
       { key: { access: 1 } },
       { key: { 'private._parent.reference': 1 } },
       { key: { 'private._type.string': 1 } },
       { key: { 'private.add_from.reference': 1 } },
       { key: { 'private.entu_api_key.string': 1 } },
+      { key: { 'private.entu_passkey.passkey_id': 1 } },
       { key: { 'private.entu_user.string': 1 } },
       { key: { 'private.name.string': 1 } },
-      { key: { 'search.private': 1 } },
       { key: { 'search.domain': 1 } },
+      { key: { 'search.private': 1 } },
       { key: { 'search.public': 1 } }
     ]),
 

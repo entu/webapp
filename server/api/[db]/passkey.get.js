@@ -3,8 +3,17 @@ import { generateRegistrationOptions } from '@simplewebauthn/server'
 defineRouteMeta({
   openAPI: {
     tags: ['Authentication'],
-    description: 'Generate WebAuthn registration options for passkey registration',
+    description: 'Generate WebAuthn registration options for passkey registration in current database',
     security: [{ bearerAuth: [] }],
+    parameters: [
+      {
+        name: 'db',
+        in: 'path',
+        required: true,
+        schema: { type: 'string' },
+        description: 'Database name'
+      }
+    ],
     responses: {
       200: {
         description: 'WebAuthn registration options',
@@ -71,27 +80,51 @@ export default defineEventHandler(async (event) => {
     })
   }
 
-  if (!entu.email) {
+  if (!entu.userStr) {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'No user email'
+      statusCode: 403,
+      statusMessage: 'No user ID'
     })
   }
 
-  const { hostname } = getRequestURL(event)
+  if (!entu.token?.accounts) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'No accounts in token'
+    })
+  }
 
-  const options = await generateRegistrationOptions({
-    rpName: 'Entu',
-    rpID: hostname,
-    userID: entu.userStr,
-    userName: entu.email,
-    userDisplayName: entu.email,
-    authenticatorSelection: {
-      userVerification: 'preferred',
-      residentKey: 'preferred'
-    },
-    supportedAlgorithmIDs: [-7, -257] // ES256, RS256
-  })
+  try {
+    // Fetch user entity to get email/name
+    const db = await connectDb(entu.account)
+    const user = await db.collection('entity').findOne(
+      { _id: entu.user },
+      { projection: { 'private.email.string': 1, 'private.name.string': 1 } }
+    )
 
-  return options
+    // Use email if available, otherwise fall back to user ID
+    const userName = user?.private?.name?.at(0)?.string || user?.private?.email?.at(0)?.string || entu.userStr
+
+    const { hostname } = getRequestURL(event)
+
+    const options = await generateRegistrationOptions({
+      rpName: 'Entu',
+      rpID: hostname,
+      userID: Buffer.from(entu.userStr, 'utf8'),
+      userName: `${userName} - ${entu.userStr}@${entu.account}`,
+      authenticatorSelection: {
+        userVerification: 'preferred',
+        residentKey: 'preferred'
+      },
+      supportedAlgorithmIDs: [-7, -257] // ES256, RS256
+    })
+
+    return options
+  }
+  catch (error) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: error.message || 'Failed to generate registration options'
+    })
+  }
 })

@@ -1,5 +1,3 @@
-import { setEntity } from '~~/server/utils/entity'
-
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
@@ -181,7 +179,7 @@ export default defineEventHandler(async (event) => {
     entity: entityId,
     deleted: { $exists: false },
     filename: { $exists: false },
-    type: { $nin: [...ignoredProperties, '_created', '_mid', 'entu_api_key', 'entu_user'] }
+    type: { $nin: [...ignoredProperties, '_created', '_mid', 'entu_api_key', 'entu_user', 'entu_passkey'] }
   }, {
     projection: {
       _id: false,

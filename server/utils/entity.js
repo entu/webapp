@@ -31,6 +31,12 @@ export async function cleanupEntity (entu, entity, _thumbnail) {
     })
   }
 
+  if (result.entu_passkey) {
+    result.entu_passkey.forEach((k) => {
+      k.string = `${k.passkey_device || ''} ${k._id.toString().slice(-4).toUpperCase()}`.trim()
+    })
+  }
+
   if (!result._thumbnail) {
     delete result._thumbnail
   }

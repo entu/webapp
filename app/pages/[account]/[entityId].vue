@@ -82,7 +82,7 @@ const properties = computed(() => {
 
   result.sort(propsSorter)
 
-  return result
+  return result.filter((x) => x.children.some((y) => y.mandatory || y.values))
 })
 
 const childs = computed(() => [

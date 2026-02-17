@@ -160,6 +160,18 @@ const authMenu = computed(() => {
       type: 'divider'
     },
     {
+      key: 'auth-passkey',
+      icon: () => h(MyIcon, { icon: 'passkey' }),
+      label: () => h(NuxtLink,
+        { to: { path: '/auth/passkey' } },
+        { default: () => t('passkey') }
+      )
+    },
+    {
+      name: '            5',
+      type: 'divider'
+    },
+    {
       key: 'auth-email',
       icon: () => h(MyIcon, { icon: 'e-mail' }),
       label: () => h(NuxtLink,
@@ -182,6 +194,10 @@ const authMenu = computed(() => {
         { to: { path: '/auth/google' } },
         { default: () => 'Google' }
       )
+    },
+    {
+      name: '            6',
+      type: 'divider'
     },
     {
       key: 'auth-sid',
@@ -378,6 +394,7 @@ function linkReplace (url) {
     language: Eesti keel
     signIn: Sign In
     signOut: Sign Out
+    passkey: Passkey
     email: E-mail
     mid: Mobile-ID
     sid: Smart-ID
@@ -387,6 +404,7 @@ function linkReplace (url) {
     language: English
     signIn: Sisene
     signOut: Välju
+    passkey: Turvavõti
     email: E-post
     mid: Mobiil-ID
     sid: Smart-ID

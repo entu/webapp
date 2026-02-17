@@ -139,6 +139,10 @@ export default defineEventHandler(async (event) => {
     property.string = '***'
   }
 
+  if (property.type === 'entu_passkey') {
+    property.string = `${property.passkey_device || ''} ${property._id.toString().slice(-4).toUpperCase()}`.trim()
+  }
+
   if (property.url && getQuery(event).download) {
     await sendRedirect(event, property.url, 302)
   }

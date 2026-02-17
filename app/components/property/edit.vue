@@ -22,6 +22,7 @@ const props = defineProps({
 
 const { locale, t } = useI18n()
 const { accountId } = useAccount()
+const { userId } = useUser()
 
 const newFiles = ref({})
 
@@ -36,6 +37,7 @@ const languageOptions = [
 
 const setOptions = computed(() => [...props.set].sort().map((x) => ({ value: x, label: x })))
 const referenceOptions = computed(() => props.values.filter((x) => x._id !== undefined).map((x) => ({ value: x.reference, label: x.string })))
+const isOwnEntity = computed(() => userId.value === entityId.value)
 
 const fileList = computed(() => props.type === 'file'
   ? newValues.value.filter((x) => x._id !== undefined).map((x) => ({
@@ -443,7 +445,31 @@ async function copyToClipboard (text) {
       />
 
       <my-button
-        v-if="type === 'string' && props.property === 'entu_api_key' && value._id && value.string === '***'"
+        v-if="type === 'string' && props.property === 'entu_passkey' && value._id"
+        icon="delete"
+        :label="t('deletePasskey')"
+        :loading="loadingInputs.includes(value._id)"
+        :readonly="disabled"
+        @click="updateValue({ ...value, string: null })"
+      />
+
+      <my-button
+        v-else-if="type === 'string' && props.property === 'entu_passkey' && !value._id && isOwnEntity"
+        icon="add"
+        :label="t('registerPasskey')"
+        :readonly="disabled"
+        @click="navigateTo(`/${accountId}/passkey`)"
+      />
+
+      <span
+        v-else-if="type === 'string' && props.property === 'entu_passkey' && !value._id && !isOwnEntity"
+        class="mt-2 text-sm text-gray-500"
+      >
+        {{ t('passkeyOwnOnly') }}
+      </span>
+
+      <my-button
+        v-else-if="type === 'string' && props.property === 'entu_api_key' && value._id && value.string === '***'"
         icon="delete"
         :label="t('deleteApiKey')"
         :loading="loadingInputs.includes(value._id)"
@@ -597,9 +623,15 @@ async function copyToClipboard (text) {
     counter: Generate
     generateApiKey: Generate API Key
     deleteApiKey: Delete API Key
+    deletePasskey: Delete Passkey
+    registerPasskey: Register Passkey
+    passkeyOwnOnly: Only user can create their own passkey
   et:
     upload: Laadi üles
     counter: Genereeri
     generateApiKey: Loo API võti
     deleteApiKey: Kustuta API võti
+    deletePasskey: Kustuta turvavõti
+    registerPasskey: Registreeri turvavõti
+    passkeyOwnOnly: Turvavõtit saab luua ainult kasutaja ise
 </i18n>
