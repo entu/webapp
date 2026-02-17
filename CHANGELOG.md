@@ -1,3 +1,6 @@
+## 2026-02-17
+- **Passkey authentication**: Added passwordless WebAuthn authentication using device biometrics (fingerprint, face recognition, or PIN) with account-scoped credentials and property management UI
+
 ## 2025-10-27
 - **Property inheritance improvements**: Enhanced `_sharing` and `_inheritrights` to check all parent entities (direct and default parents) with proper priority handling
 - **Formula enhancements**: Added `ROUND` and `ABS` functions, nested formula support, and comprehensive FORMULAS.md documentation
