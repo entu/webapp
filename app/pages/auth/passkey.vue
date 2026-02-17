@@ -13,6 +13,8 @@ const authError = ref(false)
 onMounted(async () => {
   useHead({ title: t('title') })
 
+  useAnalytics('auth_passkey')
+
   // Check if WebAuthn is supported and available
   if (!browserSupportsWebAuthn()) return
 

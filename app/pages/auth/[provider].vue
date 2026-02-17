@@ -8,6 +8,8 @@ const { t } = useI18n()
 onMounted(async () => {
   useHead({ title: t('title') })
 
+  useAnalytics(`auth_${route.params.provider}`)
+
   await navigateTo(`${runtimeConfig.public.apiUrl}/auth/${route.params.provider}?next=${window.location.origin}/auth/callback?key=`, { external: true })
 })
 </script>
