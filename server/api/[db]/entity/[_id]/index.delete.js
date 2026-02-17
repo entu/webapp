@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Delete entity and all its properties permanently',
+    description: 'Permanently delete entity by marking it as deleted, all its properties are removed, and all references to this entity from other entities (including child _parent properties) are marked as deleted',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

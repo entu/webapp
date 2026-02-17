@@ -2,8 +2,8 @@ import { generateAuthenticationOptions } from '@simplewebauthn/server'
 
 defineRouteMeta({
   openAPI: {
-    tags: ['Authentication'],
-    description: 'Generate WebAuthn authentication options for passkey login',
+    tags: ['Passkey'],
+    description: 'Generate WebAuthn authentication challenge (step 1 of 2 for passkey login). Returns challenge, RP ID, and authentication options for client-side WebAuthn API. Uses discoverable credentials (empty allowCredentials) so any passkey can authenticate. Client must call navigator.credentials.get() with these options',
     security: [], // No authentication required for login
     responses: {
       200: {

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 defineRouteMeta({
   openAPI: {
     tags: ['Authentication'],
-    description: 'OAuth callback for authentication providers - redirects to OAuth.ee for authentication',
+    description: 'OAuth 2.0 authentication flow via OAuth.ee integration. Initial request redirects to provider login page. Provider callback includes authorization code which is automatically exchanged for user profile. Creates or matches person entity by email, then redirects with temporary session token (5 min, single-use) in URL. User completes flow by exchanging token at /api/auth for JWT',
     security: [], // No authentication required for OAuth callback
     parameters: [
       {
@@ -12,7 +12,7 @@ defineRouteMeta({
         required: true,
         schema: {
           type: 'string',
-          enum: ['google', 'apple', 'smart-id', 'mobile-id', 'id-card'],
+          enum: ['e-mail', 'google', 'apple', 'smart-id', 'mobile-id', 'id-card'],
           description: 'OAuth provider'
         }
       },

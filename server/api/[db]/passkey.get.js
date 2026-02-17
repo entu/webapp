@@ -2,8 +2,8 @@ import { generateRegistrationOptions } from '@simplewebauthn/server'
 
 defineRouteMeta({
   openAPI: {
-    tags: ['Authentication'],
-    description: 'Generate WebAuthn registration options for passkey registration in current database',
+    tags: ['Passkey'],
+    description: 'Generate WebAuthn registration challenge (step 1 of 2 for adding passkey). Returns challenge, RP ID, user info, and registration options for client-side WebAuthn API. User must be authenticated (JWT). Client calls navigator.credentials.create() with these options to generate new credential',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

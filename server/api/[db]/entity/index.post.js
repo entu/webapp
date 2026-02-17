@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Create new entity with properties. Supports file uploads with signed URLs.',
+    description: 'Create new entity with initial properties. Supports all property types (string, number, boolean, reference, date, datetime). File properties return signed S3 upload URLs. Returns entity ID and created properties in flattened structure',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

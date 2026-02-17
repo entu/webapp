@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Get entities list with advanced filtering, sorting, and grouping capabilities',
+    description: 'List entities with advanced filtering by property values (exact, regex, range, exists checks), full-text search across all text fields, sorting, grouping, and pagination. Returns entities array with properties filtered by user access rights (private/domain/public). Supports count-only queries',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

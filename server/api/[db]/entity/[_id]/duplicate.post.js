@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Duplicate entity with optional property filtering and multiple copies',
+    description: 'Create duplicate copy of entity with all or filtered properties. Optionally override parent and create multiple copies in single request. New entity gets new ID, properties are fully copied. Useful for templates or batch entity creation',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

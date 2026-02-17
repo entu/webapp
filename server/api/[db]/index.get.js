@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Database'],
-    description: 'Get database usage statistics and limits',
+    description: 'Get comprehensive database usage statistics including entity count (active and deleted), property count, monthly API requests, file storage (active and deleted in bytes), database size, and account limits. Useful for monitoring quota usage and triggering billing alerts',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

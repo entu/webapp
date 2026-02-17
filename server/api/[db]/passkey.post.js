@@ -2,8 +2,8 @@ import { verifyRegistrationResponse } from '@simplewebauthn/server'
 
 defineRouteMeta({
   openAPI: {
-    tags: ['Authentication'],
-    description: 'Complete WebAuthn passkey registration for current database',
+    tags: ['Passkey'],
+    description: 'Complete passkey registration (step 2 of 2). Verifies WebAuthn attestation response, extracts public key, validates RP ID and origin, initializes signature counter, and stores credential as entu_passkey property on user person entity. Device name can be customized via deviceName request parameter',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 defineRouteMeta({
   openAPI: {
     tags: ['Authentication'],
-    description: 'Authenticates user by API key. Returns array of objects containing JWT tokens for accessing databases where user exists.',
+    description: 'Exchange API key or temporary session token for JWT access token (valid 48 hours). Accepts permanent API keys from entu_api_key property (hashed SHA-256) or temporary session tokens from OAuth/passkey flows (5 min validity). Returns JWT with database accounts array and user profile. Optional db parameter restricts authentication to single database',
     security: [], // Uses API key, not JWT
     parameters: [
       {

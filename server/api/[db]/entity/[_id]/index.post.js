@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Update entity by adding or modifying properties',
+    description: 'Add new properties to entity (does not delete existing properties). Supports all property types including files. File properties return signed S3 upload URLs. Returns entity ID and all newly added properties in flattened structure. Requires _editor rights',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

@@ -3,7 +3,7 @@ import stripe from 'stripe'
 defineRouteMeta({
   openAPI: {
     tags: ['Database'],
-    description: 'Get account billing information and Stripe portal URL',
+    description: 'Generate Stripe customer portal session URL for managing subscriptions (upgrade/downgrade/cancel), updating payment methods, viewing invoices, and downloading receipts. URL is time-limited and redirects back to Entu after completion. Requires database to have Stripe customer ID configured',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

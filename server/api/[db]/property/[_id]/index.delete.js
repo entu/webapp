@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Property'],
-    description: 'Delete property with given ID',
+    description: 'Soft delete individual property by marking it as deleted (property remains in database but excluded from entity). Entity is automatically re-aggregated. Also cleans up file from S3 storage if property is a file. Requires _editor rights on parent entity',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

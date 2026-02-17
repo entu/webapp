@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken'
 
 defineRouteMeta({
   openAPI: {
-    tags: ['Authentication'],
-    description: 'Complete WebAuthn passkey authentication',
+    tags: ['Passkey'],
+    description: 'Verify WebAuthn authentication response (step 2 of 2 for passkey login). Searches all databases for matching credential ID, verifies signature with stored public key, updates usage counter, and returns JWT tokens for all databases where user has access. Prevents replay attacks via challenge validation',
     security: [], // No authentication required for login
     requestBody: {
       required: true,

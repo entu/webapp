@@ -1,21 +1,4 @@
-# Formulas
-
-This document describes the available formula functions that can be used in entity properties.
-
-## Available Functions
-
-- **[CONCAT](#concat-default)** - Concatenates all values into a single string (default)
-- **[CONCAT_WS](#concat_ws)** - Concatenates values with a separator (last value is separator)
-- **[COUNT](#count)** - Counts the number of values
-- **[SUM](#sum)** - Calculates the sum of all numeric values
-- **[SUBTRACT](#subtract)** - Subtracts all subsequent values from the first value
-- **[MULTIPLY](#multiply)** - Multiplies all values together
-- **[DIVIDE](#divide)** - Divides the first value by all subsequent values
-- **[AVERAGE](#average)** - Calculates the arithmetic mean of all values
-- **[MIN](#min)** - Returns the minimum value
-- **[MAX](#max)** - Returns the maximum value
-- **[ABS](#abs)** - Returns the absolute value of the first value
-- **[ROUND](#round)** - Rounds the first value to specified decimal places (last value)
+Properties can be computed dynamically using formulas defined in entity type definitions (`formula` field). Formulas enable you to calculate values based on other properties, aggregate data from related entities, and create complex expressions without manual data entry.
 
 ## Syntax
 
@@ -46,11 +29,11 @@ This evaluates the inner formulas first, then uses their results in the outer fo
 
 ### Same Entity
 - `property_name` - Reference a property on the same entity
-- `_id` - Reference the entity's ID
+- `_id` - Reference the entity's own ID
 
 ### Related Entities
-- `property_name.*.property` - Reference a property through a reference field
-- `property_name.type.property` - Reference a property through a reference field filtered by entity type
+- `property_name.*.property` - Traverse reference to access property from related entity
+- `property_name.type.property` - Filter by entity type when traversing references
 - `property_name.*._id` - Get IDs of referenced entities
 - `property_name.type._id` - Get IDs of referenced entities filtered by type
 
@@ -60,107 +43,78 @@ This evaluates the inner formulas first, then uses their results in the outer fo
 - `_child.*._id` - Get IDs of all child entities
 - `_child.type._id` - Get IDs of child entities of a specific type
 
-### Referrer Entities (entities that reference this one)
+### Referrer Entities
+Entities that reference this one through reference properties:
 - `_referrer.*.property` - Reference properties from all entities that reference this one
 - `_referrer.type.property` - Reference properties from referrer entities of a specific type
 - `_referrer.*._id` - Get IDs of all entities that reference this one
 - `_referrer.type._id` - Get IDs of referrer entities of a specific type
 
 ### Literal Values
-- `'text'` or `"text"` - String literal (quoted)
+- `'text'` or `"text"` - String literal (must be quoted)
 - `123` or `45.67` - Numeric literal
 
-## Functions
+## Available Functions
 
 ### CONCAT (default)
 Concatenates all values into a single string.
 
-**Returns:** String
-
-**Example:**
 ```
 first_name last_name CONCAT
 ```
 
 ### CONCAT_WS
-Concatenates values with a separator. The last value is used as the separator.
+Concatenates values with a separator (last value is the separator).
 
-**Returns:** String
-
-**Example:**
 ```
 first_name last_name ' ' CONCAT_WS
 ```
-This joins first_name and last_name with a space between them.
 
 ### COUNT
 Counts the number of values.
 
-**Returns:** Number
-
-**Example:**
 ```
-items COUNT
+_child.*._id COUNT
 ```
 
 ### SUM
 Calculates the sum of all numeric values.
 
-**Returns:** Number
-
-**Example:**
 ```
-price quantity SUM
+price tax SUM
 ```
 
 ### SUBTRACT
 Subtracts all subsequent values from the first value.
 
-**Returns:** Number
-
-**Example:**
 ```
-total discount SUBTRACT
+revenue expenses SUBTRACT  → revenue - expenses
 ```
-Returns: `total - discount`
 
 ### MULTIPLY
 Multiplies all values together.
 
-**Returns:** Number
-
-**Example:**
 ```
 price quantity MULTIPLY
 ```
 
 ### DIVIDE
-Divides the first value by all subsequent values. Returns `undefined` if division by zero is attempted.
+Divides the first value by all subsequent values. Returns `undefined` if division by zero.
 
-**Returns:** Number or undefined
-
-**Example:**
 ```
-total count DIVIDE
+total count DIVIDE  → total / count
 ```
-Returns: `total / count`
 
 ### AVERAGE
 Calculates the arithmetic mean of all values.
 
-**Returns:** Number
-
-**Example:**
 ```
-score1 score2 score3 AVERAGE
+_child.*.price AVERAGE
 ```
 
 ### MIN
 Returns the minimum value.
 
-**Returns:** Number
-
-**Example:**
 ```
 _child.*.price MIN
 ```
@@ -168,9 +122,6 @@ _child.*.price MIN
 ### MAX
 Returns the maximum value.
 
-**Returns:** Number
-
-**Example:**
 ```
 _child.*.price MAX
 ```
@@ -178,28 +129,17 @@ _child.*.price MAX
 ### ABS
 Returns the absolute value of the first value.
 
-**Returns:** Number
-
-**Example:**
 ```
-balance ABS
+temperature ABS
 ```
 
 ### ROUND
-Rounds the first value to the number of decimal places specified by the last value.
-
-**Returns:** Number
-
-**Example:**
-```
-price 2 ROUND
-```
-Returns: price rounded to 2 decimal places
+Rounds the first value to decimal places specified by the last value.
 
 ```
-(total quantity DIVIDE) 3 ROUND
+price 2 ROUND  → price rounded to 2 decimals
+(total quantity DIVIDE) 3 ROUND  → total/quantity rounded to 3 decimals
 ```
-Returns: total/quantity rounded to 3 decimal places
 
 ## Examples
 
@@ -228,17 +168,12 @@ _child.*.price AVERAGE
 related_field.*.amount MAX
 ```
 
-### Calculate difference
+### Calculate price difference
 ```
-revenue expenses SUBTRACT
-```
-
-### Get absolute value
-```
-temperature ABS
+original_price sale_price SUBTRACT
 ```
 
-### Round to 2 decimal places
+### Round then multiply
 ```
-price 2 ROUND
+(price 2 ROUND) quantity MULTIPLY
 ```

@@ -59,8 +59,7 @@ export default defineNuxtConfig({
     },
     openAPI: {
       meta: {
-        title: 'Entu API Documentation',
-        description: 'REST API for Entu - a flexible entity-property database system with hierarchical data structures, permission management, and file handling capabilities.'
+        title: 'Entu API Documentation'
       },
       production: 'prerender',
       route: '/api/docs/openapi.json',

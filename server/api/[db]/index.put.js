@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Database'],
-    description: 'Create new database with initial setup',
+    description: 'Create new database (account) with validation (4-12 chars, alphanumeric, no reserved names). Automatically creates database entity, owner person entity with provided name/email, default property definitions (name, photo, etc), and optionally includes predefined entity type templates (document, folder, etc). Owner receives full _owner rights',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

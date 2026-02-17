@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Property'],
-    description: 'Get property details or redirect to file download URL',
+    description: 'Get individual property details including type, value, creation metadata, and entity reference. For file properties, includes signed S3 download URL (valid 15 minutes). Add ?download=true query parameter to redirect directly to file. Respects entity access rights',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

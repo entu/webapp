@@ -1,3 +1,21 @@
+import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
+
+// Helper function to load tag descriptions from markdown files
+const loadTagDescription = (filename) => {
+  try {
+    // If filename starts with ../, resolve from project root, otherwise from docs folder
+    const filePath = filename.startsWith('../')
+      ? resolve(process.cwd(), filename)
+      : resolve(process.cwd(), 'docs', filename)
+    return readFileSync(filePath, 'utf-8').trim()
+  }
+  catch (error) {
+    console.error(`Failed to load ${filename}:`, error)
+    return ''
+  }
+}
+
 export default defineEventHandler(async () => {
   // Get the original OpenAPI spec from the default route
   const openapi = await $fetch('/api/docs/openapi.json')
@@ -7,6 +25,8 @@ export default defineEventHandler(async () => {
     const filteredPaths = Object.fromEntries(
       Object.entries(openapi.paths).filter(([path]) => path.startsWith('/api/')
         && !path.includes('/_')
+        && !path.includes('/passkey')
+        && !path.includes('/webhook')
         && !path.startsWith('/api/docs')
         && !path.startsWith('/api/openapi')
         && !path.startsWith('/api/passkey')
@@ -23,10 +43,22 @@ export default defineEventHandler(async () => {
     }
   ]
 
+  // Load API description from markdown file
+  const apiDescription = loadTagDescription('api-description.md')
+  if (apiDescription) {
+    openapi.info.description = apiDescription
+  }
+
   if (!openapi.components) {
     openapi.components = {}
   }
 
+  // Remove all existing security schemes first
+  if (openapi.components.securitySchemes) {
+    delete openapi.components.securitySchemes
+  }
+
+  // Define only Bearer Auth as the available authentication method
   openapi.components.securitySchemes = {
     bearerAuth: {
       type: 'http',
@@ -36,25 +68,56 @@ export default defineEventHandler(async () => {
     }
   }
 
-  // Tags
-  openapi.tags = [
-    { name: 'Authentication' },
-    { name: 'Database' },
-    { name: 'Entity' },
-    { name: 'Property' },
-    {
-      name: 'System properties',
-      description: `Entu system properties begin with _. Those properties are:
+  // Set global security to only show Bearer Auth option
+  openapi.security = [{ bearerAuth: [] }]
 
-- _type - Reference to entity's type.
-- _parent - Reference to parent entity.
-- _sharing - *private*, *domain* or *public*.
-- _inheritrights - Inherits rights from the parent entity. Entity-specific rights override inherited rights.
-- _viewer - Reference to who can view this entity.
-- _expander - Reference to who can add new entitys under this entity.
-- _editor - Reference to who can change this entity's properties (except rights!).
-- _owner - Reference to who can do anything with this entity (view, change, delete and manage rights).
-`
+  // Tags with file references
+  const tagDefinitions = [
+    { name: 'Authentication', file: 'authentication.md' },
+    { name: 'Database', file: 'database.md' },
+    { name: 'Entity', file: 'entity.md' },
+    { name: 'Property', file: 'property.md' },
+    { name: '1.1 Quick Start', file: 'quickstart.md' },
+    { name: '1.2 Best Practices', file: 'best-practices.md' },
+    { name: '2.3 Authentication', file: 'about-authentication.md' },
+    { name: '2.4 Methods', file: 'authentication-methods.md' },
+    { name: '2.5 Properties', file: 'authentication-properties.md' },
+    { name: '2.6 Automatic User Creation', file: 'automatic-user-creation.md' },
+    { name: '3.1 Entities', file: 'about-entities.md' },
+    { name: '3.2 Entity Rights', file: 'entity-rights.md' },
+    { name: '4.1 Properties', file: 'about-properties.md' },
+    { name: '4.2 Formulas', file: 'formulas.md' },
+    { name: '4.3 Files', file: 'files.md' },
+    { name: '4.4 System', file: 'system-properties.md' }
+  ]
+
+  // Load descriptions from files
+  openapi.tags = tagDefinitions.map(({ name, file }) => ({
+    name,
+    description: loadTagDescription(file)
+  }))
+
+  // Group tags for better navigation
+  openapi['x-tagGroups'] = [
+    {
+      name: 'API Endpoints',
+      tags: ['Authentication', 'Database', 'Entity', 'Property']
+    },
+    {
+      name: '1. Getting Started',
+      tags: ['1.1 Quick Start', '1.2 Best Practices']
+    },
+    {
+      name: '2. Authentication',
+      tags: ['2.3 Authentication', '2.4 Methods', '2.5 Properties', '2.6 Automatic User Creation']
+    },
+    {
+      name: '3. Entities',
+      tags: ['3.1 Entities', '3.2 Entity Rights']
+    },
+    {
+      name: '4. Properties',
+      tags: ['4.1 Properties', '4.2 Formulas', '4.3 Files', '4.4 System']
     }
   ]
 
@@ -235,6 +298,7 @@ export default defineEventHandler(async () => {
     Object.keys(openapi.paths).forEach((path) => {
       Object.keys(openapi.paths[path]).forEach((method) => {
         const operation = openapi.paths[path][method]
+
         if (operation.responses) {
           // Update common error responses
           ['400', '401', '403', '404', '500'].forEach((statusCode) => {

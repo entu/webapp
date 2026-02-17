@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Get entity aggregated data including computed fields and relationships',
+    description: 'Force re-aggregation of entity properties (formulas, computed fields, inherited values) and return fresh entity data. Useful after external data changes or to refresh cached calculations. Returns same structure as GET entity',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

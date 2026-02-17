@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Get entity change history (changelog) showing all modifications over time',
+    description: 'Get complete change history (audit log) for entity showing chronological list of all property additions, modifications, and deletions. Each entry includes property type, value, timestamp, and user who made the change. Useful for compliance and debugging',
     security: [{ bearerAuth: [] }],
     parameters: [
       {

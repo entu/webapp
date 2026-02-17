@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Get single entity with all its properties and metadata',
+    description: 'Get single entity by ID with all properties filtered by user access rights (private/domain/public). Returns flattened property structure with optional thumbnail and property filtering via props parameter',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
