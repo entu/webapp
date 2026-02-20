@@ -4,9 +4,11 @@ File properties allow entities to store attachments, documents, images, and othe
 
 A file property requires three fields that work together:
 
-- **filename** - The original name of the file (e.g., "cover.jpg", "report.pdf")
-- **filesize** - Size in bytes (used for validation and display)
-- **filetype** - MIME type that identifies the file format (e.g., "image/jpeg", "application/pdf")
+| Field | Description |
+|---|---|
+| **filename** | The original name of the file (e.g., `cover.jpg`, `report.pdf`) |
+| **filesize** | Size in bytes (used for validation and display) |
+| **filetype** | MIME type that identifies the file format (e.g., `image/jpeg`, `application/pdf`) |
 
 These three fields must all be present when creating a file property. Each file property gets its own unique storage location, identified by the property's `_id`.
 

@@ -24,12 +24,14 @@ The OAuth provider's email must not match any existing person entity's `entu_use
 
 When all conditions are met, a new person entity is created with:
 
-- `_type` - Reference to the person entity type
-- `_parent` - Reference from the database's `add_user` property (determines location in hierarchy)
-- `_inheritrights: true` - Inherits access rights from the parent entity
-- `entu_user` - The email address from the OAuth provider
-- `email` - The email address from the OAuth provider
-- `name` - The display name from the OAuth provider (if available)
-- `_editor` - A self-reference allowing the person to edit their own entity
+| Property | Value |
+|---|---|
+| **_type** | Reference to the person entity type |
+| **_parent** | Reference from the database's `add_user` property (determines location in hierarchy) |
+| **_inheritrights** | `true` — inherits access rights from the parent entity |
+| **entu_user** | Email address from the OAuth provider |
+| **email** | Email address from the OAuth provider |
+| **name** | Display name from the OAuth provider (if available) |
+| **_editor** | Self-reference allowing the person to edit their own entity |
 
 This ensures the new user can immediately access the system with appropriate inherited rights and can manage their own profile.

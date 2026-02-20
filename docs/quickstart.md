@@ -39,6 +39,8 @@ The JWT token is valid for 48 hours. Use it in all subsequent requests.
 
 ### 3. Create an Entity
 
+The `_type` property is mandatory — it references the entity type definition that determines what kind of entity you're creating.
+
 Create a new entity with properties:
 
 ```bash

@@ -28,31 +28,46 @@ This evaluates the inner formulas first, then uses their results in the outer fo
 ## Field References
 
 ### Same Entity
-- `property_name` - Reference a property on the same entity
-- `_id` - Reference the entity's own ID
+
+| Reference | Description |
+|---|---|
+| `property_name` | Reference a property on the same entity |
+| `_id` | Reference the entity's own ID |
 
 ### Related Entities
-- `property_name.*.property` - Traverse reference to access property from related entity
-- `property_name.type.property` - Filter by entity type when traversing references
-- `property_name.*._id` - Get IDs of referenced entities
-- `property_name.type._id` - Get IDs of referenced entities filtered by type
+
+| Reference | Description |
+|---|---|
+| `property_name.*.property` | Traverse reference to access property from related entity |
+| `property_name.type.property` | Filter by entity type when traversing references |
+| `property_name.*._id` | Get IDs of referenced entities |
+| `property_name.type._id` | Get IDs of referenced entities filtered by type |
 
 ### Child Entities
-- `_child.*.property` - Reference properties from all child entities
-- `_child.type.property` - Reference properties from child entities of a specific type
-- `_child.*._id` - Get IDs of all child entities
-- `_child.type._id` - Get IDs of child entities of a specific type
+
+| Reference | Description |
+|---|---|
+| `_child.*.property` | Reference properties from all child entities |
+| `_child.type.property` | Reference properties from child entities of a specific type |
+| `_child.*._id` | Get IDs of all child entities |
+| `_child.type._id` | Get IDs of child entities of a specific type |
 
 ### Referrer Entities
 Entities that reference this one through reference properties:
-- `_referrer.*.property` - Reference properties from all entities that reference this one
-- `_referrer.type.property` - Reference properties from referrer entities of a specific type
-- `_referrer.*._id` - Get IDs of all entities that reference this one
-- `_referrer.type._id` - Get IDs of referrer entities of a specific type
+
+| Reference | Description |
+|---|---|
+| `_referrer.*.property` | Reference properties from all entities that reference this one |
+| `_referrer.type.property` | Reference properties from referrer entities of a specific type |
+| `_referrer.*._id` | Get IDs of all entities that reference this one |
+| `_referrer.type._id` | Get IDs of referrer entities of a specific type |
 
 ### Literal Values
-- `'text'` or `"text"` - String literal (must be quoted)
-- `123` or `45.67` - Numeric literal
+
+| Reference | Description |
+|---|---|
+| `'text'` or `"text"` | String literal (must be quoted) |
+| `123` or `45.67` | Numeric literal |
 
 ## Available Functions
 

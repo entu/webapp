@@ -18,19 +18,31 @@ Each property stores a specific piece of data - it could be a simple text value 
 
 ### Property Types
 
-Each property must have a `type` field and one or more value fields:
+Each property object requires a `type` field and exactly one value field — or all three file fields together for file uploads.
 
-- **string** - Text value. Also used as display name for reference properties
-- **number** - Numeric value (integers or decimals)
-- **boolean** - Boolean value (true/false)
-- **reference** - Reference to another entity by ID. When retrieving, includes `string` field with referenced entity's display name
-- **date** - Date value in YYYY-MM-DD format
-- **datetime** - DateTime value in ISO 8601 format (e.g., "2025-01-28T08:21:25.637Z")
-- **filename** - File name (used with filesize and filetype for file properties)
-- **filesize** - File size in bytes (used with filename and filetype)
-- **filetype** - MIME type (used with filename and filesize)
+| Field | Required | Description |
+|---|---|---|
+| **type** | Yes | Property type name (e.g., `name`, `_type`, `description`) |
+| **language** | No | Language code (e.g., `en`, `et`) for multilingual string properties |
 
-Optional field: **language** - Language code (e.g., "en", "et") for multilingual properties
+**Value fields** — provide exactly one:
+
+| Field | Description |
+|---|---|
+| **string** | Text value. Also used as display name for reference properties |
+| **number** | Numeric value (integers or decimals) |
+| **boolean** | Boolean value (true/false) |
+| **reference** | Reference to another entity by ID. When retrieving, includes `string` field with referenced entity's display name |
+| **date** | Date value in YYYY-MM-DD format |
+| **datetime** | DateTime value in ISO 8601 format (e.g., "2025-01-28T08:21:25.637Z") |
+
+**File upload** — use instead of a value field when attaching a binary file. Provide all three together:
+
+| Field | Description |
+|---|---|
+| **filename** | File name |
+| **filesize** | File size in bytes |
+| **filetype** | MIME type (e.g., `image/jpeg`) |
 
 ### Property Naming
 

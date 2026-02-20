@@ -2,11 +2,13 @@ Entity access is controlled through rights properties. Rights can be assigned to
 
 **Rights Hierarchy (from highest to lowest):**
 
-1. **_owner** - Full control: view, edit properties, delete entity, manage rights, create children
-2. **_editor** - Can view and modify all properties except rights properties (_owner, _editor, _expander, _viewer, _noaccess, _sharing, _inheritrights)
-3. **_expander** - Can view entity and create child entities under it
-4. **_viewer** - Read-only access to entity and its properties
-5. **_noaccess** - Explicitly denied all access (overrides inherited rights)
+| Property | Description |
+|---|---|
+| **_owner** | Full control: view, edit properties, delete entity, manage rights, create children |
+| **_editor** | Can view and modify all properties except rights properties (`_owner`, `_editor`, `_expander`, `_viewer`, `_noaccess`, `_sharing`, `_inheritrights`) |
+| **_expander** | Can view entity and create child entities under it |
+| **_viewer** | Read-only access to entity and its properties |
+| **_noaccess** | Explicitly denied all access (overrides inherited rights) |
 
 **Rights Inheritance:**
 
@@ -16,9 +18,11 @@ Set `_inheritrights: true` to inherit rights from parent entity. Child entity ri
 
 The `_sharing` property controls the access level:
 
-- **private** - Only users with explicit rights (_viewer, _editor, _owner) can access
-- **domain** - All authenticated users in the database can view, but editing still requires _editor or _owner rights
-- **public** - Anyone can view without authentication, but editing still requires _editor or _owner rights
+| Value | Description |
+|---|---|
+| **private** | Only users with explicit rights (`_viewer`, `_editor`, `_owner`) can access |
+| **domain** | All authenticated users in the database can view, but editing still requires `_editor` or `_owner` rights |
+| **public** | Anyone can view without authentication, but editing still requires `_editor` or `_owner` rights |
 
 **Multi-valued Rights:**
 
