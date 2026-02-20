@@ -4,8 +4,7 @@ Get started with the Entu API in 5 minutes. This guide walks through authenticat
 
 Create an API key in the Entu UI:
 1. Navigate to your person entity in Entu
-2. The system automatically generates a secure API key
-3. Copy the API key from the `entu_api_key` property
+2. Edit it and generate an API key
 
 Alternatively, authenticate via OAuth for temporary access.
 
