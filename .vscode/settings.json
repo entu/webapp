@@ -7,7 +7,7 @@
   },
   "eslint.validate": [
     "javascript",
-    "typecript",
+    "typescpript",
     "vue"
   ]
 }
