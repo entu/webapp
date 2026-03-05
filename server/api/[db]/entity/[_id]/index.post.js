@@ -179,7 +179,11 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  const { _id, properties } = await setEntity(entu, entityId, body)
+  const bodyWithEmail = isSendInvite
+    ? body.map((p) => p.type === 'entu_user' && p.string === 'send-invite' ? { ...p, email } : p)
+    : body
+
+  const { _id, properties } = await setEntity(entu, entityId, bodyWithEmail)
 
   if (isSendInvite) {
     const { origin } = getRequestURL(event)

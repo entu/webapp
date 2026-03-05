@@ -1,3 +1,10 @@
+## 2026-03-05
+- **User invite flow**: Added email-based user invitation system with invite page, HTML/text email templates, SES email delivery, and invite handling in the auth and entity APIs
+
+## 2026-02-20
+- **Documentation restructuring**: Split API.md into a structured docs/ folder with dedicated pages for authentication, entities, properties, files, formulas, system properties, best practices, and more
+- **Documentation improvements**: Converted property/rights/system field lists to tables, clarified field descriptions, and updated quickstart guide with API key generation details
+
 ## 2026-02-17
 - **Passkey authentication**: Added passwordless WebAuthn authentication using device biometrics (fingerprint, face recognition, or PIN) with account-scoped credentials and property management UI
 

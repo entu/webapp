@@ -507,9 +507,9 @@ async function copyToClipboard (text) {
         @click="updateValue({ ...value, string: 'generate' })"
       />
 
-      <template v-else-if="type === 'string' && props.property === 'entu_user' && value._id && value.invite">
+      <template v-else-if="type === 'string' && props.property === 'entu_user' && value._id && value.invite && value.email">
         <span class="text-sm text-gray-500">
-          {{ t('invitePending', { date: new Date(parseInt(value._id.substring(0, 8), 16) * 1000).toLocaleString(locale) }) }}
+          {{ t('invitePending', { email: value.email }) }}
         </span>
         <my-button
           icon="delete"
@@ -683,7 +683,7 @@ async function copyToClipboard (text) {
     passkeyOwnOnly: Only user can create their own passkey
     sendInvite: Send Invite
     cancelInvite: Cancel Invite
-    invitePending: 'Invite sent {date}'
+    invitePending: 'Invite sent to {email}'
     addLoginMethod: Add Login Method
   et:
     upload: Laadi üles
@@ -695,6 +695,6 @@ async function copyToClipboard (text) {
     passkeyOwnOnly: Turvavõtit saab luua ainult kasutaja ise
     sendInvite: Saada kutse
     cancelInvite: Tühista kutse
-    invitePending: 'Kutse saadetud {date}'
+    invitePending: 'Kutse saadetud aadressile {email}'
     addLoginMethod: Lisa sisselogimisviis
 </i18n>

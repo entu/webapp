@@ -84,9 +84,9 @@ const { accountId } = useAccount()
     </div>
   </template>
 
-  <template v-else-if="value.invite !== undefined">
+  <template v-else-if="value.invite !== undefined && value.email">
     <span class="text-sm text-gray-500">
-      {{ t('invitePending', { date: new Date(parseInt(value._id.substring(0, 8), 16) * 1000).toLocaleString(locale) }) }}
+      {{ t('invitePending', { email: value.email }) }}
     </span>
   </template>
 
@@ -109,7 +109,7 @@ const { accountId } = useAccount()
 
 <i18n lang="yaml">
   en:
-    invitePending: 'Invite sent {date}'
+    invitePending: 'Invite sent to {email}'
   et:
-    invitePending: 'Kutse saadetud {date}'
+    invitePending: 'Kutse saadetud aadressile {email}'
 </i18n>
