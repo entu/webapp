@@ -3,59 +3,7 @@ import jwt from 'jsonwebtoken'
 
 const charsForKey = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*-_=+'
 
-// Return public or private properties (based user rights)
-export async function cleanupEntity (entu, entity, _thumbnail) {
-  if (!entity) return
-
-  let result = { _id: entity._id }
-
-  if (entu.userStr && entity.access?.map((x) => x.toString())?.includes(entu.userStr)) {
-    result = { ...result, ...entity.private }
-  }
-  else if (entu.userStr && entity.access?.includes('domain')) {
-    result = { ...result, ...entity.domain }
-  }
-  else if (entity.access?.includes('public')) {
-    result = { ...result, ...entity.public }
-  }
-  else {
-    return
-  }
-
-  if (_thumbnail && result.photo?.at(0)) {
-    result._thumbnail = await getSignedDownloadUrl(entu.account, result._id, result.photo.at(0))
-  }
-
-  if (result.entu_api_key) {
-    result.entu_api_key.forEach((k) => {
-      k.string = '***'
-    })
-  }
-
-  if (result.entu_user) {
-    result.entu_user.forEach((u) => {
-      if (u.invite) {
-        u.invite = '***'
-      }
-      else if (u.email?.endsWith('@eesti.ee')) {
-        u.email = u.email.replace('@eesti.ee', '')
-      }
-    })
-  }
-
-  if (result.entu_passkey) {
-    result.entu_passkey.forEach((k) => {
-      k.string = `${k.passkey_device || ''} ${k._id.toString().slice(-4).toUpperCase()}`.trim()
-    })
-  }
-
-  if (!result._thumbnail) {
-    delete result._thumbnail
-  }
-
-  return result
-}
-
+// Validates, processes, and persists properties to a new or existing entity
 export async function setEntity (entu, entityId, properties) {
   const allowedTypes = [
     '_type',
@@ -81,6 +29,26 @@ export async function setEntity (entu, entityId, properties) {
 
   const createdDt = new Date()
 
+  validateInput(properties)
+  await checkEntityAccess(entu, entityId, properties, rightTypes)
+  await validatePropertyTypes(entu, properties, allowedTypes)
+
+  if (!entityId) {
+    await applyDefaultParents(entu, properties, createdDt)
+    await inheritParentProperties(entu, properties, createdDt)
+    entityId = await createEntityRecord(entu, properties, createdDt)
+  }
+
+  const { pIds, oldPIds } = await insertProperties(entu, entityId, properties, createdDt)
+
+  await markPropertiesDeleted(entu, entityId, oldPIds)
+  await aggregateEntity(entu, entityId)
+
+  return { _id: entityId, properties: pIds }
+}
+
+// Throws if properties is missing, not an array, or empty
+function validateInput (properties) {
   if (!properties) {
     throw createError({
       statusCode: 400,
@@ -99,45 +67,51 @@ export async function setEntity (entu, entityId, properties) {
       statusMessage: 'At least one property must be set'
     })
   }
+}
 
-  if (entityId) {
-    const entity = await entu.db.collection('entity').findOne({
-      _id: entityId
-    }, {
-      projection: {
-        _id: false,
-        'private._editor': true,
-        'private._owner': true
-      }
+// Verifies the user has editor or owner access to an existing entity
+async function checkEntityAccess (entu, entityId, properties, rightTypes) {
+  if (!entityId) return
+
+  const entity = await entu.db.collection('entity').findOne({
+    _id: entityId
+  }, {
+    projection: {
+      _id: false,
+      'private._editor': true,
+      'private._owner': true
+    }
+  })
+
+  if (!entity) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: `Entity ${entityId} not found`
     })
-
-    if (!entity) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: `Entity ${entityId} not found`
-      })
-    }
-
-    const access = entity.private?._editor?.map((s) => s.reference?.toString()) || []
-
-    if (!access.includes(entu.userStr) && !entu.systemUser) {
-      throw createError({
-        statusCode: 403,
-        statusMessage: 'User not in _owner nor _editor property'
-      })
-    }
-
-    const rigtsProperties = properties.filter((property) => rightTypes.includes(property.type))
-    const owners = entity.private?._owner?.map((s) => s.reference?.toString()) || []
-
-    if (rigtsProperties.length > 0 && !owners.includes(entu.userStr) && !entu.systemUser) {
-      throw createError({
-        statusCode: 403,
-        statusMessage: 'User not in _owner property'
-      })
-    }
   }
 
+  const access = entity.private?._editor?.map((s) => s.reference?.toString()) || []
+
+  if (!access.includes(entu.userStr) && !entu.systemUser) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'User not in _owner nor _editor property'
+    })
+  }
+
+  const rigtsProperties = properties.filter((property) => rightTypes.includes(property.type))
+  const owners = entity.private?._owner?.map((s) => s.reference?.toString()) || []
+
+  if (rigtsProperties.length > 0 && !owners.includes(entu.userStr) && !entu.systemUser) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'User not in _owner property'
+    })
+  }
+}
+
+// Validates each property's type name and _parent references
+async function validatePropertyTypes (entu, properties, allowedTypes) {
   for (let i = 0; i < properties.length; i++) {
     const property = properties[i]
 
@@ -189,111 +163,105 @@ export async function setEntity (entu, entityId, properties) {
       }
     }
   }
+}
 
-  if (!entityId) {
-    const entityType = properties.find((x) => x.type === '_type' && x.reference)
+// Pushes default _parent entries based on the entity's _type definition
+async function applyDefaultParents (entu, properties, createdDt) {
+  const entityType = properties.find((x) => x.type === '_type' && x.reference)
 
-    if (entityType) {
-      const defaultParents = await entu.db.collection('entity').findOne({ _id: getObjectId(entityType.reference), 'private.default_parent': { $exists: true } }, { projection: { 'private.default_parent': true } })
+  if (!entityType) return
 
-      if (defaultParents) {
-        defaultParents.private.default_parent.forEach((parent) => {
-          properties.push({
-            entity: entityId,
-            type: '_parent',
-            reference: parent.reference,
-            created: { at: createdDt, by: entu.user || 'entu' }
-          })
-        })
-      }
-    }
+  const defaultParents = await entu.db.collection('entity').findOne(
+    { _id: getObjectId(entityType.reference), 'private.default_parent': { $exists: true } },
+    { projection: { 'private.default_parent': true } }
+  )
 
-    // Inherit _sharing from any parent (direct or default_parent)
-    const sharingProperty = properties.find((x) => x.type === '_sharing')
-    if (!sharingProperty) {
-      const parentReferences = properties.filter((x) => x.type === '_parent' && x.reference).map((x) => x.reference)
-
-      if (parentReferences.length > 0) {
-        const parents = await entu.db.collection('entity').find(
-          { _id: { $in: parentReferences.map(getObjectId) } },
-          { projection: { 'private._sharing': true } }
-        ).toArray()
-
-        const parentSharings = parents
-          .map((p) => p.private?._sharing?.at(0)?.string)
-          .filter(Boolean)
-
-        if (parentSharings.includes('public')) {
-          properties.push({
-            entity: entityId,
-            type: '_sharing',
-            string: 'public',
-            created: { at: createdDt, by: entu.user || 'entu' }
-          })
-        }
-        else if (parentSharings.includes('domain')) {
-          properties.push({
-            entity: entityId,
-            type: '_sharing',
-            string: 'domain',
-            created: { at: createdDt, by: entu.user || 'entu' }
-          })
-        }
-      }
-    }
-
-    // Inherit _inheritrights from any parent (direct or default_parent)
-    const inheritRightsProperty = properties.find((x) => x.type === '_inheritrights')
-    if (!inheritRightsProperty) {
-      const parentReferences = properties.filter((x) => x.type === '_parent' && x.reference).map((x) => x.reference)
-
-      if (parentReferences.length > 0) {
-        const parentsWithInheritRights = await entu.db.collection('entity').find(
-          { _id: { $in: parentReferences.map(getObjectId) }, 'private._inheritrights.boolean': true },
-          { projection: { _id: true } }
-        ).toArray()
-
-        if (parentsWithInheritRights.length > 0) {
-          properties.push({
-            entity: entityId,
-            type: '_inheritrights',
-            boolean: true,
-            created: { at: createdDt, by: entu.user || 'entu' }
-          })
-        }
-      }
-    }
-
-    const entity = await entu.db.collection('entity').insertOne({})
-    entityId = entity.insertedId
-
-    if (entu.user) {
+  if (defaultParents) {
+    defaultParents.private.default_parent.forEach((parent) => {
       properties.push({
-        entity: entityId,
-        type: '_owner',
-        reference: entu.user,
-        created: { at: createdDt, by: entu.user }
+        type: '_parent',
+        reference: parent.reference,
+        created: { at: createdDt, by: entu.user || 'entu' }
       })
-      properties.push({
-        entity: entityId,
-        type: '_created',
-        reference: entu.user,
-        datetime: createdDt,
-        created: { at: createdDt, by: entu.user }
-      })
+    })
+  }
+}
+
+// Inherits _sharing and _inheritrights from parent entities
+async function inheritParentProperties (entu, properties, createdDt) {
+  const parentReferences = properties.filter((x) => x.type === '_parent' && x.reference).map((x) => x.reference)
+
+  if (parentReferences.length === 0) return
+
+  // Inherit _sharing from any parent (direct or default_parent)
+  if (!properties.find((x) => x.type === '_sharing')) {
+    const parents = await entu.db.collection('entity').find(
+      { _id: { $in: parentReferences.map(getObjectId) } },
+      { projection: { 'private._sharing': true } }
+    ).toArray()
+
+    const parentSharings = parents
+      .map((p) => p.private?._sharing?.at(0)?.string)
+      .filter(Boolean)
+
+    if (parentSharings.includes('public')) {
+      properties.push({ type: '_sharing', string: 'public', created: { at: createdDt, by: entu.user || 'entu' } })
     }
-    else {
-      properties.push({
-        entity: entityId,
-        type: '_created',
-        datetime: createdDt,
-        created: { at: createdDt, by: 'entu' }
-      })
+    else if (parentSharings.includes('domain')) {
+      properties.push({ type: '_sharing', string: 'domain', created: { at: createdDt, by: entu.user || 'entu' } })
     }
   }
 
+  // Inherit _inheritrights from any parent (direct or default_parent)
+  if (!properties.find((x) => x.type === '_inheritrights')) {
+    const parentsWithInheritRights = await entu.db.collection('entity').find(
+      { _id: { $in: parentReferences.map(getObjectId) }, 'private._inheritrights.boolean': true },
+      { projection: { _id: true } }
+    ).toArray()
+
+    if (parentsWithInheritRights.length > 0) {
+      properties.push({ type: '_inheritrights', boolean: true, created: { at: createdDt, by: entu.user || 'entu' } })
+    }
+  }
+}
+
+// Inserts a new entity document and pushes _owner and _created system properties
+async function createEntityRecord (entu, properties, createdDt) {
+  const entity = await entu.db.collection('entity').insertOne({})
+  const entityId = entity.insertedId
+
+  if (entu.user) {
+    properties.push({
+      entity: entityId,
+      type: '_owner',
+      reference: entu.user,
+      created: { at: createdDt, by: entu.user }
+    })
+    properties.push({
+      entity: entityId,
+      type: '_created',
+      reference: entu.user,
+      datetime: createdDt,
+      created: { at: createdDt, by: entu.user }
+    })
+  }
+  else {
+    properties.push({
+      entity: entityId,
+      type: '_created',
+      datetime: createdDt,
+      created: { at: createdDt, by: 'entu' }
+    })
+  }
+
+  return entityId
+}
+
+// Processes and inserts all properties, returning inserted pIds and replaced oldPIds
+async function insertProperties (entu, entityId, properties, createdDt) {
   const pIds = []
   const oldPIds = []
+
   for (let i = 0; i < properties.length; i++) {
     const property = properties[i]
     let apiKey
@@ -367,1022 +335,10 @@ export async function setEntity (entu, entityId, properties) {
     pIds.push(newProperty)
   }
 
-  if (oldPIds.length > 0) {
-    await entu.db.collection('property').updateMany({
-      _id: { $in: oldPIds },
-      entity: entityId,
-      deleted: { $exists: false }
-    }, {
-      $set: {
-        deleted: {
-          at: new Date(),
-          by: entu.user || 'entu'
-        }
-      }
-    })
-  }
-
-  await aggregateEntity(entu, entityId)
-
-  return { _id: entityId, properties: pIds }
+  return { pIds, oldPIds }
 }
 
-export async function addAggregateQueue (entu, entityIds) {
-  await entu.db.collection('entity').updateMany({
-    _id: { $in: entityIds }
-  }, {
-    $set: {
-      queued: new Date()
-    }
-  })
-}
-
-export async function aggregateEntity (entu, entityId) {
-  const entity = await entu.db.collection('entity').findOne({ _id: entityId }, {
-    projection: {
-      aggregated: true,
-      'private.name': true,
-      'private._type': true,
-      'private._noaccess': true,
-      'private._viewer': true,
-      'private._expander': true,
-      'private._editor': true,
-      'private._owner': true
-    }
-  })
-
-  if (!entity) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: `Entity ${entityId} not found`
-    })
-  }
-
-  const properties = await entu.db.collection('property').find({ entity: entityId, deleted: { $exists: false } }).toArray()
-
-  // delete entity
-  if (properties.some((x) => x.type === '_deleted')) {
-    await entu.db.collection('entity').deleteOne({ _id: entityId })
-
-    // console.log(`DELETED ${entu.account} ${entityId}`)
-
-    return {
-      account: entu.account,
-      entity: entityId,
-      deleted: true,
-      message: 'Entity is deleted'
-    }
-  }
-
-  const newEntity = await propertiesToEntity(entu, properties)
-
-  if (newEntity.private._parent) {
-    newEntity.domain._parent = newEntity.private._parent
-    newEntity.public._parent = newEntity.private._parent
-  }
-
-  if (newEntity.private._sharing) {
-    newEntity.domain._sharing = newEntity.private._sharing
-    newEntity.public._sharing = newEntity.private._sharing
-  }
-
-  // get info from type
-  if (newEntity.private._type) {
-    newEntity.domain._type = newEntity.private._type
-    newEntity.public._type = newEntity.private._type
-
-    if (newEntity.private._type.at(0)?.reference) {
-      // get entity definition's _sharing
-      const definitionEntity = await entu.db.collection('entity').findOne({
-        _id: newEntity.private._type.at(0).reference
-      }, {
-        projection: { 'private._sharing': true }
-      })
-
-      const definitionSharing = definitionEntity?.private?._sharing?.at(0)?.string
-
-      const definition = await entu.db.collection('entity').aggregate([
-        {
-          $match: {
-            'private._parent.reference': newEntity.private._type.at(0).reference,
-            'private._type.string': 'property',
-            'private.name.string': { $exists: true }
-          }
-        }, {
-          $project: {
-            _id: false,
-            name: { $arrayElemAt: ['$private.name.string', 0] },
-            sharing: { $arrayElemAt: ['$private._sharing.string', 0] },
-            search: { $arrayElemAt: ['$private.search.boolean', 0] },
-            formula: { $arrayElemAt: ['$private.formula.string', 0] }
-          }
-        }
-      ]).toArray()
-
-      for (let d = 0; d < definition.length; d++) {
-        let sharing = definition[d].sharing
-
-        if (!definitionSharing) {
-          sharing = undefined
-        }
-        else if (definitionSharing === 'domain' && definition[d].sharing === 'public') {
-          sharing = 'domain'
-        }
-        // console.log(definition[d].name, definitionSharing, definition[d].sharing, sharing)
-
-        if (definition[d].formula) {
-          const formulaValue = await formula(entu, definition[d].formula, entityId)
-
-          if (formulaValue) {
-            newEntity.private[definition[d].name] = [formulaValue]
-          }
-        }
-
-        const dValue = newEntity.private[definition[d].name]
-
-        if (definition[d].search && dValue) {
-          newEntity.search.private = [
-            ...(newEntity.search.private || []),
-            ...await getValueArray(entu, dValue)
-          ]
-
-          if (sharing === 'domain') {
-            newEntity.search.domain = [
-              ...(newEntity.search.domain || []),
-              ...await getValueArray(entu, dValue)
-            ]
-          }
-
-          if (sharing === 'public') {
-            newEntity.search.public = [
-              ...(newEntity.search.public || []),
-              ...await getValueArray(entu, dValue)
-            ]
-          }
-        }
-
-        if (sharing === 'domain' && dValue) {
-          newEntity.domain[definition[d].name] = dValue
-        }
-
-        if (sharing === 'public' && dValue) {
-          newEntity.domain[definition[d].name] = dValue
-          newEntity.public[definition[d].name] = dValue
-        }
-      }
-    }
-    else {
-      loggerError(`No type reference`, entu, [`entity:${entityId}`])
-    }
-  }
-  else {
-    loggerError(`No type ${newEntity.private._type}`, entu, [`entity:${entityId}`])
-  }
-
-  // get and set parent rights
-  let parentRights = {}
-  if (newEntity.private._parent?.length > 0 && newEntity.private._inheritrights?.at(0)?.boolean === true) {
-    parentRights = await getParentRights(entu, newEntity.private._parent)
-
-    if (parentRights._viewer) {
-      newEntity.private._parent_viewer = uniqBy(parentRights._viewer, (x) => x.reference.toString())
-    }
-    if (parentRights._expander) {
-      newEntity.private._parent_expander = uniqBy(parentRights._expander, (x) => x.reference.toString())
-    }
-    if (parentRights._editor) {
-      newEntity.private._parent_editor = uniqBy(parentRights._editor, (x) => x.reference.toString())
-    }
-    if (parentRights._owner) {
-      newEntity.private._parent_owner = uniqBy(parentRights._owner, (x) => x.reference.toString())
-    }
-  }
-
-  // combine rights
-  const noRights = newEntity.private._noaccess?.map((x) => x.reference.toString())
-
-  newEntity.private._owner = uniqBy([
-    ...(parentRights._owner || []),
-    ...(newEntity.private._owner || [])
-  ], (x) => [x.reference.toString(), x.inherited || false].join('-')).filter((x) => !noRights?.includes(x.reference.toString()))
-
-  newEntity.private._editor = uniqBy([
-    ...(parentRights._editor || []),
-    ...(newEntity.private._editor || []),
-    ...(newEntity.private._owner || [])
-  ], (x) => [x.reference.toString(), x.inherited || false].join('-')).filter((x) => !noRights?.includes(x.reference.toString()))
-
-  newEntity.private._expander = uniqBy([
-    ...(parentRights._expander || []),
-    ...(newEntity.private._expander || []),
-    ...(newEntity.private._editor || [])
-  ], (x) => [x.reference.toString(), x.inherited || false].join('-')).filter((x) => !noRights?.includes(x.reference.toString()))
-
-  newEntity.private._viewer = uniqBy([
-    ...(parentRights._viewer || []),
-    ...(newEntity.private._viewer || []),
-    ...(newEntity.private._expander || [])
-  ], (x) => [x.reference.toString(), x.inherited || false].join('-')).filter((x) => !noRights?.includes(x.reference.toString()))
-
-  const { _noaccess, _viewer, _expander, _editor, _owner } = combineRights({
-    _noaccess: newEntity.private._noaccess,
-    _viewer: newEntity.private._viewer,
-    _expander: newEntity.private._expander,
-    _editor: newEntity.private._editor,
-    _owner: newEntity.private._owner
-  })
-
-  newEntity.access = getAccessArray(newEntity)
-
-  if (!newEntity.access?.length) {
-    delete newEntity.access
-  }
-
-  if (!_noaccess?.length) {
-    delete newEntity.private._noaccess
-  }
-  else {
-    newEntity.private._noaccess = _noaccess
-  }
-  if (!_viewer?.length) {
-    delete newEntity.private._viewer
-  }
-  else {
-    newEntity.private._viewer = _viewer
-  }
-  if (!_expander?.length) {
-    delete newEntity.private._expander
-  }
-  else {
-    newEntity.private._expander = _expander
-  }
-  if (!_editor?.length) {
-    delete newEntity.private._editor
-  }
-  else {
-    newEntity.private._editor = _editor
-  }
-  if (!_owner?.length) {
-    delete newEntity.private._owner
-  }
-  else {
-    newEntity.private._owner = _owner
-  }
-
-  if (!newEntity.private._parent_viewer?.length) {
-    delete newEntity.private._parent_viewer
-  }
-  if (!newEntity.private._parent_expander?.length) {
-    delete newEntity.private._parent_expander
-  }
-  if (!newEntity.private._parent_editor?.length) {
-    delete newEntity.private._parent_editor
-  }
-  if (!newEntity.private._parent_owner?.length) {
-    delete newEntity.private._parent_owner
-  }
-
-  if (newEntity.private?._sharing?.at(0)?.string !== 'domain' || Object.keys(newEntity.domain).length === 0) {
-    delete newEntity.domain
-  }
-
-  if (newEntity.private?._sharing?.at(0)?.string !== 'public' || Object.keys(newEntity.public).length === 0) {
-    delete newEntity.public
-  }
-
-  if (newEntity.search?.private?.length > 0) {
-    newEntity.search.private = makeSearchArray(newEntity.search.private)
-  }
-
-  if (newEntity.search?.domain?.length > 0 || newEntity.search?.public?.length > 0) {
-    newEntity.search.domain = makeSearchArray([...newEntity.search.domain || [], ...newEntity.search.public || []])
-  }
-
-  if (newEntity.search?.public?.length > 0) {
-    newEntity.search.public = makeSearchArray(newEntity.search.public)
-  }
-
-  if (!newEntity.search?.private && !newEntity.search?.domain && !newEntity.search?.public) {
-    delete newEntity.search
-  }
-
-  newEntity.hash = getEntityHash(newEntity.private)
-
-  await entu.db.collection('entity').replaceOne({ _id: entityId }, newEntity, { upsert: true })
-
-  const sqsLength = await startRelativeAggregation(entu, entity, newEntity)
-
-  if (sqsLength > 0) {
-    logger(`Added ${sqsLength} entities to aggregation`, entu, [`entity:${entityId}`])
-  }
-
-  return {
-    account: entu.account,
-    entity: entityId,
-    queued: sqsLength,
-    message: 'Entity is aggregated'
-  }
-}
-
-async function propertiesToEntity (entu, properties) {
-  const entity = {
-    aggregated: new Date(),
-    private: {},
-    domain: {},
-    public: {},
-    access: [],
-    search: {}
-  }
-
-  for (let n = 0; n < properties.length; n++) {
-    const prop = properties[n]
-    let cleanProp = { ...prop }
-    delete cleanProp.entity
-    delete cleanProp.type
-    delete cleanProp.created
-    delete cleanProp.search
-    delete cleanProp.public
-
-    if (!entity.private[prop.type]) {
-      entity.private[prop.type] = []
-    }
-
-    if (prop.reference) {
-      const referenceEntity = await entu.db.collection('entity').findOne({ _id: prop.reference }, { projection: { _id: false, 'private.name': true, 'private._type': true } })
-
-      if (referenceEntity) {
-        cleanProp = { ...cleanProp, property_type: prop.type, string: referenceEntity.private?.name?.at(0).string, entity_type: referenceEntity.private?._type?.at(0).string }
-      }
-
-      if (!prop.type.startsWith('_')) {
-        if (entity.private._reference) {
-          entity.private._reference = [...entity.private._reference, cleanProp]
-        }
-        else {
-          entity.private._reference = [cleanProp]
-        }
-      }
-    }
-
-    entity.private[prop.type] = [...entity.private[prop.type], cleanProp]
-  }
-
-  return entity
-}
-
-async function formula (entu, str, entityId) {
-  const strArray = await parseFormulaTokens(entu, str, entityId)
-
-  // If single value and it's a nested formula result, return it directly
-  if (strArray.length === 1) {
-    const token = strArray.at(0)
-    const value = await formulaField(entu, token, entityId)
-
-    if (value !== undefined && value !== null) {
-      const valueArray = await getValueArray(entu, value)
-
-      if (valueArray.length === 1) {
-        const val = valueArray.at(0)
-
-        if (typeof val === 'number') {
-          return { number: val }
-        }
-
-        return { string: val }
-      }
-    }
-  }
-
-  const func = formulaFunction(strArray)
-  const data = formulaContent(strArray, func)
-
-  let valueArray = []
-
-  for (let i = 0; i < data.length; i++) {
-    const value = await formulaField(entu, data[i], entityId)
-
-    if (value !== undefined && value !== null) {
-      valueArray = [...valueArray, ...value]
-    }
-  }
-
-  valueArray = await getValueArray(entu, valueArray)
-
-  if (valueArray.length === 0 && !['COUNT', 'SUM', 'MULTIPLY'].includes(func)) {
-    return undefined
-  }
-
-  switch (func) {
-    case 'COUNT':
-      return { number: valueArray.length }
-    case 'SUM':
-      return { number: valueArray.reduce((a, b) => a + b, 0) }
-    case 'SUBTRACT':
-      return { number: valueArray.slice(1).reduce((a, b) => a - b, valueArray.at(0)) }
-    case 'MULTIPLY':
-      return { number: valueArray.reduce((a, b) => a * b, 1) }
-    case 'DIVIDE':
-      if (valueArray.slice(1).some((val) => val === 0)) {
-        return undefined
-      }
-      return { number: valueArray.slice(1).reduce((a, b) => a / b, valueArray.at(0)) }
-    case 'AVERAGE':
-      return { number: valueArray.reduce((a, b) => a + b, 0) / valueArray.length }
-    case 'MIN':
-      return { number: Math.min(...valueArray) }
-    case 'MAX':
-      return { number: Math.max(...valueArray) }
-    case 'ABS':
-      return { number: Math.abs(valueArray.at(0)) }
-    case 'ROUND':
-      return { number: Number(valueArray.at(0).toFixed(valueArray.at(-1))) }
-    case 'CONCAT_WS':
-      return { string: valueArray.slice(0, -1).join(valueArray.at(-1)) }
-    default: // CONCAT
-      return { string: valueArray.join('') }
-  }
-}
-
-async function parseFormulaTokens (entu, str, entityId) {
-  const tokens = []
-  let current = ''
-  let inQuote = null
-  let parenDepth = 0
-  let parenStart = -1
-
-  for (let i = 0; i < str.length; i++) {
-    const char = str.at(i)
-    const prevChar = str.at(i - 1)
-
-    // Handle quoted strings
-    if (inQuote) {
-      current += char
-
-      if (char === inQuote && prevChar !== '\\') {
-        inQuote = null
-      }
-
-      continue
-    }
-
-    if (char === '"' || char === '\'') {
-      inQuote = char
-      current += char
-
-      continue
-    }
-
-    // Handle parentheses (nested formulas)
-    if (char === '(') {
-      if (parenDepth === 0) {
-        if (current.trim()) tokens.push(current.trim())
-        current = ''
-        parenStart = i
-      }
-
-      parenDepth++
-
-      continue
-    }
-
-    if (char === ')') {
-      parenDepth--
-
-      if (parenDepth === 0) {
-        const nestedFormula = str.substring(parenStart + 1, i)
-        const result = await formula(entu, nestedFormula, entityId)
-
-        if (result?.number !== undefined) {
-          tokens.push(result.number.toString())
-        }
-        else if (result?.string !== undefined) {
-          tokens.push(`"${result.string}"`)
-        }
-
-        current = ''
-      }
-
-      continue
-    }
-
-    // Skip content inside parentheses
-    if (parenDepth > 0) continue
-
-    // Handle regular tokens
-    if (/\s/.test(char)) {
-      if (current.trim()) tokens.push(current.trim())
-
-      current = ''
-    }
-    else {
-      current += char
-    }
-  }
-
-  if (current.trim()) tokens.push(current.trim())
-
-  return tokens
-}
-
-async function formulaField (entu, str, entityId) {
-  str = str.trim()
-
-  if ((str.startsWith('\'') || str.startsWith('"')) && (str.endsWith('\'') || str.endsWith('"'))) {
-    return [{
-      string: str.substring(1, str.length - 1)
-    }]
-  }
-
-  if (parseFloat(str).toString() === str) {
-    return [{
-      number: parseFloat(str)
-    }]
-  }
-
-  const strParts = str.split('.').filter((x) => x !== undefined)
-  const [fieldRef, fieldType, fieldProperty] = strParts
-
-  let result
-
-  if (strParts.length === 1 && str === '_id') { // same entity _id
-    result = [{ _id: entityId }]
-  }
-  else if (strParts.length === 1 && str !== '_id') { // same entity property
-    result = await entu.db.collection('property').find({
-      entity: entityId,
-      type: str,
-      deleted: { $exists: false }
-    }, {
-      projection: { _id: true, entity: false, type: false, created: false }
-    }).toArray()
-
-    if (result.length === 0) { // No property found. Try to get entity property (formulas for example)
-      result = await entu.db.collection('entity').aggregate([{
-        $match: {
-          _id: entityId
-        }
-      }, {
-        $project: {
-          property: `$private.${str}`
-        }
-      }, {
-        $unwind: '$property'
-      }, {
-        $replaceWith: '$property'
-      }]).toArray()
-    }
-  }
-  else if (strParts.length === 3 && fieldRef === '_referrer' && fieldType === '*' && fieldProperty === '_id') { // referrer entities _id
-    result = await entu.db.collection('entity').find({
-      'private._reference.reference': entityId
-    }, {
-      projection: { _id: true }
-    }).toArray()
-  }
-  else if (strParts.length === 3 && fieldRef === '_referrer' && fieldType !== '*' && fieldProperty === '_id') { // referrer entities (with type) _id
-    result = await entu.db.collection('entity').find({
-      'private._reference.reference': entityId,
-      'private._type.string': fieldType
-    }, {
-      projection: { _id: true }
-    }).toArray()
-  }
-  else if (strParts.length === 3 && fieldRef === '_referrer' && fieldType === '*' && fieldProperty !== '_id') { // referrer entities property
-    result = await entu.db.collection('entity').aggregate([{
-      $match: {
-        'private._reference.reference': entityId
-      }
-    }, {
-      $project: {
-        property: `$private.${fieldProperty}`
-      }
-    }, {
-      $unwind: '$property'
-    }, {
-      $replaceWith: '$property'
-    }]).toArray()
-  }
-  else if (strParts.length === 3 && fieldRef === '_referrer' && fieldType !== '*' && fieldProperty !== '_id') { // referrer entities (with type) property
-    result = await entu.db.collection('entity').aggregate([{
-      $match: {
-        'private._reference.reference': entityId,
-        'private._type.string': fieldType
-      }
-    }, {
-      $project: {
-        property: `$private.${fieldProperty}`
-      }
-    }, {
-      $unwind: '$property'
-    }, {
-      $replaceWith: '$property'
-    }]).toArray()
-  }
-  else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty === '_id') { // childs _id
-    result = await entu.db.collection('entity').find({
-      'private._parent.reference': entityId
-    }, {
-      projection: { _id: true }
-    }).toArray()
-  }
-  else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty === '_id') { // childs (with type) property
-    result = await entu.db.collection('entity').find({
-      'private._parent.reference': entityId,
-      'private._type.string': fieldType
-    }, {
-      projection: { _id: true }
-    }).toArray()
-  }
-  else if (strParts.length === 3 && fieldRef === '_child' && fieldType === '*' && fieldProperty !== '_id') { // childs property
-    result = await entu.db.collection('entity').aggregate([{
-      $match: {
-        'private._parent.reference': entityId
-      }
-    }, {
-      $project: {
-        property: `$private.${fieldProperty}`
-      }
-    }, {
-      $unwind: '$property'
-    }, {
-      $replaceWith: '$property'
-    }]).toArray()
-  }
-  else if (strParts.length === 3 && fieldRef === '_child' && fieldType !== '*' && fieldProperty !== '_id') { // childs (with type) property
-    result = await entu.db.collection('entity').aggregate([{
-      $match: {
-        'private._parent.reference': entityId,
-        'private._type.string': fieldType
-      }
-    }, {
-      $project: {
-        property: `$private.${fieldProperty}`
-      }
-    }, {
-      $unwind: '$property'
-    }, {
-      $replaceWith: '$property'
-    }]).toArray()
-  }
-  else if (strParts.length === 3 && fieldRef !== '_child' && fieldType === '*' && fieldProperty === '_id') { // other reference _id
-    result = await entu.db.collection('property').aggregate([{
-      $match: {
-        entity: entityId,
-        type: fieldRef,
-        reference: { $exists: true },
-        deleted: { $exists: false }
-      }
-    }, {
-      $project: { _id: '$reference' }
-    }]).toArray()
-  }
-  else if (strParts.length === 3 && fieldRef !== '_child' && fieldType !== '*' && fieldProperty === '_id') { // other reference (with type) _id
-    result = await entu.db.collection('property').aggregate([{
-      $match: {
-        entity: entityId,
-        type: fieldRef,
-        reference: { $exists: true },
-        deleted: { $exists: false }
-      }
-    }, {
-      $lookup: {
-        from: 'entity',
-        let: { entityId: '$reference' },
-        pipeline: [
-          {
-            $match: {
-              'private._type.string': fieldType,
-              $expr: { $eq: ['$_id', '$$entityId'] }
-            }
-          }, {
-            $project: { _id: true }
-          }
-        ],
-        as: 'references'
-      }
-    }, {
-      $unwind: '$references'
-    }, {
-      $replaceWith: '$references'
-    }]).toArray()
-  }
-  else if (strParts.length === 3 && fieldRef !== '_child' && fieldType === '*' && fieldProperty !== '_id') { // other reference property
-    result = await entu.db.collection('property').aggregate([{
-      $match: {
-        entity: entityId,
-        type: fieldRef,
-        reference: { $exists: true },
-        deleted: { $exists: false }
-      }
-    }, {
-      $lookup: {
-        from: 'entity',
-        let: { entityId: '$reference' },
-        pipeline: [
-          {
-            $match: {
-              $expr: { $eq: ['$_id', '$$entityId'] }
-            }
-          }, {
-            $project: { property: `$private.${fieldProperty}` }
-          }
-        ],
-        as: 'references'
-      }
-    }, {
-      $project: {
-        property: '$references.property'
-      }
-    }, {
-      $unwind: '$property'
-    }, {
-      $unwind: '$property'
-    }, {
-      $replaceWith: '$property'
-    }]).toArray()
-  }
-  else if (strParts.length === 3 && fieldRef !== '_child' && fieldType !== '*' && fieldProperty !== '_id') { // other references(with type) property
-    result = await entu.db.collection('property').aggregate([{
-      $match: {
-        entity: entityId,
-        type: fieldRef,
-        reference: { $exists: true },
-        deleted: { $exists: false }
-      }
-    }, {
-      $lookup: {
-        from: 'entity',
-        let: { entityId: '$reference' },
-        pipeline: [
-          {
-            $match: {
-              'private._type.string': fieldType,
-              $expr: { $eq: ['$_id', '$$entityId'] }
-            }
-          }, {
-            $project: { property: `$private.${fieldProperty}` }
-          }
-        ],
-        as: 'references'
-      }
-    }, {
-      $project: {
-        property: '$references.property'
-      }
-    }, {
-      $unwind: '$property'
-    }, {
-      $unwind: '$property'
-    }, {
-      $replaceWith: '$property'
-    }]).toArray()
-  }
-
-  return result
-}
-
-function formulaFunction (data) {
-  const func = data.at(-1)
-
-  if (['CONCAT', 'CONCAT_WS', 'COUNT', 'SUM', 'SUBTRACT', 'MULTIPLY', 'DIVIDE', 'AVERAGE', 'MIN', 'MAX', 'ABS', 'ROUND'].includes(func)) {
-    return func
-  }
-  else {
-    return 'CONCAT'
-  }
-}
-
-function formulaContent (data, func) {
-  if (data.at(-1) === func) {
-    return data.slice(0, -1)
-  }
-  else {
-    return data
-  }
-}
-
-async function getValueArray (entu, values) {
-  if (!values) return []
-
-  return await Promise.all(values.map(async (x) => {
-    try {
-      if (x.number !== undefined && x.number !== null) return x.number
-      if (x.datetime !== undefined && x.datetime !== null) return x.datetime?.toISOString()
-      if (x.date !== undefined && x.date !== null) return x.date?.toISOString().substring(0, 10)
-      if (x.string !== undefined && x.string !== null) return x.string
-      if (x.reference !== undefined && x.reference !== null) {
-        const entity = await entu.db.collection('entity').findOne({ _id: x.reference }, { projection: { 'private.name': true } })
-
-        return entity.private?.name?.at(0)?.string || x.reference
-      }
-
-      return x._id
-    }
-    catch (error) {
-      loggerError(`getValueArray ${x._id} ${error}`, entu)
-
-      return x._id
-    }
-  }))
-}
-
-async function getParentRights (entu, parents) {
-  const parentRights = await entu.db.collection('entity').find({
-    _id: { $in: parents.map((x) => x.reference) }
-  }, {
-    projection: {
-      _id: false,
-      'private._noaccess': true,
-      'private._viewer': true,
-      'private._expander': true,
-      'private._editor': true,
-      'private._owner': true
-    }
-  }).toArray()
-
-  const rights = combineRights(parentRights.reduce((acc, cur) => ({
-    _viewer: [...acc._viewer || [], ...cur.private?._viewer || []],
-    _expander: [...acc._expander || [], ...cur.private?._expander || []],
-    _editor: [...acc._editor || [], ...cur.private?._editor || []],
-    _owner: [...acc._owner || [], ...cur.private?._owner || []]
-  }), {
-    _viewer: [],
-    _expander: [],
-    _editor: [],
-    _owner: []
-  }))
-
-  rights._noaccess = rights._noaccess?.map((x) => ({ ...x, inherited: true }))
-  rights._viewer = rights._viewer?.map((x) => ({ ...x, inherited: true }))
-  rights._expander = rights._expander?.map((x) => ({ ...x, inherited: true }))
-  rights._editor = rights._editor?.map((x) => ({ ...x, inherited: true }))
-  rights._owner = rights._owner?.map((x) => ({ ...x, inherited: true }))
-
-  return rights
-}
-
-function combineRights (rights) {
-  const directNoaccess = rights._noaccess?.filter((x) => x.inherited === undefined)?.map((x) => x.reference.toString()) || []
-  const directViewers = rights._viewer?.filter((x) => x.inherited === undefined)?.map((x) => x.reference.toString()) || []
-  const directExpanders = rights._expander?.filter((x) => x.inherited === undefined)?.map((x) => x.reference.toString()) || []
-  const directEditors = rights._editor?.filter((x) => x.inherited === undefined)?.map((x) => x.reference.toString()) || []
-  const directOwners = rights._owner?.filter((x) => x.inherited === undefined)?.map((x) => x.reference.toString()) || []
-
-  rights._noaccess = rights._noaccess?.filter((x) => x.inherited === undefined || (x.inherited === true && !directNoaccess.includes(x.reference.toString())))
-  rights._viewer = rights._viewer?.filter((x) => x.inherited === undefined || (x.inherited === true && !directViewers.includes(x.reference.toString())))
-  rights._expander = rights._expander?.filter((x) => x.inherited === undefined || (x.inherited === true && !directExpanders.includes(x.reference.toString())))
-  rights._editor = rights._editor?.filter((x) => x.inherited === undefined || (x.inherited === true && !directEditors.includes(x.reference.toString())))
-  rights._owner = rights._owner?.filter((x) => x.inherited === undefined || (x.inherited === true && !directOwners.includes(x.reference.toString())))
-
-  const noRights = rights._noaccess?.map((x) => x.reference.toString()) || []
-
-  if (noRights.length > 0) {
-    rights._viewer = rights._viewer?.filter((x) => !noRights.includes(x.reference.toString()))
-    rights._expander = rights._expander?.filter((x) => !noRights.includes(x.reference.toString()))
-    rights._editor = rights._editor?.filter((x) => !noRights.includes(x.reference.toString()))
-    rights._owner = rights._owner?.filter((x) => !noRights.includes(x.reference.toString()))
-  }
-
-  return rights
-}
-
-function getAccessArray ({ private: entity }) {
-  const access = []
-  const noAccess = entity._noaccess?.map((x) => x.reference)
-
-  if (entity._sharing?.at(0)?.string) {
-    access.push(entity._sharing?.at(0)?.string.toLowerCase())
-  }
-
-  ['_viewer', '_expander', '_editor', '_owner'].forEach((type) => {
-    if (!entity[type]) return
-
-    entity[type].forEach((x) => {
-      if (noAccess?.includes(x.reference)) return
-
-      access.push(x.reference)
-    })
-  })
-
-  return uniqBy(access, (x) => x.toString())
-}
-
-function makeSearchArray (array) {
-  if (!array || array.length === 0) return []
-
-  const result = []
-
-  for (const str of array) {
-    const words = `${str}`.toLowerCase().split(/[\s,;]+/).map((x) => x.trim()).filter(Boolean)
-
-    for (const word of words) {
-      // Generate all substrings up to 20 characters long
-      for (let startIndex = 0; startIndex < word.length; startIndex++) {
-        const maxEndIndex = Math.min(word.length, startIndex + 20)
-
-        for (let endIndex = startIndex + 1; endIndex <= maxEndIndex; endIndex++) {
-          const substring = word.slice(startIndex, endIndex)
-          result.push(substring)
-        }
-      }
-    }
-  }
-
-  return [...new Set(result)].sort()
-}
-
-function uniqBy (array, keyFn) {
-  return array.filter((v, i, a) =>
-    a.findIndex((t) => keyFn(t) === keyFn(v)) === i
-  )
-}
-
-async function startRelativeAggregation (entu, oldEntity, newEntity) {
-  let ids = []
-
-  // Check if entity has changed
-  if (Boolean(oldEntity.hash) && oldEntity.hash === newEntity.hash) return 0
-
-  // Check if name has changed
-  const oldName = oldEntity.private?.name?.map((x) => x.string || '') || []
-  const newName = newEntity.private?.name?.map((x) => x.string || '') || []
-  oldName.sort()
-  newName.sort()
-
-  if (oldName.join('|') !== newName.join('|')) {
-    const referrers = await entu.db.collection('property').aggregate([
-      { $match: { reference: oldEntity._id, deleted: { $exists: false } } },
-      { $group: { _id: '$entity' } }
-    ]).toArray()
-
-    // logger(`Aggregation - Name changed`, entu, [`entity:${oldEntity._id}`])
-
-    ids = referrers.map((x) => x._id)
-  }
-
-  // Check if rights have changed
-  const rightProperties = ['_noaccess', '_viewer', '_expander', '_editor', '_owner']
-  const oldRights = rightProperties.map((type) => oldEntity.private?.[type]?.map((x) => `${type}:${x.reference}`) || []).flat()
-  const newRights = rightProperties.map((type) => newEntity.private?.[type]?.map((x) => `${type}:${x.reference}`) || []).flat()
-  oldRights.sort()
-  newRights.sort()
-
-  if (oldRights.join('|') !== newRights.join('|')) {
-    const childs = await entu.db.collection('entity').find({
-      'private._parent.reference': oldEntity._id,
-      'private._inheritrights.boolean': true
-    }, {
-      projection: { _id: true }
-    }).toArray()
-
-    // logger(`Aggregation - Rights changed`, entu, [`entity:${oldEntity._id}`])
-
-    ids = [...ids, ...childs.map((x) => x._id)]
-  }
-
-  // Check formulas
-  // if (oldEntity.hash !== newEntity.hash) {
-  //   const formulaChilds = await entu.db.collection('entity').find({
-  //     'private._parent.reference': oldEntity._id
-  //   }, {
-  //     projection: { _id: true }
-  //   }).toArray()
-  //   const formulaChildsIds = formulaChilds.map((x) => x._id)
-  //   const formulaOldParentIds = oldEntity.private?._parent?.map((x) => x.reference) || []
-  //   const formulaNewParentIds = newEntity.private?._parent?.map((x) => x.reference) || []
-
-  //   const formulaEntities = await entu.db.collection('entity').find({
-  //     _id: { $in: [...formulaChildsIds, ...formulaOldParentIds, ...formulaNewParentIds] },
-  //     'private._type.reference': { $exists: true }
-  //   }, {
-  //     projection: { 'private._type.reference': true }
-  //   }).toArray()
-
-  //   const formulaEntityIds = await Promise.all(formulaEntities.map(async (x) => {
-  //     return await Promise.all(x.private?._type?.map(async (y) => {
-  //       const formulaProperties = await entu.db.collection('entity').countDocuments({
-  //         'private._parent.reference': y.reference,
-  //         'private.formula.string': { $exists: true }
-  //       })
-
-  //       if (formulaProperties === 0) return
-
-  //       return x._id
-  //     }))
-  //   }))
-
-  //   ids = [...ids, ...formulaEntityIds.flat().filter(Boolean)]
-  // }
-
-  ids = uniqBy(ids, (x) => x.toString())
-
-  if (ids.length === 0) return 0
-
-  await addAggregateQueue(entu, ids)
-
-  return ids.length
-}
-
+// Returns the next counter string/number for a counter-type property
 async function getNextCounterValue (entu, property) {
   const regex = /\d+(?!.*\d)/
   const add = typeof property.counter === 'number' ? property.counter : 1
@@ -1419,26 +375,73 @@ async function getNextCounterValue (entu, property) {
   }
 }
 
-function getEntityHash (obj) {
-  const ids = []
+// Soft-deletes replaced properties by setting their deleted field
+async function markPropertiesDeleted (entu, entityId, oldPIds) {
+  if (oldPIds.length === 0) return
 
-  for (const [key, arr] of Object.entries(obj)) {
-    for (const item of arr) {
-      if (item._id) {
-        ids.push(item._id.toString())
-      }
-      else if (item.string) {
-        const hash = createHash('md5').update(`${key}: ${item.string}`).digest('hex')
-        ids.push(hash)
-      }
-      else {
-        const hash = createHash('md5').update(JSON.stringify(item)).digest('hex')
-        ids.push(hash)
+  await entu.db.collection('property').updateMany({
+    _id: { $in: oldPIds },
+    entity: entityId,
+    deleted: { $exists: false }
+  }, {
+    $set: {
+      deleted: {
+        at: new Date(),
+        by: entu.user || 'entu'
       }
     }
+  })
+}
+
+// Returns the public, domain, or private view of an entity based on user access rights
+export async function cleanupEntity (entu, entity, _thumbnail) {
+  if (!entity) return
+
+  let result = { _id: entity._id }
+
+  if (entu.userStr && entity.access?.map((x) => x.toString())?.includes(entu.userStr)) {
+    result = { ...result, ...entity.private }
+  }
+  else if (entu.userStr && entity.access?.includes('domain')) {
+    result = { ...result, ...entity.domain }
+  }
+  else if (entity.access?.includes('public')) {
+    result = { ...result, ...entity.public }
+  }
+  else {
+    return
   }
 
-  const joined = ids.sort().join(',')
+  if (_thumbnail && result.photo?.at(0)) {
+    result._thumbnail = await getSignedDownloadUrl(entu.account, result._id, result.photo.at(0))
+  }
 
-  return createHash('md5').update(joined).digest('hex')
+  if (result.entu_api_key) {
+    result.entu_api_key.forEach((k) => {
+      k.string = '***'
+    })
+  }
+
+  if (result.entu_user) {
+    result.entu_user.forEach((u) => {
+      if (u.invite) {
+        u.invite = '***'
+      }
+      else if (u.email?.endsWith('@eesti.ee')) {
+        u.email = u.email.replace('@eesti.ee', '')
+      }
+    })
+  }
+
+  if (result.entu_passkey) {
+    result.entu_passkey.forEach((k) => {
+      k.string = `${k.passkey_device || ''} ${k._id.toString().slice(-4).toUpperCase()}`.trim()
+    })
+  }
+
+  if (!result._thumbnail) {
+    delete result._thumbnail
+  }
+
+  return result
 }
