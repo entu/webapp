@@ -161,9 +161,35 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  if (!Array.isArray(body)) {
+    throw createError({ statusCode: 400, statusMessage: 'Data must be array' })
+  }
+
   const entityId = getObjectId(getRouterParam(event, '_id'))
 
+  const isSendInvite = body.some((p) => p.type === 'entu_user' && p.string === 'send-invite')
+
+  let email
+  if (isSendInvite) {
+    const entity = await entu.db.collection('entity').findOne({ _id: entityId }, { projection: { 'private.email': true } })
+    email = entity?.private?.email?.at(0)?.string
+
+    if (!email) {
+      throw createError({ statusCode: 400, statusMessage: 'No email' })
+    }
+  }
+
   const { _id, properties } = await setEntity(entu, entityId, body)
+
+  if (isSendInvite) {
+    const { origin } = getRequestURL(event)
+
+    const inviteToken = properties.find((p) => p.type === 'entu_user')?.invite
+    const inviterEntity = entu.user ? await entu.db.collection('entity').findOne({ _id: entu.user }, { projection: { 'private.name.string': true } }) : null
+    const inviterName = inviterEntity?.private?.name?.at(0)?.string || entu.email
+
+    await sendInviteEmail({ to: email, inviteUrl: `${origin}/${entu.account}/invite?token=${inviteToken}`, account: entu.account, inviterName })
+  }
 
   await triggerWebhooks(entu, _id, 'entity-edit-webhook')
 

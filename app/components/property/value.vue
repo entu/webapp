@@ -9,7 +9,7 @@ defineProps({
 })
 
 const { query } = useRoute()
-const { locale, d, n } = useI18n()
+const { locale, d, n, t } = useI18n()
 const { accountId } = useAccount()
 </script>
 
@@ -77,6 +77,19 @@ const { accountId } = useAccount()
     {{ d(value.date, 'date') }}
   </template>
 
+  <template v-else-if="value.provider !== undefined">
+    <div class="flex items-center gap-2">
+      <my-icon :icon="value.provider" />
+      <span>{{ value.email || value.string }}</span>
+    </div>
+  </template>
+
+  <template v-else-if="value.invite !== undefined">
+    <span class="text-sm text-gray-500">
+      {{ t('invitePending', { date: new Date(parseInt(value._id.substring(0, 8), 16) * 1000).toLocaleString(locale) }) }}
+    </span>
+  </template>
+
   <template v-else-if="value.string !== undefined && !isMarkdown">
     {{ value.string }}
   </template>
@@ -93,3 +106,10 @@ const { accountId } = useAccount()
     {{ value }}
   </template>
 </template>
+
+<i18n lang="yaml">
+  en:
+    invitePending: 'Invite sent {date}'
+  et:
+    invitePending: 'Kutse saadetud {date}'
+</i18n>

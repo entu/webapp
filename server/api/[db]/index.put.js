@@ -342,6 +342,8 @@ async function newDatabase (name) {
       { key: { 'private.entu_api_key.string': 1 } },
       { key: { 'private.entu_passkey.passkey_id': 1 } },
       { key: { 'private.entu_user.string': 1 } },
+      { key: { 'private.entu_user.uid': 1, 'private.entu_user.provider': 1 } },
+      { key: { 'private.entu_user.invite': 1 } },
       { key: { 'private.name.string': 1 } },
       { key: { 'search.domain': 1 } },
       { key: { 'search.private': 1 } },

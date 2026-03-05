@@ -10,7 +10,11 @@ onMounted(async () => {
 
   useAnalytics(`auth_${route.params.provider}`)
 
-  await navigateTo(`${runtimeConfig.public.apiUrl}/auth/${route.params.provider}?next=${window.location.origin}/auth/callback?key=`, { external: true })
+  const callbackUrl = route.query.invite
+    ? `${window.location.origin}/auth/callback?invite=${encodeURIComponent(route.query.invite)}&key=`
+    : `${window.location.origin}/auth/callback?key=`
+
+  await navigateTo(`${runtimeConfig.public.apiUrl}/auth/${route.params.provider}?next=${encodeURIComponent(callbackUrl)}`, { external: true })
 })
 </script>
 

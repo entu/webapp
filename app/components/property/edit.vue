@@ -287,6 +287,14 @@ async function addValue (properties) {
     newValue.string = property.string
   }
 
+  if (props.property === 'entu_user') {
+    newValue.invite = property.invite
+
+    if (isOwnEntity.value && property.invite) {
+      await navigateTo({ path: `/${accountId.value}/invite`, query: { token: property.invite } })
+    }
+  }
+
   return entity
 }
 
@@ -499,6 +507,53 @@ async function copyToClipboard (text) {
         @click="updateValue({ ...value, string: 'generate' })"
       />
 
+      <template v-else-if="type === 'string' && props.property === 'entu_user' && value._id && value.invite">
+        <span class="text-sm text-gray-500">
+          {{ t('invitePending', { date: new Date(parseInt(value._id.substring(0, 8), 16) * 1000).toLocaleString(locale) }) }}
+        </span>
+        <my-button
+          icon="delete"
+          :label="t('cancelInvite')"
+          :loading="loadingInputs.includes(value._id)"
+          :readonly="disabled"
+          @click="updateValue({ ...value, string: null })"
+        />
+      </template>
+
+      <template v-else-if="type === 'string' && props.property === 'entu_user' && value._id && !value.invite">
+        <div class="flex min-w-0 grow items-center gap-2">
+          <my-icon
+            v-if="value.provider"
+            :icon="value.provider"
+          />
+          <span class="truncate text-sm">{{ value.string || value.email }}</span>
+        </div>
+        <my-button
+          icon="delete"
+          :loading="loadingInputs.includes(value._id)"
+          :readonly="disabled"
+          @click="updateValue({ ...value, string: null })"
+        />
+      </template>
+
+      <my-button
+        v-else-if="type === 'string' && props.property === 'entu_user' && !value._id && !isOwnEntity"
+        icon="e-mail"
+        :label="t('sendInvite')"
+        :loading="loadingInputs.includes(value._id)"
+        :readonly="disabled"
+        @click="updateValue({ ...value, string: 'send-invite' })"
+      />
+
+      <my-button
+        v-else-if="type === 'string' && props.property === 'entu_user' && !value._id && isOwnEntity"
+        icon="e-mail"
+        :label="t('addLoginMethod')"
+        :loading="loadingInputs.includes(value._id)"
+        :readonly="disabled"
+        @click="updateValue({ ...value, string: 'self-invite' })"
+      />
+
       <n-input
         v-else-if="type === 'string' && set.length === 0"
         v-model:value="value.string"
@@ -626,6 +681,10 @@ async function copyToClipboard (text) {
     deletePasskey: Delete Passkey
     registerPasskey: Register Passkey
     passkeyOwnOnly: Only user can create their own passkey
+    sendInvite: Send Invite
+    cancelInvite: Cancel Invite
+    invitePending: 'Invite sent {date}'
+    addLoginMethod: Add Login Method
   et:
     upload: Laadi üles
     counter: Genereeri
@@ -634,4 +693,8 @@ async function copyToClipboard (text) {
     deletePasskey: Kustuta turvavõti
     registerPasskey: Registreeri turvavõti
     passkeyOwnOnly: Turvavõtit saab luua ainult kasutaja ise
+    sendInvite: Saada kutse
+    cancelInvite: Tühista kutse
+    invitePending: 'Kutse saadetud {date}'
+    addLoginMethod: Lisa sisselogimisviis
 </i18n>

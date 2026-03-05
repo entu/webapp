@@ -110,89 +110,138 @@ export default defineEventHandler(async (event) => {
   const key = (getHeader(event, 'authorization') || '').replace('Bearer ', '').trim()
 
   if (!key) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'No key'
-    })
+    throw createError({ statusCode: 400, statusMessage: 'No key' })
   }
 
-  const authFilter = {}
   const connection = await connectDb('entu')
   const audience = getRequestIP(event, { xForwardedFor: true })
   let session
+  let apiKeyHash
 
   try {
     const decoded = jwt.verify(key, jwtSecret, { audience })
-    session = await connection.collection('session').findOneAndUpdate({
-      _id: getObjectId(decoded.sub),
-      deleted: { $exists: false }
-    }, {
-      $set: { deleted: new Date() }
-    })
+    session = await connection.collection('session').findOneAndUpdate(
+      { _id: getObjectId(decoded.sub), deleted: { $exists: false } },
+      { $set: { deleted: new Date() } }
+    )
 
-    if (!session) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'No session'
-      })
-    }
-
-    if (!session.user?.email) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'No user email'
-      })
-    }
-
-    authFilter['private.entu_user.string'] = session.user.email
+    if (!session) throw createError({ statusCode: 400, statusMessage: 'No session' })
+    if (!session.user?.email) throw createError({ statusCode: 400, statusMessage: 'No user email' })
   }
   catch (e) {
-    authFilter['private.entu_api_key.string'] = createHash('sha256').update(key).digest('hex')
+    apiKeyHash = createHash('sha256').update(key).digest('hex')
   }
 
   const query = getQuery(event)
-  const onlyForAccount = query.db || query.account
+  let onlyForAccount = query.db || query.account
+
+  if (query.invite && !onlyForAccount) {
+    const payload = jwt.decode(query.invite)
+    if (payload?.db) onlyForAccount = payload.db
+  }
 
   const dbs = await connection.admin().listDatabases()
   const accounts = []
   const accountUsersIds = {}
 
-  for (let i = 0; i < dbs.databases.length; i++) {
-    const account = dbs.databases[i].name
+  function addAccount (account, userId, userName, extra = {}) {
+    accountUsersIds[account] = userId.toString()
+    accounts.push({ _id: account, name: account, user: { _id: userId.toString(), name: userName, ...extra } })
+  }
 
-    if (onlyForAccount && onlyForAccount !== account) { continue }
-    if (mongoDbSystemDbs.includes(account)) { continue }
+  for (const { name: account } of dbs.databases) {
+    if (onlyForAccount && onlyForAccount !== account) continue
+    if (mongoDbSystemDbs.includes(account)) continue
 
     const accountCon = await connectDb(account)
-    const person = await accountCon.collection('entity').findOne(authFilter, { projection: { _id: true, 'private.name.string': true } })
+    let person
+
+    if (apiKeyHash) {
+      person = await accountCon.collection('entity').findOne(
+        { 'private.entu_api_key.string': apiKeyHash },
+        { projection: { _id: true, 'private.name.string': true } }
+      )
+    }
+    else if (session) {
+      // Step 1: new format — find by uid + provider
+      if (session.user?.id && session.user?.provider) {
+        person = await accountCon.collection('entity').findOne(
+          { 'private.entu_user.uid': session.user.id, 'private.entu_user.provider': session.user.provider },
+          { projection: { _id: true, 'private.name.string': true } }
+        )
+      }
+
+      // Step 2: old format — find by email string and migrate on first login
+      if (!person && session.user?.email) {
+        const oldPerson = await accountCon.collection('entity').findOne(
+          { 'private.entu_user.string': session.user.email },
+          { projection: { _id: true, 'private.name.string': true, 'private.entu_user': true } }
+        )
+
+        if (oldPerson) {
+          const oldProp = oldPerson.private?.entu_user?.find((u) => u.string === session.user.email)
+
+          if (oldProp && session.user?.id && session.user?.provider) {
+            await setEntity(
+              { account, db: accountCon, systemUser: true },
+              oldPerson._id,
+              [{ type: 'entu_user', _id: oldProp._id, uid: session.user.id, email: session.user.email, provider: session.user.provider }]
+            )
+          }
+
+          person = oldPerson
+        }
+      }
+    }
 
     if (person) {
-      accountUsersIds[account] = person._id.toString()
-      accounts.push({
-        _id: account,
-        name: account,
-        user: {
-          _id: person._id.toString(),
-          name: person.private?.name?.at(0).string || person._id.toString()
-        }
-      })
+      addAccount(account, person._id, person.private?.name?.at(0).string || person._id.toString())
     }
   }
 
-  if (onlyForAccount && accounts.length === 0 && session) {
+  // Invite acceptance: user arrived via invite link and completed OAuth
+  let inviteAttempted = !!(onlyForAccount && session && query.invite)
+  let inviteConflict = false
+
+  if (onlyForAccount && session && query.invite) {
+    const existingEntry = accounts.find((a) => a._id === onlyForAccount)
+
+    try {
+      const inviteData = jwt.verify(query.invite, jwtSecret)
+
+      if (inviteData.db === onlyForAccount) {
+        const inviteEntu = { account: onlyForAccount, db: await connectDb(onlyForAccount), systemUser: true }
+        const storedInvite = await findStoredInvite(inviteEntu, inviteData.entityId)
+
+        if (!existingEntry) {
+          // User has no account in this db yet → accept invite
+
+          if (storedInvite) {
+            await replaceInviteWithCredentials(inviteEntu, inviteData.entityId, storedInvite._id, session)
+            addAccount(onlyForAccount, inviteData.entityId, session.user.name)
+          }
+        }
+        else if (existingEntry.user._id === inviteData.entityId) {
+          // Same entity: clean up orphaned invite property
+          if (storedInvite) {
+            await replaceInviteWithCredentials(inviteEntu, inviteData.entityId, storedInvite._id, session)
+          }
+        }
+        else {
+          // Different entity: user's identity is already linked to another entity
+          inviteConflict = true
+        }
+      }
+    }
+    catch (e) { /* invalid/expired invite */ }
+  }
+
+  // Auto-create user if no account found and invite was not attempted
+  if (onlyForAccount && accounts.length === 0 && session && !inviteAttempted) {
     const person = await createUserForAccount(onlyForAccount, session)
 
     if (person) {
-      accountUsersIds[onlyForAccount] = person._id.toString()
-      accounts.push({
-        _id: onlyForAccount,
-        name: onlyForAccount,
-        user: {
-          _id: person._id,
-          name: person.name,
-          new: true
-        }
-      })
+      addAccount(onlyForAccount, person._id, person.name, { new: true })
     }
   }
 
@@ -202,7 +251,6 @@ export default defineEventHandler(async (event) => {
   if (session?.user?.email || session?.user?.name) {
     userData.email = session?.user?.email
     userData.name = session?.user?.name
-
     tokenData.user = userData
   }
 
@@ -213,29 +261,48 @@ export default defineEventHandler(async (event) => {
   return {
     accounts,
     user: userData,
-    token: jwt.sign(tokenData, jwtSecret, {
-      audience,
-      expiresIn: '48h'
-    })
+    token: jwt.sign(tokenData, jwtSecret, { audience, expiresIn: '48h' }),
+    ...(inviteConflict ? { conflict: 'invite' } : {})
   }
 })
+
+async function findStoredInvite (entu, entityId) {
+  const entity = await entu.db.collection('entity').findOne(
+    { _id: getObjectId(entityId) },
+    { projection: { 'private.entu_user': true } }
+  )
+
+  return entity?.private?.entu_user?.find((u) => u.invite) || null
+}
+
+async function replaceInviteWithCredentials (entu, entityId, invitePropId, session) {
+  await setEntity(entu, getObjectId(entityId), [{
+    type: 'entu_user',
+    _id: invitePropId,
+    uid: session.user.id,
+    email: session.user.email,
+    provider: session.user.provider
+  }])
+}
 
 async function createUserForAccount (account, session) {
   if (!account || !session) return
 
-  const entu = {
-    account,
-    db: await connectDb(account),
-    systemUser: true
-  }
+  const entu = { account, db: await connectDb(account), systemUser: true }
 
-  const database = await entu.db.collection('entity').findOne({ 'private._type.string': 'database', 'private.add_user.reference': { $exists: true } }, { projection: { 'private.add_user.reference': true } })
+  const database = await entu.db.collection('entity').findOne(
+    { 'private._type.string': 'database', 'private.add_user.reference': { $exists: true } },
+    { projection: { 'private.add_user.reference': true } }
+  )
 
   const parent = database?.private?.add_user?.at(0)?.reference
 
   if (!parent) return
 
-  const type = await entu.db.collection('entity').findOne({ 'private._type.string': 'entity', 'private.name.string': 'person' }, { projection: { _id: true } })
+  const type = await entu.db.collection('entity').findOne(
+    { 'private._type.string': 'entity', 'private.name.string': 'person' },
+    { projection: { _id: true } }
+  )
 
   if (!type?._id) return
 
@@ -243,7 +310,7 @@ async function createUserForAccount (account, session) {
     { type: '_type', reference: type._id },
     { type: '_parent', reference: parent },
     { type: '_inheritrights', boolean: true },
-    { type: 'entu_user', string: session.user.email },
+    { type: 'entu_user', uid: session.user.id, email: session.user.email, provider: session.user.provider },
     { type: 'email', string: session.user.email }
   ]
 
@@ -255,9 +322,7 @@ async function createUserForAccount (account, session) {
 
   if (!person._id) return
 
-  await setEntity(entu, person._id, [
-    { type: '_editor', reference: person._id }
-  ])
+  await setEntity(entu, person._id, [{ type: '_editor', reference: person._id }])
 
   return { _id: person._id, name: session.user.name }
 }

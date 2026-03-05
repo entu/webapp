@@ -1,4 +1,5 @@
 import { createHash, randomBytes } from 'node:crypto'
+import jwt from 'jsonwebtoken'
 
 const charsForKey = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*-_=+'
 
@@ -28,6 +29,17 @@ export async function cleanupEntity (entu, entity, _thumbnail) {
   if (result.entu_api_key) {
     result.entu_api_key.forEach((k) => {
       k.string = '***'
+    })
+  }
+
+  if (result.entu_user) {
+    result.entu_user.forEach((u) => {
+      if (u.invite) {
+        u.invite = '***'
+      }
+      else if (u.email?.endsWith('@eesti.ee')) {
+        u.email = u.email.replace('@eesti.ee', '')
+      }
     })
   }
 
@@ -307,6 +319,13 @@ export async function setEntity (entu, entityId, properties) {
       property.number = nextCounter.number
 
       delete property.counter
+    }
+    if (property.type === 'entu_user' && property.string) {
+      const { jwtSecret } = useRuntimeConfig()
+
+      property.invite = jwt.sign({ db: entu.account, entityId: entityId.toString() }, jwtSecret, { expiresIn: '7d' })
+
+      delete property.string
     }
     if (property.type === 'entu_api_key') {
       apiKey = Array.from(randomBytes(32), (byte) => charsForKey[byte % charsForKey.length]).join('')

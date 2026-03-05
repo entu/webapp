@@ -12,10 +12,18 @@ onMounted(async () => {
   useHead({ title: t('title') })
 
   const nextPage = useLocalStorage('next', { path: '/' })
-  const authAccount = nextPage.value?.path?.split('/').filter((x) => x !== 'new').at(1)
+  const invite = route.query.invite
+  const inviteDb = invite ? JSON.parse(atob(invite.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))?.db : null
+  const authAccount = inviteDb || nextPage.value?.path?.split('/').filter((x) => x !== 'new').at(1)
   let newUser = {}
 
-  const authResponse = await apiRequest('auth', authAccount ? { db: authAccount } : {}, { Authorization: `Bearer ${route.query.key}` })
+  const authParams = authAccount ? { db: authAccount } : {}
+
+  if (invite) {
+    authParams.invite = invite
+  }
+
+  const authResponse = await apiRequest('auth', authParams, { Authorization: `Bearer ${route.query.key}` })
 
   if (authResponse.accounts?.length > 0) {
     accounts.value = authResponse.accounts
@@ -40,7 +48,7 @@ onMounted(async () => {
   if (newUser.new) {
     await navigateTo({ path: `/${authAccount}/${newUser?._id}`, hash: 'edit' })
   }
-  else if (nextPage.value.path !== '/') {
+  else if (!invite && nextPage.value.path !== '/') {
     const to = { path: nextPage.value?.path || '/', query: nextPage.value?.query }
     nextPage.value = {}
 
