@@ -335,30 +335,33 @@ async function newDatabase (name) {
   await Promise.all([
     // Add entity indexes to MongoDB
     newDb.collection('entity').createIndexes([
-      { key: { access: 1 } },
       { key: { 'private._parent.reference': 1 } },
+      { key: { 'private._reference.reference': 1 } },
       { key: { 'private._type.string': 1 } },
       { key: { 'private.add_from.reference': 1 } },
       { key: { 'private.entu_api_key.string': 1 } },
       { key: { 'private.entu_passkey.passkey_id': 1 } },
+      { key: { 'private.entu_user.invite': 1 } },
       { key: { 'private.entu_user.string': 1 } },
       { key: { 'private.entu_user.uid': 1, 'private.entu_user.provider': 1 } },
-      { key: { 'private.entu_user.invite': 1 } },
+      { key: { 'private.formula.string': 1 }, sparse: true },
       { key: { 'private.name.string': 1 } },
       { key: { 'search.domain': 1 } },
       { key: { 'search.private': 1 } },
-      { key: { 'search.public': 1 } }
+      { key: { 'search.public': 1 } },
+      { key: { access: 1 } },
+      { key: { queued: 1 }, sparse: true }
     ]),
 
     // Add property indexes to MongoDB
     newDb.collection('property').createIndexes([
-      { key: { entity: 1 } },
-      { key: { type: 1 } },
-      { key: { deleted: 1 } },
-      { key: { reference: 1 } },
-      { key: { filesize: 1 } },
       { key: { 'created.by': 1 } },
-      { key: { 'deleted.by': 1 } }
+      { key: { 'deleted.by': 1 } },
+      { key: { deleted: 1 } },
+      { key: { entity: 1, type: 1, deleted: 1 } },
+      { key: { filesize: 1 } },
+      { key: { reference: 1, deleted: 1 } },
+      { key: { type: 1, deleted: 1, number: -1 } }
     ]),
 
     // Add stats indexes to MongoDB
