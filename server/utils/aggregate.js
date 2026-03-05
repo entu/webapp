@@ -7,6 +7,8 @@ export async function aggregateEntity (entu, entityId) {
       aggregated: true,
       'private.name': true,
       'private._type': true,
+      'private._parent': true,
+      'private._reference': true,
       'private._noaccess': true,
       'private._viewer': true,
       'private._expander': true,
@@ -385,31 +387,85 @@ function getEntityHash (obj) {
   return createHash('md5').update(joined).digest('hex')
 }
 
-// Queues related entities for re-aggregation when name or rights change
+// Returns the subset of entityIds whose entity type has at least one formula property definition
+async function filterEntitiesWithFormulas (entu, entityIds) {
+  if (!entityIds || entityIds.length === 0) return []
+
+  const result = await entu.db.collection('entity').aggregate([
+    {
+      $match: {
+        _id: { $in: entityIds },
+        'private._type.reference': { $exists: true }
+      }
+    },
+    {
+      $project: {
+        typeRef: { $arrayElemAt: ['$private._type.reference', 0] }
+      }
+    },
+    {
+      $lookup: {
+        from: 'entity',
+        let: { typeId: '$typeRef' },
+        pipeline: [
+          {
+            $match: {
+              'private._type.string': 'property',
+              'private.formula.string': { $exists: true },
+              $expr: {
+                $in: [
+                  '$$typeId',
+                  {
+                    $map: {
+                      input: { $ifNull: ['$private._parent', []] },
+                      as: 'p',
+                      in: '$$p.reference'
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          { $limit: 1 },
+          { $project: { _id: 1 } }
+        ],
+        as: 'formulaDefs'
+      }
+    },
+    { $match: { 'formulaDefs.0': { $exists: true } } },
+    { $project: { _id: 1 } }
+  ]).toArray()
+
+  return result.map((x) => x._id)
+}
+
+// Queues related entities for re-aggregation when name, rights, or formula-relevant data changes
 async function startRelativeAggregation (entu, oldEntity, newEntity) {
   let ids = []
 
-  // Check if entity has changed
+  // Check if entity has changed — if not, nothing to propagate
   if (Boolean(oldEntity.hash) && oldEntity.hash === newEntity.hash) return 0
 
-  // Check if name has changed
+  // Collect referrer IDs once (entities whose properties point to this entity).
+  // Reused for both name-change propagation and formula Case 3 below.
+  const referrers = await entu.db.collection('property').aggregate([
+    { $match: { reference: oldEntity._id, deleted: { $exists: false } } },
+    { $group: { _id: '$entity' } }
+  ]).toArray()
+  const referrerIds = referrers.map((x) => x._id)
+
+  // Check if name has changed → queue ALL referrers (they cache the name string)
   const oldName = oldEntity.private?.name?.map((x) => x.string || '') || []
   const newName = newEntity.private?.name?.map((x) => x.string || '') || []
   oldName.sort()
   newName.sort()
 
   if (oldName.join('|') !== newName.join('|')) {
-    const referrers = await entu.db.collection('property').aggregate([
-      { $match: { reference: oldEntity._id, deleted: { $exists: false } } },
-      { $group: { _id: '$entity' } }
-    ]).toArray()
-
     // logger(`Aggregation - Name changed`, entu, [`entity:${oldEntity._id}`])
-
-    ids = referrers.map((x) => x._id)
+    ids = [...ids, ...referrerIds]
   }
 
-  // Check if rights have changed
+  // Check if rights have changed → queue children with _inheritrights
   const rightProperties = ['_noaccess', '_viewer', '_expander', '_editor', '_owner']
   const oldRights = rightProperties.map((type) => oldEntity.private?.[type]?.map((x) => `${type}:${x.reference}`) || []).flat()
   const newRights = rightProperties.map((type) => newEntity.private?.[type]?.map((x) => `${type}:${x.reference}`) || []).flat()
@@ -425,43 +481,41 @@ async function startRelativeAggregation (entu, oldEntity, newEntity) {
     }).toArray()
 
     // logger(`Aggregation - Rights changed`, entu, [`entity:${oldEntity._id}`])
-
     ids = [...ids, ...childs.map((x) => x._id)]
   }
 
-  // Check formulas
-  // if (oldEntity.hash !== newEntity.hash) {
-  //   const formulaChilds = await entu.db.collection('entity').find({
-  //     'private._parent.reference': oldEntity._id
-  //   }, {
-  //     projection: { _id: true }
-  //   }).toArray()
-  //   const formulaChildsIds = formulaChilds.map((x) => x._id)
-  //   const formulaOldParentIds = oldEntity.private?._parent?.map((x) => x.reference) || []
-  //   const formulaNewParentIds = newEntity.private?._parent?.map((x) => x.reference) || []
+  // Formula Case 1: Queue parents of X that have formula properties.
+  // Rationale: parents may have _child.* formulas that read X's data.
+  // Includes old parents (pre-edit) to handle the case where X's _parent changed.
+  const newParentIds = newEntity.private?._parent?.map((x) => x.reference) || []
+  const oldParentIds = oldEntity.private?._parent?.map((x) => x.reference) || []
+  const allParentIds = uniqBy([...newParentIds, ...oldParentIds], (x) => x.toString())
 
-  //   const formulaEntities = await entu.db.collection('entity').find({
-  //     _id: { $in: [...formulaChildsIds, ...formulaOldParentIds, ...formulaNewParentIds] },
-  //     'private._type.reference': { $exists: true }
-  //   }, {
-  //     projection: { 'private._type.reference': true }
-  //   }).toArray()
+  if (allParentIds.length > 0) {
+    const parentsWithFormulas = await filterEntitiesWithFormulas(entu, allParentIds)
+    ids = [...ids, ...parentsWithFormulas]
+  }
 
-  //   const formulaEntityIds = await Promise.all(formulaEntities.map(async (x) => {
-  //     return await Promise.all(x.private?._type?.map(async (y) => {
-  //       const formulaProperties = await entu.db.collection('entity').countDocuments({
-  //         'private._parent.reference': y.reference,
-  //         'private.formula.string': { $exists: true }
-  //       })
+  // Formula Case 2: Queue entities that X references, if they have formula properties.
+  // Rationale: those entities may have _referrer.* formulas that read X's data.
+  // Includes old references to handle the case where X's reference properties changed.
+  const newRefIds = newEntity.private?._reference?.map((x) => x.reference) || []
+  const oldRefIds = oldEntity.private?._reference?.map((x) => x.reference) || []
+  const allRefTargetIds = uniqBy([...newRefIds, ...oldRefIds], (x) => x.toString())
 
-  //       if (formulaProperties === 0) return
+  if (allRefTargetIds.length > 0) {
+    const refTargetsWithFormulas = await filterEntitiesWithFormulas(entu, allRefTargetIds)
+    ids = [...ids, ...refTargetsWithFormulas]
+  }
 
-  //       return x._id
-  //     }))
-  //   }))
-
-  //   ids = [...ids, ...formulaEntityIds.flat().filter(Boolean)]
-  // }
+  // Formula Case 3: Queue referrers of X that have formula properties.
+  // Rationale: referrers may have refProp.* formulas reading any field of X, not just name.
+  // The name-change block above already queues ALL referrers when the name changes;
+  // this adds formula-filtered referrers for all other field changes.
+  if (referrerIds.length > 0) {
+    const referrersWithFormulas = await filterEntitiesWithFormulas(entu, referrerIds)
+    ids = [...ids, ...referrersWithFormulas]
+  }
 
   ids = uniqBy(ids, (x) => x.toString())
 
