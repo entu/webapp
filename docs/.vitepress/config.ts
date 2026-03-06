@@ -4,6 +4,9 @@ export default defineConfig({
   base: '/docs/',
   title: 'Entu Documentation',
   description: 'Documentation for the Entu flexible object database',
+  head: [
+    ['script', { src: 'https://analytics.entu.dev/ea.min.js', 'data-site': 'entu.dev', crossorigin: 'anonymous', defer: '' }],
+  ],
   themeConfig: {
     logo: '/logo.png',
     nav: [
