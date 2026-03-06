@@ -1,7 +1,6 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  base: '/docs/',
   title: 'Entu Documentation',
   description: 'Documentation for the Entu flexible object database',
   head: [
