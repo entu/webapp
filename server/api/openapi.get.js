@@ -1,21 +1,3 @@
-import { readFileSync } from 'node:fs'
-import { resolve } from 'node:path'
-
-// Helper function to load tag descriptions from markdown files
-const loadTagDescription = (filename) => {
-  try {
-    // If filename starts with ../, resolve from project root, otherwise from docs folder
-    const filePath = filename.startsWith('../')
-      ? resolve(process.cwd(), filename)
-      : resolve(process.cwd(), 'docs', filename)
-    return readFileSync(filePath, 'utf-8').trim()
-  }
-  catch (error) {
-    console.error(`Failed to load ${filename}:`, error)
-    return ''
-  }
-}
-
 export default defineEventHandler(async () => {
   // Get the original OpenAPI spec from the default route
   const openapi = await $fetch('/api/docs/openapi.json')
@@ -43,11 +25,7 @@ export default defineEventHandler(async () => {
     }
   ]
 
-  // Load API description from markdown file
-  const apiDescription = loadTagDescription('api-description.md')
-  if (apiDescription) {
-    openapi.info.description = apiDescription
-  }
+  openapi.info.description = 'Entu is a flexible, entity-property based database system with a RESTful API. Unlike traditional relational databases with fixed table schemas, Entu uses a dynamic entity-property model where entities can have any properties defined by their type, enabling you to model complex, evolving data structures without schema migrations.\n\nEntities represent real-world objects like people, products, or projects. Each entity has properties that store various data types including text, numbers, dates, files, and references to other entities. Entities can have multiple parents in hierarchical structures, inheriting access rights automatically. Every entity has granular access control, and users can only access entities where they have explicit or inherited permissions.\n\nThis API provides CRUD operations with filtering, sorting, grouping, full-text search, change history, and entity duplication. Built-in features include file management with signed URLs, automatic metadata tracking, and formulas for computed properties.\n\nAuthentication uses JWT tokens via API keys, OAuth providers, or WebAuthn passkeys.'
 
   if (!openapi.components) {
     openapi.components = {}
@@ -71,54 +49,23 @@ export default defineEventHandler(async () => {
   // Set global security to only show Bearer Auth option
   openapi.security = [{ bearerAuth: [] }]
 
-  // Tags with file references
-  const tagDefinitions = [
-    { name: 'Authentication', file: 'authentication.md' },
-    { name: 'Database', file: 'database.md' },
-    { name: 'Entity', file: 'entity.md' },
-    { name: 'Property', file: 'property.md' },
-    { name: '1.1 Quick Start', file: 'quickstart.md' },
-    { name: '1.2 Best Practices', file: 'best-practices.md' },
-    { name: '2.3 Authentication', file: 'about-authentication.md' },
-    { name: '2.4 Methods', file: 'authentication-methods.md' },
-    { name: '2.5 Properties', file: 'authentication-properties.md' },
-    { name: '2.6 Automatic User Creation', file: 'automatic-user-creation.md' },
-    { name: '3.1 Entities', file: 'about-entities.md' },
-    { name: '3.2 Entity Rights', file: 'entity-rights.md' },
-    { name: '4.1 Properties', file: 'about-properties.md' },
-    { name: '4.2 Formulas', file: 'formulas.md' },
-    { name: '4.3 Files', file: 'files.md' },
-    { name: '4.4 System', file: 'system-properties.md' }
-  ]
-
-  // Load descriptions from files
-  openapi.tags = tagDefinitions.map(({ name, file }) => ({
-    name,
-    description: loadTagDescription(file)
-  }))
-
-  // Group tags for better navigation
-  openapi['x-tagGroups'] = [
+  openapi.tags = [
     {
-      name: 'API Endpoints',
-      tags: ['Authentication', 'Database', 'Entity', 'Property']
+      name: 'Authentication',
+      description: 'Entu supports API key, OAuth, and WebAuthn passkey authentication. Exchange credentials at `/api/auth` for a 48-hour JWT token, then use it in the `Authorization: Bearer <token>` header for all requests.'
     },
     {
-      name: '1. Getting Started',
-      tags: ['1.1 Quick Start', '1.2 Best Practices']
+      name: 'Database',
+      description: 'Database configuration and management operations. Create new databases, view usage statistics and limits, and manage billing.'
     },
     {
-      name: '2. Authentication',
-      tags: ['2.3 Authentication', '2.4 Methods', '2.5 Properties', '2.6 Automatic User Creation']
+      name: 'Entity',
+      description: 'Entities are the core data objects in Entu. Perform full CRUD operations — create, read, update, and delete entities. List with advanced filtering, sorting, and pagination; search full text, view change history, duplicate entities, and retrieve aggregated data with computed fields.'
     },
     {
-      name: '3. Entities',
-      tags: ['3.1 Entities', '3.2 Entity Rights']
+      name: 'Property',
+      description: 'Properties define entity attributes and store typed values — strings, numbers, dates, references, files, and more. Get property details, download file attachments, or delete individual property values. Properties track creation metadata and are versioned.'
     },
-    {
-      name: '4. Properties',
-      tags: ['4.1 Properties', '4.2 Formulas', '4.3 Files', '4.4 System']
-    }
   ]
 
   // Models - Core data structures for the Entu API

@@ -29,3 +29,15 @@ Build the application for production:
 ```bash
 npm run generate
 ```
+
+## Documentation
+
+Build and preview the documentation site:
+
+```bash
+npm run docs:dev      # dev server at http://localhost:5173
+npm run docs:build    # build to docs/.vitepress/dist/
+npm run docs:preview  # preview the built site
+```
+
+Documentation source files are in `docs/`.

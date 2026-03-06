@@ -13,7 +13,10 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "cleanup": "nuxt cleanup"
+    "cleanup": "nuxt cleanup",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "engines": {
     "node": "22.x"
@@ -42,6 +45,7 @@
     "nuxt": "4.3.1",
     "nuxtjs-naive-ui": "1.0.2",
     "stripe": "20.4.0",
+    "vitepress": "latest",
     "yaml": "2.8.2"
   }
 }
