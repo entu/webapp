@@ -12,6 +12,9 @@ const emit = defineEmits(['close'])
 const show = defineModel('show', { type: Boolean, default: false })
 const entityId = defineModel('entityId', { type: String, required: true })
 
+const menuStore = useMenueStore()
+const { addFromEntities } = storeToRefs(menuStore)
+
 const rawEntity = ref()
 const newParent = ref()
 const canRemoveParents = ref([])
@@ -19,6 +22,15 @@ const isLoading = ref(false)
 const isUpdating = ref(false)
 
 const entityName = computed(() => getValue(rawEntity.value?.name))
+const entityTypeId = computed(() => rawEntity.value?._type?.at(0)?.reference)
+const parentQuery = computed(() => {
+  const base = `_expander.reference=${userId.value}`
+  if (!entityTypeId.value) return base
+  const typeEntry = addFromEntities.value?.find((x) => x.value === entityTypeId.value)
+  if (!typeEntry?.addFrom?.length) return base
+  if (typeEntry.addFrom.length === 1) return `${base}&_type.reference=${typeEntry.addFrom.at(0)}`
+  return `${base}&_type.reference.in=${typeEntry.addFrom.join(',')}`
+})
 const parents = computed(() => {
   const parentList = rawEntity.value?._parent || []
   return [...parentList].sort((a, b) => a.string?.localeCompare(b.string))
@@ -34,7 +46,8 @@ async function loadEntity () {
 
   rawEntity.value = await apiGetEntity(entityId.value, [
     'name',
-    '_parent'
+    '_parent',
+    '_type'
   ])
 
   for (let i = 0; i < rawEntity.value._parent?.length; i++) {
@@ -124,7 +137,7 @@ async function onClose () {
         v-model="newParent"
         class="my-6"
         :placeholder="t('selectNewParent')"
-        :query="`_expander.reference=${userId}`"
+        :query="parentQuery"
         :exclude="[...parents.map(x => x.reference), entityId]"
         @update:value="onAddParent($event)"
       />

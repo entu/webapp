@@ -103,7 +103,7 @@ function renderReferenceOption (option) {
     </template>
 
     <template
-      v-else-if="rawReferences?.length === 0"
+      v-else-if="rawReferences !== null && referenceOptions.length === 0"
       #empty
     >
       <n-empty :description="t('noResults')" />
