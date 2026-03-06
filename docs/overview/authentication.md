@@ -2,8 +2,6 @@
 
 Authentication in Entu is tied to **person entities**. Each person entity represents a user account and can authenticate using one or more methods. All methods produce a JWT token used in the `Authorization: Bearer <token>` header for every API request. Tokens are valid for 48 hours.
 
----
-
 ## OAuth
 
 For human users. Entu redirects to an external identity provider for secure, password-free login.
@@ -17,8 +15,6 @@ For human users. Entu redirects to an external identity provider for secure, pas
 
 **Best for:** Web applications, end users, interactive sessions.
 
----
-
 ## Passkey (WebAuthn)
 
 Passwordless authentication using device-bound credentials — Face ID, Touch ID, hardware security keys. Phishing-resistant and syncs across devices.
@@ -30,20 +26,19 @@ Passwordless authentication using device-bound credentials — Face ID, Touch ID
 
 **Best for:** Frequent users, high-security environments, password-free experience.
 
----
-
 ## API Key
 
 For programmatic and service access. Long-lived credentials suitable for server-to-server communication, scripts, and integrations.
 
 - Generate a key by editing your person entity in the Entu UI, or create an `entu_api_key` property via the API with no value — Entu generates the key
-- The plain key is shown **once** and must be saved immediately; only its hash is stored
 - Exchange the key at `GET /api/auth` to receive a JWT token
 - A person entity can have multiple API keys
 
-**Best for:** CI/CD pipelines, scheduled jobs, backend services, integrations.
+::: warning
+The generated API key is displayed only once. Copy and store it securely before closing — only its hash is stored and it cannot be retrieved again.
+:::
 
----
+**Best for:** CI/CD pipelines, scheduled jobs, backend services, integrations.
 
 ## Authentication Flow
 
@@ -53,8 +48,6 @@ All three methods converge to the same result:
 2. Exchange the credential at `GET /api/auth` for a JWT token
 3. Use the JWT in `Authorization: Bearer <token>` on all subsequent requests
 4. Refresh before the 48-hour expiry
-
----
 
 ## Person Authentication Properties
 

@@ -4,8 +4,6 @@ Every entity is described by its **properties** — named fields that hold value
 
 Properties are defined on the entity type (as child entities of type `property`). See [Entity Types](../configuration/entity-types.md#adding-property-definitions) for how to set them up in the UI.
 
----
-
 ## Core Concepts
 
 **Multi-valued** — A single property name can hold multiple values. An entity can have several tags, phone numbers, or attachments all stored under the same property name. Enable `list` on the property definition to allow this.
@@ -20,7 +18,9 @@ Properties are defined on the entity type (as child entities of type `property`)
 
 **System properties** — Properties beginning with `_` (`_id`, `_type`, `_parent`, `_owner`, etc.) are managed by Entu and control identity, hierarchy, and access rights.
 
----
+::: info
+Custom property names cannot start with `_`. That prefix is reserved for system properties.
+:::
 
 ## Property Types
 
@@ -36,15 +36,11 @@ Properties are defined on the entity type (as child entities of type `property`)
 | `reference` | Entity selector | Links to another entity. Use `reference_query` on the definition to filter selectable options. |
 | `counter` | Auto-generated code | Read-only in the UI. Shows a generate button when empty; displays the value once assigned. Use for invoice numbers, project codes. |
 
----
-
 ## Multi-Value Properties
 
 When a property definition has `list: true`, the entity can hold multiple values for that property. In the edit form, extra empty inputs appear automatically as the user fills them in.
 
 In the UI, enable `list` on the property definition and extra inputs appear automatically. Via the API, each value is a separate property object — add values by POSTing, remove specific values by DELETEing their `_id`.
-
----
 
 ## Multilingual Properties
 
@@ -52,41 +48,42 @@ When `multilingual: true` is set on a property definition, each value carries a 
 
 The edit form shows a language selector next to each input. Values for different languages are stored as separate property objects, each carrying a `language` code. See [API → Properties](../api/properties.md) for the API format.
 
----
-
 ## File Properties
 
 File properties let entities store attachments, documents, images, and other binary data. Files are stored in object storage (S3-compatible) and accessed via signed, time-limited URLs.
 
 To enable file uploads on an entity type, add a property definition with `type: file`.
 
----
+::: tip
+If a file property named `photo` exists on an entity, the Entu UI will use it as the entity's thumbnail.
+:::
 
 ## Computed Properties
 
 Set `formula` on a property definition to compute its value automatically from other data — the entity's own properties, child entities, or entities that reference it. Computed properties are recalculated on every save and cannot be edited manually.
 
+::: tip
+Use computed properties for totals, counts, and aggregations so derived data always stays in sync with the source.
+:::
+
 See [Formulas](../api/formulas.md) for the full syntax reference.
 
----
+## System Properties
 
-## System properties
-
-System properties begin with underscore (_) and control entity behavior, access rights, and metadata:
+System properties begin with `_` and control entity behavior, access rights, and metadata. Custom property names cannot begin with `_`.
 
 | Property | Description |
 |---|---|
-| **_id** | Unique entity identifier (read-only, auto-generated) |
-| **_type** | Reference to entity type definition (required for all entities) |
-| **_parent** | Reference to parent entity (creates hierarchical relationships) |
-| **_sharing** | Sharing level: `private`, `domain`, or `public` (controls visibility) |
-| **_inheritrights** | Boolean. When true, inherits access rights from parent entity. Entity-specific rights override inherited rights |
-| **_noaccess** | Reference to users/groups who are explicitly denied all access |
-| **_viewer** | Reference to users/groups who can view entity (read-only access) |
-| **_expander** | Reference to users/groups who can create child entities under this entity |
-| **_editor** | Reference to users/groups who can modify properties (except rights properties) |
-| **_owner** | Reference to users/groups with full control (view, edit, delete, manage rights) |
-| **_created** | Creation timestamp and user (read-only, auto-generated) |
-| **_deleted** | Deletion timestamp and user (read-only, set when entity is deleted) |
+| `_id` | Unique entity identifier. Read-only, auto-generated. |
+| `_type` | Reference to the entity type definition. Required on every entity. |
+| `_parent` | Reference to a parent entity. An entity can have multiple `_parent` values. |
+| `_sharing` | Visibility level: `private` (default), `domain`, or `public`. |
+| `_inheritrights` | When `true`, the entity inherits access rights from its parent. |
+| `_owner` | Full control — view, edit, delete, manage rights, create children. |
+| `_editor` | Can view and edit all properties except rights. |
+| `_expander` | Can view and create child entities. |
+| `_viewer` | Read-only access. |
+| `_noaccess` | Explicitly denied all access. Overrides inherited rights. |
+| `_created` | Creation timestamp and user. Read-only, auto-generated. |
+| `_deleted` | Deletion timestamp and user. Set when the entity is deleted. |
 
-System properties cannot be used as custom property names.

@@ -40,9 +40,17 @@ Response:
 
 The JWT token is valid for 48 hours. Use it in all subsequent requests.
 
+::: tip
+Cache the JWT and reuse it across requests. Exchanging the API key on every call is wasteful — only refresh when the token expires.
+:::
+
 ## 3. Create an Entity
 
 The `_type` property is mandatory — it references the entity type that determines what kind of entity you're creating.
+
+::: info
+To find the entity type ID, query `GET /api/{db}/entity?_type.string=entity&name.string=project` or look it up in the Entu UI on the entity type's page.
+:::
 
 ```bash
 curl -X POST "https://entu.app/api/mydatabase/entity" \
@@ -113,6 +121,10 @@ curl -X POST "https://entu.app/api/mydatabase/entity/6798938432faaba00f8fc72f" \
 
 The response includes a signed S3 upload URL. Upload the file directly:
 
+::: tip
+A file property named `photo` is used by the Entu UI as the entity thumbnail.
+:::
+
 ```bash
 curl -X PUT "SIGNED_S3_URL" \
   -H "Content-Type: image/jpeg" \
@@ -125,8 +137,6 @@ curl -X PUT "SIGNED_S3_URL" \
 curl -X DELETE "https://entu.app/api/mydatabase/property/PROPERTY_ID" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
-
----
 
 ## Next Steps
 

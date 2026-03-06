@@ -1,10 +1,4 @@
-# Properties API
-
-Reference for reading and writing property values via the API.
-
----
-
-## Property Object Structure
+# Properties
 
 Each property value returned by the API is an object with the following fields:
 
@@ -23,6 +17,10 @@ Each property value returned by the API is an object with the following fields:
 | `filetype` | MIME type. Present for `file` type properties. |
 | `language` | Language code (e.g. `en`, `et`). Present when the property definition has `multilingual: true`. |
 | `created` | Object with `at` (ISO timestamp) and `by` (person entity ID) — who set this value and when. |
+
+::: tip
+Save the `_id` of property values you may want to update or delete later. Without it, you can only delete the property entirely or add new values alongside existing ones.
+:::
 
 ### Example: Entity with Properties
 
@@ -56,8 +54,6 @@ Each property value returned by the API is an object with the following fields:
 }
 ```
 
----
-
 ## Writing Properties
 
 POST an array of property objects to create or update values:
@@ -75,7 +71,17 @@ POST an array of property objects to create or update values:
 
 Use the value field that matches the property type (`string`, `number`, `boolean`, `date`, `datetime`, `reference`).
 
----
+## Overwriting a Property Value
+
+To overwrite a specific existing value rather than adding a new one, include its `_id` in the POST body:
+
+```json
+[
+  { "_id": "507f1f77bcf86cd799439033", "type": "status", "string": "inactive" }
+]
+```
+
+This replaces the value of that exact property object. Without `_id`, a new value is always added alongside any existing ones.
 
 ## Multi-Value Properties
 
@@ -90,8 +96,6 @@ When a property definition has `list: true`, multiple values can exist under the
 ```
 DELETE /api/{db}/property/{_id}
 ```
-
----
 
 ## Multilingual Properties
 

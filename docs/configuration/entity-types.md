@@ -4,8 +4,6 @@ An entity type defines a category of objects in your database. Create one for ea
 
 All configuration happens through the Entu UI — no code or config files.
 
----
-
 ## Creating an Entity Type
 
 1. Open **Configuration** in the sidebar
@@ -23,7 +21,13 @@ All configuration happens through the Entu UI — no code or config files.
 | `_sharing` | Maximum visibility for entities of this type: `private` (default), `domain`, or `public`. See [Entities → Sharing](../overview/entities.md#sharing). |
 | `plugin` | Plugins attached to this entity type. See [Plugins](./plugins.md). |
 
----
+::: warning
+If `add_from` is not set, users will have no way to create entities of this type through the UI. Always reference at least one menu or entity.
+:::
+
+::: danger
+Setting `_sharing: public` makes all entities of this type visible to anyone on the internet without authentication. Only use it for intentionally public content.
+:::
 
 ## Adding Property Definitions
 
@@ -55,6 +59,10 @@ On the entity type's page, use the "Add" button to create child entities of type
 | `search` | Indexes values for full-text search. Enable on fields users naturally search by. |
 | `plugin` | Attaches a plugin at the field level for custom UI or behavior. |
 
+::: tip
+Enable `search` on properties users frequently filter by (e.g. `name`, `status`, `reference code`).
+:::
+
 ### Property Types
 
 | Type | Input | Notes |
@@ -68,8 +76,6 @@ On the entity type's page, use the "Add" button to create child entities of type
 | `file` | File upload | Stores a file attachment. See [Files](../api/files.md). |
 | `reference` | Entity selector | Links to another entity. Use `reference_query` to filter selectable options. |
 | `counter` | Auto-generated code | Read-only. Shows a generate button when empty; displays the value once assigned. Use for invoice numbers, project codes. |
-
----
 
 ## Example: "Project" Entity Type
 

@@ -4,8 +4,6 @@ Menus are the navigation items shown in the sidebar. Each menu item links to a f
 
 When a menu item is active (current page URL matches its query), entity types whose `add_from` references that menu will show an "Add" button in the toolbar.
 
----
-
 ## Menu Parameters
 
 | Param | Description |
@@ -17,7 +15,9 @@ When a menu item is active (current page URL matches its query), entity types wh
 
 The `query` parameter uses the standard entity filter syntax. See [API → Query Reference](../api/query-reference.md) for the full syntax.
 
----
+::: info
+The connection between menus and entity types is two-way: the menu defines what to show, and the entity type's `add_from` property references the menu to make the "Add" button appear when that menu is active.
+:::
 
 ## Example Menu Setup
 

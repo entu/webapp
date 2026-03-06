@@ -2,8 +2,6 @@
 
 Design principles and conventions for building a clean, maintainable data model in Entu.
 
----
-
 ## Property Naming
 
 Use descriptive, lowercase names with underscores:
@@ -15,8 +13,6 @@ Be consistent across entity types: use `name` for primary identifiers, `descript
 
 Prefix related properties to group them visually: `address_street`, `address_city`, `address_country`.
 
----
-
 ## Data Modeling
 
 **Design entity types around your query patterns.** If you frequently filter by `status`, enable `search` on that property definition.
@@ -26,8 +22,6 @@ Prefix related properties to group them visually: `address_street`, `address_cit
 **Use formulas for derived data** — totals, averages, counts — so the source of truth stays in one place. See [Formulas](../api/formulas.md).
 
 **Leverage entity hierarchy** to model organizational structure. Parent-child relationships also enable rights inheritance.
-
----
 
 ## Multi-Value Properties
 
@@ -49,8 +43,6 @@ Embrace multi-value by design rather than creating numbered variants:
 
 Enable `list` on the property definition to allow multiple inputs in the UI.
 
----
-
 ## Access Control
 
 **Grant minimum necessary rights:**
@@ -61,5 +53,9 @@ Enable `list` on the property definition to allow multiple inputs in the UI.
 **Use `_inheritrights` for hierarchy-based permissions.** Grant access at a parent container and it cascades to all children automatically.
 
 **Use `_sharing` for broad access** — `domain` for all authenticated users, `public` for unauthenticated visitors. Use `public` carefully.
+
+::: danger
+Setting `_sharing: public` makes the entity visible to anyone on the internet without authentication. Only use it for intentionally public content.
+:::
 
 See [Entities → Access Rights](../overview/entities.md#access-rights) and [Users](./users.md).

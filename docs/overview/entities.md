@@ -4,8 +4,6 @@ Entities are the core building blocks of Entu. An entity is a record — a perso
 
 To define your data model in the UI, see [Entity Types](../configuration/entity-types.md).
 
----
-
 ## Key Characteristics
 
 **Flexible properties** — Unlike a relational table with fixed columns, entities carry any set of properties defined by their type. Different entity types can model entirely different shapes of data in the same system.
@@ -20,8 +18,6 @@ To define your data model in the UI, see [Entity Types](../configuration/entity-
 
 **Audit trail** — All property values carry creation metadata (timestamp and user), making it traceable who set what and when.
 
----
-
 ## Hierarchy and Relationships
 
 Entities are organised into hierarchies using the `_parent` system property.
@@ -32,7 +28,9 @@ Entities are organised into hierarchies using the `_parent` system property.
 
 **Rights inheritance** — When `_inheritrights: true` is set on a child entity, it inherits the access rights from its parent. Changes at the parent level cascade down to all children with inheritance enabled.
 
----
+::: tip
+The recommended pattern is to grant rights on a parent container and enable `_inheritrights` on children — this way you manage access in one place instead of on every entity individually.
+:::
 
 ## Access Rights
 
@@ -58,28 +56,18 @@ The `_sharing` property controls visibility beyond individual user rights:
 
 Editing always requires `_editor` or `_owner` rights regardless of sharing level.
 
+::: info
+`domain` and `public` sharing only grants read access. Write access always requires explicit `_editor` or `_owner` rights on the entity.
+:::
+
+::: danger
+Setting `_sharing: public` makes the entity visible to anyone on the internet without authentication. Only use it for intentionally public content.
+:::
+
 ### Rights Inheritance
 
 Set `_inheritrights: true` on an entity to inherit rights from its parent. Rights defined directly on the child override inherited ones. Use `_noaccess` to block a user who would otherwise inherit access from a parent.
 
----
-
-## System Properties
-
-System properties begin with `_` and are managed by Entu. Custom property names cannot begin with `_`.
-
-| Property | Description |
-|---|---|
-| `_id` | Unique entity identifier. Read-only, auto-generated. |
-| `_type` | Reference to the entity type definition. Required on every entity. |
-| `_parent` | Reference to a parent entity. An entity can have multiple `_parent` values. |
-| `_sharing` | Visibility level: `private` (default), `domain`, or `public`. |
-| `_inheritrights` | When `true`, the entity inherits access rights from its parent. |
-| `_owner` | Full control — view, edit, delete, manage rights, create children. |
-| `_editor` | Can view and edit all properties except rights. |
-| `_expander` | Can view and create child entities. |
-| `_viewer` | Read-only access. |
-| `_noaccess` | Explicitly denied all access. Overrides inherited rights. |
-| `_created` | Creation timestamp and user. Read-only, auto-generated. |
-| `_deleted` | Deletion timestamp and user. Set when the entity is deleted. |
-
+::: info
+Right evaluation order: explicit rights on the entity → inherited rights from parent → `_sharing` level. `_noaccess` always wins.
+:::

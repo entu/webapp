@@ -4,8 +4,6 @@ File properties let entities store attachments, documents, images, and other bin
 
 To enable file uploads on an entity type, add a property definition with `type: file`.
 
----
-
 ## File Property Structure
 
 A file property value has three required metadata fields:
@@ -17,8 +15,6 @@ A file property value has three required metadata fields:
 | `filetype` | MIME type (e.g. `image/jpeg`, `application/pdf`) |
 
 All three must be present when creating a file property. Each file property gets its own unique storage location identified by its `_id`.
-
----
 
 ## Upload Process
 
@@ -71,7 +67,9 @@ curl -X PUT "SIGNED_S3_URL" \
 
 The signed upload URL expires after **15 minutes**. Multiple file properties can be created in one POST — each gets its own `upload` object in the response.
 
----
+::: warning
+If the upload URL expires before you complete the S3 PUT, delete the property and start over.
+:::
 
 ## Download Process
 
@@ -81,6 +79,6 @@ To download a file, GET the property by ID:
 GET /api/{db}/property/{_id}
 ```
 
-The response includes a time-limited (60 seconds) signed URL in the `url` field.
+The response includes a time-limited signed URL in the `url` field — valid for 60 seconds. Do not cache or share it; generate a fresh one each time.
 
 To trigger a direct browser download, append `?download=true` — this redirects immediately to the signed URL.

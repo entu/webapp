@@ -2,8 +2,6 @@
 
 Patterns and recommendations for working efficiently with the Entu API.
 
----
-
 ## Efficient Querying
 
 **Use specific filters instead of client-side filtering:**
@@ -33,8 +31,6 @@ GET /api/db/entity?limit=100&skip=100  # second page
 
 See [Query Reference](./query-reference.md) for full filter syntax.
 
----
-
 ## Batch Operations
 
 Create entities with multiple properties in a single request rather than separate calls:
@@ -47,8 +43,6 @@ Create entities with multiple properties in a single request rather than separat
 ]
 ```
 
----
-
 ## File Uploads
 
 Always specify correct MIME types:
@@ -58,23 +52,19 @@ Always specify correct MIME types:
 
 Upload directly to S3 using the signed URL — don't proxy files through your own server. The signed URL expires after 15 minutes.
 
----
-
 ## Token Management
 
 **Cache JWT tokens** — valid for 48 hours. Reuse them instead of requesting new ones per operation. Implement refresh before expiry.
 
-**Store API keys in environment variables** — never in version control. Rotate keys if compromised.
-
----
+::: warning
+Never commit API keys to source control. Use environment variables or a secrets manager. If a key is exposed, delete it from the person entity and generate a new one immediately.
+:::
 
 ## Performance
 
 **Index frequently queried properties** by enabling `search` on the property definition. System properties `_type` and `_parent` are already indexed.
 
 **Avoid unnecessary aggregation** — regular GET requests return cached data. Only use `/aggregate` when you need fresh formula values after external changes.
-
----
 
 ## Error Handling
 
@@ -86,11 +76,12 @@ Upload directly to S3 using the signed URL — don't proxy files through your ow
 
 Retry `5xx` errors with exponential backoff. Do not retry `4xx` errors.
 
----
-
 ## Security
 
 - Use HTTPS only
 - Validate and sanitize user input before creating properties
 - Don't rely on client-side access control — verify rights server-side
-- Use `_sharing: public` carefully — it exposes data to unauthenticated visitors
+
+::: danger
+`_sharing: public` exposes entity data to anyone on the internet, including search engine crawlers. Never use it for sensitive or internal data.
+:::

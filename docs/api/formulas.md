@@ -6,7 +6,9 @@ To use a formula: set the `formula` flag on a property definition and write the 
 
 Formulas are evaluated in two passes so that properties depending on other formula properties resolve correctly.
 
----
+::: info
+Two-pass evaluation means a formula can safely reference another computed property on the same entity. The first pass resolves simple fields; the second resolves dependencies between computed properties.
+:::
 
 ## Syntax
 
@@ -32,8 +34,6 @@ Inner formulas are evaluated first, then their results are used in the outer for
 - `(price tax SUM) quantity MULTIPLY` — Calculate total with tax per quantity
 - `((a b SUM) (c d SUM) MULTIPLY) 100 DIVIDE` — Complex nested calculation
 - `(min_value max_value SUM) 2 DIVIDE` — Average of min and max
-
----
 
 ## Field References
 
@@ -75,8 +75,6 @@ Entities that reference this entity through their own reference properties:
 | `_referrer.*._id` | IDs of all referrer entities |
 | `_referrer.typeName._id` | IDs of referrer entities of a specific type |
 
----
-
 ## Functions
 
 | Function | Description |
@@ -94,7 +92,9 @@ Entities that reference this entity through their own reference properties:
 | `ABS` | Returns the absolute value of the first value |
 | `ROUND` | Rounds to N decimal places — the last value is used as N |
 
----
+::: warning
+`DIVIDE` returns `undefined` when the divisor is zero. Handle this in downstream formulas or ensure the divisor is always non-zero.
+:::
 
 ## Examples
 

@@ -2,8 +2,6 @@
 
 Entities are queried via `GET /api/{db}/entity` using URL query parameters. The same filter syntax is used in menu `query` parameters and in `reference_query` on reference property definitions.
 
----
-
 ## Filters
 
 Filters follow the pattern `propertyName.type=value`. The type must match the property's data type.
@@ -26,13 +24,11 @@ Filters follow the pattern `propertyName.type=value`. The type must match the pr
 | `prop.date.gt=date` | `due_date.date.gt=2025-01-01` | Date comparison (also `.gte`, `.lt`, `.lte`) |
 | `prop.boolean=true\|false` | `active.boolean=true` | Boolean match |
 
-Multiple filters are combined with `&` and all must match (AND logic):
+Multiple filters are combined with `&` and all must match (AND logic). There is no built-in OR between different filter keys — use `.in` to match multiple values for the same property:
 
 ```
 ?_type.string=project&status.string=active&owner.reference=USER_ID
 ```
-
----
 
 ## Sorting
 
@@ -43,8 +39,6 @@ Prefix the sort field with `-` for descending order.
 | `sort=prop.type` | `sort=name.string` | Sort ascending |
 | `sort=-prop.type` | `sort=-date.date` | Sort descending |
 | `sort=a,-b` | `sort=status.string,-date.date` | Multi-field sort |
-
----
 
 ## Pagination
 
@@ -61,17 +55,17 @@ GET /api/db/entity?limit=100&skip=0
 GET /api/db/entity?limit=100&skip=100
 ```
 
----
-
 ## Full-Text Search
 
 ```bash
 GET /api/{db}/entity?q=acme+corp
 ```
 
-Searches across all properties that have `search` enabled on the property definition. Enable `search` in the UI on properties users naturally search by (name, title, reference code).
+Searches across all properties that have `search` enabled on their definition.
 
----
+::: tip
+Enable `search` on properties users naturally search by (name, title, code). Without it, `q=` will not find values in that field.
+:::
 
 ## Field Selection
 
@@ -80,8 +74,6 @@ Return only specific properties to reduce response size:
 ```bash
 GET /api/{db}/entity?props=name,status,_created
 ```
-
----
 
 ## Common Patterns
 
