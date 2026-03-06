@@ -13,7 +13,7 @@ hero:
       link: /overview/entities
     - theme: alt
       text: API Reference
-      link: /api/reference
+      link: https://entu.app/api/docs
 features:
   - title: No-code data modelling
     icon: 🧱
