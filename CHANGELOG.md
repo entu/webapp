@@ -1,5 +1,13 @@
+## 2026-03-06
+- **Two-pass formula evaluation**: Formulas now evaluate in two passes to correctly resolve dependencies between computed fields
+- **Parent selector fix**: Parent drawer now uses the menu store for its entity query and correctly handles empty state
+- **Linting improvements**: Added eslint-plugin-unicorn with minor refactors and component file rename (`changelog.vue` → `change-log.vue`)
+
 ## 2026-03-05
 - **User invite flow**: Added email-based user invitation system with invite page, HTML/text email templates, SES email delivery, and invite handling in the auth and entity APIs
+- **Server refactor**: Extracted aggregation, formula evaluation, and rights logic into dedicated `aggregate.js`, `formula.js`, and `rights.js` utilities; simplified `entity.js` by splitting `setEntity` into focused helpers
+- **Formula-aware aggregation**: Aggregation now resolves formula dependencies and supports relative (parent-aware) computed field evaluation
+- **MongoDB index refactor**: Improved index definitions for entity and property collections
 
 ## 2026-02-20
 - **Documentation restructuring**: Split API.md into a structured docs/ folder with dedicated pages for authentication, entities, properties, files, formulas, system properties, best practices, and more
