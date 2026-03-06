@@ -85,6 +85,21 @@ export async function aggregateEntity (entu, entityId) {
         }
       ]).toArray()
 
+      // Two-pass formula evaluation: pass 1 seeds values, pass 2 resolves inter-formula dependencies
+      // (e.g. formula A referencing formula B on the same entity — B must be computed before A reads it)
+      for (let pass = 0; pass < 2; pass++) {
+        for (let d = 0; d < definition.length; d++) {
+          if (!definition[d].formula) continue
+
+          const formulaValue = await formula(entu, definition[d].formula, entityId, newEntity.private)
+
+          if (formulaValue) {
+            newEntity.private[definition[d].name] = [formulaValue]
+          }
+        }
+      }
+
+      // Apply sharing, search indexing, and domain/public visibility after all formula values are stable
       for (let d = 0; d < definition.length; d++) {
         let sharing = definition[d].sharing
 
@@ -95,14 +110,6 @@ export async function aggregateEntity (entu, entityId) {
           sharing = 'domain'
         }
         // console.log(definition[d].name, definitionSharing, definition[d].sharing, sharing)
-
-        if (definition[d].formula) {
-          const formulaValue = await formula(entu, definition[d].formula, entityId)
-
-          if (formulaValue) {
-            newEntity.private[definition[d].name] = [formulaValue]
-          }
-        }
 
         const dValue = newEntity.private[definition[d].name]
 

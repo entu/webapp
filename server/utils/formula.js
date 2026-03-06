@@ -1,11 +1,11 @@
 // Evaluates a formula string and returns the computed value
-export async function formula (entu, str, entityId) {
-  const strArray = await parseFormulaTokens(entu, str, entityId)
+export async function formula (entu, str, entityId, localValues = {}) {
+  const strArray = await parseFormulaTokens(entu, str, entityId, localValues)
 
   // If single value and it's a nested formula result, return it directly
   if (strArray.length === 1) {
     const token = strArray.at(0)
-    const value = await formulaField(entu, token, entityId)
+    const value = await formulaField(entu, token, entityId, localValues)
 
     if (value !== undefined && value !== null) {
       const valueArray = await getValueArray(entu, value)
@@ -28,7 +28,7 @@ export async function formula (entu, str, entityId) {
   let valueArray = []
 
   for (let i = 0; i < data.length; i++) {
-    const value = await formulaField(entu, data[i], entityId)
+    const value = await formulaField(entu, data[i], entityId, localValues)
 
     if (value !== undefined && value !== null) {
       valueArray = [...valueArray, ...value]
@@ -73,7 +73,7 @@ export async function formula (entu, str, entityId) {
 }
 
 // Splits a formula string into tokens, resolving nested sub-formulas recursively
-async function parseFormulaTokens (entu, str, entityId) {
+async function parseFormulaTokens (entu, str, entityId, localValues = {}) {
   const tokens = []
   let current = ''
   let inQuote = null
@@ -120,7 +120,7 @@ async function parseFormulaTokens (entu, str, entityId) {
 
       if (parenDepth === 0) {
         const nestedFormula = str.substring(parenStart + 1, i)
-        const result = await formula(entu, nestedFormula, entityId)
+        const result = await formula(entu, nestedFormula, entityId, localValues)
 
         if (result?.number !== undefined) {
           tokens.push(result.number.toString())
@@ -155,7 +155,7 @@ async function parseFormulaTokens (entu, str, entityId) {
 }
 
 // Resolves a single formula token into a value array from the database
-async function formulaField (entu, str, entityId) {
+async function formulaField (entu, str, entityId, localValues = {}) {
   str = str.trim()
 
   if ((str.startsWith('\'') || str.startsWith('"')) && (str.endsWith('\'') || str.endsWith('"'))) {
@@ -187,20 +187,25 @@ async function formulaField (entu, str, entityId) {
       projection: { _id: true, entity: false, type: false, created: false }
     }).toArray()
 
-    if (result.length === 0) { // No property found. Try to get entity property (formulas for example)
-      result = await entu.db.collection('entity').aggregate([{
-        $match: {
-          _id: entityId
-        }
-      }, {
-        $project: {
-          property: `$private.${str}`
-        }
-      }, {
-        $unwind: '$property'
-      }, {
-        $replaceWith: '$property'
-      }]).toArray()
+    if (result.length === 0) {
+      if (localValues[str]) { // Use in-memory value from current aggregation pass (e.g. another formula result)
+        result = localValues[str]
+      }
+      else { // Fall back to persisted entity document (pre-aggregation state)
+        result = await entu.db.collection('entity').aggregate([{
+          $match: {
+            _id: entityId
+          }
+        }, {
+          $project: {
+            property: `$private.${str}`
+          }
+        }, {
+          $unwind: '$property'
+        }, {
+          $replaceWith: '$property'
+        }]).toArray()
+      }
     }
   }
   else if (strParts.length === 3 && fieldRef === '_referrer' && fieldType === '*' && fieldProperty === '_id') { // referrer entities _id
