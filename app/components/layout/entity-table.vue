@@ -48,7 +48,7 @@ const tableColumnsWithTypes = computed(() => {
     for (const entity of entitiesList.value) {
       const propertyValues = entity[propertyName]
       if (propertyValues && propertyValues.length > 0) {
-        const firstValue = propertyValues[0]
+        const firstValue = propertyValues.at(0)
 
         // Determine type based on which property exists in the value object
         if (firstValue.number !== undefined) {
@@ -123,7 +123,7 @@ watch(() => route.query, (value) => {
     const fieldName = isDescending ? sortParam.substring(1) : sortParam
 
     sortDirection.value = isDescending ? 'desc' : 'asc'
-    sortField.value = fieldName.includes('.') ? fieldName.split('.')[0] : fieldName
+    sortField.value = fieldName.includes('.') ? fieldName.split('.').at(0) : fieldName
   }
   else {
     sortField.value = null

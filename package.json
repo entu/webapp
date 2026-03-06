@@ -33,6 +33,7 @@
     "@vueuse/nuxt": "14.2.1",
     "eslint": "9.39.2",
     "eslint-plugin-tailwindcss": "3.18.2",
+    "eslint-plugin-unicorn": "63.0.0",
     "highlight.js": "11.11.1",
     "jsonwebtoken": "9.0.3",
     "marked": "17.0.3",

@@ -40,6 +40,10 @@ export default defineNuxtConfig({
     s3Bucket: '',
     s3Key: '',
     s3Secret: '',
+    sesRegion: '',
+    sesEmail: '',
+    sesKey: '',
+    sesSecret: '',
     stripeKey: '',
     stripeEndpointSecret: ''
   },

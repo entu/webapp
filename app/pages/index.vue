@@ -16,7 +16,7 @@ onMounted(async () => {
 <template>
   <div class="relative flex h-full flex-col">
     <!-- Changelog component -->
-    <changelog class="absolute right-3 max-w-80" />
+    <change-log class="absolute right-3 max-w-80" />
 
     <div
       v-if="!accounts?.length"

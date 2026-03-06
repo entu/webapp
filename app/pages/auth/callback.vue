@@ -13,7 +13,7 @@ onMounted(async () => {
 
   const nextPage = useLocalStorage('next', { path: '/' })
   const invite = route.query.invite
-  const inviteDb = invite ? JSON.parse(atob(invite.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))?.db : null
+  const inviteDb = invite ? JSON.parse(atob(invite.split('.').at(1).replace(/-/g, '+').replace(/_/g, '/')))?.db : null
   const authAccount = inviteDb || nextPage.value?.path?.split('/').filter((x) => x !== 'new').at(1)
   let newUser = {}
 
