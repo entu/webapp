@@ -9,6 +9,7 @@ export default defineConfig({
     nav: [
       { text: 'Overview', link: '/overview/entities' },
       { text: 'Configuration', link: '/configuration/entity-types' },
+      { text: 'Hosting', link: 'https://entu.ee/#price' },
       { text: 'API Reference', link: 'https://entu.app/api/docs' },
     ],
     sidebar: [
