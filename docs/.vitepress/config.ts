@@ -9,7 +9,7 @@ export default defineConfig({
   themeConfig: {
     logo: '/logo.png',
     nav: [
-      { text: 'Overview', link: '/overview/entities' },
+      { text: 'Overview', link: '/overview/' },
       { text: 'Configuration', link: '/configuration/entity-types' },
       { text: 'Pricing', link: 'https://entu.ee/#price' },
       { text: 'API Reference', link: 'https://entu.app/api/docs' }
@@ -18,6 +18,7 @@ export default defineConfig({
       {
         text: 'Overview',
         items: [
+          { text: 'What is Entu', link: '/overview/' },
           { text: 'Entities', link: '/overview/entities' },
           { text: 'Properties', link: '/overview/properties' },
           { text: 'Authentication', link: '/overview/authentication' }
