@@ -15,7 +15,8 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: 'en' },
       title: process.env.NUXT_PUBLIC_TITLE || 'Entu',
       meta: [
-        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
+        { name: 'theme-color', content: '#1E434C' }
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/logo.png' }
