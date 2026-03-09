@@ -3,10 +3,16 @@
 import { NDrawer, NDrawerContent, NSpin } from 'naive-ui'
 
 const { t } = useI18n()
+const { width: windowWidth } = useWindowSize()
+const isMobile = computed(() => windowWidth.value < 768)
 
 const show = defineModel('show', { type: Boolean, default: false })
 const width = defineModel('width', { type: Number, default: window.innerWidth / 2 })
 const isLoading = defineModel('isLoading', { type: Boolean, default: false })
+
+const drawerMinWidth = computed(() => isMobile.value ? windowWidth.value : 500)
+const drawerMaxWidth = computed(() => isMobile.value ? windowWidth.value : 1000)
+const drawerDefaultWidth = computed(() => isMobile.value ? windowWidth.value : width.value)
 
 const emit = defineEmits(['close'])
 
@@ -29,12 +35,12 @@ onKeyStroke('Escape', close)
   <n-drawer
     v-model:show="show"
     placement="right"
-    resizable
+    :resizable="!isMobile"
     :close-on-esc="false"
-    :default-width="width"
+    :default-width="drawerDefaultWidth"
     :mask-closable="false"
-    :max-width="1000"
-    :min-width="500"
+    :max-width="drawerMaxWidth"
+    :min-width="drawerMinWidth"
     @mask-click="close"
   >
     <n-drawer-content
@@ -85,6 +91,17 @@ onKeyStroke('Escape', close)
 <style>
 .n-drawer-header__main {
   @apply w-full;
+}
+
+@media (max-width: 767px) {
+  .n-drawer-header {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  .n-drawer-footer {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
 }
 </style>
 

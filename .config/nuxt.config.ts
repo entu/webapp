@@ -14,6 +14,9 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'en' },
       title: process.env.NUXT_PUBLIC_TITLE || 'Entu',
+      meta: [
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' }
+      ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/logo.png' }
       ],

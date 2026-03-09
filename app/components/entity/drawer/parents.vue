@@ -104,7 +104,7 @@ async function onClose () {
     :width="500"
     @close="onClose()"
   >
-    <div class="px-6 py-4">
+    <div class="px-3 py-4 md:px-6">
       <div
         v-for="parent in parents"
         :key="parent._id"

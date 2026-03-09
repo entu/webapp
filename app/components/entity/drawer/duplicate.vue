@@ -124,7 +124,7 @@ async function onClose () {
     <div class="size-full overflow-auto">
       <div class="py-4">
         <!-- Number of copies -->
-        <div class="mb-6 px-6">
+        <div class="mb-6 px-3 md:px-6">
           <h3 class="mb-3 font-medium text-gray-700">
             {{ t('numberOfCopies') }}
           </h3>
@@ -137,7 +137,7 @@ async function onClose () {
           />
         </div>
 
-        <h3 class="px-6 font-medium text-gray-700">
+        <h3 class="px-3 font-medium text-gray-700 md:px-6">
           {{ t('propertiesToInclude') }}
         </h3>
 
@@ -146,7 +146,7 @@ async function onClose () {
           :key="property.name"
           class="hover:bg-gray-50"
         >
-          <div class="px-6 py-2">
+          <div class="px-3 py-2 md:px-6">
             <n-checkbox
               :checked="!ignoredProperties.includes(property.name)"
               :disabled="isPropertyDisabled(property)"

@@ -165,6 +165,15 @@ function color () {
   @apply flex items-center gap-3;
   @apply hover:bg-zinc-50;
   @apply hover:border-y border-zinc-50;
+  touch-action: manipulation;
+}
+
+@media (hover: none) {
+  .list-item:hover {
+    background-color: transparent;
+    border-top-width: 0;
+    border-bottom-width: 0;
+  }
 }
 
 .list-item-img {

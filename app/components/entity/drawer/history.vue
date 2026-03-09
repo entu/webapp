@@ -161,7 +161,7 @@ function formatValue (val, decimals) {
     <div class="mx-3">
       <div
         v-if="!isLoading && groups.length === 0"
-        class="px-6 py-8 text-center text-sm text-slate-400"
+        class="px-3 py-8 text-center text-sm text-slate-400 md:px-6"
       >
         {{ t('empty') }}
       </div>

@@ -341,47 +341,30 @@ onMounted(async () => {
           <entity-parent-list :parents="rawEntity._parent" />
         </div>
 
-        <div class="flex gap-5 pr-5 pt-5">
-          <div class="grow">
-            <h1
-              class="mb-4 pl-5 text-2xl font-bold text-[#1E434C]"
-              @click="$event.altKey && navigateTo({ path: route.path, query: route.query, hash: '#debug' }, { replace: true })"
-            >
-              {{ entity.name?.trim() || entity._id }}
-            </h1>
+        <div class="pt-5">
+          <h1
+            class="mb-4 text-center text-2xl font-bold text-[#1E434C] md:pl-5 md:text-left"
+            @click="$event.altKey && navigateTo({ path: route.path, query: route.query, hash: '#debug' }, { replace: true })"
+          >
+            {{ entity.name?.trim() || entity._id }}
+          </h1>
 
-            <template
-              v-for="pg in properties"
-              :key="pg.name"
-            >
-              <h2
-                v-if="pg.name"
-                class="px-1 pt-6 text-center font-bold uppercase text-gray-500"
-              >
-                {{ pg.name }}
-              </h2>
-
-              <property-list
-                v-if="pg.children && pg.children.some(x => x.mandatory || x.values)"
-                class="pl-5"
-                :properties="pg.children"
-                :entity-sharing="entity._sharing"
-              />
-            </template>
-          </div>
-
+          <!-- Mobile only: thumbnail + type + sharing centered between title and properties -->
           <div
             v-if="userId || entity._thumbnail"
-            class="flex min-w-32 flex-col gap-3"
+            class="mb-5 flex flex-col items-center gap-3 md:hidden"
           >
             <entity-thumbnail
               v-if="entity._thumbnail"
-              class="print-as-is w-full flex-none"
+              class="print-as-is flex-none"
               :thumbnail="entity._thumbnail"
               :photos="rawEntity.photo"
             />
 
-            <template v-if="userId">
+            <div
+              v-if="userId"
+              class="flex flex-wrap justify-center gap-2"
+            >
               <nuxt-link
                 v-if="entity.type.label"
                 class="rounded-md border border-slate-300 bg-slate-50 px-2 py-1 text-center text-xs hover:bg-slate-200"
@@ -393,7 +376,7 @@ onMounted(async () => {
               <n-popover
                 v-if="!entity._sharing"
                 class="max-w-sm"
-                placement="left"
+                placement="top"
               >
                 <template #trigger>
                   <nuxt-link
@@ -401,7 +384,6 @@ onMounted(async () => {
                     :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
                   >
                     <my-icon icon="sharing-private" />
-
                     {{ t('sharingPrivate') }}
                   </nuxt-link>
                 </template>
@@ -413,7 +395,7 @@ onMounted(async () => {
               <n-popover
                 v-if="entity._sharing === 'domain'"
                 class="max-w-sm"
-                placement="left"
+                placement="top"
               >
                 <template #trigger>
                   <nuxt-link
@@ -421,7 +403,6 @@ onMounted(async () => {
                     :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
                   >
                     <my-icon icon="sharing-domain" />
-
                     {{ t('sharingDomain') }}
                   </nuxt-link>
                 </template>
@@ -433,7 +414,7 @@ onMounted(async () => {
               <n-popover
                 v-if="entity._sharing === 'public'"
                 class="max-w-sm"
-                placement="left"
+                placement="top"
               >
                 <template #trigger>
                   <nuxt-link
@@ -441,7 +422,6 @@ onMounted(async () => {
                     :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
                   >
                     <my-icon icon="sharing-public" />
-
                     {{ t('sharingPublic') }}
                   </nuxt-link>
                 </template>
@@ -449,13 +429,117 @@ onMounted(async () => {
                   {{ t('sharingPublicDescription') }}
                 </div>
               </n-popover>
-            </template>
+            </div>
+          </div>
+
+          <!-- Desktop: properties + thumbnail side by side (original layout) -->
+          <div class="md:flex md:flex-row md:gap-5 md:pr-5">
+            <div class="grow">
+              <template
+                v-for="pg in properties"
+                :key="pg.name"
+              >
+                <h2
+                  v-if="pg.name"
+                  class="px-1 pt-6 text-center font-bold uppercase text-gray-500"
+                >
+                  {{ pg.name }}
+                </h2>
+
+                <property-list
+                  v-if="pg.children && pg.children.some(x => x.mandatory || x.values)"
+                  class="md:pl-5"
+                  :properties="pg.children"
+                  :entity-sharing="entity._sharing"
+                />
+              </template>
+            </div>
+
+            <!-- Desktop only: thumbnail + type + sharing in right column -->
+            <div
+              v-if="userId || entity._thumbnail"
+              class="hidden md:flex md:min-w-32 md:flex-col md:gap-3"
+            >
+              <entity-thumbnail
+                v-if="entity._thumbnail"
+                class="print-as-is w-full flex-none"
+                :thumbnail="entity._thumbnail"
+                :photos="rawEntity.photo"
+              />
+
+              <template v-if="userId">
+                <nuxt-link
+                  v-if="entity.type.label"
+                  class="rounded-md border border-slate-300 bg-slate-50 px-2 py-1 text-center text-xs hover:bg-slate-200"
+                  :to="{ path: `/${accountId}/${entity.type._id}`, query: route.query }"
+                >
+                  {{ entity.type.label }}
+                </nuxt-link>
+
+                <n-popover
+                  v-if="!entity._sharing"
+                  class="max-w-sm"
+                  placement="left"
+                >
+                  <template #trigger>
+                    <nuxt-link
+                      class="flex items-center justify-center gap-1 rounded-md border border-green-300 bg-green-50 px-2 py-1 text-center text-xs text-green-600"
+                      :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
+                    >
+                      <my-icon icon="sharing-private" />
+                      {{ t('sharingPrivate') }}
+                    </nuxt-link>
+                  </template>
+                  <div class="text-sm">
+                    {{ t('sharingPrivateDescription') }}
+                  </div>
+                </n-popover>
+
+                <n-popover
+                  v-if="entity._sharing === 'domain'"
+                  class="max-w-sm"
+                  placement="left"
+                >
+                  <template #trigger>
+                    <nuxt-link
+                      class="flex items-center justify-center gap-1 rounded-md border border-yellow-300 bg-yellow-50 px-2 py-1 text-center text-xs text-yellow-600"
+                      :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
+                    >
+                      <my-icon icon="sharing-domain" />
+                      {{ t('sharingDomain') }}
+                    </nuxt-link>
+                  </template>
+                  <div class="text-sm">
+                    {{ t('sharingDomainDescription') }}
+                  </div>
+                </n-popover>
+
+                <n-popover
+                  v-if="entity._sharing === 'public'"
+                  class="max-w-sm"
+                  placement="left"
+                >
+                  <template #trigger>
+                    <nuxt-link
+                      class="flex items-center justify-center gap-1 rounded-md border border-orange-300 bg-orange-50 px-2 py-1 text-center text-xs text-orange-600"
+                      :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
+                    >
+                      <my-icon icon="sharing-public" />
+                      {{ t('sharingPublic') }}
+                    </nuxt-link>
+                  </template>
+                  <div class="text-sm">
+                    {{ t('sharingPublicDescription') }}
+                  </div>
+                </n-popover>
+              </template>
+            </div>
           </div>
         </div>
 
         <n-collapse
           :default-expanded-names="[0]"
-          class="mt-8 pr-5"
+          class="mt-8 md:pr-5"
         >
           <n-collapse-item
             v-for="child, idx in childs"
@@ -468,7 +552,7 @@ onMounted(async () => {
             </template>
 
             <entity-child-list
-              class="w-full pl-5"
+              class="w-full md:pl-5"
               :entity-id="entityId"
               :type-id="child._id"
               :reference-field="child.referenceField"

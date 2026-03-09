@@ -289,7 +289,7 @@ onMounted(async () => {
 <template>
   <n-modal
     v-model:show="show"
-    class="w-full max-w-4xl"
+    class="mx-4 w-full max-w-4xl"
     closable
     draggable
     preset="card"
@@ -301,7 +301,7 @@ onMounted(async () => {
       :model="searchForm"
       label-placement="top"
     >
-      <div class="flex items-end gap-3">
+      <div class="flex flex-col gap-3 md:flex-row md:items-end">
         <n-form-item
           class="flex-1"
           :label="t('searchQuery')"
@@ -377,7 +377,7 @@ onMounted(async () => {
         <div
           v-for="(filter, index) in searchForm.properties"
           :key="index"
-          class="flex items-end gap-3"
+          class="flex flex-col gap-2 md:flex-row md:items-end md:gap-3"
         >
           <n-form-item
             class="flex-1"
@@ -401,7 +401,7 @@ onMounted(async () => {
           </n-form-item>
 
           <n-form-item
-            class="w-48"
+            class="w-full md:w-48"
             :label="t('operator')"
             :show-feedback="false"
           >
@@ -450,7 +450,10 @@ onMounted(async () => {
             />
           </n-form-item>
 
-          <n-form-item :show-feedback="false">
+          <n-form-item
+            class="self-end"
+            :show-feedback="false"
+          >
             <n-button
               quaternary
               type="error"

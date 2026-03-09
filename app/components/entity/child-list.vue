@@ -12,6 +12,8 @@ const { path, query } = useRoute()
 const { locale, d, t } = useI18n()
 const { accountId } = useAccount()
 const { tablePageSize } = useUser()
+const { width: windowWidth } = useWindowSize()
+const isMobile = computed(() => windowWidth.value < 768)
 
 const rawEntities = ref()
 const rawColumns = ref([{
@@ -109,6 +111,7 @@ async function getEntities (setPage, setPageSize, setSorter) {
     props: [
       '_thumbnail',
       '_sharing',
+      'name',
       ...rawColumns.value.map((c) => c.name)
     ].join(','),
     sort: `${sorter.value.order === 'descending' ? '-' : ''}${sorter.value.column}.${field}`,
@@ -162,6 +165,15 @@ function renderColumn (value, type, decimals) {
   return getValue(value, type)
 }
 
+const nameColumn = { name: 'name', label: '', type: 'string', decimals: undefined }
+
+const visibleColumns = computed(() => {
+  if (isMobile.value) {
+    return [nameColumn]
+  }
+  return rawColumns.value
+})
+
 onMounted(async () => {
   await getTypes()
   await getEntities()
@@ -177,7 +189,7 @@ onMounted(async () => {
             <th class="w-7" />
 
             <th
-              v-for="column in rawColumns"
+              v-for="column in visibleColumns"
               :key="column.name"
               class="cursor-pointer p-3 text-left hover:bg-gray-50"
               @click="getEntities(1, undefined, column.name)"
@@ -233,7 +245,7 @@ onMounted(async () => {
             </td>
 
             <td
-              v-for="column in rawColumns"
+              v-for="column in visibleColumns"
               :key="column.name"
               :class="{
                 'text-right': column.type === 'number',

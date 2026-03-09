@@ -1,5 +1,5 @@
 <script setup>
-import { NLayout, NLayoutSider, NSplit, NButton, useNotification } from 'naive-ui'
+import { NLayout, NLayoutSider, NSplit, NButton, NDrawer, NDrawerContent, useNotification } from 'naive-ui'
 
 const nuxtApp = useNuxtApp()
 const notification = useNotification()
@@ -7,8 +7,22 @@ const notification = useNotification()
 const route = useRoute()
 const { t } = useI18n()
 
-const { accountId } = useAccount()
+const { account, accountId } = useAccount()
 const { menuCollapsed, listWidth } = useUser()
+const { locale, setLocale } = useI18n({ useScope: 'global' })
+const langLabel = computed(() => locale.value === 'en' ? 'Eesti' : 'English')
+
+function setMobileLanguage () {
+  setLocale(locale.value === 'en' ? 'et' : 'en')
+  useAnalytics('click_language', { language: locale.value })
+  reloadNuxtApp()
+}
+
+const { width: windowWidth } = useWindowSize()
+const isMobile = computed(() => windowWidth.value < 768)
+const showMobileMenu = ref(false)
+
+watch(() => route.fullPath, () => { showMobileMenu.value = false })
 
 const siderRef = ref()
 const isHovered = useElementHover(siderRef, { delayEnter: 200, delayLeave: 600 })
@@ -56,65 +70,141 @@ function changeMenu (collapsed) {
 </script>
 
 <template>
-  <n-layout
-    class="size-full"
-    has-sider
-  >
-    <n-layout-sider
-      ref="siderRef"
-      class="print:hidden"
-      collapse-mode="width"
-      collapsed-trigger-class="!top-7.5 !text-white !bg-[#1E434C] !shaddow-none !border-white"
-      trigger-class="!top-5 !-left-1 !text-white !opacity-80 !bg-transparent !shaddow-none !border-transparent hover:!border-white"
-      :class="{ 'm-2 mr-0 rounded-md': !menuCollapsed }"
-      :collapsed="menuCollapsed"
-      :collapsed-width="60"
-      :show-trigger="!menuCollapsed || isHovered ? 'arrow-circle' : undefined"
-      @collapse="changeMenu(true)"
-      @expand="changeMenu(false)"
+  <div class="h-full">
+    <!-- Desktop layout (≥ 768px): unchanged -->
+    <n-layout
+      v-if="!isMobile"
+      class="size-full"
+      has-sider
     >
-      <layout-side-menu :collapsed="menuCollapsed" />
-    </n-layout-sider>
-
-    <div
-      v-if="accountId && isQuery"
-      class="grow overflow-y-auto"
-    >
-      <n-split
-        v-model:size="listWidth"
-        direction="horizontal"
-        :max="1"
-        :min="0.25"
-        :pane1-class="!menuCollapsed ? 'py-2 print:hidden' : 'print:hidden'"
-        :pane2-class="!isQuery ? 'pl-4 py-2 grow overflow-y-auto' : 'py-2 grow overflow-y-auto'"
+      <n-layout-sider
+        ref="siderRef"
+        class="print:hidden"
+        collapse-mode="width"
+        collapsed-trigger-class="!top-7.5 !text-white !bg-[#1E434C] !shaddow-none !border-white"
+        trigger-class="!top-5 !-left-1 !text-white !opacity-80 !bg-transparent !shaddow-none !border-transparent hover:!border-white"
+        :class="{ 'm-2 mr-0 rounded-md': !menuCollapsed }"
+        :collapsed="menuCollapsed"
+        :collapsed-width="60"
+        :show-trigger="!menuCollapsed || isHovered ? 'arrow-circle' : undefined"
+        @collapse="changeMenu(true)"
+        @expand="changeMenu(false)"
       >
-        <template #1>
-          <layout-entity-table v-if="showTable" />
-          <layout-entity-list v-else />
-        </template>
+        <layout-side-menu :collapsed="menuCollapsed" />
+      </n-layout-sider>
 
-        <template #resize-trigger>
+      <div
+        v-if="accountId && isQuery"
+        class="grow overflow-y-auto"
+      >
+        <n-split
+          v-model:size="listWidth"
+          direction="horizontal"
+          :max="1"
+          :min="0.25"
+          :pane1-class="!menuCollapsed ? 'py-2 print:hidden' : 'print:hidden'"
+          :pane2-class="!isQuery ? 'pl-4 py-2 grow overflow-y-auto' : 'py-2 grow overflow-y-auto'"
+        >
+          <template #1>
+            <layout-entity-table v-if="showTable" />
+            <layout-entity-list v-else />
+          </template>
+
+          <template #resize-trigger>
+            <div
+              class="h-full print:hidden"
+              :class="menuCollapsed ? 'py-0' : 'py-2'"
+            >
+              <div class="h-full w-0.5 bg-gray-300 hover:bg-gray-400" />
+            </div>
+          </template>
+
+          <template #2>
+            <slot />
+          </template>
+        </n-split>
+      </div>
+
+      <div
+        v-else
+        class="grow overflow-y-auto py-2"
+      >
+        <slot />
+      </div>
+    </n-layout>
+
+    <!-- Mobile layout (< 768px): single-column stack navigation -->
+    <template v-else>
+      <div class="flex h-full flex-col">
+        <!-- Mobile top bar -->
+        <div class="relative flex items-center bg-[#1E434C] px-3 py-4 text-white print:hidden">
+          <my-icon
+            v-if="route.params.entityId && isQuery"
+            class="cursor-pointer text-white opacity-80 hover:opacity-100"
+            icon="arrow-left"
+            @click="navigateTo({ path: `/${accountId}`, query: route.query })"
+          />
           <div
-            class="h-full print:hidden"
-            :class="menuCollapsed ? 'py-0' : 'py-2'"
+            v-else
+            class="size-4"
+          />
+
+          <span class="pointer-events-none absolute inset-x-0 text-center text-sm font-medium">
+            {{ account?.name }}
+          </span>
+
+          <my-icon
+            class="ml-auto cursor-pointer text-white opacity-80 hover:opacity-100"
+            icon="menu"
+            @click="showMobileMenu = true"
+          />
+        </div>
+
+        <!-- Content: show list OR detail, never both -->
+        <div class="grow overflow-hidden">
+          <layout-entity-table v-if="accountId && showTable && !route.params.entityId" />
+          <layout-entity-list v-else-if="accountId && isQuery && !route.params.entityId" />
+
+          <div
+            v-else
+            class="h-full overflow-y-auto py-2"
           >
-            <div class="h-full w-0.5 bg-gray-300 hover:bg-gray-400" />
+            <slot />
           </div>
-        </template>
+        </div>
+      </div>
 
-        <template #2>
-          <slot />
-        </template>
-      </n-split>
-    </div>
+      <!-- Left-side nav overlay -->
+      <n-drawer
+        v-model:show="showMobileMenu"
+        placement="right"
+        :width="windowWidth"
+      >
+        <n-drawer-content body-content-class="!p-0">
+          <div class="flex h-full flex-col bg-[#1E434C]">
+            <div class="flex items-center justify-between px-3 py-4">
+              <div
+                class="cursor-pointer text-sm uppercase text-white opacity-80 hover:opacity-100"
+                @click="setMobileLanguage"
+              >
+                {{ langLabel }}
+              </div>
 
-    <div
-      v-else
-      class="grow overflow-y-auto py-2"
-    >
-      <slot />
-    </div>
-  </n-layout>
+              <my-icon
+                class="cursor-pointer text-white opacity-80 hover:opacity-100"
+                icon="menu"
+                @click="showMobileMenu = false"
+              />
+            </div>
+
+            <div class="grow overflow-y-auto">
+              <layout-side-menu :collapsed="false" :show-lang="false" />
+            </div>
+          </div>
+        </n-drawer-content>
+      </n-drawer>
+    </template>
+  </div>
 </template>
 
 <i18n lang="yaml">

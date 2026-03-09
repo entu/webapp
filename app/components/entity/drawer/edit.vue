@@ -194,7 +194,7 @@ async function onClose () {
         <div
           v-for="pg in properties"
           :key="pg.name"
-          class="px-6 py-4"
+          class="px-3 py-4 md:px-6"
         >
           <h2
             v-if="pg.name"

@@ -5,6 +5,10 @@ import { MyIcon, NuxtLink } from '#components'
 const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 
+defineProps({
+  showLang: { type: Boolean, default: true }
+})
+
 const { account, accounts } = useAccount()
 const { menuCollapsed, token, userId, userName } = useUser()
 
@@ -327,7 +331,7 @@ function linkReplace (url) {
 <template>
   <div class="flex min-h-full w-full flex-col justify-between py-1">
     <div
-      v-if="!menuCollapsed"
+      v-if="showLang && !menuCollapsed"
       class="mb-6 ml-2 mr-3 mt-1 flex items-center justify-end"
     >
       <div
@@ -344,7 +348,7 @@ function linkReplace (url) {
       @click="useAnalytics('click_logo')"
     >
       <img
-        class="mx-auto size-24"
+        class="mx-auto size-14 md:size-24"
         src="/logo.png"
       >
     </a>
