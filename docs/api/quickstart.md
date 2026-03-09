@@ -1,19 +1,10 @@
 # API Quick Start
 
-Get started with the Entu API in 5 minutes. This guide walks through authentication, creating your first entity, and querying data.
+Get started with the Entu API in 5 minutes. This guide walks through getting a token, creating your first entity, and querying data.
 
-## 1. Get Your API Key
+## 1. Get a Token
 
-Generate an API key in the Entu UI:
-
-1. Navigate to your person entity
-2. Edit it and generate an API key
-
-Alternatively, authenticate via OAuth for temporary access.
-
-## 2. Authenticate
-
-Exchange your API key for a JWT token:
+Generate an API key from your person entity in the Entu UI, then exchange it for a JWT token:
 
 ```bash
 curl -X GET "https://entu.app/api/auth" \
@@ -38,13 +29,13 @@ Response:
 }
 ```
 
-The JWT token is valid for 48 hours. Use it in all subsequent requests.
+The JWT token is valid for 48 hours. Use it in all subsequent requests. For OAuth and Passkey flows, see [Authentication](./authentication.md).
 
 ::: tip
-Cache the JWT and reuse it across requests. Exchanging the API key on every call is wasteful — only refresh when the token expires.
+Cache the JWT and reuse it across requests. Only refresh when the token expires.
 :::
 
-## 3. Create an Entity
+## 2. Create an Entity
 
 The `_type` property is mandatory — it references the entity type that determines what kind of entity you're creating.
 
@@ -71,7 +62,7 @@ Response returns the created entity ID:
 }
 ```
 
-## 4. Query Entities
+## 3. Query Entities
 
 List entities with filtering:
 
@@ -87,14 +78,14 @@ curl -X GET "https://entu.app/api/mydatabase/entity?q=test&limit=10" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
-## 5. Get a Single Entity
+## 4. Get a Single Entity
 
 ```bash
 curl -X GET "https://entu.app/api/mydatabase/entity/6798938432faaba00f8fc72f" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
-## 6. Add Properties to an Entity
+## 5. Add Properties to an Entity
 
 ```bash
 curl -X POST "https://entu.app/api/mydatabase/entity/6798938432faaba00f8fc72f" \
@@ -106,7 +97,7 @@ curl -X POST "https://entu.app/api/mydatabase/entity/6798938432faaba00f8fc72f" \
   ]'
 ```
 
-## 7. Upload a File
+## 6. Upload a File
 
 Create a file property to get an upload URL:
 
@@ -131,7 +122,7 @@ curl -X PUT "SIGNED_S3_URL" \
   --data-binary "@image.jpg"
 ```
 
-## 8. Delete a Property
+## 7. Delete a Property
 
 ```bash
 curl -X DELETE "https://entu.app/api/mydatabase/property/PROPERTY_ID" \

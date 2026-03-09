@@ -61,3 +61,27 @@ The `token` is valid for 1 minute and can be used to read or modify the entity v
 ::: warning
 Webhook delivery is not guaranteed. If your endpoint is down or returns an error, the request is lost. Implement your own retry or queue logic if reliability matters.
 :::
+
+## Built-in Plugins
+
+Entu provides a set of ready-made plugins hosted at [github.com/entu/plugins](https://github.com/entu/plugins). Configure them by creating a plugin entity and setting its `url` to the corresponding plugin URL.
+
+### Schema Templates
+
+A quick way to set up your database schema without starting from scratch. Instead of defining entity types and their properties by hand, you pick a ready-made type from the shared template library — for example *Book*, *Document*, *Folder*, or *Audio-Visual Recording* — and Entu copies the entity type and its property definitions (name, type, ordinal, etc.) into your database. You can review the property list before importing and deselect any you don't need.
+
+### CSV Import
+
+Bulk-import entities from a spreadsheet. Upload a CSV file, preview the rows, choose which ones to import, and map each CSV column to an entity property. Supports a wide range of text encodings, so legacy exports from older systems work without manual conversion.
+
+### Discogs Import
+
+Search the [Discogs](https://www.discogs.com) music database and add releases directly to your collection. Enter an artist or album title, browse the results, and click Import — Entu creates the entity with title, artist, label, year, format, genre, barcode, and other metadata filled in automatically.
+
+### Ester Import
+
+Search the [ESTER](https://www.ester.ee) union library catalog used by Estonian academic and public libraries. Find books and publications by title, author, ISBN, or ISSN and import them as entities with full bibliographic metadata.
+
+### KML Import
+
+Import geographic locations from KML files (the format used by Google Earth and most GIS tools). After uploading, you see a list of all placemarks in the file, pick which ones to include, and they are created as entities with name, description, and coordinate properties.

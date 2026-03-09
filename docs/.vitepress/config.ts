@@ -30,7 +30,6 @@ export default defineConfig({
           { text: 'Users', link: '/configuration/users' },
           { text: 'Menus', link: '/configuration/menus' },
           { text: 'Plugins', link: '/configuration/plugins' },
-          { text: 'Database', link: '/configuration/database' },
           { text: 'Best Practices', link: '/configuration/best-practices' },
         ],
       },
@@ -38,6 +37,7 @@ export default defineConfig({
         text: 'API',
         items: [
           { text: 'Quick Start', link: '/api/quickstart' },
+          { text: 'Authentication', link: '/api/authentication' },
           { text: 'Best Practices', link: '/api/best-practices' },
           { text: 'Query Reference', link: '/api/query-reference' },
           { text: 'Properties', link: '/api/properties' },
