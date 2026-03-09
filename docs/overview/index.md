@@ -10,19 +10,7 @@ Properties are typed (`string`, `number`, `date`, `file`, `reference`, …), can
 
 Entities are organised in a **parent–child hierarchy**. A child can have multiple parents, so the same record can appear in several contexts simultaneously without being duplicated. Access rights (`_owner`, `_editor`, `_expander`, `_viewer`) are set per entity and cascade down the hierarchy automatically.
 
-## Data Flow
-
-```
-Entity Type  →  defines the shape (property definitions)
-     ↓
-  Entity     →  a single record with typed property values
-     ↓
-Properties   →  values, files, references to other entities
-     ↓
- Formulas    →  auto-computed values, recalculated on every save
-```
-
-The REST API exposes full CRUD over entities and properties, with JWT authentication and an OpenAPI explorer. The same data model powers the built-in UI — there is no separate admin interface; configuration and content live in the same entity tree.
+The same data model powers the built-in UI — there is no separate admin interface; configuration and content live in the same entity tree.
 
 ## Next Steps
 
