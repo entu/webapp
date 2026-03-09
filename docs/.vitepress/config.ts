@@ -4,15 +4,15 @@ export default defineConfig({
   title: 'Entu Documentation',
   description: 'Documentation for the Entu flexible object database',
   head: [
-    ['script', { src: 'https://analytics.entu.dev/ea.min.js', 'data-site': 'entu.dev', crossorigin: 'anonymous', defer: '' }],
+    ['script', { src: 'https://analytics.entu.dev/ea.min.js', 'data-site': 'entu.dev', crossorigin: 'anonymous', defer: '' }]
   ],
   themeConfig: {
     logo: '/logo.png',
     nav: [
       { text: 'Overview', link: '/overview/entities' },
       { text: 'Configuration', link: '/configuration/entity-types' },
-      { text: 'Hosting', link: 'https://entu.ee/#price' },
-      { text: 'API Reference', link: 'https://entu.app/api/docs' },
+      { text: 'Pricing', link: 'https://entu.ee/#price' },
+      { text: 'API Reference', link: 'https://entu.app/api/docs' }
     ],
     sidebar: [
       {
@@ -20,8 +20,8 @@ export default defineConfig({
         items: [
           { text: 'Entities', link: '/overview/entities' },
           { text: 'Properties', link: '/overview/properties' },
-          { text: 'Authentication', link: '/overview/authentication' },
-        ],
+          { text: 'Authentication', link: '/overview/authentication' }
+        ]
       },
       {
         text: 'Configuration',
@@ -31,8 +31,8 @@ export default defineConfig({
           { text: 'Menus', link: '/configuration/menus' },
           { text: 'Plugins', link: '/configuration/plugins' },
           { text: 'Best Practices', link: '/configuration/best-practices' },
-          { text: 'Examples', link: '/examples' },
-        ],
+          { text: 'Examples', link: '/examples' }
+        ]
       },
       {
         text: 'API',
@@ -44,16 +44,16 @@ export default defineConfig({
           { text: 'Properties', link: '/api/properties' },
           { text: 'Formulas', link: '/api/formulas' },
           { text: 'Files', link: '/api/files' },
-          { text: 'API Reference', link: 'https://entu.app/api/docs' },
-        ],
+          { text: 'API Reference', link: 'https://entu.app/api/docs' }
+        ]
       },
       {
         text: 'Changelog',
         items: [
-          { text: 'Changelog', link: '/changelog' },
-        ],
-      },
+          { text: 'Changelog', link: '/changelog' }
+        ]
+      }
     ],
-    search: { provider: 'local' },
-  },
+    search: { provider: 'local' }
+  }
 })

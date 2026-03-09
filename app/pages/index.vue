@@ -56,6 +56,20 @@ onMounted(async () => {
 
     <div class="shrink-0 p-4 text-center text-sm text-gray-500">
       <a
+        href="https://entu.dev"
+        target="_blank"
+      >{{ t('docs') }}</a>
+
+      <span class="mx-2">&middot;</span>
+
+      <a
+        target="_blank"
+        :href="t('pricingUrl')"
+      >{{ t('pricing') }}</a>
+
+      <span class="mx-2">&middot;</span>
+
+      <a
         target="_blank"
         :href="t('termsUrl')"
       >{{ t('terms') }}</a>
@@ -66,10 +80,16 @@ onMounted(async () => {
 <i18n lang="yaml">
   en:
     new: Create New Database
+    docs: Documentation
+    pricing: Pricing
+    pricingUrl: https://entu.ee/#price
     terms: Terms of Service
-    termsUrl: https://www.entu.app/terms
+    termsUrl: https://entu.ee/terms
   et:
     new: Loo uus andmebaas
+    docs: Dokumentatsioon
+    pricing: Hinnad
+    pricingUrl: https://entu.ee/et#price
     terms: Kasutustingimused
-    termsUrl: https://www.entu.app/et/tingimused
+    termsUrl: https://entu.ee/et/tingimused
 </i18n>

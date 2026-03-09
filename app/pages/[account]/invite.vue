@@ -72,6 +72,20 @@ onMounted(async () => {
     </div>
     <div class="mb-2 px-4 text-center text-sm text-gray-500">
       <a
+        href="https://entu.dev"
+        target="_blank"
+      >{{ t('docs') }}</a>
+
+      <span class="mx-2">&middot;</span>
+
+      <a
+        target="_blank"
+        :href="t('pricingUrl')"
+      >{{ t('pricing') }}</a>
+
+      <span class="mx-2">&middot;</span>
+
+      <a
         target="_blank"
         :href="t('termsUrl')"
       >{{ t('terms') }}</a>
@@ -91,7 +105,10 @@ onMounted(async () => {
     auth-mobile-id: Mobile-ID
     auth-id-card: ID-Card
     terms: Terms of Service
-    termsUrl: https://www.entu.app/terms
+    termsUrl: https://entu.ee/terms
+    pricing: Pricing
+    pricingUrl: https://entu.ee/#price
+    docs: Documentation
   et:
     language: English
     title: Sind on kutsutud liituma Entu andmebaasiga {db}
@@ -103,5 +120,8 @@ onMounted(async () => {
     auth-mobile-id: Mobiil-ID
     auth-id-card: ID-kaart
     terms: Kasutustingimused
-    termsUrl: https://www.entu.app/et/tingimused
+    termsUrl: https://entu.ee/et/tingimused
+    pricing: Hinnad
+    pricingUrl: https://entu.ee/et#price
+    docs: Dokumentatsioon
 </i18n>

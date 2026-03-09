@@ -1,5 +1,5 @@
 <script setup>
-import { NSpin } from 'naive-ui'
+import { NSpin, NButton } from 'naive-ui'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -64,6 +64,46 @@ onMounted(async () => {
   <div class="relative flex h-full flex-col">
     <entity-toolbar />
 
+    <template v-if="!userId">
+      <change-log class="absolute right-3 max-w-80" />
+
+      <div class="flex flex-1 items-center justify-center p-6">
+        <n-button
+          secondary
+          size="large"
+          type="success"
+          @click="navigateTo('/new')"
+        >
+          <my-icon
+            class="mr-2"
+            icon="add"
+          />
+          {{ t('new') }}
+        </n-button>
+      </div>
+
+      <div class="shrink-0 p-4 text-center text-sm text-gray-500">
+        <a
+          href="https://entu.dev"
+          target="_blank"
+        >{{ t('docs') }}</a>
+
+        <span class="mx-2">&middot;</span>
+
+        <a
+          target="_blank"
+          :href="t('pricingUrl')"
+        >{{ t('pricing') }}</a>
+
+        <span class="mx-2">&middot;</span>
+
+        <a
+          target="_blank"
+          :href="t('termsUrl')"
+        >{{ t('terms') }}</a>
+      </div>
+    </template>
+
     <div
       v-if="isLoading"
       class="flex size-full items-center justify-center"
@@ -118,6 +158,20 @@ onMounted(async () => {
 
         <div class="pb-4 text-center text-sm text-gray-500">
           <a
+            href="https://entu.dev"
+            target="_blank"
+          >{{ t('docs') }}</a>
+
+          <span class="mx-2">&middot;</span>
+
+          <a
+            target="_blank"
+            :href="t('pricingUrl')"
+          >{{ t('pricing') }}</a>
+
+          <span class="mx-2">&middot;</span>
+
+          <a
             target="_blank"
             :href="t('termsUrl')"
           >{{ t('terms') }}</a>
@@ -147,17 +201,25 @@ onMounted(async () => {
 
 <i18n lang="yaml">
   en:
+    new: Create New Database
     entities: Entities
     properties: Properties
     files: Files
     requests: Requests in this month
     terms: Terms of Service
-    termsUrl: https://www.entu.app/terms
+    termsUrl: https://entu.ee/terms
+    pricing: Pricing
+    pricingUrl: https://entu.ee/#price
+    docs: Documentation
   et:
+    new: Loo uus andmebaas
     entities: Objekte
     properties: Parameetreid
     files: Faile
     requests: Päringuid selles kuus
     terms: Kasutustingimused
-    termsUrl: https://www.entu.app/et/tingimused
+    termsUrl: https://entu.ee/et/tingimused
+    pricing: Hinnad
+    pricingUrl: https://entu.ee/et#price
+    docs: Dokumentatsioon
 </i18n>
