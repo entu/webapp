@@ -11,8 +11,8 @@ export default defineConfig({
     nav: [
       { text: 'Overview', link: '/overview/' },
       { text: 'Configuration', link: '/configuration/entity-types' },
+      { text: 'API', link: '/api/quickstart' },
       { text: 'Pricing', link: 'https://entu.ee/#price' },
-      { text: 'API Reference', link: 'https://entu.app/api/docs' }
     ],
     sidebar: [
       {
@@ -55,6 +55,10 @@ export default defineConfig({
         ]
       }
     ],
-    search: { provider: 'local' }
+    search: { provider: 'local' },
+    footer: {
+      message: '<a href="mailto:info@entu.ee">info@entu.ee</a>',
+      copyright: '© 2026 Entusiastid OÜ'
+    }
   }
 })
