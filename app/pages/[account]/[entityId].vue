@@ -57,6 +57,7 @@ const properties = computed(() => {
   entity.value.props.forEach((property) => {
     if (property.name?.startsWith('_') && property.label === undefined) return
     if (property.name === 'name') return
+    if (property.hidden) return
 
     const group = property.group || ''
     const ordinal = property.ordinal || 0
