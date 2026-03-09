@@ -8,7 +8,6 @@ export async function aggregateEntity (entu, entityId) {
       'private.name': true,
       'private._type': true,
       'private._parent': true,
-      'private._reference': true,
       'private._noaccess': true,
       'private._viewer': true,
       'private._expander': true,
@@ -454,7 +453,7 @@ async function startRelativeAggregation (entu, oldEntity, newEntity) {
   if (Boolean(oldEntity.hash) && oldEntity.hash === newEntity.hash) return 0
 
   // Collect referrer IDs once (entities whose properties point to this entity).
-  // Reused for both name-change propagation and formula Case 3 below.
+  // Reused for both name-change propagation and formula Case 2 below.
   const referrers = await entu.db.collection('property').aggregate([
     { $match: { reference: oldEntity._id, deleted: { $exists: false } } },
     { $group: { _id: '$entity' } }
@@ -503,19 +502,7 @@ async function startRelativeAggregation (entu, oldEntity, newEntity) {
     ids = [...ids, ...parentsWithFormulas]
   }
 
-  // Formula Case 2: Queue entities that X references, if they have formula properties.
-  // Rationale: those entities may have _referrer.* formulas that read X's data.
-  // Includes old references to handle the case where X's reference properties changed.
-  const newRefIds = newEntity.private?._reference?.map((x) => x.reference) || []
-  const oldRefIds = oldEntity.private?._reference?.map((x) => x.reference) || []
-  const allRefTargetIds = uniqBy([...newRefIds, ...oldRefIds], (x) => x.toString())
-
-  if (allRefTargetIds.length > 0) {
-    const refTargetsWithFormulas = await filterEntitiesWithFormulas(entu, allRefTargetIds)
-    ids = [...ids, ...refTargetsWithFormulas]
-  }
-
-  // Formula Case 3: Queue referrers of X that have formula properties.
+  // Formula Case 2: Queue referrers of X that have formula properties.
   // Rationale: referrers may have refProp.* formulas reading any field of X, not just name.
   // The name-change block above already queues ALL referrers when the name changes;
   // this adds formula-filtered referrers for all other field changes.
