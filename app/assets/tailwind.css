@@ -11,7 +11,8 @@ body,
 }
 
 @media (max-width: 767px) {
-  html {
+  html,
+  body {
     background-color: #1E434C;
   }
 }
