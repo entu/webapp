@@ -7,26 +7,26 @@ Patterns and recommendations for working efficiently with the Entu API.
 **Use specific filters instead of client-side filtering:**
 ```http
 # Good — filter on server
-GET /api/db/entity?status.string=active&_type.reference=TYPE_ID
+GET /api/{db}/entity?status.string=active&_type.reference=TYPE_ID
 
 # Avoid — fetching all and filtering client-side
-GET /api/db/entity?_type.reference=TYPE_ID
+GET /api/{db}/entity?_type.reference=TYPE_ID
 ```
 
 **Limit returned properties to reduce response size:**
 ```http
-GET /api/db/entity?props=name,status,_created&limit=100
+GET /api/{db}/entity?props=name,status,_created&limit=100
 ```
 
 **Use `.in` for multiple value filtering in a single request:**
 ```http
-GET /api/db/entity?status.string.in=active,pending,review
+GET /api/{db}/entity?status.string.in=active,pending,review
 ```
 
 **Use pagination for large datasets:**
 ```http
-GET /api/db/entity?limit=100&skip=0    # first page
-GET /api/db/entity?limit=100&skip=100  # second page
+GET /api/{db}/entity?limit=100&skip=0    # first page
+GET /api/{db}/entity?limit=100&skip=100  # second page
 ```
 
 See [Query Reference](./query-reference.md) for full filter syntax.
@@ -50,7 +50,7 @@ Always specify correct MIME types:
 { "type": "document", "filename": "report.pdf", "filesize": 1245678, "filetype": "application/pdf" }
 ```
 
-Upload directly to S3 using the signed URL — don't proxy files through your own server. The signed URL expires after 15 minutes.
+Upload directly to S3 using the signed URL — don't proxy files through your own server. The signed upload URL expires after **60 seconds** — complete the PUT immediately.
 
 ## Token Management
 

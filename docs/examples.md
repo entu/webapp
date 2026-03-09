@@ -12,7 +12,7 @@ These walkthroughs show how to model common real-world scenarios in Entu using e
 | Property name | Type | Notes |
 |---|---|---|
 | `name` | string | Company display name |
-| `website` | url | |
+| `website` | string | Store as plain text or use `markdown` on a `text` field for clickable links |
 | `industry` | string | |
 | `notes` | text | |
 
@@ -105,7 +105,7 @@ Grant `_editor` rights on the Companies container to your sales team and enable 
 | `description` | text | |
 | `author` | reference | Points to a Person entity |
 | `published` | boolean | |
-| `size` | formula | `file.size` — shows file size automatically |
+| `size` | number | Set `formula: 'file.size'` on the property definition — auto-computed from the attached file |
 
 ### Structure
 

@@ -10,15 +10,9 @@ Person entities represent user accounts in Entu. Each person can authenticate an
 
 ### User Rights
 
-By default, a newly created person entity has no specific rights. They can only access entities shared at the `domain` level or rights inherited from a parent entity. To grant additional access, reference the person in the appropriate rights property on the relevant entities:
+By default, a newly created person entity has no specific rights. They can only access entities shared at the `domain` level or rights inherited from a parent entity. To grant additional access, reference the person in the appropriate rights property on the relevant entities.
 
-| Property | Access |
-|---|---|
-| `_owner` | Full control |
-| `_editor` | View and edit (not rights properties) |
-| `_expander` | View and create children |
-| `_viewer` | Read-only |
-| `_noaccess` | Explicitly blocked, overrides inherited rights |
+See [Entities → Access Rights](../overview/entities.md#access-rights) for the full rights table and sharing options.
 
 ## Automatic User Creation
 
@@ -44,3 +38,5 @@ All of the following must be true for auto-creation to trigger:
 2. A person entity type definition exists in the database (`_type: entity`, `name: person`)
 3. The authentication request includes the `db` query parameter
 4. No existing person entity already has `entu_user` matching the OAuth email
+
+After creation, the new person entity is automatically set as its own `_editor` — so users can update their own profile properties right away.

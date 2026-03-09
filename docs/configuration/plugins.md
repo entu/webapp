@@ -85,3 +85,15 @@ Search the [ESTER](https://www.ester.ee) union library catalog used by Estonian 
 ### KML Import
 
 Import geographic locations from KML files (the format used by Google Earth and most GIS tools). After uploading, you see a list of all placemarks in the file, pick which ones to include, and they are created as entities with name, description, and coordinate properties.
+
+## Access Control
+
+Plugin entities use the same rights and sharing model as all other entities. The edit drawer only shows plugin tabs for plugins the current user can access.
+
+Set `_sharing: domain` on a plugin entity to make it available to every authenticated user, or `_sharing: public` to expose it even to unauthenticated visitors. Leave it `private` and assign explicit `_viewer` (or higher) rights to restrict it to specific people or groups.
+
+This lets you expose certain plugins to everyone (e.g. a CSV importer for all editors) while keeping others limited to administrators or specific teams.
+
+::: tip
+A user needs at minimum `_viewer` rights on the plugin entity for the tab to appear. Webhook plugins are server-side and not shown in the UI, but their entity still respects the same rights model for management purposes.
+:::

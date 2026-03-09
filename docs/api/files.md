@@ -56,16 +56,18 @@ Response:
 
 **Step 2 — Upload the file**
 
-PUT the file content directly to the signed URL using the exact headers from the response:
+PUT the file content directly to the signed URL using the **exact headers returned in the response** — all four are required:
 
 ```bash
 curl -X PUT "SIGNED_S3_URL" \
-  -H "Content-Type: image/jpeg" \
+  -H "ACL: private" \
+  -H "Content-Disposition: inline;filename=\"cover.jpg\"" \
   -H "Content-Length: 1937" \
+  -H "Content-Type: image/jpeg" \
   --data-binary "@cover.jpg"
 ```
 
-The signed upload URL expires after **15 minutes**. Multiple file properties can be created in one POST — each gets its own `upload` object in the response.
+The signed upload URL expires after **60 seconds**. Complete the S3 PUT before it expires. Multiple file properties can be created in one POST — each gets its own `upload` object in the response.
 
 ::: warning
 If the upload URL expires before you complete the S3 PUT, delete the property and start over.
@@ -82,3 +84,13 @@ GET /api/{db}/property/{_id}
 The response includes a time-limited signed URL in the `url` field — valid for 60 seconds. Do not cache or share it; generate a fresh one each time.
 
 To trigger a direct browser download, append `?download=true` — this redirects immediately to the signed URL.
+
+## Deleting a File Property
+
+Delete a file property the same way as any other property value:
+
+```
+DELETE /api/{db}/property/{_id}
+```
+
+This soft-deletes the property record (marked with `deleted.at` and `deleted.by`). The underlying file in object storage is not removed — only the property reference is deleted.

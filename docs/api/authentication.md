@@ -15,6 +15,10 @@ curl -X GET "https://entu.app/api/auth" \
   -H "Authorization: Bearer YOUR_API_KEY"
 ```
 
+::: info
+To restrict the resulting JWT to a single database, add `?db=mydbname` to the auth request. The `?account=mydbname` spelling is also accepted and behaves identically.
+:::
+
 ::: warning
 The generated API key is displayed only once. Copy and store it securely — only its hash is stored and it cannot be retrieved again.
 :::
@@ -40,6 +44,10 @@ The provider returns a user ID and profile info that is matched against the enti
 2. Exchange the credential at `GET /api/auth` for a JWT token
 3. Use the JWT in `Authorization: Bearer <token>` on all subsequent requests
 4. Refresh before the 48-hour expiry
+
+::: warning
+JWT tokens are bound to the IP address used when the token was issued. If your IP changes (e.g. switching networks, VPN, or mobile roaming), the token is immediately rejected with `401 Invalid JWT audience` and you must re-authenticate. Cache tokens per IP context if your environment changes addresses frequently.
+:::
 
 ::: tip
 Cache the JWT and reuse it across requests. Exchanging the credential on every call is wasteful — only refresh when the token expires.

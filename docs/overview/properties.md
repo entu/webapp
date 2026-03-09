@@ -19,7 +19,7 @@ Properties are defined on the entity type (as child entities of type `property`)
 **System properties** — Properties beginning with `_` (`_id`, `_type`, `_parent`, `_owner`, etc.) are managed by Entu and control identity, hierarchy, and access rights.
 
 ::: info
-Custom property names cannot start with `_`. That prefix is reserved for system properties.
+Custom property names cannot start with `_`. That prefix is reserved for system properties. Property names must also consist only of letters, digits, and underscores (`A–Z`, `a–z`, `0–9`, `_`). Hyphens, dots, spaces, and other characters are not allowed and will be rejected.
 :::
 
 ## Property Types
@@ -40,13 +40,13 @@ Custom property names cannot start with `_`. That prefix is reserved for system 
 
 When a property definition has `list: true`, the entity can hold multiple values for that property. In the edit form, extra empty inputs appear automatically as the user fills them in.
 
-In the UI, enable `list` on the property definition and extra inputs appear automatically. Via the API, each value is a separate property object — add values by POSTing, remove specific values by DELETEing their `_id`.
+Via the API, each value is a separate property object — add values by POSTing, remove specific values by DELETEing their `_id`.
 
 ## Multilingual Properties
 
-When `multilingual: true` is set on a property definition, each value carries a `language` code. The edit form shows a language selector next to the input.
+When `multilingual: true` is set on a property definition, each value carries a `language` code. The edit form shows a language selector next to each input.
 
-The edit form shows a language selector next to each input. Values for different languages are stored as separate property objects, each carrying a `language` code. See [API → Properties](../api/properties.md) for the API format.
+Values for different languages are stored as separate property objects, each carrying a `language` code. See [API → Properties](../api/properties.md) for the API format.
 
 ## File Properties
 
@@ -92,7 +92,7 @@ System properties begin with `_` and control entity behavior, access rights, and
 | `_editor` | Can view and edit all properties except rights. |
 | `_expander` | Can view and create child entities. |
 | `_viewer` | Read-only access. |
-| `_noaccess` | Explicitly denied all access. Overrides inherited rights. |
+| `_noaccess` | Explicitly denied all access. Overrides inherited rights from parents. |
 | `_created` | Creation timestamp and user. Read-only, auto-generated. |
 | `_deleted` | Deletion timestamp and user. Set when the entity is deleted. |
 | `_thumbnail` | Signed, time-limited download URL generated from the entity's `photo` property. Read-only, auto-generated. |

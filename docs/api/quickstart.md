@@ -54,11 +54,16 @@ curl -X POST "https://entu.app/api/mydatabase/entity" \
   ]'
 ```
 
-Response returns the created entity ID:
+Response returns the created entity ID and all created property objects (file properties also include a signed S3 upload URL):
 
 ```json
 {
-  "_id": "6798938432faaba00f8fc72f"
+  "_id": "6798938432faaba00f8fc72f",
+  "properties": {
+    "_type": [{ "_id": "...", "reference": "507f1f77bcf86cd799439011" }],
+    "name":  [{ "_id": "...", "string": "My First Entity" }],
+    "description": [{ "_id": "...", "string": "Created via API" }]
+  }
 }
 ```
 
@@ -83,6 +88,17 @@ curl -X GET "https://entu.app/api/mydatabase/entity?q=test&limit=10" \
 ```bash
 curl -X GET "https://entu.app/api/mydatabase/entity/6798938432faaba00f8fc72f" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
+```
+
+The response wraps the entity under an `entity` key:
+
+```json
+{
+  "entity": {
+    "_id": "6798938432faaba00f8fc72f",
+    "name": [{ "_id": "...", "type": "name", "string": "My First Entity" }]
+  }
+}
 ```
 
 ## 5. Add Properties to an Entity
@@ -110,7 +126,7 @@ curl -X POST "https://entu.app/api/mydatabase/entity/6798938432faaba00f8fc72f" \
   ]'
 ```
 
-The response includes a signed S3 upload URL. Upload the file directly:
+The response includes a signed S3 upload URL. PUT the file directly using the **exact headers returned in the response** (ACL, Content-Disposition, Content-Length, Content-Type are all required):
 
 ::: tip
 A file property named `photo` is used by the Entu UI as the entity thumbnail.
@@ -118,9 +134,16 @@ A file property named `photo` is used by the Entu UI as the entity thumbnail.
 
 ```bash
 curl -X PUT "SIGNED_S3_URL" \
+  -H "ACL: private" \
+  -H "Content-Disposition: inline;filename=\"image.jpg\"" \
+  -H "Content-Length: 245678" \
   -H "Content-Type: image/jpeg" \
   --data-binary "@image.jpg"
 ```
+
+::: warning
+The signed upload URL expires after 60 seconds. Complete the PUT immediately after receiving the URL.
+:::
 
 ## 7. Delete a Property
 

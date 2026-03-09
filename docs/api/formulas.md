@@ -75,6 +75,10 @@ Entities that reference this entity through their own reference properties:
 | `_referrer.*._id` | IDs of all referrer entities |
 | `_referrer.typeName._id` | IDs of referrer entities of a specific type |
 
+::: info
+`typeName` is matched against the referrer entity type's `name` property (e.g. `invoice`), not its display `label`. If a type's `name` and `label` differ, use the `name` value.
+:::
+
 ## Functions
 
 | Function | Description |
@@ -85,7 +89,7 @@ Entities that reference this entity through their own reference properties:
 | `SUM` | Sums all numeric values |
 | `SUBTRACT` | Subtracts remaining values from the first |
 | `MULTIPLY` | Multiplies all values together |
-| `DIVIDE` | Divides the first value by the rest. Returns `undefined` if dividing by zero. |
+| `DIVIDE` | Divides the first value by the rest. Returns `undefined` if any divisor is zero. |
 | `AVERAGE` | Returns the arithmetic mean |
 | `MIN` | Returns the smallest value |
 | `MAX` | Returns the largest value |
@@ -93,8 +97,19 @@ Entities that reference this entity through their own reference properties:
 | `ROUND` | Rounds to N decimal places — the last value is used as N |
 
 ::: warning
-`DIVIDE` returns `undefined` when the divisor is zero. Handle this in downstream formulas or ensure the divisor is always non-zero.
+`DIVIDE` returns `undefined` when any value after the first is zero. Handle this in downstream formulas or ensure the divisor is always non-zero.
 :::
+
+## Empty Input Behaviour
+
+When no values resolve (e.g. the referenced property is empty or unset), most functions return `undefined` and the property is simply not written. Three functions return a value even for empty input:
+
+| Function | Empty-input result |
+|---|---|
+| `COUNT` | `0` |
+| `SUM` | `0` |
+| `MULTIPLY` | `1` (multiplicative identity) |
+| All others | `undefined` — property is not set |
 
 ## Examples
 

@@ -24,7 +24,7 @@ Entities are organised into hierarchies using the `_parent` system property.
 
 **Multiple parents** — An entity can have more than one parent and appears as a child in each context without being duplicated. A document can belong to both a project and a department simultaneously.
 
-**Creating children** — When you use the "Add" button on a parent entity's page, `_parent` is set automatically. You need `_expander` or `_owner` rights on the parent to create children.
+**Creating children** — When you use the "Add" button on a parent entity's page, `_parent` is set automatically. You need at least `_expander` rights on the parent to create children (`_editor` and `_owner` include `_expander`).
 
 **Rights inheritance** — When `_inheritrights: true` is set on a child entity, it inherits the access rights from its parent. Changes at the parent level cascade down to all children with inheritance enabled.
 
@@ -42,7 +42,7 @@ Every entity has explicit access control. Rights are set by referencing a person
 | `_editor` | Can view and edit all properties except the rights properties themselves. |
 | `_expander` | Can view the entity and create child entities under it. |
 | `_viewer` | Read-only — can view the entity and its properties. |
-| `_noaccess` | Explicitly denied all access. Overrides any inherited rights. |
+| `_noaccess` | Explicitly denied all access. Overrides inherited rights from parents, but direct rights on the entity itself still apply. |
 
 ### Sharing
 
@@ -69,33 +69,14 @@ Setting `_sharing: public` makes the entity visible to anyone on the internet wi
 Set `_inheritrights: true` on an entity to inherit rights from its parent. Rights defined directly on the child override inherited ones. Use `_noaccess` to block a user who would otherwise inherit access from a parent.
 
 ::: info
-Right evaluation order: explicit rights on the entity → inherited rights from parent → `_sharing` level. `_noaccess` always wins.
+Right evaluation order: explicit rights on the entity → inherited rights from parent → `_sharing` level. `_noaccess` removes a user from all inherited rights lists, but a direct right on the child entity still takes precedence over an inherited `_noaccess`.
 :::
-
-## Architecture Overview
-
-```mermaid
-graph TD
-    ET[Entity Type<br/>blueprint / schema] -->|defines| E[Entity<br/>one record]
-    E -->|has many| P[Properties<br/>typed values]
-    E -->|_parent| PE[Parent Entity]
-    PE -->|rights cascade down| E
-    P -->|reference type| RE[Referenced Entity]
-    E -->|formula property| F[Formula Engine<br/>auto-recalculates on save]
-    F -->|reads| P
-    F -->|reads via _referrer| E
-```
-
-**Entity Type** defines which properties an entity can have. **Entities** are the actual records. Properties hold the data — plain values, file attachments, or references to other entities. The hierarchy (`_parent`) drives both navigation and rights inheritance.
 
 ## Deletion
 
-Entity deletion is a two-step process:
+When an entity is deleted, a `_deleted` property is written to it recording the user and exact timestamp. No data is physically removed from the database — the entity and all its property values remain, but are excluded from all API responses and the UI.
 
-1. A `_deleted` marker property is written to the database, recording the deleting user and the exact timestamp.
-2. The entity document is then permanently removed from the database.
-
-Any property in another entity that **referenced** the deleted entity is also soft-deleted (marked with `deleted.at` / `deleted.by`) to keep the audit trail consistent.
+Properties in other entities that referenced the deleted entity are also marked with `deleted.at` / `deleted.by` to keep the audit trail consistent.
 
 ::: info
 Only `_owner` users can delete an entity.
