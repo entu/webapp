@@ -14,7 +14,115 @@
   --vp-button-brand-active-text: #fff;
   --vp-button-brand-active-bg: #b45309;
 
+  --vp-font-family-base: 'Avenir', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
   --vp-home-hero-image-width: 480px;
+}
+
+/* Light mode nav styling */
+:root:not(.dark) .VPNav {
+  background-color: #42415c !important;
+  border-bottom: none !important;
+}
+
+:root:not(.dark) .VPNavBar {
+  background-color: #42415c !important;
+  border-bottom: none !important;
+}
+
+:root:not(.dark) .VPNavBar .content-body,
+:root:not(.dark) .VPNavBar .curtain {
+  background-color: #42415c !important;
+}
+
+:root:not(.dark) .VPNavBar .title,
+:root:not(.dark) .VPNavBar .VPNavBarTitle .title {
+  color: #fff !important;
+}
+
+:root:not(.dark) .VPNavBar .VPNavBarMenu .VPNavBarMenuLink,
+:root:not(.dark) .VPNavBar .VPNavBarMenuLink {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+:root:not(.dark) .VPNavBar .VPNavBarMenuLink:hover,
+:root:not(.dark) .VPNavBar .VPNavBarMenuLink.active {
+  color: #fff !important;
+}
+
+:root:not(.dark) .VPNavBar .VPNavBarAppearance .VPSwitch,
+:root:not(.dark) .VPNavBar .VPNavBarSearch,
+:root:not(.dark) .VPNavBar .VPNavBarHamburger {
+  color: #fff !important;
+}
+
+:root:not(.dark) .VPNavBar .DocSearch-Button {
+  color: rgba(255, 255, 255, 0.7) !important;
+  background-color: transparent !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: none !important;
+}
+
+:root:not(.dark) .VPNavBar .DocSearch-Button-Placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+  background-color: transparent !important;
+}
+
+/* DocSearch-Search-Icon is a mask icon - background-color controls the icon fill color */
+:root:not(.dark) .VPNavBar .DocSearch-Search-Icon {
+  color: rgba(255, 255, 255, 0.7) !important;
+  background-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+:root:not(.dark) .VPNavBar .DocSearch-Button-Key {
+  color: rgba(255, 255, 255, 0.7) !important;
+  background-color: transparent !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: none !important;
+}
+
+:root:not(.dark) .VPNavBar .DocSearch-Button-Key::after,
+:root:not(.dark) .VPNavBar .DocSearch-Button-Key::before {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+:root:not(.dark) .VPNavBar .DocSearch-Button:hover {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+:root:not(.dark) .VPNavBar .VPNavBarTranslations .button,
+:root:not(.dark) .VPNavBar .VPNavBarTranslations .text,
+:root:not(.dark) .VPNavBar .VPFlyout > .button,
+:root:not(.dark) .VPNavBar .VPNavBarAppearance button {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+:root:not(.dark) .VPNavBar .VPFlyout .menu .title,
+:root:not(.dark) .VPNavBar .VPFlyout .menu .VPMenuLink a {
+  color: var(--vp-c-text-1) !important;
+}
+
+:root:not(.dark) .VPNavBar .VPNavBarTranslations .vpi-languages,
+:root:not(.dark) .VPNavBar .icon svg {
+  fill: rgba(255, 255, 255, 0.85) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+  background-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Sun/moon icons inside the white toggle circle need to be dark (light mode only) */
+:root:not(.dark) .VPNavBar .VPSwitch .vpi-sun,
+:root:not(.dark) .VPNavBar .VPSwitch .vpi-moon {
+  background-color: #42415c !important;
+  color: #42415c !important;
+}
+
+/* Title border-bottom line */
+.VPNavBarTitle .title {
+  border-bottom: none !important;
+}
+
+.VPSidebar .group {
+  border-top: none !important;
 }
 
 .VPHero .VPImage.image-src {
