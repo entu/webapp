@@ -68,6 +68,15 @@ Use computed properties for totals, counts, and aggregations so derived data alw
 
 See [Formulas](../api/formulas.md) for the full syntax reference.
 
+## Properties Used by Entu UI
+
+The following property names have special meaning in the UI. You can define them on any entity type and the system will use them automatically.
+
+| Property | Type | Behaviour |
+|---|---|---|
+| `name` | string | Used as the entity's display title throughout the UI — in lists, breadcrumbs, search results, and as the page heading. If absent, the entity `_id` is shown instead. |
+| `photo` | file | The first value is used as the entity's thumbnail image in lists and the entity page header. The system also exposes it as `_thumbnail` — a ready-to-use signed download URL. |
+
 ## System Properties
 
 System properties begin with `_` and control entity behavior, access rights, and metadata. Custom property names cannot begin with `_`.
@@ -86,4 +95,17 @@ System properties begin with `_` and control entity behavior, access rights, and
 | `_noaccess` | Explicitly denied all access. Overrides inherited rights. |
 | `_created` | Creation timestamp and user. Read-only, auto-generated. |
 | `_deleted` | Deletion timestamp and user. Set when the entity is deleted. |
+| `_thumbnail` | Signed, time-limited download URL generated from the entity's `photo` property. Read-only, auto-generated. |
+
+## Deletion
+
+Properties are **never physically removed** from the database. When a property value is deleted:
+
+- It is marked with `deleted.at` (timestamp) and `deleted.by` (the user who performed the deletion).
+- It is automatically excluded from all API responses and the UI.
+- The deletion record is permanent — you always know what was removed, when, and by whom.
+
+::: info
+Because property values are only soft-deleted, the full history of who set or removed every value is always preserved, even after the parent entity is gone.
+:::
 

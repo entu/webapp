@@ -31,6 +31,7 @@ export default defineConfig({
           { text: 'Menus', link: '/configuration/menus' },
           { text: 'Plugins', link: '/configuration/plugins' },
           { text: 'Best Practices', link: '/configuration/best-practices' },
+          { text: 'Examples', link: '/examples' },
         ],
       },
       {

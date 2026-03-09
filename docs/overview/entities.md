@@ -71,3 +71,32 @@ Set `_inheritrights: true` on an entity to inherit rights from its parent. Right
 ::: info
 Right evaluation order: explicit rights on the entity → inherited rights from parent → `_sharing` level. `_noaccess` always wins.
 :::
+
+## Architecture Overview
+
+```mermaid
+graph TD
+    ET[Entity Type<br/>blueprint / schema] -->|defines| E[Entity<br/>one record]
+    E -->|has many| P[Properties<br/>typed values]
+    E -->|_parent| PE[Parent Entity]
+    PE -->|rights cascade down| E
+    P -->|reference type| RE[Referenced Entity]
+    E -->|formula property| F[Formula Engine<br/>auto-recalculates on save]
+    F -->|reads| P
+    F -->|reads via _referrer| E
+```
+
+**Entity Type** defines which properties an entity can have. **Entities** are the actual records. Properties hold the data — plain values, file attachments, or references to other entities. The hierarchy (`_parent`) drives both navigation and rights inheritance.
+
+## Deletion
+
+Entity deletion is a two-step process:
+
+1. A `_deleted` marker property is written to the database, recording the deleting user and the exact timestamp.
+2. The entity document is then permanently removed from the database.
+
+Any property in another entity that **referenced** the deleted entity is also soft-deleted (marked with `deleted.at` / `deleted.by`) to keep the audit trail consistent.
+
+::: info
+Only `_owner` users can delete an entity.
+:::
