@@ -11,6 +11,10 @@ export async function apiGetEntity (entityId, props = []) {
   return entity
 }
 
+export async function apiGetEntityHistory (entityId) {
+  return await apiRequest(`entity/${entityId}/history`)
+}
+
 export async function apiDeleteEntity (entityId) {
   const { deleted } = await apiRequest(`entity/${entityId}`, {}, {}, 'DELETE')
   return deleted

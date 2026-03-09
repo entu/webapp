@@ -138,11 +138,13 @@ export default defineEventHandler(async (event) => {
         at: '$created.at',
         by: '$created.by',
         new: {
+          _id: '$_id',
           boolean: '$boolean',
           date: '$date',
           datetime: '$datetime',
           filename: '$filename',
           filesize: '$filesize',
+          language: '$language',
           md5: '$md5',
           number: '$number',
           reference: '$reference',
@@ -167,11 +169,13 @@ export default defineEventHandler(async (event) => {
               at: '$deleted.at',
               by: '$deleted.by',
               old: {
+                _id: '$_id',
                 boolean: '$boolean',
                 date: '$date',
                 datetime: '$datetime',
                 filename: '$filename',
                 filesize: '$filesize',
+                language: '$language',
                 md5: '$md5',
                 number: '$number',
                 reference: '$reference',
@@ -191,7 +195,36 @@ export default defineEventHandler(async (event) => {
         new: { $max: '$new' }
       }
     }, {
-      $project: { _id: false }
+      $lookup: {
+        from: 'entity',
+        let: { ref: '$new.reference' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$_id', '$$ref'] } } },
+          { $project: { _id: false, name: { $arrayElemAt: ['$private.name.string', 0] } } }
+        ],
+        as: '_newRef'
+      }
+    }, {
+      $lookup: {
+        from: 'entity',
+        let: { ref: '$old.reference' },
+        pipeline: [
+          { $match: { $expr: { $eq: ['$_id', '$$ref'] } } },
+          { $project: { _id: false, name: { $arrayElemAt: ['$private.name.string', 0] } } }
+        ],
+        as: '_oldRef'
+      }
+    }, {
+      $addFields: {
+        'new.string': {
+          $cond: [{ $gt: ['$new.reference', null] }, { $arrayElemAt: ['$_newRef.name', 0] }, '$new.string']
+        },
+        'old.string': {
+          $cond: [{ $gt: ['$old.reference', null] }, { $arrayElemAt: ['$_oldRef.name', 0] }, '$old.string']
+        }
+      }
+    }, {
+      $project: { _id: false, _newRef: false, _oldRef: false }
     }, {
       $sort: { at: 1 }
     }

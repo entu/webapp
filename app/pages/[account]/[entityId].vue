@@ -209,6 +209,18 @@ const showDebugDrawer = computed({
     if (!value) onDrawerClose()
   }
 })
+const showHistoryDrawer = computed({
+  get: () => {
+    if (drawerType.value === 'history') {
+      useAnalytics('show_history')
+      return true
+    }
+    return false
+  },
+  set: (value) => {
+    if (!value) onDrawerClose()
+  }
+})
 
 watch(() => entity?.value?.name, (value) => {
   if (value) {
@@ -512,6 +524,11 @@ onMounted(async () => {
       :entity="entity"
       :properties="properties"
       :raw-entity="rawEntity"
+    />
+    <entity-drawer-history
+      v-model:show="showHistoryDrawer"
+      v-model:entity-id="entityId"
+      :type-id="typeId"
     />
   </div>
 </template>

@@ -65,7 +65,7 @@ export default defineEventHandler(async () => {
     {
       name: 'Property',
       description: 'Properties define entity attributes and store typed values — strings, numbers, dates, references, files, and more. Get property details, download file attachments, or delete individual property values. Properties track creation metadata and are versioned.'
-    },
+    }
   ]
 
   // Models - Core data structures for the Entu API

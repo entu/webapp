@@ -164,6 +164,18 @@ onUnmounted(() => {
         @click="navigateTo({ path, query, hash: `#rights` }, { replace: true })"
       />
     </n-button-group>
+
+    <n-button-group
+      v-if="entityId"
+      class="flex items-center"
+    >
+      <my-button
+        v-if="right.editor"
+        icon="history"
+        :label="isOverflowing ? undefined : t('history')"
+        @click="navigateTo({ path, query, hash: `#history` }, { replace: true })"
+      />
+    </n-button-group>
   </div>
 </template>
 
@@ -173,9 +185,11 @@ onUnmounted(() => {
     duplicate: Duplicate
     parents: Parents
     rights: Rights
+    history: History
   et:
     edit: Muuda
     duplicate: Dubleeri
     parents: Kuuluvus
     rights: Õigused
+    history: Ajalugu
 </i18n>
