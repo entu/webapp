@@ -7,10 +7,10 @@ const notification = useNotification()
 const route = useRoute()
 const { t } = useI18n()
 
-const { account, accountId } = useAccount()
+const { account, accountId, showMobileMenu } = useAccount()
 const { menuCollapsed, listWidth } = useUser()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
-const langLabel = computed(() => locale.value === 'en' ? 'Eesti' : 'English')
+const langLabel = computed(() => locale.value === 'en' ? 'Eesti keel' : 'English')
 
 function setMobileLanguage () {
   setLocale(locale.value === 'en' ? 'et' : 'en')
@@ -20,7 +20,6 @@ function setMobileLanguage () {
 
 const { width: windowWidth } = useWindowSize()
 const isMobile = computed(() => windowWidth.value < 768)
-const showMobileMenu = ref(false)
 
 watch(() => route.fullPath, () => { showMobileMenu.value = false })
 
@@ -141,20 +140,24 @@ function changeMenu (collapsed) {
           <my-icon
             v-if="route.params.entityId && isQuery"
             class="cursor-pointer text-white opacity-80 hover:opacity-100"
+            style="font-size: 1.5rem"
             icon="arrow-left"
             @click="navigateTo({ path: `/${accountId}`, query: route.query })"
           />
-          <div
+          <img
             v-else
-            class="size-4"
-          />
+            src="/logo.png"
+            class="h-6 w-auto cursor-pointer"
+            @click="navigateTo('/')"
+          >
 
-          <span class="pointer-events-none absolute inset-x-0 text-center text-sm font-medium">
-            {{ account?.name }}
+          <span class="pointer-events-none absolute inset-x-0 text-center font-medium">
+            {{ account?.name || 'Entu' }}
           </span>
 
           <my-icon
             class="ml-auto cursor-pointer text-white opacity-80 hover:opacity-100"
+            style="font-size: 1.5rem"
             icon="menu"
             @click="showMobileMenu = true"
           />
@@ -192,13 +195,17 @@ function changeMenu (collapsed) {
 
               <my-icon
                 class="cursor-pointer text-white opacity-80 hover:opacity-100"
+                style="font-size: 1.5rem"
                 icon="menu"
                 @click="showMobileMenu = false"
               />
             </div>
 
             <div class="grow overflow-y-auto">
-              <layout-side-menu :collapsed="false" :show-lang="false" />
+              <layout-side-menu
+                :collapsed="false"
+                :show-lang="false"
+              />
             </div>
           </div>
         </n-drawer-content>

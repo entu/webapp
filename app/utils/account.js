@@ -16,9 +16,12 @@ export const useAccount = () => {
   })
   const accountId = computed(() => route.params.account)
 
+  const showMobileMenu = useState('showMobileMenu', () => false)
+
   return {
     account,
     accounts,
-    accountId
+    accountId,
+    showMobileMenu
   }
 }

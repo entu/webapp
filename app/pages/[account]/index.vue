@@ -4,7 +4,7 @@ import { NSpin, NButton } from 'naive-ui'
 const route = useRoute()
 const { t } = useI18n()
 
-const { accountId } = useAccount()
+const { accountId, showMobileMenu } = useAccount()
 const { userId } = useUser()
 
 const stats = ref()
@@ -65,21 +65,34 @@ onMounted(async () => {
     <entity-toolbar />
 
     <template v-if="!userId">
-      <change-log class="absolute right-3 max-w-80" />
+      <change-log class="absolute right-3 hidden max-w-80 md:block" />
 
       <div class="flex flex-1 items-center justify-center p-6">
-        <n-button
-          secondary
-          size="large"
-          type="success"
-          @click="navigateTo('/new')"
-        >
-          <my-icon
-            class="mr-2"
-            icon="add"
-          />
-          {{ t('new') }}
-        </n-button>
+        <div class="flex w-64 flex-col gap-4">
+          <div class="md:hidden">
+            <n-button
+              block
+              size="large"
+              type="info"
+              @click="showMobileMenu = true"
+            >
+              {{ t('signIn') }}
+            </n-button>
+          </div>
+
+          <n-button
+            block
+            secondary
+            size="large"
+            @click="navigateTo('/new')"
+          >
+            <my-icon
+              class="mr-2"
+              icon="add"
+            />
+            {{ t('new') }}
+          </n-button>
+        </div>
       </div>
 
       <div class="shrink-0 p-4 text-center text-sm text-gray-500">
@@ -201,6 +214,7 @@ onMounted(async () => {
 
 <i18n lang="yaml">
   en:
+    signIn: Sign In
     new: Create New Database
     entities: Entities
     properties: Properties
@@ -212,6 +226,7 @@ onMounted(async () => {
     pricingUrl: https://entu.ee/#price
     docs: Documentation
   et:
+    signIn: Sisene
     new: Loo uus andmebaas
     entities: Objekte
     properties: Parameetreid

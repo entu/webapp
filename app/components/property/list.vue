@@ -24,7 +24,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
     <div
       v-for="property in visibleProperties"
       :key="property.name"
-      class="grid grid-cols-1 gap-0 pt-3 first-of-type:pt-0 md:grid-cols-3 md:gap-4 md:border-t md:border-gray-100 md:first-of-type:border-t-0 md:pt-0"
+      class="grid grid-cols-1 gap-0 pt-3 first-of-type:pt-0 md:grid-cols-3 md:gap-4 md:border-t md:border-gray-100 md:pt-0 md:first-of-type:border-t-0"
     >
       <div
         class="flex justify-start gap-2 pb-0 pt-1 font-medium text-[#1E434C] md:justify-end md:py-2 md:text-right"

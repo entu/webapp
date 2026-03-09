@@ -345,6 +345,8 @@ function linkReplace (url) {
     <a
       v-if="!menuCollapsed"
       :href="`/${account?._id || ''}`"
+      tabindex="-1"
+      class="outline-none"
       @click="useAnalytics('click_logo')"
     >
       <img
