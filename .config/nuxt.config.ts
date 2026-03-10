@@ -77,7 +77,7 @@ export default defineNuxtConfig({
         scalar: {
           route: '/api/docs',
           spec: {
-            url: '/api/openapi'
+            url: 'https://entu.app/api/openapi'
           },
           theme: 'default',
           hideDownloadButton: true,
