@@ -1,5 +1,6 @@
 ---
 layout: home
+title: Flexible Object Database
 
 hero:
   name: Entu

@@ -4,8 +4,10 @@ export default defineConfig({
   vite: { server: { port: 3003 } },
   cleanUrls: true,
   title: 'Entu',
-  description: 'Flexible Object Database - Build your data model without code',
+  titleTemplate: ':title · Entu',
+  description: 'Build your data model without code — configure entities, properties, and access rights entirely through the UI',
   head: [
+    ['link', { rel: 'icon', type: 'image/png', href: '/logo.png' }],
     ['script', { src: 'https://analytics.entu.dev/ea.min.js', 'data-site': 'entu.dev', crossorigin: 'anonymous', defer: '' }]
   ],
   themeConfig: {
