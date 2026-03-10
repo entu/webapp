@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   vite: { server: { port: 3003 } },
+  cleanUrls: true,
   title: 'Entu',
   description: 'Flexible Object Database - Build your data model without code',
   head: [
