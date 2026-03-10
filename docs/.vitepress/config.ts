@@ -8,7 +8,7 @@ export default defineConfig({
   description: 'Build your data model without code — configure entities, properties, and access rights entirely through the UI',
   head: [
     ['link', { rel: 'icon', type: 'image/png', href: '/logo.png' }],
-    ['script', { src: 'https://analytics.entu.dev/ea.min.js', 'data-site': 'entu.dev', crossorigin: 'anonymous', defer: '' }]
+    ['script', { src: 'https://analytics.entu.dev/ea.min.js', 'data-site': 'entu.ee', crossorigin: 'anonymous', defer: '' }]
   ],
   themeConfig: {
     logo: '/logo.png',
@@ -49,7 +49,7 @@ export default defineConfig({
           { text: 'Properties', link: '/api/properties' },
           { text: 'Formulas', link: '/api/formulas' },
           { text: 'Files', link: '/api/files' },
-          { text: 'API Reference', link: 'https://entu.app/api/docs' }
+          { text: 'API Reference', link: 'https://entu.dev' }
         ]
       },
       {
