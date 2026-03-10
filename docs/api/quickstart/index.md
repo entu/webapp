@@ -29,7 +29,7 @@ Response:
 }
 ```
 
-The JWT token is valid for 48 hours. Use it in all subsequent requests. For OAuth and Passkey flows, see [Authentication](./authentication.md).
+The JWT token is valid for 48 hours. Use it in all subsequent requests. For OAuth and Passkey flows, see [Authentication](/api/authentication/).
 
 ::: tip
 Cache the JWT and reuse it across requests. Only refresh when the token expires.
@@ -154,8 +154,8 @@ curl -X DELETE "https://entu.app/api/mydatabase/property/PROPERTY_ID" \
 
 ## Next Steps
 
-- [Entities](../overview/entities.md) — Understand the entity-property model
-- [Query Reference](./query-reference.md) — Full filter and sort syntax
-- [Best Practices](./best-practices.md) — Optimization tips and patterns
-- [Formulas](./formulas.md) — Computed properties
-- [Files](./files.md) — File upload and download
+- [Entities](/overview/entities/) — Understand the entity-property model
+- [Query Reference](/api/query-reference/) — Full filter and sort syntax
+- [Best Practices](/api/best-practices/) — Optimization tips and patterns
+- [Formulas](/api/formulas/) — Computed properties
+- [Files](/api/files/) — File upload and download

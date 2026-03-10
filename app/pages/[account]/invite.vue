@@ -72,7 +72,7 @@ onMounted(async () => {
     </div>
     <div class="mb-2 px-4 text-center text-sm text-gray-500">
       <a
-        href="https://entu.dev"
+        href="https://entu.ee/overview/"
         target="_blank"
       >{{ t('docs') }}</a>
 
@@ -105,9 +105,9 @@ onMounted(async () => {
     auth-mobile-id: Mobile-ID
     auth-id-card: ID-Card
     terms: Terms of Service
-    termsUrl: https://entu.ee/terms
+    termsUrl: https://entu.ee/terms/
     pricing: Pricing
-    pricingUrl: https://entu.ee/#price
+    pricingUrl: https://entu.ee/#pricing
     docs: Documentation
   et:
     language: English
@@ -120,8 +120,8 @@ onMounted(async () => {
     auth-mobile-id: Mobiil-ID
     auth-id-card: ID-kaart
     terms: Kasutustingimused
-    termsUrl: https://entu.ee/et/tingimused
+    termsUrl: https://entu.ee/terms/
     pricing: Hinnad
-    pricingUrl: https://entu.ee/et#price
+    pricingUrl: https://entu.ee/#pricing
     docs: Dokumentatsioon
 </i18n>

@@ -36,7 +36,7 @@ curl -X GET "https://entu.app/api/auth" \
 
 Supported providers: `e-mail`, `google`, `apple`, `smart-id`, `mobile-id`, `id-card`
 
-The provider returns a user ID and profile info that is matched against the entity's `entu_user` property. On first login, a person entity can be created automatically — see [Users → Automatic User Creation](../configuration/users.md#automatic-user-creation).
+The provider returns a user ID and profile info that is matched against the entity's `entu_user` property. On first login, a person entity can be created automatically — see [Users → Automatic User Creation](/configuration/users/#automatic-user-creation).
 
 ## Authentication Flow
 

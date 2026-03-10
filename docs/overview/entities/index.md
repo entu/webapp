@@ -2,7 +2,7 @@
 
 Entities are the core building blocks of Entu. An entity is a record — a person, a project, an invoice, a product — any object you need to manage. Every entity belongs to an **entity type** that acts as a blueprint for what kind of data it holds.
 
-To define your data model in the UI, see [Entity Types](../configuration/entity-types.md).
+To define your data model in the UI, see [Entity Types](/configuration/entity-types/).
 
 ## Key Characteristics
 
@@ -14,7 +14,7 @@ To define your data model in the UI, see [Entity Types](../configuration/entity-
 
 **References** — Entities can reference other entities via reference properties, creating a connected graph of data.
 
-**Computed properties** — Properties can be defined as formulas that recalculate automatically on every save, based on the entity's own data, its children, or entities that reference it. See [Formulas](../api/formulas.md).
+**Computed properties** — Properties can be defined as formulas that recalculate automatically on every save, based on the entity's own data, its children, or entities that reference it. See [Formulas](/api/formulas/).
 
 **Audit trail** — All property values carry creation metadata (timestamp and user), making it traceable who set what and when.
 

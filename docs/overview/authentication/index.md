@@ -50,4 +50,4 @@ API keys let you access Entu programmatically without going through an interacti
 
 Generate an API key from your person entity in the Entu UI. The key is shown only once — copy it and store it somewhere safe, because Entu only keeps the hash and cannot show it again. You can generate multiple keys and delete individual ones when they are no longer needed.
 
-**Best for:** Developers, backend services, CI/CD pipelines, IoT devices, and any automated system that needs to read or write data in Entu. See [API → Authentication](../api/authentication.md) for how to use keys with the API.
+**Best for:** Developers, backend services, CI/CD pipelines, IoT devices, and any automated system that needs to read or write data in Entu. See [API → Authentication](/api/authentication/) for how to use keys with the API.

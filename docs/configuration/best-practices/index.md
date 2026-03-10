@@ -19,7 +19,7 @@ Prefix related properties to group them visually: `address_street`, `address_cit
 
 **Use references for related data** that changes frequently — don't duplicate values across entities when a reference will do.
 
-**Use formulas for derived data** — totals, averages, counts — so the source of truth stays in one place. See [Formulas](../api/formulas.md).
+**Use formulas for derived data** — totals, averages, counts — so the source of truth stays in one place. See [Formulas](/api/formulas/).
 
 **Leverage entity hierarchy** to model organizational structure. Parent-child relationships also enable rights inheritance.
 
@@ -58,4 +58,4 @@ Enable `list` on the property definition to allow multiple inputs in the UI.
 Setting `_sharing: public` makes the entity visible to anyone on the internet without authentication. Only use it for intentionally public content.
 :::
 
-See [Entities → Access Rights](../overview/entities.md#access-rights) and [Users](./users.md).
+See [Entities → Access Rights](/overview/entities/#access-rights) and [Users](/configuration/users/).

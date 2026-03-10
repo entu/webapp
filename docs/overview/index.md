@@ -14,6 +14,6 @@ The same data model powers the built-in UI — there is no separate admin interf
 
 ## Next Steps
 
-- [Entities](./entities.md) — hierarchy, rights, and deletion in detail
-- [Properties](./properties.md) — types, multi-value, multilingual, and system properties
-- [Entity Types](../configuration/entity-types.md) — how to configure your data model
+- [Entities](/overview/entities/) — hierarchy, rights, and deletion in detail
+- [Properties](/overview/properties/) — types, multi-value, multilingual, and system properties
+- [Entity Types](/configuration/entity-types/) — how to configure your data model

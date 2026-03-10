@@ -12,7 +12,7 @@ Person entities represent user accounts in Entu. Each person can authenticate an
 
 By default, a newly created person entity has no specific rights. They can only access entities shared at the `domain` level or rights inherited from a parent entity. To grant additional access, reference the person in the appropriate rights property on the relevant entities.
 
-See [Entities → Access Rights](../overview/entities.md#access-rights) for the full rights table and sharing options.
+See [Entities → Access Rights](/overview/entities/#access-rights) for the full rights table and sharing options.
 
 ## Automatic User Creation
 
@@ -28,7 +28,7 @@ Because the new person entity has `_inheritrights: true` and is parented under t
 
 To restrict a specific user after auto-creation, add `_noaccess` directly on their person entity. Explicit rights on the child always override inherited ones.
 
-See [Entities → Access Rights](../overview/entities.md#access-rights) for more.
+See [Entities → Access Rights](/overview/entities/#access-rights) for more.
 
 ### Requirements
 

@@ -2,7 +2,7 @@
 
 Every entity is described by its **properties** — named fields that hold values. Properties are what make each entity type unique: a `person` entity has a `name` and an `email`; an `invoice` has an `amount` and a `due_date`.
 
-Properties are defined on the entity type (as child entities of type `property`). See [Entity Types](../configuration/entity-types.md#adding-property-definitions) for how to set them up in the UI.
+Properties are defined on the entity type (as child entities of type `property`). See [Entity Types](/configuration/entity-types/#adding-property-definitions) for how to set them up in the UI.
 
 ## Core Concepts
 
@@ -12,7 +12,7 @@ Properties are defined on the entity type (as child entities of type `property`)
 
 **Multilingual** — Enable `multilingual` on a property definition to store a separate value per language. A language selector appears in the edit form, and the API returns language codes alongside values.
 
-**Computed** — Set `formula` on a property definition to compute its value automatically on every save. See [Formulas](../api/formulas.md).
+**Computed** — Set `formula` on a property definition to compute its value automatically on every save. See [Formulas](/api/formulas/).
 
 **Audit trail** — All property values carry creation metadata (timestamp and user), making it traceable who set what and when.
 
@@ -32,7 +32,7 @@ Custom property names cannot start with `_`. That prefix is reserved for system 
 | `boolean` | Toggle switch | Stores `true` or `false`. |
 | `date` | Date picker | Stores date only — no time component. |
 | `datetime` | Date + time picker | Stores a full timestamp. |
-| `file` | File upload | Stores a file attachment. See [Files](../api/files.md) for the upload process. |
+| `file` | File upload | Stores a file attachment. See [Files](/api/files/) for the upload process. |
 | `reference` | Entity selector | Links to another entity. Use `reference_query` on the definition to filter selectable options. |
 | `counter` | Auto-generated code | Read-only in the UI. Shows a generate button when empty; displays the value once assigned. Use for invoice numbers, project codes. |
 
@@ -46,7 +46,7 @@ Via the API, each value is a separate property object — add values by POSTing,
 
 When `multilingual: true` is set on a property definition, each value carries a `language` code. The edit form shows a language selector next to each input.
 
-Values for different languages are stored as separate property objects, each carrying a `language` code. See [API → Properties](../api/properties.md) for the API format.
+Values for different languages are stored as separate property objects, each carrying a `language` code. See [API → Properties](/api/properties/) for the API format.
 
 ## File Properties
 
@@ -66,7 +66,7 @@ Set `formula` on a property definition to compute its value automatically from o
 Use computed properties for totals, counts, and aggregations so derived data always stays in sync with the source.
 :::
 
-See [Formulas](../api/formulas.md) for the full syntax reference.
+See [Formulas](/api/formulas/) for the full syntax reference.
 
 ## Properties Used by Entu UI
 

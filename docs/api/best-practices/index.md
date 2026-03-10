@@ -29,7 +29,7 @@ GET /api/{db}/entity?limit=100&skip=0    # first page
 GET /api/{db}/entity?limit=100&skip=100  # second page
 ```
 
-See [Query Reference](./query-reference.md) for full filter syntax.
+See [Query Reference](/api/query-reference/) for full filter syntax.
 
 ## Batch Operations
 

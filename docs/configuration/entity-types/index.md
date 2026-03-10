@@ -19,8 +19,8 @@ All configuration happens through the Entu UI — no code or config files.
 | `description` | Explanation of what this entity type represents. |
 | `add_from` | Controls where entities of this type can be created. Reference a **menu** entity to show this type in the "New …" button when that menu is active. Reference an **entity type** to allow adding this type as a child on any instance of that type. Reference a **specific entity** to allow it only under that one entity. Without this, the "Add" button will never offer this type. |
 | `default_parent` | When a new entity of this type is created, the referenced entity is automatically added as an additional `_parent`. Useful for routing new records into a fixed folder regardless of where the user clicked "Add". |
-| `_sharing` | Maximum visibility for entities of this type: `private` (default), `domain`, or `public`. See [Entities → Sharing](../overview/entities.md#sharing). |
-| `plugin` | Plugins attached to this entity type. See [Plugins](./plugins.md). |
+| `_sharing` | Maximum visibility for entities of this type: `private` (default), `domain`, or `public`. See [Entities → Sharing](/overview/entities/#sharing). |
+| `plugin` | Plugins attached to this entity type. See [Plugins](/configuration/plugins/). |
 
 ::: warning
 If `add_from` is not set, users will have no way to create entities of this type through the UI. Reference at least one menu, entity type, or specific entity.
@@ -64,7 +64,7 @@ On the entity type's page, use the "Add" button to create child entities of type
 | `default` | Pre-filled value when creating a new entity. |
 | `list` | Allows multiple values. Extra inputs appear automatically as the user fills them in. |
 | `multilingual` | Stores a separate value per language. A language selector appears next to each input. |
-| `formula` | A server-side expression evaluated and written on every save. See [Formulas](../api/formulas.md). |
+| `formula` | A server-side expression evaluated and written on every save. See [Formulas](/api/formulas/). |
 
 **Type-specific**
 
@@ -90,7 +90,7 @@ Enable `search` on properties users frequently filter by (e.g. `name`, `status`,
 
 Available types: `string`, `text`, `number`, `boolean`, `date`, `datetime`, `file`, `reference`, `counter`.
 
-See [Properties → Property Types](../overview/properties.md#property-types) for descriptions of each type and their UI behaviour.
+See [Properties → Property Types](/overview/properties/#property-types) for descriptions of each type and their UI behaviour.
 
 ## Property Visibility
 
@@ -109,5 +109,5 @@ Setting `_sharing` on a property definition only controls whether that property 
 :::
 
 ::: tip
-For a full worked example of an entity type with properties, see [Use-Case Examples](../examples.md).
+For a full worked example of an entity type with properties, see [Use-Case Examples](/examples/).
 :::

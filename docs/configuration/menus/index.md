@@ -15,7 +15,7 @@ Entity types can also set `add_from` to reference another **entity type** or a *
 | `ordinal` | Numeric sort order within the group. Lower numbers appear first. |
 | `query` | URL query string that defines what entities this menu shows. When the current page URL starts with this query, the menu item is highlighted as active. |
 
-The `query` parameter uses the standard entity filter syntax. See [API → Query Reference](../api/query-reference.md) for the full syntax.
+The `query` parameter uses the standard entity filter syntax. See [API → Query Reference](/api/query-reference/) for the full syntax.
 
 ::: info
 The connection between menus and entity types is two-way: the menu defines what to show, and the entity type's `add_from` property references the menu to make the "Add" button appear when that menu is active.

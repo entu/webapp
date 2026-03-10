@@ -97,7 +97,7 @@ onMounted(async () => {
 
       <div class="shrink-0 p-4 text-center text-sm text-gray-500">
         <a
-          href="https://entu.dev"
+          href="https://entu.ee/overview/"
           target="_blank"
         >{{ t('docs') }}</a>
 
@@ -171,7 +171,7 @@ onMounted(async () => {
 
         <div class="pb-4 text-center text-sm text-gray-500">
           <a
-            href="https://entu.dev"
+            href="https://entu.ee/overview/"
             target="_blank"
           >{{ t('docs') }}</a>
 
@@ -221,9 +221,9 @@ onMounted(async () => {
     files: Files
     requests: Requests in this month
     terms: Terms of Service
-    termsUrl: https://entu.ee/terms
+    termsUrl: https://entu.ee/terms/
     pricing: Pricing
-    pricingUrl: https://entu.ee/#price
+    pricingUrl: https://entu.ee/#pricing
     docs: Documentation
   et:
     signIn: Sisene
@@ -233,8 +233,8 @@ onMounted(async () => {
     files: Faile
     requests: Päringuid selles kuus
     terms: Kasutustingimused
-    termsUrl: https://entu.ee/et/tingimused
+    termsUrl: https://entu.ee/terms/
     pricing: Hinnad
-    pricingUrl: https://entu.ee/et#price
+    pricingUrl: https://entu.ee/#pricing
     docs: Dokumentatsioon
 </i18n>

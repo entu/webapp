@@ -82,7 +82,7 @@ onMounted(async () => {
 
     <div class="shrink-0 p-4 text-center text-sm text-gray-500">
       <a
-        href="https://entu.dev"
+        href="https://entu.ee/overview/"
         target="_blank"
       >{{ t('docs') }}</a>
 
@@ -109,15 +109,15 @@ onMounted(async () => {
     new: Create New Database
     docs: Documentation
     pricing: Pricing
-    pricingUrl: https://entu.ee/#price
+    pricingUrl: https://entu.ee/#pricing
     terms: Terms of Service
-    termsUrl: https://entu.ee/terms
+    termsUrl: https://entu.ee/terms/
   et:
     signIn: Sisene
     new: Loo uus andmebaas
     docs: Dokumentatsioon
     pricing: Hinnad
-    pricingUrl: https://entu.ee/et#price
+    pricingUrl: https://entu.ee/#pricing
     terms: Kasutustingimused
-    termsUrl: https://entu.ee/et/tingimused
+    termsUrl: https://entu.ee/terms/
 </i18n>
