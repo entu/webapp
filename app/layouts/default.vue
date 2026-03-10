@@ -136,7 +136,10 @@ function changeMenu (collapsed) {
     <template v-else>
       <div class="flex h-full flex-col">
         <!-- Mobile top bar -->
-        <div class="relative flex items-center bg-[#1E434C] px-3 pb-4 text-white print:hidden" style="padding-top: calc(env(safe-area-inset-top) + 1rem)">
+        <div
+          class="relative flex items-center bg-[#1E434C] px-3 pb-4 text-white print:hidden"
+          style="padding-top: calc(env(safe-area-inset-top) + 1rem)"
+        >
           <my-icon
             v-if="route.params.entityId && isQuery"
             class="cursor-pointer text-white opacity-80 hover:opacity-100"
@@ -164,7 +167,10 @@ function changeMenu (collapsed) {
         </div>
 
         <!-- Content: show list OR detail, never both -->
-        <div class="grow overflow-hidden" style="padding-bottom: env(safe-area-inset-bottom)">
+        <div
+          class="grow overflow-hidden"
+          style="padding-bottom: env(safe-area-inset-bottom)"
+        >
           <layout-entity-table v-if="accountId && showTable && !route.params.entityId" />
           <layout-entity-list v-else-if="accountId && isQuery && !route.params.entityId" />
 

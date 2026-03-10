@@ -2,8 +2,8 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   vite: { server: { port: 3003 } },
-  title: 'Entu Documentation',
-  description: 'Documentation for the Entu flexible object database',
+  title: 'Entu',
+  description: 'Flexible Object Database - Build your data model without code',
   head: [
     ['script', { src: 'https://analytics.entu.dev/ea.min.js', 'data-site': 'entu.dev', crossorigin: 'anonymous', defer: '' }]
   ],
@@ -13,7 +13,7 @@ export default defineConfig({
       { text: 'Overview', link: '/overview/' },
       { text: 'Configuration', link: '/configuration/entity-types' },
       { text: 'API', link: '/api/quickstart' },
-      { text: 'Pricing', link: 'https://entu.ee/#price' },
+      { text: 'Pricing', link: '/#pricing' }
     ],
     sidebar: [
       {
@@ -58,8 +58,7 @@ export default defineConfig({
     ],
     search: { provider: 'local' },
     footer: {
-      message: '<a href="mailto:info@entu.ee">info@entu.ee</a>',
-      copyright: '© 2026 Entusiastid OÜ'
+      message: '<a href="/terms">Terms of Service</a> &nbsp;·&nbsp; <a href="https://climate.stripe.com/GdfbXF" target="_blank" rel="noopener">Stripe Climate</a><br><strong>Entusiastid OÜ</strong> &nbsp;·&nbsp; Saturni 3-3, 10142 Tallinn &nbsp;·&nbsp; <a href="mailto:info@entu.ee">info@entu.ee</a>'
     }
   }
 })

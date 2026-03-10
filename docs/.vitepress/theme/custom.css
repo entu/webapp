@@ -21,18 +21,18 @@
 
 /* Light mode nav styling */
 :root:not(.dark) .VPNav {
-  background-color: #42415c !important;
+  background-color: #1E434C !important;
   border-bottom: none !important;
 }
 
 :root:not(.dark) .VPNavBar {
-  background-color: #42415c !important;
+  background-color: #1E434C !important;
   border-bottom: none !important;
 }
 
 :root:not(.dark) .VPNavBar .content-body,
 :root:not(.dark) .VPNavBar .curtain {
-  background-color: #42415c !important;
+  background-color: #1E434C !important;
 }
 
 :root:not(.dark) .VPNavBar .title,
@@ -112,8 +112,8 @@
 /* Sun/moon icons inside the white toggle circle need to be dark (light mode only) */
 :root:not(.dark) .VPNavBar .VPSwitch .vpi-sun,
 :root:not(.dark) .VPNavBar .VPSwitch .vpi-moon {
-  background-color: #42415c !important;
-  color: #42415c !important;
+  background-color: #1E434C !important;
+  color: #1E434C !important;
 }
 
 /* Hamburger/close icon lines — background-color controls visibility, not color */
@@ -123,6 +123,16 @@
   background-color: #fff !important;
 }
 
+/* Push nav links + search to the right */
+.VPNavBar .VPNavBarMenu {
+  margin-left: auto !important;
+}
+
+.VPNavBar .VPNavBarSearch {
+  order: 99;
+  flex-grow: 0 !important;
+}
+
 /* Title border-bottom line */
 .VPNavBarTitle .title {
   border-bottom: none !important;
@@ -130,6 +140,26 @@
 
 .VPSidebar .group {
   border-top: none !important;
+}
+
+:root:not(.dark) .VPFooter {
+  background-color: #1E434C !important;
+  border-top: none !important;
+}
+
+:root:not(.dark) .VPFooter .message,
+:root:not(.dark) .VPFooter .copyright {
+  color: rgba(255, 255, 255, 0.65) !important;
+}
+
+.VPFooter a {
+  color: rgba(255, 255, 255, 0.85) !important;
+  text-decoration: none !important;
+}
+
+.VPFooter a:hover {
+  color: #fff !important;
+  text-decoration: underline !important;
 }
 
 .VPHero .VPImage.image-src {
