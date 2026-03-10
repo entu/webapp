@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
+  vite: { server: { port: 3003 } },
   title: 'Entu Documentation',
   description: 'Documentation for the Entu flexible object database',
   head: [

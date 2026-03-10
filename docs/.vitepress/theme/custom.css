@@ -116,6 +116,13 @@
   color: #42415c !important;
 }
 
+/* Hamburger/close icon lines — background-color controls visibility, not color */
+:root:not(.dark) .VPNavBar .VPNavBarHamburger .top,
+:root:not(.dark) .VPNavBar .VPNavBarHamburger .middle,
+:root:not(.dark) .VPNavBar .VPNavBarHamburger .bottom {
+  background-color: #fff !important;
+}
+
 /* Title border-bottom line */
 .VPNavBarTitle .title {
   border-bottom: none !important;
