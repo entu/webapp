@@ -5,6 +5,7 @@ export async function aggregateEntity (entu, entityId) {
   const entity = await entu.db.collection('entity').findOne({ _id: entityId }, {
     projection: {
       aggregated: true,
+      hash: true,
       'private.name': true,
       'private._type': true,
       'private._parent': true,
