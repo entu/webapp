@@ -358,7 +358,7 @@ async function getNextCounterValue (entu, property) {
       .limit(1)
       .toArray()
 
-    if (!lastProperty.length === 0) {
+    if (lastProperty.length === 0) {
       return { string: `${add}`, number: add }
     }
 
