@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Property'],
-    description: 'Soft delete individual property by marking it as deleted (property remains in database but excluded from entity). Entity is automatically re-aggregated. Also cleans up file from S3 storage if property is a file. Requires _editor rights on parent entity',
+    description: 'Soft delete individual property by marking it as deleted (property remains in database but excluded from entity). Entity is automatically re-aggregated. Also cleans up file from S3 storage if property is a file. Requires _editor rights on parent entity. _type cannot be deleted. Rights properties (_owner, _parent, etc.) require _owner rights. Cannot delete the last _owner. Deleting _parent requires _expander rights on the referenced parent entity',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
@@ -120,7 +120,8 @@ export default defineEventHandler(async (event) => {
     projection: {
       _id: false,
       entity: true,
-      type: true
+      type: true,
+      reference: true
     }
   })
 
@@ -128,6 +129,13 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: 404,
       statusMessage: 'Property not found'
+    })
+  }
+
+  if (property.type === '_type') {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'Can\'t delete _type property'
     })
   }
 
@@ -171,6 +179,40 @@ export default defineEventHandler(async (event) => {
       statusCode: 403,
       statusMessage: 'User not in _owner property'
     })
+  }
+
+  if (property.type === '_owner' && (entity.private?._owner?.length || 0) <= 1) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: 'Can\'t delete last _owner'
+    })
+  }
+
+  if (property.type === '_parent' && property.reference) {
+    const parent = await entu.db.collection('entity').findOne({
+      _id: property.reference
+    }, {
+      projection: {
+        _id: false,
+        'private._expander': true
+      }
+    })
+
+    if (!parent) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: 'Entity in _parent property not found'
+      })
+    }
+
+    const parentAccess = parent.private?._expander?.map((s) => s.reference?.toString()) || []
+
+    if (!parentAccess.includes(entu.userStr) && !entu.systemUser) {
+      throw createError({
+        statusCode: 403,
+        statusMessage: 'User not in parent _owner, _editor nor _expander property'
+      })
+    }
   }
 
   await entu.db.collection('property').updateOne({

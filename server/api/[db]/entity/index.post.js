@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Create new entity with initial properties. Supports all property types (string, number, boolean, reference, date, datetime). File properties return signed S3 upload URLs. Returns entity ID and created properties in flattened structure',
+    description: 'Create new entity with initial properties. Property _type is required — it must reference the entity type. Supports all property types (string, number, boolean, reference, date, datetime). File properties return signed S3 upload URLs. Returns entity ID and created properties in flattened structure',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
@@ -20,7 +20,7 @@ defineRouteMeta({
         'application/json': {
           schema: {
             type: 'array',
-            description: 'Array of property objects to create entity with',
+            description: 'Array of property objects to create entity with. Must include a { "type": "_type", "reference": "..." } entry referencing the entity type',
             items: {
               type: 'object',
               properties: {

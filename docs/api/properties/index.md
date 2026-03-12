@@ -71,6 +71,10 @@ POST an array of property objects to create or update values:
 
 Use the value field that matches the property type (`string`, `number`, `boolean`, `date`, `datetime`, `reference`).
 
+::: warning
+When creating a new entity (POST to `/api/{db}/entity`), you must include a `_type` property referencing the entity type. Omitting it returns a `400` error.
+:::
+
 ## Overwriting a Property Value
 
 To overwrite a specific existing value rather than adding a new one, include its `_id` in the POST body:
@@ -116,3 +120,26 @@ When a property definition has `multilingual: true`, each language is a separate
   { "type": "description", "string": "Ülevaade", "language": "et" }
 ]
 ```
+
+## Deleting a Property
+
+Delete a specific property value by its `_id`:
+
+```
+DELETE /api/{db}/property/{_id}
+```
+
+Returns `{ "deleted": true }` on success. Deletion is a soft-delete — the property is marked as deleted and excluded from the entity, but remains in the database for audit purposes.
+
+### Restrictions
+
+| Property | Rule |
+|---|---|
+| `_type` | Cannot be deleted |
+| `_owner`, `_editor`, `_expander`, `_viewer`, `_noaccess`, `_sharing`, `_inheritrights`, `_parent` | Requires `_owner` rights on the entity |
+| `_owner` (last one) | Cannot be deleted — at least one `_owner` must remain |
+| `_parent` | Also requires `_expander` rights on the referenced parent entity |
+
+::: warning
+Deleting `_type` always returns `403`. To change an entity's type, overwrite the existing value by POSTing with the old property `_id` and a new reference — see [Overwriting a Property Value](#overwriting-a-property-value).
+:::

@@ -30,6 +30,14 @@ export async function setEntity (entu, entityId, properties) {
   const createdDt = new Date()
 
   validateInput(properties)
+
+  if (!entityId && !properties.some((p) => p.type === '_type')) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Property _type is required'
+    })
+  }
+
   await checkEntityAccess(entu, entityId, properties, rightTypes)
   await validatePropertyTypes(entu, properties, allowedTypes)
 
@@ -110,8 +118,21 @@ async function checkEntityAccess (entu, entityId, properties, rightTypes) {
   }
 }
 
-// Validates each property's type name and _parent references
+// Validates each property's type name, system property value types, and _parent references
 async function validatePropertyTypes (entu, properties, allowedTypes) {
+  const systemPropertyValueTypes = {
+    _type: 'reference',
+    _parent: 'reference',
+    _noaccess: 'reference',
+    _viewer: 'reference',
+    _expander: 'reference',
+    _editor: 'reference',
+    _owner: 'reference',
+    _sharing: 'string',
+    _inheritrights: 'boolean'
+  }
+  const allValueFields = ['string', 'number', 'boolean', 'reference', 'date', 'datetime']
+
   for (let i = 0; i < properties.length; i++) {
     const property = properties[i]
 
@@ -132,6 +153,66 @@ async function validatePropertyTypes (entu, properties, allowedTypes) {
         statusCode: 400,
         statusMessage: 'Property type can\'t begin with _'
       })
+    }
+
+    const expectedValueField = systemPropertyValueTypes[property.type]
+
+    if (expectedValueField) {
+      if (property[expectedValueField] === undefined || property[expectedValueField] === null) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: `Property ${property.type} must have ${expectedValueField} value`
+        })
+      }
+
+      const disallowedFields = allValueFields.filter((f) => f !== expectedValueField)
+
+      for (const field of disallowedFields) {
+        if (property[field] !== undefined) {
+          throw createError({
+            statusCode: 400,
+            statusMessage: `Property ${property.type} must only have ${expectedValueField} value`
+          })
+        }
+      }
+
+      if (property.type === '_sharing' && !['public', 'domain', 'private'].includes(property.string)) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: 'Property _sharing value must be public, domain or private'
+        })
+      }
+    }
+    else {
+      const metaFields = ['type', '_id', 'language']
+      const hasValue = Object.keys(property).some((k) => !metaFields.includes(k))
+
+      if (!hasValue) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: 'Property must have at least one value'
+        })
+      }
+
+      const hasFilename = property.filename !== undefined
+      const hasFilesize = property.filesize !== undefined
+      const hasFiletype = property.filetype !== undefined
+
+      if ((hasFilename || hasFilesize || hasFiletype) && !(hasFilename && hasFilesize && hasFiletype)) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: 'File property must have filename, filesize and filetype'
+        })
+      }
+    }
+
+    if (property.language !== undefined) {
+      if (typeof property.language !== 'string' || property.language.trim() === '') {
+        throw createError({
+          statusCode: 400,
+          statusMessage: 'Property language must be a non-empty string'
+        })
+      }
     }
 
     if (property.type === '_parent' && property.reference) {
@@ -159,6 +240,23 @@ async function validatePropertyTypes (entu, properties, allowedTypes) {
         throw createError({
           statusCode: 400,
           statusMessage: 'User not in parent _owner, _editor nor _expander property'
+        })
+      }
+    }
+
+    const refCheckedTypes = ['_type', '_owner', '_editor', '_viewer', '_expander', '_noaccess']
+
+    if (refCheckedTypes.includes(property.type) && property.reference) {
+      const ref = await entu.db.collection('entity').findOne({
+        _id: getObjectId(property.reference)
+      }, {
+        projection: { _id: true }
+      })
+
+      if (!ref) {
+        throw createError({
+          statusCode: 400,
+          statusMessage: `Entity in ${property.type} property not found`
         })
       }
     }

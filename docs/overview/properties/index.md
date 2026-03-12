@@ -58,6 +58,14 @@ To enable file uploads on an entity type, add a property definition with `type: 
 If a file property named `photo` exists on an entity, the Entu UI will use it as the entity's thumbnail.
 :::
 
+## Default Values
+
+A property definition can carry a `default` value that is applied automatically by the server when the entity is first created. It is also pre-filled in the create form so users see it immediately. The user can edit or clear the pre-filled value before saving — if they do, their value takes precedence.
+
+Supported for all types except `file` and `counter`. For `date` and `datetime`, relative offsets like `+1d` or `-7d` can be used instead of a fixed date.
+
+See [Property Defaults](/configuration/entity-types/#property-defaults) for the full format reference.
+
 ## Computed Properties
 
 Set `formula` on a property definition to compute its value automatically from other data — the entity's own properties, child entities, or entities that reference it. Computed properties are recalculated on every save and cannot be edited manually.
