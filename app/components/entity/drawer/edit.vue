@@ -192,6 +192,13 @@ async function onClose () {
         :tab="t('defaultPlugin')"
       >
         <div
+          v-if="entity.type.description"
+          class="px-3 pb-0 pt-4 text-gray-500 md:px-6"
+        >
+          <my-markdown :source="entity.type.description" />
+        </div>
+
+        <div
           v-for="pg in properties"
           :key="pg.name"
           class="px-3 py-4 md:px-6"

@@ -101,7 +101,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
           </template>
 
           <n-popover
-            v-if="property.description"
+            v-if="userId && property.description"
             class="max-w-sm text-sm"
             placement="top"
           >
@@ -112,12 +112,10 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
               />
             </template>
 
-            <div
-              v-if="property.description"
+            <my-markdown
               class="text-sm"
-            >
-              {{ property.description }}
-            </div>
+              :source="property.description"
+            />
           </n-popover>
         </div>
       </div>
