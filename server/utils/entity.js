@@ -44,6 +44,7 @@ export async function setEntity (entu, entityId, properties) {
   if (!entityId) {
     await applyDefaultParents(entu, properties, createdDt)
     await inheritParentProperties(entu, properties, createdDt)
+    await applyPropertyDefaults(entu, properties)
     entityId = await createEntityRecord(entu, properties, createdDt)
   }
 
@@ -320,6 +321,62 @@ async function inheritParentProperties (entu, properties, createdDt) {
     if (parentsWithInheritRights.length > 0) {
       properties.push({ type: '_inheritrights', boolean: true, created: { at: createdDt, by: entu.user || 'entu' } })
     }
+  }
+}
+
+// Resolves a default value string to a Date — supports relative offsets like +1d, -2h, +1m
+function resolveServerDate (defaultStr) {
+  const match = defaultStr.match(/^([+-])(\d+)([hdwmy])$/)
+
+  if (match) {
+    const n = parseInt(match[2], 10) * (match[1] === '+' ? 1 : -1)
+    const d = new Date()
+
+    if (match[3] === 'h') d.setHours(d.getHours() + n)
+    else if (match[3] === 'd') d.setDate(d.getDate() + n)
+    else if (match[3] === 'w') d.setDate(d.getDate() + n * 7)
+    else if (match[3] === 'm') d.setMonth(d.getMonth() + n)
+    else if (match[3] === 'y') d.setFullYear(d.getFullYear() + n)
+
+    return d
+  }
+
+  return new Date(defaultStr)
+}
+
+// Pushes default property values from the entity type definition for any property not already provided
+async function applyPropertyDefaults (entu, properties) {
+  const entityType = properties.find((x) => x.type === '_type' && x.reference)
+
+  if (!entityType) return
+
+  const propDefs = await entu.db.collection('entity').find(
+    {
+      'private._parent.reference': getObjectId(entityType.reference),
+      'private.default': { $exists: true }
+    },
+    { projection: { 'private.name': 1, 'private.type': 1, 'private.default': 1 } }
+  ).toArray()
+
+  for (const propDef of propDefs) {
+    const name = propDef.private?.name?.[0]?.string
+    const type = propDef.private?.type?.[0]?.string
+    const defaultStr = propDef.private?.default?.[0]?.string
+
+    if (!name || !type || !defaultStr) continue
+    if (['file', 'counter'].includes(type)) continue
+    if (properties.some((p) => p.type === name)) continue
+
+    const prop = { type: name }
+
+    if (type === 'number') prop.number = Number(defaultStr)
+    else if (type === 'boolean') prop.boolean = defaultStr.toLowerCase() === 'true'
+    else if (type === 'date') prop.date = resolveServerDate(defaultStr)
+    else if (type === 'datetime') prop.datetime = resolveServerDate(defaultStr)
+    else if (type === 'reference') prop.reference = defaultStr
+    else prop.string = String(defaultStr)
+
+    properties.push(prop)
   }
 }
 

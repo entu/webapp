@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NPopconfirm, NTabs, NTabPane } from 'naive-ui'
+import { makeDefaultValue } from '~/utils/api'
 
 const { locale, t } = useI18n()
 const { token } = useUser()
@@ -72,7 +73,12 @@ const entity = computed(() => {
     _sharing: getValue(rawEntity.value?._sharing),
     name: getValue(rawEntity.value?.name),
     type: entityType.value?.type || {},
-    props: entityTypes.value[typeId.value]?.props.map((x) => ({ ...x, values: [] })) || []
+    props: entityTypes.value[typeId.value]?.props.map((x) => ({
+      ...x,
+      values: x.default && !rawEntity.value && x.type !== 'reference'
+        ? [makeDefaultValue(x.type, x.default)]
+        : []
+    })) || []
   }
 
   for (const property in rawEntity.value) {
