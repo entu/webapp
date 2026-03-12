@@ -10,7 +10,9 @@ export default defineNitroPlugin(async () => {
 async function aggregate () {
   const db = await connectDb('entu')
   const mongoDatabases = await db.admin().listDatabases()
-  const databases = mongoDatabases.databases.filter((db) => !['admin', 'config', 'local'].includes(db.name)).map((db) => db.name)
+  const databases = mongoDatabases.databases
+    .filter((db) => !['admin', 'analytics', 'config', 'local'].includes(db.name))
+    .map((db) => db.name)
 
   await Promise.all(databases.map(aggregateDb))
 }
