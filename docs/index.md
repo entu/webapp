@@ -111,11 +111,25 @@ partners:
 
 ## Why Entu?
 
-Every organization — company, institution, school, or non-profit — creates data that needs to be organized, stored, and shared. The usual answer is a collection of narrow, purpose-built systems: one for contacts, another for documents, a third for assets. Each is rigid and expensive to change. Connecting them requires custom integrations. Moving data between them is often done by hand.
+Most organisations end up with a patchwork of narrow, purpose-built tools — one for contacts, another for documents, a third for assets — each rigid and expensive to change, with data siloed between them.
 
-Entu takes a different approach. Instead of fitting your work into a fixed system, you describe your data in Entu — what types of objects exist, what properties they have, how they relate to each other — and the system adapts to you. Object types, properties, and relationships can be added or changed at any time, without code or migrations.
+Entu takes a different approach: you describe your data model directly in the UI, and the system adapts to you. Entity types, properties, and relationships can be added or changed at any time, without code or migrations. Users work through a web browser; developers and external tools connect via the REST API.
 
-The result is a single platform where all your information lives together. Users access it through a web browser from any device. Developers and external tools connect through the REST API. And because everything is in one place, there is no need to build integrations between separate systems or move data manually between them.
+## Built for the real world
+
+Entu is already in production across a wide range of industries and use cases. Whether you're managing physical collections, running business operations, powering a custom web app, or gathering data from users — Entu adapts to the task without requiring a purpose-built system for each one:
+
+**Libraries** — Manage book and audio-visual collections, patron records, and lending history. Track what's on the shelf, who has what, and when it's due back.
+
+**Museums** — Catalogue artefacts and items with rich metadata, provenance, and media attachments. Structure collections into hierarchies that mirror your physical organisation.
+
+**Business records** — Handle bookkeeping entries, supplier and customer records, and stock inventory — all in one place, without stitching together separate tools.
+
+**Digital signage** — Store media files, configure screens and playlists, and manage playback schedules. One database drives both the content library and the display configuration.
+
+**Web back-ends** — Drive custom web apps and portals via the REST API, with user management and access control built in. No separate admin UI needed — Entu is the admin UI.
+
+**Data collection** — Gather applications, registrations, and survey responses directly in the Entu UI. Configure exactly what fields to capture, who can submit, and who can review — no external form tool needed.
 
 ## Pricing
 

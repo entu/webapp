@@ -119,3 +119,51 @@ Grant `_editor` rights on the Companies container to your sales team and enable 
 ```
 GET /api/{db}/entity?_type.string=media-item&tags.string=nature
 ```
+
+---
+
+## Library — Books, Patrons & Lendings
+
+**Goal:** Manage a book and audio-visual collection, track patron records, and record lending history including due dates and returns.
+
+### Entity types to create
+
+**Book**
+| Property name | Type | Notes |
+|---|---|---|
+| `title` | string | `mandatory`, `search` |
+| `author` | string | `list: true` — multiple authors allowed |
+| `isbn` | string | |
+| `type` | string | e.g. book, DVD, audio CD; `set` turns it into a dropdown |
+| `copies` | number | Total copies owned |
+| `description` | text | |
+| `cover` | file | Cover image |
+
+**Person**
+| Property name | Type | Notes |
+|---|---|---|
+| `name` | string | `mandatory`, `search` |
+| `email` | string | |
+| `phone` | string | |
+| `card_number` | string | Library card / patron ID |
+| `notes` | text | |
+
+**Lending**
+| Property name | Type | Notes |
+|---|---|---|
+| `book` | reference | Points to a Book entity |
+| `borrower` | reference | Points to a Person entity |
+| `lent_on` | date | |
+| `due_date` | date | |
+| `returned` | boolean | Set to `true` when the item is back |
+| `overdue` | boolean | `formula: 'due_date < now() && !returned'`, `readonly` — auto-computed |
+
+### Structure
+
+- Create a **Books** container and add each book as a child.
+- Create a **Patrons** container and add each person as a child.
+- Add lending records as children of the relevant patron — the `borrower` reference and `_parent` relationship both link the lending to the patron.
+
+### Access control
+
+Grant library staff `_editor` rights on both the Books and Patrons containers with `_inheritrights: true`. Give patrons `_viewer` rights on their own entity so they can see their lending history through the API or a custom portal.
