@@ -1,6 +1,10 @@
+## 2026-03-12
+- **Strict entity type validation**: Creating an entity now requires a `_type` value; system properties (`_type`, `_parent`, `_sharing`, etc.) are protected from deletion and validated on write
+- **Property default values**: Default values defined on entity types are now applied automatically on both the client (edit drawer) and server (API) when creating or editing entities
+
 ## 2026-03-09
+- **Mobile-responsive UI**: Redesigned the layout, side menu, drawers, and entity pages to work on small screens; added a collapsible mobile menu with hamburger toggle and back-navigation
 - **Entity history**: Added audit log drawer showing a full change history for each entity — who changed what and when, grouped by editor and time, with before/after values, language badges, and exact timestamps on hover
-- **Footer links**: Added Documentation (entu.dev) and Pricing links alongside Terms of Service in all page footers
 
 ## 2026-03-06
 - **Two-pass formula evaluation**: Formulas now evaluate in two passes to correctly resolve dependencies between computed fields
