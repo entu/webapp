@@ -64,7 +64,7 @@ Never commit API keys to source control. Use environment variables or a secrets 
 
 **Index frequently queried properties** by enabling `search` on the property definition. System properties `_type` and `_parent` are already indexed.
 
-**Avoid unnecessary aggregation** — regular GET requests return cached data. Only use `/aggregate` when you need fresh formula values after external changes.
+**Avoid unnecessary aggregation** — regular GET requests return cached data. Only use `GET /api/{db}/entity/{_id}/aggregate` when you need fresh formula values after external changes.
 
 ## Error Handling
 

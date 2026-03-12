@@ -33,7 +33,7 @@ Permanently removes the entity document when aggregation detects a `_deleted` pr
 
 ### insertOne(property)
 Called by:
-- `DELETE /api/[db]/entity/[_id]` — inserts `{ type: '_deleted', reference: user, datetime: now }`
+- `DELETE /api/[db]/entity/[_id]` — inserts `{ entity: entityId, type: '_deleted', reference: user, datetime: now, created: { at: now, by: user } }`
 - `POST /api/[db]/entity` — one per submitted property + auto `_owner` and `_created`
 - `POST /api/[db]/entity/[_id]` — one per submitted property
 - `POST /api/[db]/entity/[_id]/duplicate` — one per copied property per duplicate

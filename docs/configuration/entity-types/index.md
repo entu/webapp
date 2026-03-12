@@ -100,14 +100,14 @@ See [Properties → Property Types](/overview/properties/#property-types) for de
 
 ### Entity Type Visibility
 
-The `_sharing` parameter on an entity type sets the maximum visibility for all entities of that type.
+The `_sharing` parameter on an entity type controls which property values are projected into `domain` and `public` API responses. It does **not** make entity instances publicly accessible by itself — entity-level access is still governed by `_sharing` on each entity instance.
 
 | Param | Description |
 |---|---|
-| `_sharing` | Maximum visibility for entities of this type: `private` (default), `domain`, or `public`. See [Entities → Sharing](/overview/entities/#sharing). |
+| `_sharing` | Enables and caps property projection for this type: not set (default — no domain/public projection), `private` (no capping), `domain`, or `public`. See [Entities → Sharing](/overview/entities/#sharing). |
 
-::: danger
-Setting `_sharing: public` makes all entities of this type visible to anyone on the internet without authentication. Only use it for intentionally public content.
+::: warning
+Setting `_sharing: public` on an entity type enables property values to appear in public API responses, but entities are still only accessible to unauthenticated users if the entity instance itself also has `_sharing: public`. The type controls *what data* can be exposed; the instance controls *whether* it is accessible.
 :::
 
 ### Property Visibility
@@ -124,9 +124,10 @@ The entity type's `_sharing` acts as a cap on how broadly property definitions c
 
 | Entity type `_sharing` | Property definition `_sharing` behaviour |
 |---|---|
-| `private` | Properties can be set to `private`, `domain`, or `public`. No capping is applied. |
+| not set | No properties are projected into domain or public views, regardless of property definition settings. |
+| `private` | No capping is applied — properties use their own `_sharing` value. |
 | `domain` | Properties set to `domain` are exposed to domain users. Properties set to `public` are automatically capped to `domain`. |
-| `public` | Properties can be `private`, `domain`, or `public`. No capping is applied. |
+| `public` | No capping is applied — properties use their own `_sharing` value. |
 
 ::: tip
 Setting `_sharing` on a property definition only controls whether that property appears in the `domain` or `public` view of an entity. It does not affect who can access the entity itself — entity-level access is governed by `_sharing` and rights properties on the entity instance.

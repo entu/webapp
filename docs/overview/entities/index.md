@@ -42,7 +42,7 @@ Every entity has explicit access control. Rights are set by referencing a person
 | `_editor` | Can view and edit all properties except the rights properties themselves. |
 | `_expander` | Can view the entity and create child entities under it. |
 | `_viewer` | Read-only — can view the entity and its properties. |
-| `_noaccess` | Explicitly denied all access. Overrides inherited rights from parents, but direct rights on the entity itself still apply. |
+| `_noaccess` | Explicitly denied all access on this entity. Overrides all other rights properties set on the same entity. Not propagated to children via `_inheritrights`. |
 
 ### Sharing
 
@@ -69,12 +69,12 @@ Setting `_sharing: public` makes the entity visible to anyone on the internet wi
 Set `_inheritrights: true` on an entity to inherit rights from its parent. Rights defined directly on the child override inherited ones. Use `_noaccess` to block a user who would otherwise inherit access from a parent.
 
 ::: info
-Right evaluation order: explicit rights on the entity → inherited rights from parent → `_sharing` level. `_noaccess` removes a user from all inherited rights lists, but a direct right on the child entity still takes precedence over an inherited `_noaccess`.
+Right evaluation order: explicit rights on the entity → inherited rights from parent → `_sharing` level. `_noaccess` overrides all other rights on the same entity — including direct positive rights. It is not propagated to children via `_inheritrights`; only `_viewer`, `_expander`, `_editor`, and `_owner` are inherited.
 :::
 
 ## Deletion
 
-When an entity is deleted, a `_deleted` property is written to it recording the user and exact timestamp. No data is physically removed from the database — the entity and all its property values remain, but are excluded from all API responses and the UI.
+When an entity is deleted, a `_deleted` property record is inserted, recording the user and exact timestamp. The entity document is then permanently removed from the database. The underlying raw property records in the `property` collection are retained for audit purposes, but the entity no longer appears in any API responses or the UI.
 
 Properties in other entities that referenced the deleted entity are also marked with `deleted.at` / `deleted.by` to keep the audit trail consistent.
 
