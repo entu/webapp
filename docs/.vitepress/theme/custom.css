@@ -162,6 +162,12 @@
   text-decoration: underline !important;
 }
 
+
+.vp-doc h2 {
+  border-top: none !important;
+  margin-top: 96px !important;
+}
+
 .VPHero .VPImage.image-src {
   border: 1px solid #e0e0e0;
   border-radius: 2px;

@@ -64,7 +64,6 @@ const { labels, tiers } = frontmatter.value.pricing
   flex-direction: column;
   padding: 24px 20px;
   border: 1px solid var(--vp-c-divider);
-  border-radius: 8px;
   background: var(--vp-c-bg);
   transition: box-shadow 0.2s;
 }
@@ -116,7 +115,6 @@ const { labels, tiers } = frontmatter.value.pricing
   display: block;
   text-align: center;
   padding: 8px 16px;
-  border-radius: 4px;
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
