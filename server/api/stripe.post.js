@@ -79,13 +79,13 @@ export default defineEventHandler(async (event) => {
       return
     }
 
-    if (!reference) {
-      loggerError('No reference found in checkout')
+    // No reference = new DB purchase (pricing table has no client-reference-id) — nothing to do
+    if (!reference) return
 
-      return
-    }
-
+    // Existing billing flow: update billing customer ID
     const [db, user] = reference.split('-')
+
+    if (!user) return
 
     const entu = {
       account: db,

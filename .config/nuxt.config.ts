@@ -29,12 +29,18 @@ export default defineNuxtConfig({
     }
   },
   spaLoadingTemplate: false,
+  vue: {
+    compilerOptions: {
+      isCustomElement: (tag) => tag === 'stripe-pricing-table'
+    }
+  },
   runtimeConfig: {
     public: {
       apiUrl: '',
       commitHash: '',
-      stripePaths: '',
-      title: 'Entu'
+      title: 'Entu',
+      stripePricingTableIds: '',
+      stripePublishableKey: ''
     },
     jwtSecret: '',
     mongodbUrl: '',

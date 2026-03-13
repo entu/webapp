@@ -72,14 +72,12 @@ pricing:
       price: 10
       objects: '10,000'
       storage: 10 GB
-      extras:
-        - Daily backup
+      extras: []
     - plan: 3
       price: 40
       objects: '100,000'
       storage: 100 GB
       extras:
-        - Daily backup
         - ID authentication
       featured: true
     - plan: 4
@@ -87,8 +85,8 @@ pricing:
       objects: '500,000'
       storage: 500 GB
       extras:
-        - Daily backup
         - ID authentication
+        - Own domain
         - Priority support
 
 partners:

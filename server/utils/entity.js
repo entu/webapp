@@ -359,9 +359,9 @@ async function applyPropertyDefaults (entu, properties) {
   ).toArray()
 
   for (const propDef of propDefs) {
-    const name = propDef.private?.name?.[0]?.string
-    const type = propDef.private?.type?.[0]?.string
-    const defaultStr = propDef.private?.default?.[0]?.string
+    const name = propDef.private?.name?.at(0)?.string
+    const type = propDef.private?.type?.at(0)?.string
+    const defaultStr = propDef.private?.default?.at(0)?.string
 
     if (!name || !type || !defaultStr) continue
     if (['file', 'counter'].includes(type)) continue
