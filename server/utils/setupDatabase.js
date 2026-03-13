@@ -237,6 +237,13 @@ async function createEntities (entu, entities) {
     )
   ))
 
+  // First pass: populates private.name.string for all entities (direct string properties, no cross-entity lookup)
+  await Promise.all(allEntities.map((x) =>
+    aggregateEntity(entu, x._id)
+  ))
+
+  // Second pass: resolves private._type.string and other reference lookups that depend on
+  // private.name.string of other entities being written to the DB (populated by the first pass)
   await Promise.all(allEntities.map((x) =>
     aggregateEntity(entu, x._id)
   ))
