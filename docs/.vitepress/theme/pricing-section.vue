@@ -31,6 +31,7 @@ const { labels, tiers } = frontmatter.value.pricing
         :href="`https://entu.app/new?plan=${tier.plan}&locale=en`"
         target="_blank"
         rel="noopener"
+        @click="window.analytics.track(`plan_${tier.plan}_click`)"
       >{{ labels.cta }}</a>
     </div>
   </div>
