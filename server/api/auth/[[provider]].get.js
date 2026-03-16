@@ -9,11 +9,11 @@ defineRouteMeta({
       {
         name: 'provider',
         in: 'path',
-        required: true,
+        required: false,
         schema: {
           type: 'string',
           enum: ['e-mail', 'google', 'apple', 'smart-id', 'mobile-id', 'id-card'],
-          description: 'OAuth provider'
+          description: 'OAuth provider. If omitted, redirects to OAuth.ee default login page'
         }
       },
       {
@@ -134,7 +134,7 @@ export default defineEventHandler(async (event) => {
     const { origin, pathname } = getRequestURL(event)
 
     const url = new URL('https://oauth.ee')
-    url.pathname = `/auth/${provider}`
+    url.pathname = provider ? `/auth/${provider}` : '/auth'
     url.search = new URLSearchParams({
       client_id: oauthId,
       redirect_uri: `${origin}${pathname}`,
