@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   vite: { server: { port: 3003 } },
+  sitemap: { hostname: 'https://entu.ee' },
   cleanUrls: true,
   title: 'Entu',
   titleTemplate: ':title · Entu',
