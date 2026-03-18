@@ -7,7 +7,7 @@ import MonitorSvg from '../../public/icons/monitor.svg?raw'
 import ServerSvg from '../../public/icons/server.svg?raw'
 import ClipboardListSvg from '../../public/icons/clipboard-list.svg?raw'
 
-const { isDark, frontmatter } = useData()
+const { frontmatter } = useData()
 const partners = frontmatter.value.partners
 
 const iconMap = {
@@ -26,7 +26,7 @@ const iconMap = {
       v-for="partner in partners"
       :key="partner.name"
       class="partner-item"
-      :style="{ backgroundColor: isDark ? partner.darkColor : partner.color }"
+      :style="{ '--partner-color': partner.color, '--partner-dark-color': partner.darkColor }"
     >
       <span class="partner-icon" v-html="iconMap[partner.icon]" />
       {{ partner.name }}
@@ -52,6 +52,11 @@ const iconMap = {
   border-radius: 20px;
   font-size: 0.875rem;
   color: var(--vp-c-text-2);
+  background-color: var(--partner-color);
+}
+
+.dark .partner-item {
+  background-color: var(--partner-dark-color);
 }
 
 .partner-icon {

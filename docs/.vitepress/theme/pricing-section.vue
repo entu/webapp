@@ -12,6 +12,12 @@ const { labels, tiers } = frontmatter.value.pricing
       :key="tier.plan"
       :class="['pricing-card', { featured: tier.featured }]"
     >
+      <div
+        v-if="tier.featured"
+        class="pricing-badge"
+      >
+        {{ labels.badge }}
+      </div>
       <div class="pricing-price">
         <span class="amount">€{{ tier.price }}</span>
         <span class="period">{{ labels.period }}</span>
@@ -26,18 +32,22 @@ const { labels, tiers } = frontmatter.value.pricing
           {{ extra }}
         </li>
       </ul>
-      <a
-        class="pricing-cta"
-        :href="`https://entu.app/new?plan=${tier.plan}&locale=en`"
-        target="_blank"
-        rel="noopener"
-        @click="window.analytics.track(`plan_${tier.plan}_click`)"
-      >{{ labels.cta }}</a>
     </div>
   </div>
+
   <p class="pricing-vat">
     {{ labels.vat }}
   </p>
+
+  <div class="pricing-cta-wrap">
+    <a
+      class="pricing-cta"
+      href="https://entu.app/new?locale=en"
+      target="_blank"
+      rel="noopener"
+      @click="window.analytics?.track('signup_click')"
+    >{{ labels.cta }}</a>
+  </div>
 </template>
 
 <style scoped>
@@ -61,12 +71,29 @@ const { labels, tiers } = frontmatter.value.pricing
 }
 
 .pricing-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   padding: 24px 20px;
   border: 1px solid var(--vp-c-divider);
   background: var(--vp-c-bg);
   transition: box-shadow 0.2s;
+}
+
+.pricing-badge {
+  position: absolute;
+  top: -13px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f59e0b;
+  color: #fff;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0px 8px;
+  border-radius: 20px;
+  white-space: nowrap;
 }
 
 .pricing-card:hover {
@@ -97,7 +124,7 @@ const { labels, tiers } = frontmatter.value.pricing
 .pricing-features {
   list-style: none;
   padding: 0;
-  margin: 0 0 24px;
+  margin: 0;
   flex: 1;
 }
 
@@ -115,12 +142,13 @@ const { labels, tiers } = frontmatter.value.pricing
 .pricing-cta {
   display: block;
   text-align: center;
-  padding: 8px 16px;
+  padding: 8px 32px;
   font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 700;
   text-decoration: none;
   background-color: #f59e0b;
   color: #fff;
+  border-radius: 24px;
   transition: background-color 0.2s;
 }
 
@@ -130,9 +158,16 @@ const { labels, tiers } = frontmatter.value.pricing
   text-decoration: none;
 }
 
+.pricing-cta-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 12px;
+}
+
 .pricing-vat {
   margin: 0 0 40px;
   font-size: 0.8rem;
   color: var(--vp-c-text-3);
+  text-align: center;
 }
 </style>

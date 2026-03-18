@@ -138,6 +138,17 @@
   border-bottom: none !important;
 }
 
+/* Remove divider between nav links and appearance toggle */
+.VPNavBarAppearance {
+  border-left: none !important;
+  padding-left: 0 !important;
+  margin-left: 16px !important;
+}
+
+.VPNavBarAppearance::before {
+  display: none !important;
+}
+
 .VPSidebar .group {
   border-top: none !important;
 }
@@ -173,4 +184,26 @@
   border-radius: 2px;
   max-width: var(--vp-home-hero-image-width);
   width: 100%;
+}
+
+/* Sign In nav button */
+.VPNavBarMenuLink[href="https://entu.app"] {
+  background-color: #f59e0b !important;
+  color: #fff !important;
+  border-radius: 4px;
+  padding: 7px 14px 5px !important;
+  font-weight: 700 !important;
+  margin-left: 8px;
+  margin-right: 12px;
+  transition: background-color 0.2s;
+}
+
+.VPNavBarMenuLink[href="https://entu.app"] .vpi-external-link-icon,
+.VPNavBarMenuLink[href="https://entu.app"]::after {
+  display: none !important;
+}
+
+.VPNavBarMenuLink[href="https://entu.app"]:hover {
+  background-color: #d97706 !important;
+  color: #fff !important;
 }

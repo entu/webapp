@@ -61,6 +61,7 @@ pricing:
     objects: objects
     storage: storage
     cta: Get Started
+    badge: Most Popular
     vat: '* Prices do not include VAT'
   tiers:
     - plan: 1

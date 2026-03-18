@@ -17,7 +17,8 @@ export default defineConfig({
       { text: 'Overview', link: '/overview/' },
       { text: 'Configuration', link: '/configuration/entity-types' },
       { text: 'API', link: '/api/quickstart' },
-      { text: 'Pricing', link: '/#pricing' }
+      { text: 'Pricing', link: '/#pricing' },
+      { text: 'Sign In', link: 'https://entu.app' }
     ],
     sidebar: [
       {
