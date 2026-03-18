@@ -1,9 +1,3 @@
-## 2026-03-18
-- **Docs: Sign In nav button**: Added a highlighted "Sign In" button to the documentation site navigation linking to entu.app
-- **Docs: Pricing section redesign**: Added a "Most Popular" badge to the featured pricing tier, moved the CTA button outside the cards into a shared centered position, and improved button styling
-- **Docs: Partner section dark mode fix**: Refactored partner color theming to use CSS variables so colors correctly adapt in dark mode
-- **Docs: Nav styling**: Removed the divider between nav menu links and the appearance toggle for a cleaner header
-
 ## 2026-03-12
 - **Strict entity type validation**: Creating an entity now requires a `_type` value; system properties (`_type`, `_parent`, `_sharing`, etc.) are protected from deletion and validated on write
 - **Property default values**: Default values defined on entity types are now applied automatically on both the client (edit drawer) and server (API) when creating or editing entities
