@@ -443,16 +443,31 @@ function formulaContent (data, func) {
 export async function getValueArray (entu, values) {
   if (!values) return []
 
-  return await Promise.all(values.map(async (x) => {
+  // Batch-fetch all referenced entities in one query instead of one findOne() per value
+  const refIds = values.filter((x) => x.reference != null).map((x) => x.reference)
+  const refMap = new Map()
+
+  if (refIds.length > 0) {
+    const refDocs = await entu.db.collection('entity').find(
+      { _id: { $in: refIds } },
+      { projection: { 'private.name': true } }
+    ).toArray()
+
+    for (const doc of refDocs) {
+      refMap.set(doc._id.toString(), doc)
+    }
+  }
+
+  return values.map((x) => {
     try {
       if (x.number !== undefined && x.number !== null) return x.number
       if (x.datetime !== undefined && x.datetime !== null) return x.datetime?.toISOString()
       if (x.date !== undefined && x.date !== null) return x.date?.toISOString().substring(0, 10)
       if (x.string !== undefined && x.string !== null) return x.string
       if (x.reference !== undefined && x.reference !== null) {
-        const entity = await entu.db.collection('entity').findOne({ _id: x.reference }, { projection: { 'private.name': true } })
+        const entity = refMap.get(x.reference.toString())
 
-        return entity.private?.name?.at(0)?.string || x.reference
+        return entity?.private?.name?.at(0)?.string || x.reference
       }
 
       return x._id
@@ -462,5 +477,5 @@ export async function getValueArray (entu, values) {
 
       return x._id
     }
-  }))
+  })
 }

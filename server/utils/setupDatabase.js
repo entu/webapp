@@ -49,25 +49,40 @@ export async function isAvailableDatabase (name, db) {
   return !databases.some((x) => x.name === sanitized)
 }
 
-// Sets up a brand new database: indexes, template entities, person entity with invite token, database entity with billing info, rights and final aggregation
+// Sets up a brand new database: indexes, template entities (two-pass: non-ref then ref), person, database, rights and final aggregation
 export async function initializeNewDatabase (entu, reservation, billingCustomerId) {
   await createDatabaseIndexes(entu.db)
 
-  const newTypes = await getTypes()
-  const newMenus = await getMenus()
-  const newPlugins = await getPlugins()
+  // Fetch all template entities
+  const [templateTypes, templateMenus, templatePlugins] = await Promise.all([
+    getTypes(),
+    getMenus(),
+    getPlugins()
+  ])
 
-  await createEntities(entu, [...newTypes, ...newMenus, ...newPlugins])
+  const allTemplateEntities = [...templateTypes, ...templateMenus, ...templatePlugins]
 
-  // Find person entity type
-  const { _id: personTypeId } = await entu.db.collection('entity').findOne({
-    'private._type.string': 'entity',
-    'private.name.string': 'person'
-  }, { projection: { _id: true } })
+  // Find template entity type IDs for person and database (used when building their ref props)
+  const templatePersonTypeId = allTemplateEntities.find((e) => e.type === 'entity' && e.name === 'person')?._id
+  const templateDatabaseTypeId = allTemplateEntities.find((e) => e.type === 'entity' && e.name === 'database')?._id
 
-  // Create person entity after types exist — setEntity auto-generates { db, entityId } invite JWT
-  const personProps = [
-    { type: '_type', reference: personTypeId },
+  // setEntity only allows these underscore-prefixed property types
+  const allowedSystemTypes = new Set(['_type', '_parent', '_noaccess', '_viewer', '_expander', '_editor', '_owner', '_sharing', '_inheritrights'])
+
+  // Build entity list: template entities split into non-ref and ref props
+  const entities = allTemplateEntities.map((e) => {
+    const importableProps = e.properties.filter((p) => !p.type.startsWith('_') || allowedSystemTypes.has(p.type))
+
+    return {
+      oldId: e._id,
+      newId: null,
+      nonRefProps: importableProps.filter((p) => p.reference === undefined),
+      refProps: importableProps.filter((p) => p.reference !== undefined)
+    }
+  })
+
+  // Person entity (non-ref props; _type + _owner added in pass 2)
+  const personNonRefProps = [
     { type: '_sharing', string: 'private' },
     { type: 'entu_user', string: entu.account }
   ]
@@ -77,65 +92,95 @@ export async function initializeNewDatabase (entu, reservation, billingCustomerI
     const forename = nameParts.slice(0, -1).join(' ') || nameParts.at(0)
     const surname = nameParts.length > 1 ? nameParts.at(-1) : null
 
-    personProps.push({ type: 'forename', string: forename })
-    if (surname) personProps.push({ type: 'surname', string: surname })
+    personNonRefProps.push({ type: 'forename', string: forename })
+    if (surname) personNonRefProps.push({ type: 'surname', string: surname })
   }
 
-  if (reservation.email) personProps.push({ type: 'email', string: reservation.email })
+  if (reservation.email) personNonRefProps.push({ type: 'email', string: reservation.email })
 
-  const person = await setEntity(entu, null, personProps)
+  const personEntry = { oldId: null, newId: null, key: 'person', nonRefProps: personNonRefProps, refProps: [] }
 
-  const personId = person._id
-
-  await setEntity(entu, personId, [{ type: '_owner', reference: personId }])
-
-  const personEntity = await entu.db.collection('entity').findOne(
-    { _id: personId },
-    { projection: { 'private.entu_user.invite': true } }
-  )
-  const inviteToken = personEntity.private.entu_user.at(0).invite
-
-  // Create database entity
-  const { _id: databaseTypeId } = await entu.db.collection('entity').findOne({
-    'private._type.string': 'entity',
-    'private.name.string': 'database'
-  }, { projection: { _id: true } })
-
-  const dbProps = [
-    { type: '_type', reference: databaseTypeId },
+  // Database entity (non-ref props; _type + _editor added in pass 2)
+  const databaseNonRefProps = [
     { type: '_sharing', string: 'domain' },
     { type: '_inheritrights', boolean: true },
-    { type: '_editor', reference: personId },
     { type: 'name', string: entu.account }
   ]
 
-  if (reservation.email) {
-    dbProps.push({ type: 'email', string: reservation.email })
+  if (reservation.email) databaseNonRefProps.push({ type: 'email', string: reservation.email })
+  if (reservation.plan) databaseNonRefProps.push({ type: 'plan', string: reservation.plan })
+  if (billingCustomerId) databaseNonRefProps.push({ type: 'billing_customer_id', string: billingCustomerId })
+
+  const databaseEntry = { oldId: null, newId: null, key: 'database', nonRefProps: databaseNonRefProps, refProps: [] }
+
+  entities.push(personEntry, databaseEntry)
+
+  // Pass 1: create all entities with only non-ref properties, build idMap (template oldId → new _id)
+  const idMap = new Map()
+
+  await Promise.all(entities.map(async (entry) => {
+    if (entry.nonRefProps.length === 0) return
+
+    const { _id } = await setEntity(entu, null, entry.nonRefProps, { skipTypeRequired: true })
+
+    entry.newId = _id
+
+    if (entry.oldId) idMap.set(entry.oldId.toString(), _id)
+  }))
+
+  const personId = personEntry.newId
+
+  // Read invite token — generated when entu_user was set in pass 1
+  const personDoc = await entu.db.collection('entity').findOne(
+    { _id: personId },
+    { projection: { 'private.entu_user.invite': true } }
+  )
+  const inviteToken = personDoc.private.entu_user.at(0).invite
+
+  const databaseId = databaseEntry.newId
+
+  // Pass 2: add reference properties (remapped via idMap) to template entities
+  await Promise.all(entities.map(async (entry) => {
+    if (entry.refProps.length === 0 || !entry.newId) return
+
+    const remapped = entry.refProps
+      .map((p) => ({ ...p, reference: idMap.get(p.reference.toString()) }))
+      .filter((p) => p.reference)
+
+    if (remapped.length > 0) {
+      await setEntity(entu, entry.newId, remapped)
+    }
+  }))
+
+  // Person: add _type (from template) and _owner (self-reference)
+  const personRefProps = [{ type: '_owner', reference: personId }]
+
+  if (templatePersonTypeId && idMap.has(templatePersonTypeId.toString())) {
+    personRefProps.unshift({ type: '_type', reference: idMap.get(templatePersonTypeId.toString()) })
   }
 
-  if (reservation.plan) {
-    dbProps.push({ type: 'plan', string: reservation.plan })
+  await setEntity(entu, personId, personRefProps)
+
+  // Database: add _type (from template) and _editor (person)
+  const databaseRefProps = [{ type: '_editor', reference: personId }]
+
+  if (templateDatabaseTypeId && idMap.has(templateDatabaseTypeId.toString())) {
+    databaseRefProps.unshift({ type: '_type', reference: idMap.get(templateDatabaseTypeId.toString()) })
   }
 
-  if (billingCustomerId) {
-    dbProps.push({ type: 'billing_customer_id', string: billingCustomerId })
-  }
-
-  const { _id: newDatabaseId } = await setEntity(entu, undefined, dbProps)
+  await setEntity(entu, databaseId, databaseRefProps)
 
   // Add database as parent to all entities without one
   const noParents = await entu.db.collection('entity').find({
-    _id: { $ne: newDatabaseId },
+    _id: { $ne: databaseId },
     'private._parent.reference': { $exists: false }
   }, { projection: { _id: true }, sort: { _id: 1 } }).toArray()
 
   await Promise.all(noParents.map((x) =>
-    setEntity(entu, x._id, [
-      { type: '_parent', reference: newDatabaseId }
-    ])
+    setEntity(entu, x._id, [{ type: '_parent', reference: databaseId }])
   ))
 
-  // Add rights to person
+  // Add person as owner to entity types, menus and plugins
   const noRights = await entu.db.collection('entity').find({
     $or: [{
       'private._type.string': 'entity',
@@ -148,25 +193,13 @@ export async function initializeNewDatabase (entu, reservation, billingCustomerI
   }, { projection: { _id: true }, sort: { _id: 1 } }).toArray()
 
   await Promise.all(noRights.map((x) =>
-    setEntity(entu, x._id, [
-      { type: '_owner', reference: personId }
-    ])
+    setEntity(entu, x._id, [{ type: '_owner', reference: personId }])
   ))
 
+  // Final aggregation to resolve any cross-entity reference chains
   const allEntities = await entu.db.collection('entity').find({}, { sort: { _id: 1 } }).toArray()
 
-  // Delete dangling reference properties
-  await entu.db.collection('property').deleteMany({
-    $and: [
-      { reference: { $exists: true } },
-      { reference: { $nin: allEntities.map((x) => x._id) } }
-    ]
-  })
-
-  // Final aggregation
-  await Promise.all(allEntities.map((x) =>
-    aggregateEntity(entu, x._id)
-  ))
+  await Promise.all(allEntities.map((x) => aggregateEntity(entu, x._id)))
 
   return inviteToken
 }
@@ -210,44 +243,6 @@ async function createDatabaseIndexes (db) {
   ])
 }
 
-// Inserts template entities into the new database, rewrites old template ObjectId references to new ones, and aggregates all entities
-async function createEntities (entu, entities) {
-  for (let i = 0; i < entities.length; i++) {
-    const entity = entities[i]
-
-    const { insertedId } = await entu.db.collection('entity').insertOne({ oid: entity._id })
-
-    const properties = entity.properties.map((property) => ({
-      entity: insertedId,
-      ...property,
-      created: {
-        at: new Date()
-      }
-    }))
-
-    await entu.db.collection('property').insertMany(properties)
-  }
-
-  const allEntities = await entu.db.collection('entity').find({}, { sort: { _id: 1 } }).toArray()
-
-  await Promise.all(allEntities.map((x) =>
-    entu.db.collection('property').updateMany(
-      { reference: x.oid },
-      { $set: { reference: x._id } }
-    )
-  ))
-
-  // First pass: populates private.name.string for all entities (direct string properties, no cross-entity lookup)
-  await Promise.all(allEntities.map((x) =>
-    aggregateEntity(entu, x._id)
-  ))
-
-  // Second pass: resolves private._type.string and other reference lookups that depend on
-  // private.name.string of other entities being written to the DB (populated by the first pass)
-  await Promise.all(allEntities.map((x) =>
-    aggregateEntity(entu, x._id)
-  ))
-}
 
 // Fetches all default entity type definitions from the template database
 async function getTypes () {

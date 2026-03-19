@@ -308,6 +308,21 @@ async function propertiesToEntity (entu, properties) {
     search: {}
   }
 
+  // Batch-fetch all referenced entities in one query instead of one findOne() per property
+  const refIds = properties.filter((p) => p.reference).map((p) => p.reference)
+  const refMap = new Map()
+
+  if (refIds.length > 0) {
+    const refDocs = await entu.db.collection('entity').find(
+      { _id: { $in: refIds } },
+      { projection: { 'private.name': true, 'private._type': true } }
+    ).toArray()
+
+    for (const doc of refDocs) {
+      refMap.set(doc._id.toString(), doc)
+    }
+  }
+
   for (let n = 0; n < properties.length; n++) {
     const prop = properties[n]
     let cleanProp = { ...prop }
@@ -322,7 +337,7 @@ async function propertiesToEntity (entu, properties) {
     }
 
     if (prop.reference) {
-      const referenceEntity = await entu.db.collection('entity').findOne({ _id: prop.reference }, { projection: { _id: false, 'private.name': true, 'private._type': true } })
+      const referenceEntity = refMap.get(prop.reference.toString())
 
       if (referenceEntity) {
         cleanProp = { ...cleanProp, property_type: prop.type, string: referenceEntity.private?.name?.at(0).string, entity_type: referenceEntity.private?._type?.at(0).string }

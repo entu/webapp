@@ -3,8 +3,9 @@ import jwt from 'jsonwebtoken'
 
 const charsForKey = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*-_=+'
 
-// Validates, processes, and persists properties to a new or existing entity
-export async function setEntity (entu, entityId, properties) {
+// Validates, processes, and persists properties to a new or existing entity.
+// options.skipTypeRequired: if true, skips the _type required check (for system bootstrap only)
+export async function setEntity (entu, entityId, properties, options = {}) {
   const allowedTypes = [
     '_type',
     '_parent',
@@ -31,7 +32,7 @@ export async function setEntity (entu, entityId, properties) {
 
   validateInput(properties)
 
-  if (!entityId && !properties.some((p) => p.type === '_type')) {
+  if (!entityId && !options.skipTypeRequired && !properties.some((p) => p.type === '_type')) {
     throw createError({
       statusCode: 400,
       statusMessage: 'Property _type is required'
