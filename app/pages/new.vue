@@ -185,8 +185,8 @@ onMounted(() => {
 
     <div class="mb-4 mt-auto px-4 text-center text-sm text-gray-500">
       <a
-        href="https://entu.ee/overview/"
         target="_blank"
+        :href="t('docsUrl')"
       >{{ t('docs') }}</a>
 
       <span class="mx-2">&middot;</span>
@@ -223,6 +223,7 @@ onMounted(() => {
     pricing: Pricing
     pricingUrl: https://entu.ee/#pricing
     docs: Documentation
+    docsUrl: https://entu.ee/overview/
   et:
     language: English
     title: Valige andmebaasi nimi
@@ -235,8 +236,9 @@ onMounted(() => {
     pendingInfo: Loome teie andmebaasi. See võtab vaid hetke, teid suunatakse automaatselt edasi.
     error: Viga
     terms: Kasutustingimused
-    termsUrl: https://entu.ee/terms/
+    termsUrl: https://entu.ee/et/terms/
     pricing: Hinnad
-    pricingUrl: https://entu.ee/#pricing
+    pricingUrl: https://entu.ee/et/#hinnad
     docs: Dokumentatsioon
+    docsUrl: https://entu.ee/et/overview/
 </i18n>

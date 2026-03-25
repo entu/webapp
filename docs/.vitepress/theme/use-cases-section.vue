@@ -11,22 +11,33 @@ const { frontmatter } = useData()
 
 const iconMap = {
   'book-open': BookOpenSvg,
-  'landmark': LandmarkSvg,
-  'building': BuildingSvg,
-  'monitor': MonitorSvg,
-  'server': ServerSvg,
-  'clipboard-list': ClipboardListSvg,
+  landmark: LandmarkSvg,
+  building: BuildingSvg,
+  monitor: MonitorSvg,
+  server: ServerSvg,
+  'clipboard-list': ClipboardListSvg
 }
 </script>
 
 <template>
   <div class="use-cases-grid">
-    <div v-for="item in frontmatter.usecases" :key="item.title" class="use-case-card">
+    <div
+      v-for="item in frontmatter.usecases"
+      :key="item.title"
+      class="use-case-card"
+    >
       <div class="use-case-header">
-        <div class="use-case-icon" v-html="iconMap[item.icon]" />
-        <p class="use-case-title">{{ item.title }}</p>
+        <div
+          class="use-case-icon"
+          v-html="iconMap[item.icon]"
+        />
+        <p class="use-case-title">
+          {{ item.title }}
+        </p>
       </div>
-      <p class="use-case-details">{{ item.details }}</p>
+      <p class="use-case-details">
+        {{ item.details }}
+      </p>
     </div>
   </div>
 </template>

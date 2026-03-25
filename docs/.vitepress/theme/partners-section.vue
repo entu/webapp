@@ -12,11 +12,11 @@ const partners = frontmatter.value.partners
 
 const iconMap = {
   'book-open': BookOpenSvg,
-  'landmark': LandmarkSvg,
-  'building': BuildingSvg,
-  'monitor': MonitorSvg,
-  'server': ServerSvg,
-  'clipboard-list': ClipboardListSvg,
+  landmark: LandmarkSvg,
+  building: BuildingSvg,
+  monitor: MonitorSvg,
+  server: ServerSvg,
+  'clipboard-list': ClipboardListSvg
 }
 </script>
 
@@ -28,7 +28,10 @@ const iconMap = {
       class="partner-item"
       :style="{ '--partner-color': partner.color, '--partner-dark-color': partner.darkColor }"
     >
-      <span class="partner-icon" v-html="iconMap[partner.icon]" />
+      <span
+        class="partner-icon"
+        v-html="iconMap[partner.icon]"
+      />
       {{ partner.name }}
     </span>
   </div>

@@ -1,7 +1,7 @@
 <script setup>
 import { useData } from 'vitepress'
 
-const { frontmatter } = useData()
+const { frontmatter, lang } = useData()
 const { labels, tiers } = frontmatter.value.pricing
 </script>
 
@@ -42,7 +42,7 @@ const { labels, tiers } = frontmatter.value.pricing
   <div class="pricing-cta-wrap">
     <a
       class="pricing-cta"
-      href="https://entu.app/new?locale=en"
+      :href="`https://entu.app/new?locale=${lang}`"
       target="_blank"
       rel="noopener"
       @click="window.analytics?.track('signup_click')"

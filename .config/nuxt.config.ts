@@ -28,12 +28,12 @@ export default defineNuxtConfig({
       ]
     }
   },
-  spaLoadingTemplate: false,
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => tag === 'stripe-pricing-table'
     }
   },
+  spaLoadingTemplate: false,
   runtimeConfig: {
     public: {
       apiUrl: '',
