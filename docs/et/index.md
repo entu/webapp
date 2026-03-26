@@ -158,16 +158,16 @@ usecases:
     details: Halda raamatute ja audiovisuaalse materjali kogu, lugejate andmeid ja laenutuste ajalugu. Jälgi, mis on riiulis, kes mida laenutanud on ja millal tuleb tagastada.
   - title: Muuseumid
     icon: landmark
-    details: Kataloogi esemeid ja objekte rikkalike metaandmete, päritolu ja meedialiidetega. Struktureeri kogusid hierarhiatesse, mis peegeldavad füüsilist korraldust.
+    details: Kataloogi esemeid ja objekte rikkalike metaandmete, päritolu ja meediamanustega. Struktureeri kogusid hierarhiatesse, mis peegeldavad füüsilist korraldust.
   - title: Äridokumendid
     icon: building
     details: Halda raamatupidamiskirjeid, tarnija- ja kliendiandmeid ning laovaru — kõike ühes kohas, ilma et peaks eraldi tööriistu ühendama.
   - title: Digitaalne teabeedastus
     icon: monitor
     details: Salvesta meediafaile, seadista ekraane ja esitusloendeid ning halda esitusgraafikuid. Üks andmebaas juhib nii sisuraamatukogu kui ka ekraanide seadistust.
-  - title: Veebirakenduste tagaotsad
+  - title: Erilahendused
     icon: server
-    details: Käita kohandatud veebirakendusi ja portaale REST API kaudu, kasutajahaldus ja juurdepääsukontroll on sisse ehitatud. Eraldi haldusliidest pole vaja — Entu ongi haldusliides.
+    details: Ehita veebirakendusi ja portaale REST API peale — kasutajahaldus ja juurdepääsukontroll on sisseehitatud, eraldi haldusliidest pole vaja.
   - title: Andmete kogumine
     icon: clipboard-list
     details: Kogu avaldusi, registreerumisi ja küsitluste vastuseid otse Entu kasutajaliideses. Seadista täpselt, milliseid välju koguda, kes saab esitada ja kes saab üle vaadata — välist vormitööriista pole vaja.
@@ -181,7 +181,7 @@ Entu läheneb teisiti: kirjeldad oma andmemudeli otse kasutajaliideses ja süste
 
 ## Loodud päriselu jaoks
 
-Entu on juba tootmiskeskkonnas kasutusel erinevates tööstusharudes ja rakendusvaldkondades. Olgu sul tegemist füüsiliste kogude haldamise, äriprotsesside juhtimise, kohandatud veebirakenduse käitamise või kasutajatelt andmete kogumisega — Entu kohandub ülesandega, ilma et iga korra jaoks oleks vaja eriotstarbelist süsteemi:
+Entu on juba tootmiskeskkonnas kasutusel erinevates tööstusharudes ja rakendusvaldkondades. Olgu sul tegemist füüsiliste kogude haldamise, äriprotsesside juhtimise, kohandatud veebirakenduse käitamise või kasutajatelt andmete kogumisega — Entu kohandub ülesandega, ilma et iga kord oleks vaja eriotstarbelist süsteemi:
 
 <use-cases-section />
 

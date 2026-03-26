@@ -55,7 +55,7 @@ Mitu filtrit ühendatakse `&`-ga ja kõik peavad vastama (AND loogika). Eri filt
 
 ## Sortimine
 
-Laskuvaks järjestamiseks eelista sortimisvälja `-`-ga.
+Kahanevaks sortimiseks lisa sortimisvälja ette `-`.
 
 | Parameeter | Näide | Kirjeldus |
 |---|---|---|

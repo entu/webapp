@@ -149,6 +149,15 @@
   display: none !important;
 }
 
+.VPNavBarTranslations::before {
+  display: none !important;
+}
+
+.VPNavBarTranslations {
+  border-left: none !important;
+  padding-left: 0 !important;
+}
+
 .VPSidebar .group {
   border-top: none !important;
 }

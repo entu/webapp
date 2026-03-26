@@ -12,7 +12,7 @@ Sotsiaalne sisselogimine võimaldab sul sisse logida ilma paroolita, kasutades i
 
 ### E-post
 
-Logi sisse maagilise linkiga, mis saadetakse sinu e-posti aadressile. Parooli pole vaja — klikka e-kirjas olevale lingile ja oled sees. Link on lühiealine ja ühekordseks kasutuseks, nii et su konto jääb turvaliseks, isegi kui keegi teine näeb hiljem e-kirja. Töötab mis tahes e-posti aadressiga.
+Logi sisse maagilise linkiga, mis saadetakse sinu e-posti aadressile. Parooli pole vaja — klikka e-kirjas olevale lingile ja oled sees. Link aegub kiiresti ja kehtib vaid ühe korra, nii et su konto jääb turvaliseks, isegi kui keegi teine näeb hiljem e-kirja. Töötab mis tahes e-posti aadressiga.
 
 ### Google
 

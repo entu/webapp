@@ -4,7 +4,7 @@ Disainipõhimõtted ja konventsioonid puhta, hooldatava andmemudeli loomiseks En
 
 ## Parameetrite nimetamine
 
-Kasuta kirjeldavaid, väiketähti nimesid allkriipsudega:
+Kasuta kirjeldavaid, väiketähelisi nimesid allkriipsudega:
 
 - ✅ `product_name`, `created_date`, `customer_email`
 - ❌ `pn`, `cd`, `e`, `startDate`, `start-date`
@@ -17,7 +17,7 @@ Grupeeri seotud parameetrid ühise eesliitega: `address_street`, `address_city`,
 
 **Disaini objektitüübid oma päringumustrite järgi.** Kui filtreerid sageli `status`-e järgi, luba sellel parameetri definitsioonil `search`.
 
-**Kasuta seoseid seostuvate andmete jaoks**, mis muutuvad sageli — ära dubleeri väärtusi objektide vahel, kui seos sobib.
+**Kasuta viiteid seotud andmete jaoks**, mis muutuvad sageli — ära dubleeri väärtusi objektide vahel, kui viide sobib.
 
 **Kasuta valemeid tuletatud andmete jaoks** — kogusummad, keskmised, loendused — et tõe allikas püsiks ühes kohas. Vaata [Valemid](/et/api/formulas/).
 

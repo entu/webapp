@@ -90,7 +90,7 @@ curl -X GET "https://entu.app/api/mydatabase/entity/6798938432faaba00f8fc72f" \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 
-Vastus pakib objekti `entity` võtme alla:
+Vastus tagastab objekti `entity` võtme all:
 
 ```json
 {

@@ -38,7 +38,7 @@ Kohandatud parameetrite nimed ei tohi alata `_`-ga. See prefiks on reserveeritud
 
 ## Mitme väärtusega parameetrid
 
-Kui parameetri definitsioonil on `list: true`, saab objekt selle parameetri jaoks omada mitut väärtust. Muutmisvormis ilmuvad täiendavad tühjad sisestusväljad automaatselt, kui kasutaja neid täidab.
+Kui parameetri definitsioonil on `list: true`, saab objekt selle parameetri jaoks sisaldada mitut väärtust. Muutmisvormis ilmuvad täiendavad tühjad sisestusväljad automaatselt, kui kasutaja neid täidab.
 
 API kaudu on iga väärtus eraldi parameetriobjekt — lisa väärtusi POST-i abil, eemalda konkreetseid väärtusi, kustutades nende `_id` järgi.
 
@@ -64,7 +64,7 @@ Parameetri definitsioon võib kanda `default` väärtust, mida rakendatakse auto
 
 Toetatud kõigile tüüpidele peale `file` ja `counter`. `date` ja `datetime` jaoks saab kasutada suhtelisi nihkeid nagu `+1d` või `-7d` fikseeritud kuupäeva asemel.
 
-Vaata täielikku formaadi viidet [Parameetrite vaikeväärtused](/et/configuration/entity-types/#parameetrite-vaikevaartused) alt.
+Täieliku formaadi kohta vaata [Parameetrite vaikeväärtused](/et/configuration/entity-types/#parameetrite-vaikevaartused).
 
 ## Arvutatud parameetrid
 
@@ -74,7 +74,7 @@ Sea parameetri definitsioonil `formula`, et arvutada selle väärtus automaatsel
 Kasuta arvutatud parameetreid kogusummade, loenduste ja agregatsioonide jaoks, et tuletatud andmed oleksid alati sünkroonitud allikaga.
 :::
 
-Vaata täielikku süntaksi viidet [Valemid](/et/api/formulas/) alt.
+Täieliku süntaksi kohta vaata [Valemid](/et/api/formulas/).
 
 ## Entu kasutajaliidese kasutatavad parameetrid
 

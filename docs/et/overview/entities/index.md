@@ -1,16 +1,16 @@
 # Objektid
 
-Objektid on Entu põhilised ehituskivid. Objekt on kirje — inimene, projekt, arve, toode — mis tahes asi, mida tuleb hallata. Iga objekt kuulub **objektitüüpi**, mis toimib andmemallina selle kohta, millist tüüpi andmeid objekt sisaldab.
+Objektid on Entu põhilised ehituskivid. Objekt on kirje — inimene, projekt, arve, toode — mis tahes asi, mida tuleb hallata. Iga objekt kuulub **objektitüüpi**, mis toimib tema andmemallina.
 
 Andmemudeli määratlemiseks kasutajaliideses vaata [Objektitüübid](/et/configuration/entity-types/).
 
 ## Põhiomadused
 
-**Paindlikud parameetrid** — Erinevalt relatsioonandmebaasi tabelist fikseeritud veergudega kannavad objektid mis tahes parameetreid, mille nende tüüp on määratlenud. Erinevad objektitüübid võivad modelleerida täiesti erinevakujulisi andmeid samas süsteemis.
+**Paindlikud parameetrid** — Erinevalt fikseeritud veergudega relatsioonitabelist kannavad objektid mis tahes parameetreid, mille nende tüüp on määratlenud. Erinevad objektitüübid võivad modelleerida täiesti erinevakujulisi andmeid samas süsteemis.
 
 **Mitme väärtusega parameetrid** — Ühel parameetri nimel võib olla mitu väärtust. Objektil võib olla mitu silti, telefoninumbrit või failimanust, kõik salvestatuna sama parameetri nime alla.
 
-**Hierarhiline struktuur** — Objektidel võivad olla ülem-alam seosed. Alam-objektil võib olla mitu ülemat, mis tähendab, et see ilmub samaaegselt mitmes kontekstis ilma dubleermiseta.
+**Hierarhiline struktuur** — Objektidel võivad olla ülem-alam seosed. Alam-objektil võib olla mitu ülemat, mis tähendab, et see ilmub samaaegselt mitmes kontekstis ilma dubleerimiseta.
 
 **Viited** — Objektid saavad viidata teistele objektidele viiteparameetrite kaudu, luues ühendatud andmegraafi.
 
@@ -22,7 +22,7 @@ Andmemudeli määratlemiseks kasutajaliideses vaata [Objektitüübid](/et/config
 
 Objektid on korraldatud hierarhiatesse, kasutades süsteemparameetrit `_parent`.
 
-**Mitu ülemat** — Objektil võib olla rohkem kui üks ülem ja see ilmub igas kontekstis alam-objektina ilma dubleermiseta. Dokument võib samaaegselt kuuluda nii projektile kui ka osakonnale.
+**Mitu ülemat** — Objektil võib olla rohkem kui üks ülem ja see ilmub igas kontekstis alam-objektina ilma dubleerimiseta. Dokument võib samaaegselt kuuluda nii projektile kui ka osakonnale.
 
 **Alam-objektide loomine** — Kui kasutad ülemobjekti lehel nuppu „Lisa", seatakse `_parent` automaatselt. Alam-objektide loomiseks on vaja vähemalt `_expander` õigusi ülemobjektile (`_editor` ja `_owner` sisaldavad `_expander` õigusi).
 
@@ -46,7 +46,7 @@ Igal objektil on selgesõnaline juurdepääsukontroll. Õigused seatakse, viidat
 
 ### Jagamine
 
-Parameeter `_sharing` kontrollib nähtavust üle individuaalsete kasutajaõiguste:
+Parameeter `_sharing` kontrollib nähtavust individuaalsete kasutajaõiguste piires:
 
 | Väärtus | Kes saab vaadata |
 |---|---|
@@ -66,7 +66,7 @@ Muutmiseks on alati vaja `_editor` või `_owner` õigusi, sõltumata jagamistase
 
 ### Õiguste pärimine
 
-Sea objektil `_inheritrights: true`, et pärida õigused oma ülemobjektilt. Otse alam-objektile määratud õigused tühistavad päritavad. Kasuta `_noaccess`, et blokeerida kasutaja, kes muidu päriks juurdepääsu ülemobjektilt.
+Sea objektil `_inheritrights: true`, et pärida õigused oma ülemobjektilt. Otse alam-objektile määratud õigused tühistavad päritavad õigused. Kasuta `_noaccess`, et blokeerida kasutaja, kes muidu päriks juurdepääsu ülemobjektilt.
 
 ::: info
 Õiguste hindamise järjekord: selgesõnalised õigused objektil → päritavad õigused ülemobjektilt → `_sharing` tase. `_noaccess` tühistab kõik teised samale objektile kehtivad õigused — sealhulgas otsesed positiivsed õigused. See ei kandu `_inheritrights` kaudu alam-objektidele edasi; pärandatakse ainult `_viewer`, `_expander`, `_editor` ja `_owner`.
@@ -79,5 +79,5 @@ Kui objekt kustutatakse, lisatakse parameetrikirje `_deleted`, mis salvestab kas
 Teiste objektide parameetrid, mis viitavad kustutatud objektile, märgistatakse samuti `deleted.at` / `deleted.by`-ga, et auditijälg oleks järjepidev.
 
 ::: info
-Ainult `_owner` kasutajad saavad objekti kustutada.
+Ainult `_owner` õigustega kasutajad saavad objekti kustutada.
 :::

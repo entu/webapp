@@ -24,12 +24,12 @@ Kogu seadistamine toimub Entu kasutajaliideses — koodi ega konfiguratsioonifai
 
 | Parameeter | Kirjeldus |
 |---|---|
-| `add_from` | Kontrollib, kust seda tüüpi objekte saab luua. Viida **menüü** objektile, et kuvada see tüüp tööriistaribal nupus „Uus …", kui see menüü on aktiivne. Viida **objektitüübile**, et lubada selle tüüpi objekte lisada alam-objektina mis tahes selle tüübi eksemplari alla. Viida **konkreetsele objektile**, et lubada luua seda tüüpi ainult selle konkreetse objekti alam-objektina. Ilma selleta ei paku nupp „Lisa" kunagi seda tüüpi. |
+| `add_from` | Kontrollib, kust seda tüüpi objekte saab luua. Viita **menüü** objektile, et kuvada see tüüp tööriistaribal nupus „Uus …", kui see menüü on aktiivne. Viita **objektitüübile**, et lubada selle tüüpi objekte lisada alam-objektina mis tahes selle tüübi eksemplari alla. Viita **konkreetsele objektile**, et lubada luua seda tüüpi ainult selle konkreetse objekti alam-objektina. Ilma selleta ei paku nupp „Lisa" kunagi seda tüüpi. |
 | `default_parent` | Kui luuakse seda tüüpi uus objekt, lisatakse siin määratud objekt automaatselt täiendava `_parent`-na. Kasulik uute kirjete suunamiseks fikseeritud kausta sõltumata sellest, kuhu kasutaja klikkis „Lisa". |
 | `plugin` | Lisab plugina selle tüüpi objektidele. Vaata [Pluginad](/et/configuration/plugins/). |
 
 ::: warning
-Kui `add_from` ei ole seatud, pole kasutajatel kasutajaliidesest võimalust seda tüüpi objekte luua. Viida vähemalt ühele menüüle, objektitüübile või konkreetsele objektile.
+Kui `add_from` ei ole seatud, pole kasutajatel kasutajaliidesest võimalust seda tüüpi objekte luua. Viita vähemalt ühele menüüle, objektitüübile või konkreetsele objektile.
 :::
 
 Selle tüübi juurdepääsukontrolli kohta vaata [Nähtavus](#nahtavus) alt.
@@ -120,7 +120,7 @@ Vaikimisi on kõik parameetrid privaatsed — need kaasatakse API vastustesse ai
 
 ### Kuidas need vastasmõjus toimivad
 
-Objektitüübi `_sharing` toimib piirina selle suhtes, kui laialdaselt parameetrite definitsioonid andmeid avalikustada saavad:
+Objektitüübi `_sharing` piirab, kui laialdaselt parameetrite definitsioonid andmeid avalikustada saavad:
 
 | Objektitüübi `_sharing` | Parameetri definitsiooni `_sharing` käitumine |
 |---|---|
@@ -130,7 +130,7 @@ Objektitüübi `_sharing` toimib piirina selle suhtes, kui laialdaselt parameetr
 | `public` | Piiramist ei rakendata — parameetrid kasutavad oma `_sharing` väärtust. |
 
 ::: tip
-`_sharing` seadmine parameetri definitsioonil kontrollib ainult seda, kas see parameeter ilmub objekti `domain` või `public` vaates. See ei mõjuta seda, kes pääseb objektile ise ligi — objektitasemel juurdepääsu kontrollib `_sharing` ja õiguste parameetrid objekti eksemplaril.
+`_sharing` seadmine parameetri definitsioonil kontrollib ainult seda, kas see parameeter ilmub objekti `domain` või `public` vaates. See ei mõjuta seda, kes pääseb objektile ligi — objektitasemel juurdepääsu kontrollib `_sharing` ja õiguste parameetrid objekti eksemplaril.
 :::
 
 ::: tip

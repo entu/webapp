@@ -7,7 +7,7 @@ next: false
 
 # Kasutustingimused
 
-Entu kasutamisega nõustud nende tingimustega. On oluline, et tutvuksid nende põhimõtetega hoolikalt ja nõustuks nendega enne teenuse kasutamist. Kui sul on küsimusi või muresid nende tingimuste osas, võta meiega ühendust selgituse saamiseks enne jätkamist.
+Entu kasutamisega nõustud nende tingimustega. On oluline, et tutvuksid nende põhimõtetega hoolikalt ja nõustuksid nendega enne teenuse kasutamist. Kui sul on küsimusi või muresid nende tingimuste osas, võta meiega ühendust selgituse saamiseks enne jätkamist.
 
 1. **Kasutaja vastutus**: Kasutajad kannavad ainuvastutust andmete eest, mida nad Entu platvormis salvestavad ja haldavad. See hõlmab tagamist, et andmed on asjakohaselt varundatud ja hooldatud vastavalt kasutaja nõuetele ja standarditele.
 

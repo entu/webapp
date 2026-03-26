@@ -42,7 +42,7 @@ Need juhendid näitavad, kuidas modelleerida levinud reaalelu stsenaariume Entus
 
 ### Juurdepääsukontroll
 
-Anna müügimeeskonnale `_editor` õigused Ettevõtete konteineril ja luba kõigil alam-objektidel `_inheritrights: true`, et õigused levivad automaatselt.
+Anna müügimeeskonnale `_editor` õigused Ettevõtete konteineril ja luba kõigil alam-objektidel `_inheritrights: true`, et õigused leviks automaatselt.
 
 ---
 
@@ -78,7 +78,7 @@ Anna müügimeeskonnale `_editor` õigused Ettevõtete konteineril ja luba kõig
 
 - `set` muudab stringivälja rippmenüüks.
 - `counter` genereerib iga objekti jaoks unikaalse koodi (nt projektinumbrid).
-- `hidden` jätab välja redigeerimisvormi seest välja, kuid jääb objekti lehel nähtavaks — sobib valemipõhistele väärtustele.
+- `hidden` jätab välja muutamisvormist, kuid jääb objekti lehel nähtavaks — sobib valemipõhistele väärtustele.
 - `formula` väljal `total_hours` arvutab uuesti iga salvestamisega, kasutades alam-objektide või viitajate andmeid.
 
 ---
@@ -111,10 +111,10 @@ Anna müügimeeskonnale `_editor` õigused Ettevõtete konteineril ja luba kõig
 
 - Loo **Kogud** tipptaseme konteineritena.
 - Lae meediaüksused üles vastava kogu alam-objektidena.
-- Kasuta kogudel `_sharing: public`, mis peaksid olema avalikult sirvitavad.
-- Kasuta `tags`-i (koos `list: true`) nii et iga üksus saab kanda mitut märgendit filtreerimiseks.
+- Sea avalikult sirvitavatel kogudel `_sharing: public`.
+- Kasuta `tags`-i koos `list: true` — nii saab iga üksus kanda mitut märgendit filtreerimiseks.
 
-### Üksuste pärimine märgendi järgi API kaudu
+### Üksuste päring märgendi järgi API kaudu
 
 ```
 GET /api/{db}/entity?_type.string=media-item&tags.string=loodus

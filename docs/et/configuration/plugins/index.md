@@ -2,11 +2,11 @@
 
 Pluginad laiendavad Entu võimalusi objektitüübi tasandil. Plugin on tüübi `plugin` objekt, mis on lisatud objektitüübile selle `plugin` parameetri kaudu.
 
-Loo plugina objektid Seadistamise alas, seejärel viida neile objektitüübi `plugin` parameetrist.
+Loo plugina objektid Seadistamise alas, seejärel viita neile objektitüübi `plugin` parameetrist.
 
 ## Pluginate kategooriad
 
-**Kasutajaliidese pluginad** avatakse muutmissahtlis iframi vahekaardina kõrvuti standardse muutmisvormiga. Kasuta neid kohandatud loomise või muutamise kogemuste jaoks — CSV-importija, vormiassistent või integratsioon, mis tõmbab andmeid välisest teenusest. Plugin saab konteksti URL-päringuparameetritena ja renderdatakse Entu enda kasutajaliideses.
+**Kasutajaliidese pluginad** avatakse muutmissahtlis iframi vahekaardina kõrvuti standardse muutmisvormiga. Kasuta neid kohandatud loomise või muutmise kogemuste jaoks — CSV-importija, vormiassistent või integratsioon, mis tõmbab andmeid välisest teenusest. Plugin saab konteksti URL-päringuparameetritena ja renderdatakse Entu enda kasutajaliideses.
 
 **Veebikonksu pluginad** on serveripoolsed päästikud. Kui objekt salvestatakse või luuakse, saadab Entu POST-päringu plugina URL-ile taustal ilma kasutajat blokeerimata. Kasuta neid andmete edastamiseks välistele süsteemidele, automatiseerimiste käivitamiseks, kolmanda osapoole teenustega sünkroonimiseks või mistahes tausta loogika käitamiseks, mis peaks reageerima andmemuutustele.
 

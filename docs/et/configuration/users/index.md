@@ -10,7 +10,7 @@ Isikuobjektid esindavad Entus kasutajakontosid. Iga isik saab autentida ja talle
 
 ### Kasutajaõigused
 
-Vaikimisi pole äsja loodud isikuobjektil erilisi õigusi. Nad pääsevad ligi ainult objektidele, mis on jagatud `domain` tasemel, või õigustele, mis on päritud ülemobjektilt. Täiendava juurdepääsu andmiseks viida isikule vastava objekti asjakohases õiguste parameetris.
+Vaikimisi pole äsja loodud isikuobjektil erilisi õigusi. Nad pääsevad ligi ainult `domain` tasemel jagatud objektidele ning objektidele, mille juurdepääsuõigused on päritud ülemobjektilt. Täiendava juurdepääsu andmiseks viita isikule vastava objekti asjakohases õiguste parameetris.
 
 Täieliku õiguste tabeli ja jagamise võimaluste kohta vaata [Objektid → Juurdepääsuõigused](/et/overview/entities/#juurdepaasuoigused).
 
@@ -24,7 +24,7 @@ Automaatselt loodud kasutajad on tavalised kasutajad. Neil on juurdepääs kõig
 
 ### Juurdepääsukontroll
 
-Kuna uuel isikuobjektil on `_inheritrights: true` ja see on seatud ülemobjekti `add_user` sihtmärgi alla, pärib see automaatselt kõik sellele ülemobjektile seatud õigused. Anna ülemkonteinerile õigused korra — kõik automaatselt loodud kasutajad pärivad need.
+Kuna uuel isikuobjektil on `_inheritrights: true` ja on lisatud `add_user` sihtmärgi alam-objektiks, pärib see automaatselt kõik sellele ülemobjektile seatud õigused. Anna ülemkonteinerile õigused korra — kõik automaatselt loodud kasutajad pärivad need.
 
 Konkreetse kasutaja piiramiseks pärast automaatset loomist lisa `_noaccess` otse nende isikuobjektile. Alam-objekti otsesed õigused tühistavad alati päritavad.
 

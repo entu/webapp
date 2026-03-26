@@ -19,7 +19,7 @@ Iga API tagastatav parameetriväärtus on objekt järgmiste väljadega:
 | `created` | Objekt kujul `at` (ISO ajatempel) ja `by` (isikuobjekti ID) — kes selle väärtuse seadistas ja millal. |
 
 ::: tip
-Salvesta hiljem uuendada või kustutada soovitavate parameetriväärtuste `_id`. Ilma selleta saad ainult kogu parameetri kustutada või lisada uusi väärtusi olemasolevate kõrvale.
+Salvesta nende parameetriväärtuste `_id`, mida võid hiljem uuendada või kustutada. Ilma selleta saad ainult kogu parameetri kustutada või lisada uusi väärtusi olemasolevate kõrvale.
 :::
 
 ### Näide: objekt koos parameetritega
