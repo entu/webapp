@@ -243,7 +243,6 @@ async function createDatabaseIndexes (db) {
   ])
 }
 
-
 // Fetches all default entity type definitions from the template database
 async function getTypes () {
   const templateDb = await connectDb('template')
