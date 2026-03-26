@@ -114,22 +114,24 @@ export async function aggregateEntity (entu, entityId) {
         const dValue = newEntity.private[definition[d].name]
 
         if (definition[d].search && dValue) {
+          const valueArray = await getValueArray(entu, dValue)
+
           newEntity.search.private = [
             ...(newEntity.search.private || []),
-            ...await getValueArray(entu, dValue)
+            ...valueArray
           ]
 
           if (sharing === 'domain') {
             newEntity.search.domain = [
               ...(newEntity.search.domain || []),
-              ...await getValueArray(entu, dValue)
+              ...valueArray
             ]
           }
 
           if (sharing === 'public') {
             newEntity.search.public = [
               ...(newEntity.search.public || []),
-              ...await getValueArray(entu, dValue)
+              ...valueArray
             ]
           }
         }
@@ -513,18 +515,15 @@ async function startRelativeAggregation (entu, oldEntity, newEntity) {
   const oldParentIds = oldEntity.private?._parent?.map((x) => x.reference) || []
   const allParentIds = uniqBy([...newParentIds, ...oldParentIds], (x) => x.toString())
 
-  if (allParentIds.length > 0) {
-    const parentsWithFormulas = await filterEntitiesWithFormulas(entu, allParentIds)
-    ids = [...ids, ...parentsWithFormulas]
-  }
-
-  // Formula Case 2: Queue referrers of X that have formula properties.
-  // Rationale: referrers may have refProp.* formulas reading any field of X, not just name.
+  // Formula Cases 1 & 2: Queue parents and referrers that have formula properties in one query.
+  // Rationale: parents may have _child.* formulas; referrers may have refProp.* formulas.
   // The name-change block above already queues ALL referrers when the name changes;
-  // this adds formula-filtered referrers for all other field changes.
-  if (referrerIds.length > 0) {
-    const referrersWithFormulas = await filterEntitiesWithFormulas(entu, referrerIds)
-    ids = [...ids, ...referrersWithFormulas]
+  // this adds formula-filtered parents+referrers for all other field changes.
+  const formulaCandidateIds = uniqBy([...allParentIds, ...referrerIds], (x) => x.toString())
+
+  if (formulaCandidateIds.length > 0) {
+    const candidatesWithFormulas = await filterEntitiesWithFormulas(entu, formulaCandidateIds)
+    ids = [...ids, ...candidatesWithFormulas]
   }
 
   ids = uniqBy(ids, (x) => x.toString())
