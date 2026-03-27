@@ -27,9 +27,11 @@ export default defineEventHandler(async (event) => {
     const host = headers.host || 'localhost'
     const proto = (headers['x-forwarded-proto'] || 'http').split(',')[0].trim()
     const account = formatDatabaseName(event.context.params?.db)
+    const { graphqlBasePath } = useRuntimeConfig(event)
+    const basePath = (graphqlBasePath || '').replace(/\/$/, '')
 
     setResponseHeader(event, 'content-type', 'text/html; charset=utf-8')
-    return send(event, SANDBOX_HTML(`${proto}://${host}/graphql/${account}`))
+    return send(event, SANDBOX_HTML(`${proto}://${host}${basePath}/${account}`))
   }
 
   // Handle GraphQL GET requests (introspection etc.)

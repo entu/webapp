@@ -42,6 +42,7 @@ export default defineNuxtConfig({
       stripePricingTableIds: '',
       stripePublishableKey: ''
     },
+    graphqlBasePath: '',
     jwtSecret: '',
     mongodbUrl: '',
     oauthId: '',
