@@ -53,6 +53,37 @@ JWT tokenid on seotud IP-aadressiga, mida kasutati tokeni väljastamisel. Kui su
 Vahemällu salvesta JWT ja kasuta seda uuesti päringutes. Mandaadi vahetamine iga kõne puhul on ebaotstarbekas — uuenda ainult siis, kui token aegub.
 :::
 
+## Kolmanda osapoole rakenduse integratsioon
+
+OAuth voog toetab `next` parameetrit, mis võimaldab välisrakendusel saada tokeni pärast seda, kui kasutaja on Entus autentimise lõpetanud. See on soovitatav lähenemine rakenduste ehitamiseks, mis delegeerivad sisselogimise Entule.
+
+Suuna kasutaja pakkuja URL-ile koos URL-kodeeritud `next` väärtusega:
+
+```
+/api/auth/{provider}?next=https://your-app.com/callback?key=
+```
+
+Pärast kasutaja autentimist lisab server sessioonitokeni `next` väärtusele ja suunab brauseri sinna:
+
+```
+https://your-app.com/callback?key={SESSION_TOKEN}
+```
+
+Sessioonitoken on lühiajaline (5 minutit) ja seotud kasutaja brauseri IP-aadressiga. Sinu rakenduse **kasutajaliides** peab selle vahetama täieliku JWT vastu, kutsudes `GET /api/auth` otse brauserist:
+
+```js
+const response = await fetch('https://entu.app/api/auth', {
+  headers: { Authorization: `Bearer ${sessionToken}` }
+})
+const { token } = await response.json()
+```
+
+Vahetus peab tulema samast brauserist, mis lõpetas sisselogimise — serveripoolne vahetus ebaõnnestub, kuna IP ei lange kokku.
+
+::: warning Turvanõue
+Kinnita oma rakenduses alati `next` URL enne tokeni kasutamist. Aktsepteeri ainult HTTPS URL-e ja keeldu suunamisest originaalile, mida sa ei kontrolli.
+:::
+
 ## Autentimisparameetrid
 
 Autentimisvolitused salvestatakse parameetritena objektil. Vaikimisi kasutatakse neid isikuobjektidel — iga isikuobjekt esindab inimkasutajat. Kuid samu parameetreid saab lisada mis tahes objektitüübile, mis võimaldab ka automatiseeritud toimijatel autentida. IoT seadistuses `robot` objekt, digitaalreklaami süsteemis `screen` objekt või serveripoolse integratsiooni jaoks mõeldud `service` objekt — kõigil võib olla oma API võti ja kõik saavad iseseisvalt autentida.

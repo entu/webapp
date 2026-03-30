@@ -53,6 +53,37 @@ JWT tokens are bound to the IP address used when the token was issued. If your I
 Cache the JWT and reuse it across requests. Exchanging the credential on every call is wasteful — only refresh when the token expires.
 :::
 
+## Third-Party App Integration
+
+The OAuth flow supports a `next` parameter that lets an external application receive the token after the user completes authentication in Entu. This is the recommended approach for building apps that delegate sign-in to Entu.
+
+Redirect the user to the provider URL with a URL-encoded `next` value:
+
+```
+/api/auth/{provider}?next=https://your-app.com/callback?key=
+```
+
+After the user authenticates, the server appends the session token to the `next` value and redirects the browser there:
+
+```
+https://your-app.com/callback?key={SESSION_TOKEN}
+```
+
+The session token is short-lived (5 minutes) and bound to the user's browser IP. Your app's **frontend** must exchange it for a full JWT by calling `GET /api/auth` directly from the browser:
+
+```js
+const response = await fetch('https://entu.app/api/auth', {
+  headers: { Authorization: `Bearer ${sessionToken}` }
+})
+const { token } = await response.json()
+```
+
+The exchange must originate from the same browser that completed the login — server-side exchange will fail because the IP will not match.
+
+::: warning Security note
+Always validate the `next` URL in your app before using the token. Only accept HTTPS URLs and reject any redirect to an origin you do not control.
+:::
+
 ## Auth Properties
 
 Authentication credentials are stored as properties on an entity. By default these are used on person entities — each person entity represents a human user. But the same properties can be added to any entity type, which lets non-human actors authenticate too. A `robot` entity in an IoT setup, a `screen` entity in a digital signage system, or a `service` entity for a backend integration can all have their own API key and authenticate independently.

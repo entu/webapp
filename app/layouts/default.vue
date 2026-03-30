@@ -21,7 +21,9 @@ function setMobileLanguage () {
 const { width: windowWidth } = useWindowSize()
 const isMobile = computed(() => windowWidth.value < 768)
 
-watch(() => route.fullPath, () => { showMobileMenu.value = false })
+watch(() => route.fullPath, () => {
+  showMobileMenu.value = false
+})
 
 const siderRef = ref()
 const isHovered = useElementHover(siderRef, { delayEnter: 200, delayLeave: 600 })
