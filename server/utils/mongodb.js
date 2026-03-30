@@ -50,14 +50,15 @@ export function getObjectId (_id) {
 }
 
 export function formatDatabaseName (name) {
-  if (typeof name !== 'string') return undefined
+  if (typeof name !== 'string' || !name) return undefined
 
-  let sanitized = name ? name.replace(/[^a-z0-9_]/gi, '').toLowerCase() : undefined
-  while (sanitized && (/^[_0-9]/.test(sanitized))) {
-    sanitized = sanitized.substring(1)
+  if (!/^[a-z][a-z0-9_]*$/.test(name)) {
+    throw createError({ statusCode: 400, statusMessage: `Invalid database name: ${name}` })
   }
 
-  if (mongoDbSystemDbs.includes(sanitized)) return undefined
+  if (mongoDbSystemDbs.includes(name)) {
+    throw createError({ statusCode: 400, statusMessage: `Invalid database name: ${name}` })
+  }
 
-  return sanitized
+  return name
 }

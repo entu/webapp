@@ -1,37 +1,38 @@
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
-export async function getSignedDownloadUrl (account, entityId, property) {
-  const { s3Region, s3Endpoint, s3Bucket, s3Key, s3Secret } = useRuntimeConfig()
+let s3Client
 
-  const s3 = new S3Client({
-    region: s3Region,
-    endpoint: s3Endpoint,
-    credentials: {
-      accessKeyId: s3Key,
-      secretAccessKey: s3Secret
-    }
-  })
+function getS3Client () {
+  if (!s3Client) {
+    const { s3Region, s3Endpoint, s3Key, s3Secret } = useRuntimeConfig()
+
+    s3Client = new S3Client({
+      region: s3Region,
+      endpoint: s3Endpoint,
+      credentials: {
+        accessKeyId: s3Key,
+        secretAccessKey: s3Secret
+      }
+    })
+  }
+
+  return s3Client
+}
+
+export async function getSignedDownloadUrl (account, entityId, property) {
+  const { s3Bucket } = useRuntimeConfig()
 
   const command = new GetObjectCommand({
     Bucket: s3Bucket,
     Key: getKey(account, entityId, property)
   })
 
-  return await getSignedUrl(s3, command, { expiresIn: 60 })
+  return await getSignedUrl(getS3Client(), command, { expiresIn: 60 })
 }
 
 export async function getSignedUploadUrl (account, entityId, property, contentDisposition, contentType) {
-  const { s3Region, s3Endpoint, s3Bucket, s3Key, s3Secret } = useRuntimeConfig()
-
-  const s3 = new S3Client({
-    region: s3Region,
-    endpoint: s3Endpoint,
-    credentials: {
-      accessKeyId: s3Key,
-      secretAccessKey: s3Secret
-    }
-  })
+  const { s3Bucket } = useRuntimeConfig()
 
   const command = new PutObjectCommand({
     Bucket: s3Bucket,
@@ -41,7 +42,7 @@ export async function getSignedUploadUrl (account, entityId, property, contentDi
     ContentType: contentType
   })
 
-  return await getSignedUrl(s3, command, { expiresIn: 60 })
+  return await getSignedUrl(getS3Client(), command, { expiresIn: 60 })
 }
 
 function getKey (account, entityId, property) {

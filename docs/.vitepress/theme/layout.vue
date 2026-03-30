@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import DefaultTheme from 'vitepress/theme'
 import { onMounted } from 'vue'

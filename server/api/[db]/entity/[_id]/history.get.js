@@ -47,20 +47,23 @@ defineRouteMeta({
         content: {
           'application/json': {
             schema: {
-              type: 'array',
-              description: 'Array of history entries showing entity changes',
-              items: {
-                type: 'object',
-                properties: {
-                  _id: { type: 'string', description: 'History entry ID' },
-                  entity: { type: 'string', description: 'Entity ID' },
-                  property: { type: 'string', description: 'Property ID that was changed' },
-                  action: { type: 'string', enum: ['create', 'update', 'delete'], description: 'Action performed' },
-                  user: { type: 'string', description: 'User who made the change' },
-                  timestamp: { type: 'string', format: 'date-time', description: 'When the change occurred' },
-                  before: { type: 'object', description: 'Property value before change' },
-                  after: { type: 'object', description: 'Property value after change' }
-                }
+              type: 'object',
+              properties: {
+                changes: {
+                  type: 'array',
+                  description: 'Array of history entries showing entity changes',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      type: { type: 'string', description: 'Property type that was changed' },
+                      at: { type: 'string', format: 'date-time', description: 'When the change occurred' },
+                      by: { type: 'string', description: 'User ID who made the change' },
+                      old: { type: 'object', description: 'Property value before change' },
+                      new: { type: 'object', description: 'Property value after change' }
+                    }
+                  }
+                },
+                count: { type: 'integer', description: 'Total number of history entries' }
               }
             }
           }
@@ -249,21 +252,25 @@ export default defineEventHandler(async (event) => {
     }, {
       $sort: { at: 1 }
     }, {
-      $skip: skip
-    }, {
-      $limit: limit
+      $facet: {
+        changes: [{ $skip: skip }, { $limit: limit }],
+        count: [{ $count: 'total' }]
+      }
     }
   ]).toArray()
 
-  const cleanChanges = changes.map((x) => {
+  const raw = changes[0]
+  const count = raw.count[0]?.total || 0
+
+  const cleanChanges = raw.changes.map((x) => {
     if (x.type === 'entu_api_key') {
       if (x.old.string) x.old.string = '***'
       if (x.new.string) x.new.string = '***'
     }
 
     if (x.type === 'entu_passkey') {
-      if (x.old.string) x.old.string = `${x.old.passkey_device || ''} ${x._id.toString().slice(-4).toUpperCase()}`.trim()
-      if (x.new.string) x.new.string = `${x.new.passkey_device || ''} ${x._id.toString().slice(-4).toUpperCase()}`.trim()
+      if (x.old?.string) x.old.string = `${x.old.passkey_device || ''} ${x.old._id.toString().slice(-4).toUpperCase()}`.trim()
+      if (x.new?.string) x.new.string = `${x.new.passkey_device || ''} ${x.new._id.toString().slice(-4).toUpperCase()}`.trim()
     }
 
     if (x.at === null) delete x.at
@@ -274,5 +281,5 @@ export default defineEventHandler(async (event) => {
     return x
   })
 
-  return cleanChanges
+  return { changes: cleanChanges, count }
 })

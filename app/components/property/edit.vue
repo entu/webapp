@@ -49,6 +49,8 @@ const fileList = computed(() => props.type === 'file'
   : []
 )
 
+const uploadKey = computed(() => fileList.value.map((x) => x.id).join('|') || '0')
+
 watch(() => props.values, () => {
   oldValues.value = cloneData(props.values.map((x) => {
     if (x.date) x.date = new Date(x.date).getTime()
@@ -178,7 +180,7 @@ async function updateValue (newValue) {
     value = value.trim() || null
   }
   if (oldValue[property] instanceof Date) {
-    value = new Date(value) || null
+    value = new Date(value)
   }
 
   if (props.type !== 'counter' && value === oldValue[property] && language === oldValue.language) return
@@ -359,7 +361,7 @@ async function uploadFile ({ file, onProgress, onFinish, onError }) {
     onProgress({ percent })
   })
 
-  request.addEventListener('load', function (e) {
+  request.addEventListener('load', function () {
     if (request.status === 200) {
       file._id = property._id
       file.url = `/${accountId.value}/file/${property._id}`
@@ -382,7 +384,7 @@ async function deleteFile (file) {
   if (newFiles.value[file.id]) {
     await deleteValue(newFiles.value[file.id])
 
-    delete newFiles.value[file.id]
+    newFiles.value[file.id] = undefined
   }
   else {
     await deleteValue(file.id)
@@ -409,6 +411,7 @@ async function copyToClipboard (text) {
       class="w-full"
     >
       <n-upload
+        :key="uploadKey"
         abstract
         :multiple="isList"
         :default-file-list="fileList"

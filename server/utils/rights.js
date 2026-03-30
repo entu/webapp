@@ -1,8 +1,12 @@
 // Returns an array with duplicates removed, using a key function for comparison
 export function uniqBy (array, keyFn) {
-  return array.filter((v, i, a) =>
-    a.findIndex((t) => keyFn(t) === keyFn(v)) === i
-  )
+  const seen = new Map()
+  return array.filter((v) => {
+    const k = keyFn(v)
+    if (seen.has(k)) return false
+    seen.set(k, true)
+    return true
+  })
 }
 
 // Fetches and merges rights from all parent entities, marking them as inherited

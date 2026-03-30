@@ -301,33 +301,27 @@ async function inheritParentProperties (entu, properties, createdDt) {
 
   if (parentReferences.length === 0) return
 
-  // Inherit _sharing from any parent (direct or default_parent)
-  if (!properties.find((x) => x.type === '_sharing')) {
+  const needsSharing = !properties.find((x) => x.type === '_sharing')
+  const needsInheritRights = !properties.find((x) => x.type === '_inheritrights')
+
+  if (needsSharing || needsInheritRights) {
     const parents = await entu.db.collection('entity').find(
       { _id: { $in: parentReferences.map(getObjectId) } },
-      { projection: { 'private._sharing': true } }
+      { projection: { 'private._sharing': true, 'private._inheritrights': true } }
     ).toArray()
 
-    const parentSharings = parents
-      .map((p) => p.private?._sharing?.at(0)?.string)
-      .filter(Boolean)
+    if (needsSharing) {
+      const parentSharings = parents.map((p) => p.private?._sharing?.at(0)?.string).filter(Boolean)
 
-    if (parentSharings.includes('public')) {
-      properties.push({ type: '_sharing', string: 'public', created: { at: createdDt, by: entu.user || 'entu' } })
+      if (parentSharings.includes('public')) {
+        properties.push({ type: '_sharing', string: 'public', created: { at: createdDt, by: entu.user || 'entu' } })
+      }
+      else if (parentSharings.includes('domain')) {
+        properties.push({ type: '_sharing', string: 'domain', created: { at: createdDt, by: entu.user || 'entu' } })
+      }
     }
-    else if (parentSharings.includes('domain')) {
-      properties.push({ type: '_sharing', string: 'domain', created: { at: createdDt, by: entu.user || 'entu' } })
-    }
-  }
 
-  // Inherit _inheritrights from any parent (direct or default_parent)
-  if (!properties.find((x) => x.type === '_inheritrights')) {
-    const parentsWithInheritRights = await entu.db.collection('entity').find(
-      { _id: { $in: parentReferences.map(getObjectId) }, 'private._inheritrights.boolean': true },
-      { projection: { _id: true } }
-    ).toArray()
-
-    if (parentsWithInheritRights.length > 0) {
+    if (needsInheritRights && parents.some((p) => p.private?._inheritrights?.at(0)?.boolean === true)) {
       properties.push({ type: '_inheritrights', boolean: true, created: { at: createdDt, by: entu.user || 'entu' } })
     }
   }

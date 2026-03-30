@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import logger from './logger.js'
 
 export async function triggerWebhooks (entu, entityId, pluginType) {
   // Get all plugins of the specified type
@@ -54,7 +55,7 @@ export async function triggerWebhooks (entu, entityId, pluginType) {
 
   // Make POST requests to each webhook without waiting
   webhooks.forEach((webhookUrl) => {
-    console.log(`Triggering webhook for ${entityId} ${webhookUrl}`)
+    logger(`Triggering webhook ${webhookUrl}`, entu, [`entity:${entityId}`])
 
     fetch(webhookUrl, {
       method: 'POST',

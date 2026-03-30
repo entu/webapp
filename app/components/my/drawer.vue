@@ -25,6 +25,7 @@ useFocus(closeRef, { initialValue: true })
 
 function close () {
   show.value = false
+  isLoading.value = false
   emit('close')
 }
 

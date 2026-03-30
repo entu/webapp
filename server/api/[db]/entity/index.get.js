@@ -434,19 +434,6 @@ defineRouteMeta({
               type: 'object',
               description: 'Paginated list of entities with metadata',
               properties: {
-                pipeline: {
-                  type: 'array',
-                  description: 'MongoDB aggregation pipeline used for the query',
-                  items: {
-                    type: 'object'
-                  }
-                },
-                pipelineCount: {
-                  type: 'integer',
-                  description: 'Number of entities returned by the pipeline',
-                  minimum: 0,
-                  example: 14
-                },
                 entities: {
                   type: 'array',
                   description: 'Array of entity objects',
@@ -473,7 +460,7 @@ defineRouteMeta({
                   example: 0
                 }
               },
-              required: ['pipeline', 'pipelineCount', 'entities', 'count', 'limit', 'skip']
+              required: ['entities', 'count', 'limit', 'skip']
             }
           }
         }
@@ -565,7 +552,14 @@ export default defineEventHandler(async (event) => {
         break
       default:
         if (operator === 'regex' && v.includes('/')) {
-          value = new RegExp(v.split('/').at(1), v.split('/').at(2))
+          const parts = v.split('/')
+          const flags = (parts.at(2) || '').replace(/[^imsx]/g, '')
+          try {
+            value = new RegExp(parts.at(1), flags)
+          }
+          catch {
+            throw createError({ statusCode: 400, statusMessage: 'Invalid regex' })
+          }
         }
         else if (operator === 'exists') {
           value = v.toLowerCase() === 'true'
@@ -682,8 +676,6 @@ export default defineEventHandler(async (event) => {
   }
 
   return {
-    pipeline,
-    pipelineCount: entities.length,
     entities: cleanedEntities,
     count: count?.at(0)?._count || 0,
     limit,

@@ -24,10 +24,13 @@ export async function aggregateEntity (entu, entityId) {
     })
   }
 
-  const properties = await entu.db.collection('property').find({ entity: entityId, deleted: { $exists: false } }).toArray()
+  // Check for deletion first — avoids fetching all properties when entity is being deleted
+  const isDeleted = await entu.db.collection('property').countDocuments(
+    { entity: entityId, type: '_deleted', deleted: { $exists: false } },
+    { limit: 1 }
+  )
 
-  // delete entity
-  if (properties.some((x) => x.type === '_deleted')) {
+  if (isDeleted) {
     await entu.db.collection('entity').deleteOne({ _id: entityId })
 
     // console.log(`DELETED ${entu.account} ${entityId}`)
@@ -39,6 +42,8 @@ export async function aggregateEntity (entu, entityId) {
       message: 'Entity is deleted'
     }
   }
+
+  const properties = await entu.db.collection('property').find({ entity: entityId, deleted: { $exists: false } }).toArray()
 
   const newEntity = await propertiesToEntity(entu, properties)
 
@@ -366,7 +371,7 @@ async function propertiesToEntity (entu, properties) {
 function makeSearchArray (array) {
   if (!array || array.length === 0) return []
 
-  const result = []
+  const result = new Set()
 
   for (const str of array) {
     const words = `${str}`.toLowerCase().split(/[\s,;]+/).map((x) => x.trim()).filter(Boolean)
@@ -377,14 +382,13 @@ function makeSearchArray (array) {
         const maxEndIndex = Math.min(word.length, startIndex + 20)
 
         for (let endIndex = startIndex + 1; endIndex <= maxEndIndex; endIndex++) {
-          const substring = word.slice(startIndex, endIndex)
-          result.push(substring)
+          result.add(word.slice(startIndex, endIndex))
         }
       }
     }
   }
 
-  return [...new Set(result)].sort()
+  return [...result].sort()
 }
 
 // Computes an MD5 hash of entity private properties to detect changes

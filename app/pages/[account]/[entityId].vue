@@ -253,13 +253,15 @@ async function loadEntity () {
 }
 
 async function loadChilds () {
+  rawChilds.value = []
+
   const { entities } = await apiGetEntities({
     '_parent.reference': entityId.value,
     group: '_type.reference',
     props: '_type'
   })
 
-  entities.forEach(async (x) => {
+  rawChilds.value = (await Promise.all(entities.map(async (x) => {
     const type = getValue(x._type, 'reference')
 
     if (!type) return
@@ -270,14 +272,13 @@ async function loadChilds () {
       'name'
     ])
 
-    rawChilds.value.push({
-      ...rawType,
-      _count: x._count
-    })
-  })
+    return { ...rawType, _count: x._count }
+  }))).filter(Boolean)
 }
 
 async function loadReferences () {
+  rawReferences.value = []
+
   const { entities } = await apiGetEntities({
     '_reference.reference': entityId.value,
     '_reference.property_type.ne': '_parent',
@@ -285,7 +286,7 @@ async function loadReferences () {
     props: '_type'
   })
 
-  entities.forEach(async (x) => {
+  rawReferences.value = (await Promise.all(entities.map(async (x) => {
     const type = getValue(x._type, 'reference')
 
     if (!type) return
@@ -296,11 +297,8 @@ async function loadReferences () {
       'name'
     ])
 
-    rawReferences.value.push({
-      ...rawType,
-      _count: x._count
-    })
-  })
+    return { ...rawType, _count: x._count }
+  }))).filter(Boolean)
 }
 
 async function onDrawerClose () {

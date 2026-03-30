@@ -11,8 +11,11 @@ export async function apiGetEntity (entityId, props = []) {
   return entity
 }
 
-export async function apiGetEntityHistory (entityId) {
-  return await apiRequest(`entity/${entityId}/history`)
+export async function apiGetEntityHistory (entityId, { limit, skip } = {}) {
+  const params = {}
+  if (limit) params.limit = limit
+  if (skip) params.skip = skip
+  return await apiRequest(`entity/${entityId}/history`, params)
 }
 
 export async function apiDeleteEntity (entityId) {

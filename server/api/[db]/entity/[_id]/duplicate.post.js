@@ -140,6 +140,14 @@ export default defineEventHandler(async (event) => {
   const entu = event.context.entu
   const { count = 1, ignoredProperties = [] } = await readBody(event)
 
+  if (count < 1 || count > 100) {
+    throw createError({ statusCode: 400, statusMessage: 'Count must be between 1 and 100' })
+  }
+
+  if (!ignoredProperties.every((x) => typeof x === 'string' && x.length > 0)) {
+    throw createError({ statusCode: 400, statusMessage: 'ignoredProperties must be an array of strings' })
+  }
+
   if (!entu.user) {
     throw createError({
       statusCode: 403,

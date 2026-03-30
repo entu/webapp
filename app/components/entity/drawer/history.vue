@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
-import { NTooltip } from 'naive-ui'
+import { NPagination, NSpin, NTooltip } from 'naive-ui'
 
 const { t, d, n, locale } = useI18n()
 const { accountId } = useAccount()
@@ -20,8 +20,14 @@ const { entityTypes } = storeToRefs(entityTypeStore)
 
 const groups = ref([])
 const isLoading = ref(false)
+const page = ref(1)
+const pageSize = ref(25)
+const total = ref(0)
 
-watch([show, entityId], loadHistory, { immediate: true })
+watch([show, entityId], () => {
+  page.value = 1
+  loadHistory()
+}, { immediate: true })
 
 async function loadHistory () {
   if (!show.value) return
@@ -35,10 +41,16 @@ async function loadHistory () {
     await entityTypeStore.get(props.typeId)
   }
 
-  const raw = await apiGetEntityHistory(entityId.value)
+  const { changes: raw, count } = await apiGetEntityHistory(entityId.value, {
+    limit: pageSize.value,
+    skip: pageSize.value * (page.value - 1)
+  })
+
+  total.value = count
 
   if (!raw?.length) {
     isLoading.value = false
+    groups.value = []
     return
   }
 
@@ -154,138 +166,161 @@ function formatValue (val, decimals) {
 <template>
   <my-drawer
     v-model:show="show"
-    v-model:is-loading="isLoading"
     :title="t('title')"
     @close="emit('close')"
   >
-    <div class="mx-3">
-      <div
-        v-if="!isLoading && groups.length === 0"
-        class="px-3 py-8 text-center text-sm text-slate-400 md:px-6"
-      >
-        {{ t('empty') }}
+    <div class="flex h-full flex-col">
+      <div class="relative min-h-0 flex-1 overflow-y-auto">
+        <div
+          v-if="isLoading"
+          class="absolute inset-0 z-10 flex items-center justify-center bg-white/60"
+        >
+          <n-spin />
+        </div>
+
+        <div
+          v-if="!isLoading && groups.length === 0"
+          class="px-3 py-8 text-center text-sm text-slate-400 md:px-6"
+        >
+          {{ t('empty') }}
+        </div>
+
+        <table
+          v-else
+          class="w-full table-auto"
+        >
+          <thead>
+            <tr class="whitespace-nowrap text-left">
+              <th class="p-3">
+                {{ t('editor') }}
+              </th>
+              <th class="p-3">
+                {{ t('property') }}
+              </th>
+              <th class="p-3">
+                {{ t('old') }}
+              </th>
+              <th class="p-3">
+                {{ t('new') }}
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <template
+              v-for="group in groups"
+              :key="`${group.by}-${group.at}`"
+            >
+              <tr
+                v-for="(item, idx) in group.changes"
+                :key="item.type"
+                class="border-t border-gray-200 hover:bg-gray-50"
+              >
+                <!-- editor + date: only on first row of the group, spans all rows -->
+                <td
+                  v-if="idx === 0"
+                  class="px-3 py-2 align-top"
+                  :rowspan="group.changes.length"
+                >
+                  <div class="font-medium text-slate-700">
+                    {{ group.userName || (group.by ? group.by.slice(-8) : t('system')) }}
+                  </div>
+                  <div
+                    v-if="group.at"
+                    class="text-sm text-slate-400"
+                  >
+                    {{ d(new Date(group.at), 'datetime') }}
+                  </div>
+                </td>
+
+                <!-- property name -->
+                <td class="whitespace-nowrap px-3 py-2 align-top">
+                  <span class="font-medium text-slate-500">{{ item.label }}</span>
+                </td>
+
+                <!-- old values -->
+                <td class="px-3 py-2 align-top">
+                  <n-tooltip
+                    v-for="v in item.oldValues"
+                    :key="v.text"
+                    :disabled="!v.at"
+                    placement="right"
+                  >
+                    <template #trigger>
+                      <div class="flex items-center gap-1.5 text-red-700 line-through">
+                        <span
+                          v-if="v.language"
+                          class="rounded bg-red-100 px-1 text-xs font-medium uppercase"
+                        >{{ v.language }}</span>
+                        <nuxt-link
+                          v-if="v.href"
+                          class="underline"
+                          :to="{ path: v.href, query }"
+                        >{{ v.text }}</nuxt-link>
+                        <template v-else>
+                          {{ v.text }}
+                        </template>
+                        <span
+                          v-if="v.suffix"
+                          class="text-xs opacity-70"
+                        >{{ v.suffix }}</span>
+                      </div>
+                    </template>
+                    {{ v.at ? d(new Date(v.at), 'datetimeseconds') : '' }}
+                  </n-tooltip>
+                </td>
+
+                <!-- new values -->
+                <td class="px-3 py-2 align-top">
+                  <n-tooltip
+                    v-for="v in item.newValues"
+                    :key="v.text"
+                    :disabled="!v.at"
+                    placement="right"
+                  >
+                    <template #trigger>
+                      <div class="flex items-center gap-1.5 text-green-700">
+                        <span
+                          v-if="v.language"
+                          class="rounded bg-green-100 px-1 text-xs font-medium uppercase"
+                        >{{ v.language }}</span>
+                        <nuxt-link
+                          v-if="v.href"
+                          class="underline"
+                          :to="{ path: v.href, query }"
+                        >{{ v.text }}</nuxt-link>
+                        <template v-else>
+                          {{ v.text }}
+                        </template>
+                        <span
+                          v-if="v.suffix"
+                          class="text-xs opacity-70"
+                        >{{ v.suffix }}</span>
+                      </div>
+                    </template>
+                    {{ v.at ? d(new Date(v.at), 'datetimeseconds') : '' }}
+                  </n-tooltip>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
       </div>
 
-      <table
-        v-else
-        class="w-full table-auto"
+      <div
+        v-if="total >= 10"
+        class="flex shrink-0 justify-end border-t border-gray-200 px-3 py-2"
       >
-        <thead>
-          <tr class="whitespace-nowrap text-left">
-            <th class="p-3">
-              {{ t('editor') }}
-            </th>
-            <th class="p-3">
-              {{ t('property') }}
-            </th>
-            <th class="p-3">
-              {{ t('old') }}
-            </th>
-            <th class="p-3">
-              {{ t('new') }}
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          <template
-            v-for="group in groups"
-            :key="`${group.by}-${group.at}`"
-          >
-            <tr
-              v-for="(item, idx) in group.changes"
-              :key="item.type"
-              class="border-t border-gray-200 hover:bg-gray-50"
-            >
-              <!-- editor + date: only on first row of the group, spans all rows -->
-              <td
-                v-if="idx === 0"
-                class="px-3 py-2 align-top"
-                :rowspan="group.changes.length"
-              >
-                <div class="font-medium text-slate-700">
-                  {{ group.userName || (group.by ? group.by.slice(-8) : t('system')) }}
-                </div>
-                <div
-                  v-if="group.at"
-                  class="text-sm text-slate-400"
-                >
-                  {{ d(new Date(group.at), 'datetime') }}
-                </div>
-              </td>
-
-              <!-- property name -->
-              <td class="whitespace-nowrap px-3 py-2 align-top">
-                <span class="font-medium text-slate-500">{{ item.label }}</span>
-              </td>
-
-              <!-- old values -->
-              <td class="px-3 py-2 align-top">
-                <n-tooltip
-                  v-for="v in item.oldValues"
-                  :key="v.text"
-                  :disabled="!v.at"
-                  placement="right"
-                >
-                  <template #trigger>
-                    <div class="flex items-center gap-1.5 text-red-700 line-through">
-                      <span
-                        v-if="v.language"
-                        class="rounded bg-red-100 px-1 text-xs font-medium uppercase"
-                      >{{ v.language }}</span>
-                      <nuxt-link
-                        v-if="v.href"
-                        class="underline"
-                        :to="{ path: v.href, query }"
-                      >{{ v.text }}</nuxt-link>
-                      <template v-else>
-                        {{ v.text }}
-                      </template>
-                      <span
-                        v-if="v.suffix"
-                        class="text-xs opacity-70"
-                      >{{ v.suffix }}</span>
-                    </div>
-                  </template>
-                  {{ v.at ? d(new Date(v.at), 'datetimeseconds') : '' }}
-                </n-tooltip>
-              </td>
-
-              <!-- new values -->
-              <td class="px-3 py-2 align-top">
-                <n-tooltip
-                  v-for="v in item.newValues"
-                  :key="v.text"
-                  :disabled="!v.at"
-                  placement="right"
-                >
-                  <template #trigger>
-                    <div class="flex items-center gap-1.5 text-green-700">
-                      <span
-                        v-if="v.language"
-                        class="rounded bg-green-100 px-1 text-xs font-medium uppercase"
-                      >{{ v.language }}</span>
-                      <nuxt-link
-                        v-if="v.href"
-                        class="underline"
-                        :to="{ path: v.href, query }"
-                      >{{ v.text }}</nuxt-link>
-                      <template v-else>
-                        {{ v.text }}
-                      </template>
-                      <span
-                        v-if="v.suffix"
-                        class="text-xs opacity-70"
-                      >{{ v.suffix }}</span>
-                    </div>
-                  </template>
-                  {{ v.at ? d(new Date(v.at), 'datetimeseconds') : '' }}
-                </n-tooltip>
-              </td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
+        <n-pagination
+          v-model:page="page"
+          show-size-picker
+          :item-count="total"
+          :page-size="pageSize"
+          :page-sizes="[25, 100, 250]"
+          @update:page="page = $event; loadHistory()"
+          @update:page-size="pageSize = $event; page = 1; loadHistory()"
+        />
+      </div>
     </div>
   </my-drawer>
 </template>
