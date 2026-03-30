@@ -134,6 +134,22 @@ async function validatePropertyTypes (entu, properties, allowedTypes) {
     _inheritrights: 'boolean'
   }
   const allValueFields = ['string', 'number', 'boolean', 'reference', 'date', 'datetime']
+  const refCheckedTypes = ['_type', '_owner', '_editor', '_viewer', '_expander', '_noaccess']
+
+  // Batch-fetch all reference existence checks upfront
+  const refCheckIds = properties
+    .filter((p) => refCheckedTypes.includes(p.type) && p.reference)
+    .map((p) => getObjectId(p.reference))
+
+  const existingRefIds = new Set()
+
+  if (refCheckIds.length > 0) {
+    const found = await entu.db.collection('entity')
+      .find({ _id: { $in: refCheckIds } }, { projection: { _id: true } })
+      .toArray()
+
+    for (const doc of found) existingRefIds.add(doc._id.toString())
+  }
 
   for (let i = 0; i < properties.length; i++) {
     const property = properties[i]
@@ -246,16 +262,8 @@ async function validatePropertyTypes (entu, properties, allowedTypes) {
       }
     }
 
-    const refCheckedTypes = ['_type', '_owner', '_editor', '_viewer', '_expander', '_noaccess']
-
     if (refCheckedTypes.includes(property.type) && property.reference) {
-      const ref = await entu.db.collection('entity').findOne({
-        _id: getObjectId(property.reference)
-      }, {
-        projection: { _id: true }
-      })
-
-      if (!ref) {
+      if (!existingRefIds.has(getObjectId(property.reference).toString())) {
         throw createError({
           statusCode: 400,
           statusMessage: `Entity in ${property.type} property not found`

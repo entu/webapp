@@ -128,7 +128,7 @@ export default defineEventHandler(async (event) => {
     if (!session) throw createError({ statusCode: 400, statusMessage: 'No session' })
     if (!session.user?.email) throw createError({ statusCode: 400, statusMessage: 'No user email' })
   }
-  catch (e) {
+  catch {
     apiKeyHash = createHash('sha256').update(key).digest('hex')
   }
 
@@ -149,54 +149,59 @@ export default defineEventHandler(async (event) => {
     accounts.push({ _id: account, name: account, user: { _id: userId.toString(), name: userName, ...extra } })
   }
 
-  for (const { name: account } of dbs.databases) {
-    if (onlyForAccount && onlyForAccount !== account) continue
-    if (mongoDbSystemDbs.includes(account)) continue
+  const accountResults = await Promise.all(
+    dbs.databases
+      .filter(({ name: account }) => !mongoDbSystemDbs.includes(account) && (!onlyForAccount || onlyForAccount === account))
+      .map(async ({ name: account }) => {
+        const accountCon = await connectDb(account)
+        let person
 
-    const accountCon = await connectDb(account)
-    let person
-
-    if (apiKeyHash) {
-      person = await accountCon.collection('entity').findOne(
-        { 'private.entu_api_key.string': apiKeyHash },
-        { projection: { _id: true, 'private.name.string': true } }
-      )
-    }
-    else if (session) {
-      // Step 1: new format — find by uid + provider
-      if (session.user?.id && session.user?.provider) {
-        person = await accountCon.collection('entity').findOne(
-          { 'private.entu_user.uid': session.user.id, 'private.entu_user.provider': session.user.provider },
-          { projection: { _id: true, 'private.name.string': true } }
-        )
-      }
-
-      // Step 2: old format — find by email string and migrate on first login
-      if (!person && session.user?.email) {
-        const oldPerson = await accountCon.collection('entity').findOne(
-          { 'private.entu_user.string': session.user.email },
-          { projection: { _id: true, 'private.name.string': true, 'private.entu_user': true } }
-        )
-
-        if (oldPerson) {
-          const oldProp = oldPerson.private?.entu_user?.find((u) => u.string === session.user.email)
-
-          if (oldProp && session.user?.id && session.user?.provider) {
-            await setEntity(
-              { account, db: accountCon, systemUser: true },
-              oldPerson._id,
-              [{ type: 'entu_user', _id: oldProp._id, uid: session.user.id, email: session.user.email, provider: session.user.provider }]
+        if (apiKeyHash) {
+          person = await accountCon.collection('entity').findOne(
+            { 'private.entu_api_key.string': apiKeyHash },
+            { projection: { _id: true, 'private.name.string': true } }
+          )
+        }
+        else if (session) {
+          // Step 1: new format — find by uid + provider
+          if (session.user?.id && session.user?.provider) {
+            person = await accountCon.collection('entity').findOne(
+              { 'private.entu_user.uid': session.user.id, 'private.entu_user.provider': session.user.provider },
+              { projection: { _id: true, 'private.name.string': true } }
             )
           }
 
-          person = oldPerson
-        }
-      }
-    }
+          // Step 2: old format — find by email string and migrate on first login
+          if (!person && session.user?.email) {
+            const oldPerson = await accountCon.collection('entity').findOne(
+              { 'private.entu_user.string': session.user.email },
+              { projection: { _id: true, 'private.name.string': true, 'private.entu_user': true } }
+            )
 
-    if (person) {
-      addAccount(account, person._id, person.private?.name?.at(0).string || person._id.toString())
-    }
+            if (oldPerson) {
+              const oldProp = oldPerson.private?.entu_user?.find((u) => u.string === session.user.email)
+
+              if (oldProp && session.user?.id && session.user?.provider) {
+                await setEntity(
+                  { account, db: accountCon, systemUser: true },
+                  oldPerson._id,
+                  [{ type: 'entu_user', _id: oldProp._id, uid: session.user.id, email: session.user.email, provider: session.user.provider }]
+                )
+              }
+
+              person = oldPerson
+            }
+          }
+        }
+
+        if (!person) return null
+
+        return { account, userId: person._id, userName: person.private?.name?.at(0).string || person._id.toString() }
+      })
+  )
+
+  for (const result of accountResults) {
+    if (result) addAccount(result.account, result.userId, result.userName)
   }
 
   // Invite acceptance: user arrived via invite link and completed OAuth
@@ -233,7 +238,7 @@ export default defineEventHandler(async (event) => {
         }
       }
     }
-    catch (e) { /* invalid/expired invite */ }
+    catch { /* invalid/expired invite */ }
   }
 
   // Auto-create user if no account found and invite was not attempted

@@ -24,22 +24,10 @@ export default defineNitroPlugin((nitroApp) => {
     const collections = await entu.db.listCollections({ name: 'entity' }).toArray()
     if (collections.length === 0) return
 
-    await Promise.all([
-      entu.db.collection('stats').updateOne(
-        { date: date.substring(0, 10), function: 'ALL' },
-        { $inc: { count: 1 } },
-        { upsert: true }
-      ),
-      entu.db.collection('stats').updateOne(
-        { date: date.substring(0, 7), function: 'ALL' },
-        { $inc: { count: 1 } },
-        { upsert: true }
-      ),
-      entu.db.collection('stats').updateOne(
-        { date: date.substring(0, 4), function: 'ALL' },
-        { $inc: { count: 1 } },
-        { upsert: true }
-      )
+    await entu.db.collection('stats').bulkWrite([
+      { updateOne: { filter: { date: date.substring(0, 10), function: 'ALL' }, update: { $inc: { count: 1 } }, upsert: true } },
+      { updateOne: { filter: { date: date.substring(0, 7), function: 'ALL' }, update: { $inc: { count: 1 } }, upsert: true } },
+      { updateOne: { filter: { date: date.substring(0, 4), function: 'ALL' }, update: { $inc: { count: 1 } }, upsert: true } }
       // entu.db.collection('stats').updateOne(
       //   { date: date.substring(0, 10), function: functionName },
       //   { $inc: { count: 1 } },

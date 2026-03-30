@@ -58,32 +58,33 @@ export async function aggregateEntity (entu, entityId) {
     newEntity.public._type = newEntity.private._type
 
     if (newEntity.private._type.at(0)?.reference) {
-      // get entity definition's _sharing
-      const definitionEntity = await entu.db.collection('entity').findOne({
-        _id: newEntity.private._type.at(0).reference
-      }, {
-        projection: { 'private._sharing': true }
-      })
+      // get entity definition's _sharing and property definitions in parallel
+      const [definitionEntity, definition] = await Promise.all([
+        entu.db.collection('entity').findOne({
+          _id: newEntity.private._type.at(0).reference
+        }, {
+          projection: { 'private._sharing': true }
+        }),
+        entu.db.collection('entity').aggregate([
+          {
+            $match: {
+              'private._parent.reference': newEntity.private._type.at(0).reference,
+              'private._type.string': 'property',
+              'private.name.string': { $exists: true }
+            }
+          }, {
+            $project: {
+              _id: false,
+              name: { $arrayElemAt: ['$private.name.string', 0] },
+              sharing: { $arrayElemAt: ['$private._sharing.string', 0] },
+              search: { $arrayElemAt: ['$private.search.boolean', 0] },
+              formula: { $arrayElemAt: ['$private.formula.string', 0] }
+            }
+          }
+        ]).toArray()
+      ])
 
       const definitionSharing = definitionEntity?.private?._sharing?.at(0)?.string
-
-      const definition = await entu.db.collection('entity').aggregate([
-        {
-          $match: {
-            'private._parent.reference': newEntity.private._type.at(0).reference,
-            'private._type.string': 'property',
-            'private.name.string': { $exists: true }
-          }
-        }, {
-          $project: {
-            _id: false,
-            name: { $arrayElemAt: ['$private.name.string', 0] },
-            sharing: { $arrayElemAt: ['$private._sharing.string', 0] },
-            search: { $arrayElemAt: ['$private.search.boolean', 0] },
-            formula: { $arrayElemAt: ['$private.formula.string', 0] }
-          }
-        }
-      ]).toArray()
 
       // Two-pass formula evaluation: pass 1 seeds values, pass 2 resolves inter-formula dependencies
       // (e.g. formula A referencing formula B on the same entity — B must be computed before A reads it)
@@ -472,11 +473,10 @@ async function startRelativeAggregation (entu, oldEntity, newEntity) {
 
   // Collect referrer IDs once (entities whose properties point to this entity).
   // Reused for both name-change propagation and formula Case 2 below.
-  const referrers = await entu.db.collection('property').aggregate([
-    { $match: { reference: oldEntity._id, deleted: { $exists: false } } },
-    { $group: { _id: '$entity' } }
-  ]).toArray()
-  const referrerIds = referrers.map((x) => x._id)
+  const referrerIds = await entu.db.collection('property').distinct(
+    'entity',
+    { reference: oldEntity._id, deleted: { $exists: false } }
+  )
 
   // Check if name has changed → queue ALL referrers (they cache the name string)
   const oldName = oldEntity.private?.name?.map((x) => x.string || '') || []

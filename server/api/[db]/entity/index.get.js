@@ -702,7 +702,7 @@ function parseDate (dateValue) {
       return new Date(timestampValue)
     }
   }
-  catch (e) {
+  catch {
     console.error('Error parsing date:', dateValue)
 
     return null

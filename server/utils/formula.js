@@ -179,19 +179,19 @@ async function formulaField (entu, str, entityId, localValues = {}) {
     result = [{ _id: entityId }]
   }
   else if (strParts.length === 1 && str !== '_id') { // same entity property
-    result = await entu.db.collection('property').find({
-      entity: entityId,
-      type: str,
-      deleted: { $exists: false }
-    }, {
-      projection: { _id: true, entity: false, type: false, created: false }
-    }).toArray()
+    if (localValues[str]) { // Use in-memory value from current aggregation pass (e.g. another formula result)
+      result = localValues[str]
+    }
+    else {
+      result = await entu.db.collection('property').find({
+        entity: entityId,
+        type: str,
+        deleted: { $exists: false }
+      }, {
+        projection: { _id: true, entity: false, type: false, created: false }
+      }).toArray()
 
-    if (result.length === 0) {
-      if (localValues[str]) { // Use in-memory value from current aggregation pass (e.g. another formula result)
-        result = localValues[str]
-      }
-      else { // Fall back to persisted entity document (pre-aggregation state)
+      if (result.length === 0) { // Fall back to persisted entity document (pre-aggregation state)
         result = await entu.db.collection('entity').aggregate([{
           $match: {
             _id: entityId

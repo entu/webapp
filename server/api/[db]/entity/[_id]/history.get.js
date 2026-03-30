@@ -21,6 +21,24 @@ defineRouteMeta({
           type: 'string',
           description: 'Entity ID'
         }
+      },
+      {
+        name: 'limit',
+        in: 'query',
+        schema: {
+          type: 'integer',
+          default: 100,
+          description: 'Maximum number of history entries to return'
+        }
+      },
+      {
+        name: 'skip',
+        in: 'query',
+        schema: {
+          type: 'integer',
+          default: 0,
+          description: 'Number of history entries to skip'
+        }
       }
     ],
     responses: {
@@ -99,6 +117,9 @@ defineRouteMeta({
 
 export default defineEventHandler(async (event) => {
   const entu = event.context.entu
+  const query = getQuery(event)
+  const limit = parseInt(query.limit) || 100
+  const skip = parseInt(query.skip) || 0
 
   const entityId = getObjectId(getRouterParam(event, '_id'))
   const entity = await entu.db.collection('entity').findOne({
@@ -227,6 +248,10 @@ export default defineEventHandler(async (event) => {
       $project: { _id: false, _newRef: false, _oldRef: false }
     }, {
       $sort: { at: 1 }
+    }, {
+      $skip: skip
+    }, {
+      $limit: limit
     }
   ]).toArray()
 

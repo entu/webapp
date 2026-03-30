@@ -126,9 +126,14 @@ export async function getOrBuildSchema (entu) {
   const cacheKey = `${entu.account}:${entu.userStr || 'anonymous'}`
   const cached = schemaCache.get(cacheKey)
 
+  if (cached && Date.now() - cached.builtAt < CACHE_TTL_MS) {
+    return cached.schema
+  }
+
   const hash = await computeSchemaHash(entu)
 
-  if (cached && Date.now() - cached.builtAt < CACHE_TTL_MS && hash === cached.hash) {
+  if (cached && hash === cached.hash) {
+    schemaCache.set(cacheKey, { schema: cached.schema, builtAt: Date.now(), hash })
     return cached.schema
   }
 
@@ -474,10 +479,10 @@ input MultilingualStringInput { string: String!, language: String }
 function pickDescription (values) {
   if (!values || values.length === 0) return null
   return (
-    values.find((v) => !v.language && v.string)?.string ||
-    values.find((v) => v.language === 'en' && v.string)?.string ||
-    values.find((v) => v.string)?.string ||
-    null
+    values.find((v) => !v.language && v.string)?.string
+    || values.find((v) => v.language === 'en' && v.string)?.string
+    || values.find((v) => v.string)?.string
+    || null
   )
 }
 

@@ -32,18 +32,14 @@ export function buildResolvers (entityTypes, propsByTypeId) {
       }
 
       const entities = await entu.db.collection('entity')
-        .find(filter)
+        .find(filter, { projection: { private: 1, domain: 1, public: 1, access: 1 } })
         .sort({ _id: 1 })
         .skip(args.skip || 0)
         .limit(args.limit || 100)
         .toArray()
 
-      const results = []
-      for (const e of entities) {
-        const cleaned = await cleanupEntity(entu, e, false)
-        if (cleaned) results.push(remapEntityForGraphQL(cleaned, propDefs))
-      }
-      return results
+      const cleaned = await Promise.all(entities.map((e) => cleanupEntity(entu, e, false)))
+      return cleaned.filter(Boolean).map((e) => remapEntityForGraphQL(e, propDefs))
     }
 
     // Only add Create/Update if there are writable properties (matches SDL input type generation)
