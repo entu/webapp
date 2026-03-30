@@ -96,6 +96,19 @@ export default defineNuxtConfig({
       }
     }
   },
+  vite: {
+    optimizeDeps: {
+      include: [
+        'yaml',
+        'highlight.js/lib/core',
+        'highlight.js/lib/languages/yaml',
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        'naive-ui',
+        'marked'
+      ]
+    }
+  },
   eslint: {
     config: {
       autoInit: false,
