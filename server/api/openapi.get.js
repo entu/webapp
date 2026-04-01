@@ -8,6 +8,7 @@ export default defineEventHandler(async () => {
   if (openapi.paths) {
     openapi.paths = Object.fromEntries(
       Object.entries(openapi.paths).filter(([path, methods]) => path.startsWith('/api/')
+        && !path.startsWith('/api/_nuxt_icon')
         && !path.startsWith('/api/docs')
         && !Object.values(methods).some((op) => op?.hidden)
       )
