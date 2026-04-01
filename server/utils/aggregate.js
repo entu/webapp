@@ -9,6 +9,7 @@ export async function aggregateEntity (entu, entityId) {
       'private.name': true,
       'private._type': true,
       'private._parent': true,
+      'private._reference': true,
       'private._noaccess': true,
       'private._viewer': true,
       'private._expander': true,
@@ -519,11 +520,17 @@ async function startRelativeAggregation (entu, oldEntity, newEntity) {
   const oldParentIds = oldEntity.private?._parent?.map((x) => x.reference) || []
   const allParentIds = uniqBy([...newParentIds, ...oldParentIds], (x) => x.toString())
 
-  // Formula Cases 1 & 2: Queue parents and referrers that have formula properties in one query.
-  // Rationale: parents may have _child.* formulas; referrers may have refProp.* formulas.
-  // The name-change block above already queues ALL referrers when the name changes;
-  // this adds formula-filtered parents+referrers for all other field changes.
-  const formulaCandidateIds = uniqBy([...allParentIds, ...referrerIds], (x) => x.toString())
+  // Formula Case 3: Queue entities that this entity references (via non-system properties).
+  // Rationale: referenced entities may have _referrer.* formulas that read this entity's data.
+  // Includes old references (pre-edit) to handle the case where a reference was removed.
+  const newReferencedIds = newEntity.private?._reference?.map((x) => x.reference) || []
+  const oldReferencedIds = oldEntity.private?._reference?.map((x) => x.reference) || []
+  const allReferencedIds = uniqBy([...newReferencedIds, ...oldReferencedIds], (x) => x.toString())
+
+  // Formula Cases 1, 2 & 3: Queue parents, referrers, and referenced entities that have formula properties.
+  // Rationale: parents may have _child.* formulas; referrers may have refProp.* formulas;
+  // referenced entities may have _referrer.* formulas.
+  const formulaCandidateIds = uniqBy([...allParentIds, ...referrerIds, ...allReferencedIds], (x) => x.toString())
 
   if (formulaCandidateIds.length > 0) {
     const candidatesWithFormulas = await filterEntitiesWithFormulas(entu, formulaCandidateIds)
