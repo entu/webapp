@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Create new entity with initial properties. Property _type is required — it must reference the entity type. Supports all property types (string, number, boolean, reference, date, datetime). File properties return signed S3 upload URLs. Returns entity ID and created properties in flattened structure',
+    description: 'Create a new entity. `_type` property is required. Supports all [property types](https://entu.ee/overview/properties). File properties return signed S3 upload URLs.',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
@@ -87,25 +87,9 @@ defineRouteMeta({
           }
         }
       },
-      401: {
-        description: 'Unauthorized - Invalid or missing JWT token',
-        content: {
-          'application/json': {
-            schema: {
-              $ref: '#/components/schemas/Error'
-            }
-          }
-        }
-      },
       403: {
-        description: 'Forbidden - Insufficient permissions to create entity',
-        content: {
-          'application/json': {
-            schema: {
-              $ref: '#/components/schemas/Error'
-            }
-          }
-        }
+        description: 'No user',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       }
     }
   }

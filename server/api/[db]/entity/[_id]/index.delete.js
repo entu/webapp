@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Permanently delete entity by marking it as deleted, all its properties are removed, and all references to this entity from other entities (including child _parent properties) are marked as deleted',
+    description: 'Delete entity and all its properties. References to this entity from other entities are also removed. Requires owner rights.',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
@@ -41,50 +41,13 @@ defineRouteMeta({
           }
         }
       },
-      401: {
-        description: 'Unauthorized - Invalid or missing JWT token',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 401 },
-                statusMessage: { type: 'string', example: 'Unauthorized' }
-              }
-            }
-          }
-        }
-      },
       403: {
-        description: 'Forbidden - Insufficient permissions to delete entity',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 403 },
-                statusMessage: { type: 'string', example: 'No user' }
-              }
-            }
-          }
-        }
+        description: 'No user or not owner',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       },
       404: {
         description: 'Entity not found',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 404 },
-                statusMessage: { type: 'string', example: 'Not Found' }
-              }
-            }
-          }
-        }
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       }
     }
   }

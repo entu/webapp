@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken'
 defineRouteMeta({
   openAPI: {
     tags: ['Authentication'],
-    description: 'OAuth 2.0 authentication flow via OAuth.ee integration. Initial request redirects to provider login page. Provider callback includes authorization code which is automatically exchanged for user profile. Creates or matches person entity by email, then redirects with temporary session token (5 min, single-use) in URL. User completes flow by exchanging token at /api/auth for JWT',
+    description: 'Start OAuth flow via OAuth.ee. Redirects to provider login, exchanges authorization code for user profile, matches or creates person entity, and redirects back with a temporary session token. Exchange it at `/api/auth` for a JWT.',
     security: [], // No authentication required for OAuth callback
     parameters: [
       {
@@ -51,39 +51,24 @@ defineRouteMeta({
     ],
     responses: {
       200: {
-        description: 'Authentication successful - returns temporary API key',
+        description: 'Temporary session token (when `next` is not set)',
         content: {
           'application/json': {
             schema: {
               type: 'object',
               properties: {
-                key: {
-                  type: 'string',
-                  description: 'Temporary API key (single use)',
-                  example: 'M2s8xKpwxG77JYxbx7xw4cS9'
-                }
+                key: { type: 'string', description: 'Session token — exchange at `/api/auth` for JWT', example: 'M2s8xKpwxG77JYxbx7xw4cS9' }
               }
             }
           }
         }
       },
       302: {
-        description: 'Redirect to next URL with temporary API key appended'
+        description: 'Redirect to `next` URL with session token appended, or redirect to OAuth provider'
       },
       400: {
-        description: 'Authentication error',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 400 },
-                statusMessage: { type: 'string', example: 'Bad Request' }
-              }
-            }
-          }
-        }
+        description: 'OAuth error from provider',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       }
     }
   }

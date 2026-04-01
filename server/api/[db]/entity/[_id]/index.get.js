@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Get single entity by ID with all properties filtered by user access rights (private/domain/public). Returns flattened property structure with optional thumbnail and property filtering via props parameter',
+    description: 'Get entity by ID. Returns properties filtered by access rights. Use `props` to request specific properties only.',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
@@ -49,35 +49,13 @@ defineRouteMeta({
           }
         }
       },
-      401: {
-        description: 'Unauthorized - Invalid or missing JWT token',
-        content: {
-          'application/json': {
-            schema: {
-              $ref: '#/components/schemas/Error'
-            }
-          }
-        }
-      },
       403: {
-        description: 'Forbidden - Insufficient permissions to view entity',
-        content: {
-          'application/json': {
-            schema: {
-              $ref: '#/components/schemas/Error'
-            }
-          }
-        }
+        description: 'No accessible properties',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       },
       404: {
         description: 'Entity not found',
-        content: {
-          'application/json': {
-            schema: {
-              $ref: '#/components/schemas/Error'
-            }
-          }
-        }
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       }
     }
   }

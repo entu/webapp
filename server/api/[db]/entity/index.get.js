@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'List entities with advanced filtering by property values (exact, regex, range, exists checks), full-text search across all text fields, sorting, grouping, and pagination. Returns entities array with properties filtered by user access rights (private/domain/public). Supports count-only queries',
+    description: 'List entities with filtering, full-text search, sorting, grouping, and pagination. Properties are filtered by access rights. See [query reference](https://entu.ee/api/query-reference).',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
@@ -465,25 +465,9 @@ defineRouteMeta({
           }
         }
       },
-      401: {
-        description: 'Unauthorized - Invalid or missing JWT token',
-        content: {
-          'application/json': {
-            schema: {
-              $ref: '#/components/schemas/Error'
-            }
-          }
-        }
-      },
-      403: {
-        description: 'Forbidden - Insufficient permissions',
-        content: {
-          'application/json': {
-            schema: {
-              $ref: '#/components/schemas/Error'
-            }
-          }
-        }
+      400: {
+        description: 'Invalid regex filter',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       }
     }
   }

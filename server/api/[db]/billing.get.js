@@ -3,7 +3,7 @@ import stripe from 'stripe'
 defineRouteMeta({
   openAPI: {
     tags: ['Database'],
-    description: 'Generate Stripe customer portal session URL for managing subscriptions (upgrade/downgrade/cancel), updating payment methods, viewing invoices, and downloading receipts. URL is time-limited and redirects back to Entu after completion. Requires database to have Stripe customer ID configured',
+    description: 'Returns a time-limited Stripe customer portal URL for managing subscriptions, payment methods, and invoices. Requires Stripe customer ID on the database.',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
@@ -43,50 +43,13 @@ defineRouteMeta({
           }
         }
       },
-      401: {
-        description: 'Unauthorized - Invalid or missing JWT token',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 401 },
-                statusMessage: { type: 'string', example: 'Unauthorized' }
-              }
-            }
-          }
-        }
-      },
       403: {
-        description: 'Forbidden - No user authenticated or insufficient permissions',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 403 },
-                statusMessage: { type: 'string', example: 'Forbidden' }
-              }
-            }
-          }
-        }
+        description: 'No user',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       },
       404: {
-        description: 'Account not found',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 404 },
-                statusMessage: { type: 'string', example: 'Not Found' }
-              }
-            }
-          }
-        }
+        description: 'Database not found',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       }
     }
   }

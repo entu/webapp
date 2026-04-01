@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Property'],
-    description: 'Get individual property details including type, value, creation metadata, and entity reference. For file properties, includes signed S3 download URL (valid 15 minutes). Add ?download=true query parameter to redirect directly to file. Respects entity access rights',
+    description: 'Get property by ID with type, value, and creation metadata. File properties include a signed download URL (15 min). Use `?download=true` to redirect directly to the file.',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
@@ -43,37 +43,15 @@ defineRouteMeta({
         }
       },
       302: {
-        description: 'Redirect to file download URL (when download parameter is set and property is a file)'
-      },
-      401: {
-        description: 'Unauthorized - Invalid or missing JWT token',
-        content: {
-          'application/json': {
-            schema: {
-              $ref: '#/components/schemas/Error'
-            }
-          }
-        }
+        description: 'Redirect to file download URL (when `download` is set)'
       },
       403: {
-        description: 'Forbidden - Insufficient permissions to view property',
-        content: {
-          'application/json': {
-            schema: {
-              $ref: '#/components/schemas/Error'
-            }
-          }
-        }
+        description: 'Insufficient permissions',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       },
       404: {
-        description: 'Property not found',
-        content: {
-          'application/json': {
-            schema: {
-              $ref: '#/components/schemas/Error'
-            }
-          }
-        }
+        description: 'Property or entity not found',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       }
     }
   }

@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Create duplicate copy of entity with all or filtered properties. Optionally override parent and create multiple copies in single request. New entity gets new ID, properties are fully copied. Useful for templates or batch entity creation',
+    description: 'Duplicate entity with all or selected properties. Optionally set a different parent or create multiple copies at once.',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
@@ -87,50 +87,17 @@ defineRouteMeta({
           }
         }
       },
-      401: {
-        description: 'Unauthorized - Invalid or missing JWT token',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 401 },
-                statusMessage: { type: 'string', example: 'Unauthorized' }
-              }
-            }
-          }
-        }
+      400: {
+        description: 'Invalid count or ignoredProperties',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       },
       403: {
-        description: 'Forbidden - Insufficient permissions to duplicate entity',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 403 },
-                statusMessage: { type: 'string', example: 'Forbidden' }
-              }
-            }
-          }
-        }
+        description: 'No user or not owner',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       },
       404: {
         description: 'Entity not found',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 404 },
-                statusMessage: { type: 'string', example: 'Not Found' }
-              }
-            }
-          }
-        }
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       }
     }
   }

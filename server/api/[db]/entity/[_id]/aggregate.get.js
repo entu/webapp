@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Force re-aggregation of entity properties (formulas, computed fields, inherited values) and return fresh entity data. Useful after external data changes or to refresh cached calculations. Returns same structure as GET entity',
+    description: 'Re-aggregate entity — recomputes [formulas](https://entu.ee/api/formulas), inherited rights, and search indexes. Returns fresh entity data. Regular GET returns cached data — use this only when you need up-to-date computed values.',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
@@ -25,54 +25,16 @@ defineRouteMeta({
     ],
     responses: {
       200: {
-        description: 'Entity aggregated data with computed fields',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              description: 'Aggregated entity data with computed properties and relationships',
-              properties: {
-                _id: { type: 'string', description: 'Entity ID' },
-                aggregatedProperties: {
-                  type: 'object',
-                  description: 'Computed and aggregated properties',
-                  additionalProperties: true
-                },
-                relationships: {
-                  type: 'object',
-                  description: 'Related entities and their data',
-                  additionalProperties: true
-                }
-              }
-            }
-          }
-        }
-      },
-      401: {
-        description: 'Unauthorized - Invalid or missing JWT token',
+        description: 'Aggregation result',
         content: {
           'application/json': {
             schema: {
               type: 'object',
               properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 401 },
-                statusMessage: { type: 'string', example: 'Unauthorized' }
-              }
-            }
-          }
-        }
-      },
-      403: {
-        description: 'Forbidden - Insufficient permissions to view entity',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 403 },
-                statusMessage: { type: 'string', example: 'Forbidden' }
+                account: { type: 'string', description: 'Database name' },
+                entity: { type: 'string', description: 'Entity ID' },
+                queued: { type: 'integer', description: 'Number of related entities queued for re-aggregation' },
+                message: { type: 'string', example: 'Entity is aggregated' }
               }
             }
           }
@@ -80,18 +42,7 @@ defineRouteMeta({
       },
       404: {
         description: 'Entity not found',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 404 },
-                statusMessage: { type: 'string', example: 'Not Found' }
-              }
-            }
-          }
-        }
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       }
     }
   }

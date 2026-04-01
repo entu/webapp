@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 defineRouteMeta({
   openAPI: {
     tags: ['Authentication'],
-    description: 'Exchange API key or temporary session token for JWT access token (valid 48 hours). Accepts permanent API keys from entu_api_key property (hashed SHA-256) or temporary session tokens from OAuth/passkey flows (5 min validity). Returns JWT with database accounts array and user profile. Optional db parameter restricts authentication to single database',
+    description: 'Exchange API key or session token for a 48-hour JWT. Accepts permanent API keys (SHA-256 hashed) or temporary tokens from OAuth/passkey flows. Returns JWT with accounts list and user profile. Optional `db` limits auth to one database.',
     security: [], // Uses API key, not JWT
     parameters: [
       {
@@ -13,7 +13,7 @@ defineRouteMeta({
         required: true,
         schema: {
           type: 'string',
-          description: 'Bearer token (temporary API key or permanent API key)',
+          description: 'Bearer token — permanent API key or temporary session token',
           example: 'Bearer nEkPYET5fYjJqktNz9yfLxPF'
         }
       },
@@ -22,13 +22,29 @@ defineRouteMeta({
         in: 'query',
         schema: {
           type: 'string',
-          description: 'Database name. Optional. If set, authentication is done only for this database.'
+          description: 'Limit auth to this database'
+        }
+      },
+      {
+        name: 'account',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Alias for `db`'
+        }
+      },
+      {
+        name: 'invite',
+        in: 'query',
+        schema: {
+          type: 'string',
+          description: 'Invite JWT token to accept during authentication'
         }
       }
     ],
     responses: {
       200: {
-        description: 'Authentication data with JWT tokens',
+        description: 'JWT token with accessible accounts',
         content: {
           'application/json': {
             schema: {
@@ -36,17 +52,17 @@ defineRouteMeta({
               properties: {
                 accounts: {
                   type: 'array',
-                  description: 'Array of databases user has access to',
+                  description: 'Databases the user has access to',
                   items: {
                     type: 'object',
                     properties: {
-                      _id: { type: 'string', description: 'Database ID', example: 'mydatabase' },
-                      name: { type: 'string', description: 'Database name', example: 'mydatabase' },
+                      _id: { type: 'string', example: 'mydatabase' },
+                      name: { type: 'string', example: 'mydatabase' },
                       user: {
                         type: 'object',
                         properties: {
-                          _id: { type: 'string', description: 'User ID', example: 'npfwb8fv4ku7tzpq5yjarncc' },
-                          name: { type: 'string', description: 'User name', example: 'User 1' }
+                          _id: { type: 'string', example: 'npfwb8fv4ku7tzpq5yjarncc' },
+                          name: { type: 'string', example: 'User 1' }
                         }
                       }
                     }
@@ -54,52 +70,21 @@ defineRouteMeta({
                 },
                 user: {
                   type: 'object',
-                  description: 'User information',
                   properties: {
-                    name: { type: 'string', description: 'User name' },
-                    email: { type: 'string', description: 'User email' },
-                    picture: { type: 'string', description: 'User picture URL' }
+                    name: { type: 'string' },
+                    email: { type: 'string' }
                   }
                 },
-                token: {
-                  type: 'string',
-                  description: 'JWT token for API access',
-                  example: 'hNGcQgaeKh7ptWF5FVPbfKgpR5ZHCzT5cbA4BQWtmWGkfdQHg5HLDMCB8GwKw8gG'
-                }
+                token: { type: 'string', description: '48-hour JWT' },
+                conflict: { type: 'string', description: 'Set to `invite` if invite targets an entity already linked to another user' }
               }
             }
           }
         }
       },
       400: {
-        description: 'No API key provided',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 400 },
-                statusMessage: { type: 'string', example: 'Bad Request' }
-              }
-            }
-          }
-        }
-      },
-      401: {
-        description: 'Invalid API key',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 401 },
-                statusMessage: { type: 'string', example: 'Unauthorized' }
-              }
-            }
-          }
-        }
+        description: 'No key, invalid session, or missing user email',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       }
     }
   }

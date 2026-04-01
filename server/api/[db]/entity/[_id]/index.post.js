@@ -1,7 +1,7 @@
 defineRouteMeta({
   openAPI: {
     tags: ['Entity'],
-    description: 'Add new properties to entity (does not delete existing properties). Supports all property types including files. File properties return signed S3 upload URLs. Returns entity ID and all newly added properties in flattened structure. Requires _editor rights',
+    description: 'Add properties to an entity. Does not remove existing properties. File properties return signed S3 upload URLs. Requires editor rights.',
     security: [{ bearerAuth: [] }],
     parameters: [
       {
@@ -87,64 +87,16 @@ defineRouteMeta({
         }
       },
       400: {
-        description: 'Bad Request - Invalid property data',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 400 },
-                statusMessage: { type: 'string', example: 'Bad Request' }
-              }
-            }
-          }
-        }
-      },
-      401: {
-        description: 'Unauthorized - Invalid or missing JWT token',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 401 },
-                statusMessage: { type: 'string', example: 'Unauthorized' }
-              }
-            }
-          }
-        }
+        description: 'Invalid input — body must be an array of property objects',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       },
       403: {
-        description: 'Forbidden - Insufficient permissions to update entity',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 403 },
-                statusMessage: { type: 'string', example: 'No user' }
-              }
-            }
-          }
-        }
+        description: 'No user or insufficient permissions',
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       },
       404: {
         description: 'Entity not found',
-        content: {
-          'application/json': {
-            schema: {
-              type: 'object',
-              properties: {
-                error: { type: 'string', description: 'Error message' },
-                statusCode: { type: 'integer', example: 404 },
-                statusMessage: { type: 'string', example: 'Not Found' }
-              }
-            }
-          }
-        }
+        content: { 'application/json': { schema: { $ref: '#/components/schemas/Error' } } }
       }
     }
   }

@@ -1,6 +1,6 @@
 import stripe from 'stripe'
 
-defineRouteMeta({ openAPI: { hide: true } })
+defineRouteMeta({ openAPI: { hidden: true } })
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

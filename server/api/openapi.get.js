@@ -1,21 +1,17 @@
+defineRouteMeta({ openAPI: { hidden: true } })
+
 export default defineEventHandler(async () => {
   // Get the original OpenAPI spec from the default route
   const openapi = await $fetch('/api/docs/openapi.json')
 
-  // Filter out paths that include /_
+  // Keep only documented /api/ paths (exclude hidden and Nitro internal routes)
   if (openapi.paths) {
-    const filteredPaths = Object.fromEntries(
-      Object.entries(openapi.paths).filter(([path]) => path.startsWith('/api/')
-        && !path.includes('/_')
-        && !path.includes('/passkey')
-        && !path.includes('/webhook')
+    openapi.paths = Object.fromEntries(
+      Object.entries(openapi.paths).filter(([path, methods]) => path.startsWith('/api/')
         && !path.startsWith('/api/docs')
-        && !path.startsWith('/api/openapi')
-        && !path.startsWith('/api/passkey')
-        && !path.startsWith('/api/stripe')
+        && !Object.values(methods).some((op) => op?.hidden)
       )
     )
-    openapi.paths = filteredPaths
   }
 
   // Add additional OpenAPI metadata that Nitro config doesn't support
@@ -25,7 +21,7 @@ export default defineEventHandler(async () => {
     }
   ]
 
-  openapi.info.description = 'Entu is a flexible, entity-property based database system with a RESTful API. Unlike traditional relational databases with fixed table schemas, Entu uses a dynamic entity-property model where entities can have any properties defined by their type, enabling you to model complex, evolving data structures without schema migrations.\n\nEntities represent real-world objects like people, products, or projects. Each entity has properties that store various data types including text, numbers, dates, files, and references to other entities. Entities can have multiple parents in hierarchical structures, inheriting access rights automatically. Every entity has granular access control, and users can only access entities where they have explicit or inherited permissions.\n\nThis API provides CRUD operations with filtering, sorting, grouping, full-text search, change history, and entity duplication. Built-in features include file management with signed URLs, automatic metadata tracking, and formulas for computed properties.\n\nAuthentication uses JWT tokens via API keys, OAuth providers, or WebAuthn passkeys.'
+  openapi.info.description = 'RESTful API for [Entu](https://entu.ee) — a flexible entity-property database. Entities hold typed properties (text, numbers, dates, files, references) defined per entity type, with no fixed schema. Supports hierarchical structures, granular access control, full-text search, filtering, sorting, computed properties ([formulas](https://entu.ee/api/formulas)), and file management via signed URLs.\n\nAuthentication uses JWT tokens obtained via API key, OAuth, or WebAuthn passkey. See [authentication docs](https://entu.ee/api/authentication) for details.'
 
   if (!openapi.components) {
     openapi.components = {}
@@ -52,19 +48,19 @@ export default defineEventHandler(async () => {
   openapi.tags = [
     {
       name: 'Authentication',
-      description: 'Entu supports API key, OAuth, and WebAuthn passkey authentication. Exchange credentials at `/api/auth` for a 48-hour JWT token, then use it in the `Authorization: Bearer <token>` header for all requests.'
+      description: 'Exchange API key, OAuth token, or passkey for a 48-hour JWT. Use `Authorization: Bearer <token>` on all subsequent requests. See [authentication docs](https://entu.ee/api/authentication).'
     },
     {
       name: 'Database',
-      description: 'Database configuration and management operations. Create new databases, view usage statistics and limits, and manage billing.'
+      description: 'Database statistics, limits, and billing management.'
     },
     {
       name: 'Entity',
-      description: 'Entities are the core data objects in Entu. Perform full CRUD operations — create, read, update, and delete entities. List with advanced filtering, sorting, and pagination; search full text, view change history, duplicate entities, and retrieve aggregated data with computed fields.'
+      description: 'CRUD operations on [entities](https://entu.ee/overview/entities) — filtering, sorting, pagination, full-text search, change history, duplication, and aggregation of [computed properties](https://entu.ee/api/formulas).'
     },
     {
       name: 'Property',
-      description: 'Properties define entity attributes and store typed values — strings, numbers, dates, references, files, and more. Get property details, download file attachments, or delete individual property values. Properties track creation metadata and are versioned.'
+      description: 'Read or delete individual [property](https://entu.ee/overview/properties) values. File properties return signed download URLs.'
     }
   ]
 
@@ -76,49 +72,49 @@ export default defineEventHandler(async () => {
   // Entity - Core entity model with flattened properties structure
   openapi.components.schemas.Entity = {
     type: 'object',
-    description: 'Entity object with flattened properties structures',
+    description: 'Entity with flattened properties.',
     properties: {
       _id: {
         type: 'string',
-        description: 'Unique entity identifier',
+        description: 'Entity ID',
         example: '6798938432faaba00f8fc72f'
       },
       _type: {
         type: 'string',
-        description: 'Reference to entity type definition',
+        description: 'Entity type reference',
         example: '6798938432faaba00f8fc72e'
       },
       _owner: {
         type: 'array',
-        description: 'Entity owners',
+        description: 'Owners',
         items: {
           $ref: '#/components/schemas/Property'
         }
       },
       _created: {
         type: 'array',
-        description: 'Creation information',
+        description: 'Creation metadata',
         items: {
           $ref: '#/components/schemas/Property'
         }
       },
       _sharing: {
         type: 'array',
-        description: 'Sharing settings',
+        description: 'Sharing level',
         items: {
           $ref: '#/components/schemas/Property'
         }
       },
       _thumbnail: {
         type: 'string',
-        description: 'Thumbnail URL for the entity',
+        description: 'Thumbnail URL',
         format: 'uri',
         example: 'https://entu.app/api/entity/thumbnail/6798938432faaba00f8fc72f'
       }
     },
     additionalProperties: {
       type: 'array',
-      description: 'Dynamic properties with values based on entity type. Property names vary by entity type (e.g., "name", "manufacturer", "color", etc.)',
+      description: 'Dynamic properties defined by the entity type',
       items: {
         $ref: '#/components/schemas/Property'
       }
@@ -129,84 +125,84 @@ export default defineEventHandler(async () => {
   // Property - Individual property with typed values and metadata
   openapi.components.schemas.Property = {
     type: 'object',
-    description: 'Property object containing typed values and metadata.',
+    description: 'Typed property value with metadata.',
     properties: {
       _id: {
         type: 'string',
-        description: 'Unique property identifier',
+        description: 'Property ID',
         example: '6798938532faaba00f8fc761'
       },
       type: {
         type: 'string',
-        description: 'Property type defining the data structure',
+        description: 'Property type name',
         example: 'manufacturer'
       },
       string: {
         type: 'string',
-        description: 'String value (present for string properties) or display name (present for reference properties)',
+        description: 'String value or referenced entity name',
         example: 'Prusament'
       },
       number: {
         type: 'number',
-        description: 'Numeric value (present when property type supports numeric values)'
+        description: 'Numeric value'
       },
       boolean: {
         type: 'boolean',
-        description: 'Boolean value (present when property type supports boolean values)'
+        description: 'Boolean value'
       },
       reference: {
         type: 'string',
-        description: 'Reference to another entity ID (present when property type is reference)',
+        description: 'Referenced entity ID',
         example: '6798938532faaba00f8fc75f'
       },
       date: {
         type: 'string',
         format: 'date',
-        description: 'Date value (present when property type supports date values)'
+        description: 'Date value'
       },
       datetime: {
         type: 'string',
         format: 'date-time',
-        description: 'DateTime value (present when property type supports datetime values)',
+        description: 'Datetime value',
         example: '2025-01-28T08:21:25.637Z'
       },
       filename: {
         type: 'string',
-        description: 'File name (present when property type is file)'
+        description: 'File name'
       },
       filesize: {
         type: 'integer',
-        description: 'File size in bytes (present when property type is file)',
+        description: 'File size in bytes',
         minimum: 0
       },
       filetype: {
         type: 'string',
-        description: 'MIME type (present when property type is file)',
+        description: 'MIME type',
         example: 'image/jpeg'
       },
       language: {
         type: 'string',
-        description: 'Language code for multilingual properties',
+        description: 'Language code',
         example: 'en'
       },
       entity: {
         type: 'string',
-        description: 'Entity ID this property belongs to',
+        description: 'Parent entity ID',
         example: '6798938532faaba00f8fc75f'
       },
       created: {
         type: 'object',
-        description: 'Property creation metadata',
+        description: 'Creation metadata',
         properties: {
           at: {
             type: 'string',
             format: 'date-time',
-            description: 'Creation timestamp',
+            description: 'Timestamp',
             example: '2025-01-28T08:21:25.637Z'
           },
           by: {
             type: 'string',
-            description: 'ID of user who created the property',
+            description: 'User ID',
             example: '506e7c33dcb4b5c4fde735d0'
           }
         },
@@ -219,20 +215,20 @@ export default defineEventHandler(async () => {
   // Error - Standard error response format used across all API endpoints
   openapi.components.schemas.Error = {
     type: 'object',
-    description: 'Standard error response format',
+    description: 'Error response.',
     properties: {
       error: {
         type: 'string',
-        description: 'Error message describing what went wrong'
+        description: 'Error message'
       },
       statusCode: {
         type: 'integer',
-        description: 'HTTP status code',
+        description: 'Status code',
         example: 400
       },
       statusMessage: {
         type: 'string',
-        description: 'HTTP status message',
+        description: 'Status message',
         example: 'Bad Request'
       }
     },
