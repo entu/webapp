@@ -207,7 +207,7 @@ const authMenu = computed(() => {
       key: 'auth-sid',
       icon: () => h(MyIcon, { icon: 'smart-id' }),
       label: () => h(NuxtLink,
-        { to: { path: '/auth/smart-id-qr' } },
+        { to: { path: '/auth/smart-id' } },
         { default: () => t('sid') }
       )
     },
