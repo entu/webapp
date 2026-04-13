@@ -1,0 +1,143 @@
+## 2026-03-12
+- **Strict entity type validation**: Creating an entity now requires a `_type` value; system properties (`_type`, `_parent`, `_sharing`, etc.) are protected from deletion and validated on write
+- **Property default values**: Default values defined on entity types are now applied automatically on both the client (edit drawer) and server (API) when creating or editing entities
+
+## 2026-03-09
+- **Mobile-responsive UI**: Redesigned the layout, side menu, drawers, and entity pages to work on small screens; added a collapsible mobile menu with hamburger toggle and back-navigation
+- **Entity history**: Added audit log drawer showing a full change history for each entity — who changed what and when, grouped by editor and time, with before/after values, language badges, and exact timestamps on hover
+
+## 2026-03-06
+- **Two-pass formula evaluation**: Formulas now evaluate in two passes to correctly resolve dependencies between computed fields
+- **Parent selector fix**: Parent drawer now uses the menu store for its entity query and correctly handles empty state
+
+## 2026-03-05
+- **User invite flow**: Added email-based user invitation system with invite page, HTML/text email templates, SES email delivery, and invite handling in the auth and entity APIs
+- **Formula-aware aggregation**: Aggregation now resolves formula dependencies and supports relative (parent-aware) computed field evaluation
+
+## 2026-02-20
+- **Documentation restructuring**: Split API.md into a structured docs/ folder with dedicated pages for authentication, entities, properties, files, formulas, system properties, best practices, and more
+- **Documentation improvements**: Converted property/rights/system field lists to tables, clarified field descriptions, and updated quickstart guide with API key generation details
+
+## 2026-02-17
+- **Passkey authentication**: Added passwordless WebAuthn authentication using device biometrics (fingerprint, face recognition, or PIN) with account-scoped credentials and property management UI
+
+## 2025-10-27
+- **Property inheritance improvements**: Enhanced `_sharing` and `_inheritrights` to check all parent entities (direct and default parents) with proper priority handling
+- **Formula enhancements**: Added `ROUND` and `ABS` functions, nested formula support, and comprehensive FORMULAS.md documentation
+- **Search improvements**: Improved 'exists' operator handling in search modal
+- **UI improvements**: Enhanced child list to handle 'file' type properties
+
+## 2025-10-15
+- **Email authentication**: Added email authentication option as an alternative login method
+
+## 2025-10-08
+- **Pricing updates**: Updated pricing information to clearly indicate that prices exclude VAT
+- **UI improvements**: Fixed child list image container width, improved text field handling, and refactored thumbnail generation logic
+- **Bug fixes**: Fixed counter property handling in edit and entity utilities, and relaxed JWT audience verification in authentication middleware
+
+## 2025-10-02
+- **Webhook authentication**: Added temporary JWT token generation for webhooks with 1-minute expiration and no IP restrictions, allowing webhook recipients to make authenticated API calls on behalf of the user
+
+## 2025-09-12
+- **Webhook triggers**: Added webhook triggers for entity edit and delete operations
+- **Plugin webhooks**: Implemented POST data delivery to plugin URLs for webhook integrations
+
+## 2025-09-10
+- **Webhook creation trigger**: Added webhook trigger after entity creation
+- **Set property fixes**: Fixed sorting of set property options
+- **Storage limit increase**: Updated storage limits from 5GB to 10GB in pricing plans
+
+## 2025-09-03
+- **Loading indicators**: Added loading spinner to authentication provider and exit pages
+- **Authentication UI**: Auth menu now displays in open state by default
+- **Error handling improvements**: Refactored error handling and API utility functions for better reliability
+- **Entity page fixes**: Fixed loading state handling in entity page
+
+## 2025-09-01
+- **Formula enhancements**: Added MULTIPLY and DIVIDE formula functions for mathematical operations
+- **Referrer formula support**: Added support for "_referrer.*.*" formula pattern to access entities that reference the current entity
+
+## 2025-08-29
+- **Table sorting**: Added clickable column headers to sort data with visual indicators for sort direction
+
+## 2025-08-28
+- **Version notifications**: Added update notification system to alert users when new app versions are available
+- **Analytics enhancements**: Added analytics tracking to key UI actions for better user behavior insights
+- **Child entity editing**: Added edit button to edit entity children directly from child table on row hover
+- **API key generation**: Added automatic generation of secure 32-character API keys
+
+## 2025-08-27
+- **Improved toolbar design**: Made the entity toolbar responsive and adaptive to screen width
+- **New debug shortcut**: Removed the debug button and added Alt+click on entity names to access debug info
+- **Changelog**: Added changelog component that displays latest changes with expandable full history drawer
+- **Print functionality**: Fixed print issues where content beyond the first page was not visible
+- **Better component structure**: Refactored property values into reusable components for cleaner code
+
+## 2025-08-26
+- **Advanced search feature**: Added a powerful search modal with property filters, custom operators, and robust date parsing that handles various date formats
+- **Table view option**: Introduced a new table view for entity lists alongside the existing list view with fine-tuned styling
+
+## 2025-08-25
+- **Enhanced search capabilities**: Added support for 'in' operator in entity filtering for more precise searches
+
+## 2025-08-22
+- **Property visibility improvements**: Enhanced sharing indicators to show which properties are visible to whom with restricted domain-level access
+
+## 2025-08-21
+- **Property sharing overhaul**: Replaced 'public' property system with more flexible 'sharing' system and added visual indicators to show property visibility levels (private/domain/public)
+- **API documentation improvements**: Better OpenAPI path filtering and configuration
+
+## 2025-08-19
+- **Form improvements**: Enhanced property editing with better empty field handling and validation
+- **Smarter search**: Improved word splitting and search term processing
+
+## 2025-08-18
+- **Search optimization**: Limited search terms to 20 characters to improve performance
+- **Multilingual fixes**: Resolved issues with multilingual property selection and validation
+
+## 2025-07-31
+- **Analytics integration**: Added Entu Analytics for better usage insights
+
+## 2025-07-21
+- **API documentation polish**: Added proper tags, improved organization, cleaned up OpenAPI docs, and hid unnecessary model details
+
+## 2025-07-18
+- **API structure improvements**: Renamed API paths for better organization and changed 'account' to 'db' parameter for clarity
+- **Documentation creation**: Added comprehensive API.md documentation file
+
+## 2025-07-16
+- **OpenAPI documentation**: Enabled full API documentation with metadata, examples, and disabled Swagger in favor of cleaner OpenAPI docs
+- **Icon system upgrade**: Replaced nuxt-icons with modern @nuxt/icon package
+- **Number input fixes**: Resolved decimal precision issues in number editing
+
+## 2025-07-03
+- **Entity duplication feature**: Added ability to duplicate entities with smart filtering that automatically excludes sensitive and file properties
+
+## 2025-05-12
+- **Statistics improvements**: Fixed properties stats calculation and display
+
+## 2025-05-02
+- **Navigation fixes**: Fixed menu handling with empty queries and resolved parent entity errors
+
+## 2025-04-25
+- **OpenSearch integration**: Implemented direct request logging to OpenSearch with improved path handling and empty path filtering
+
+## 2025-04-23
+- **System optimization**: Enhanced logging capabilities and improved reference property handling to preserve entity_type and property_type information
+
+## 2025-04-21
+- **Entity comparison system**: Added entity hashing and comparison before aggregation of formula changes, implemented isDeepStrictEqual for better data integrity
+
+## 2025-04-17
+- **Reference system improvements**: Enhanced reference finding by name, rights and formula changes with optimized aggregation limits
+
+## 2025-04-16
+- **Background processing**: Introduced background entity aggregation system for improved performance
+- **Optimization**: Improved deletion of reference properties and enhanced queue management for non-aggregated entities
+
+## 2025-02-19
+- **UI improvements**: Updated entity page layout and fixed filtering functionality
+- **System cleanup**: Removed system properties grouping for cleaner property display
+
+## 2025-02-17
+- **Third-party removal**: Removed Intercom integration to simplify the codebase

@@ -1,0 +1,298 @@
+<script setup>
+import { NPopconfirm, NTabs, NTabPane } from 'naive-ui'
+import { makeDefaultValue } from '~/utils/api'
+
+const { locale, t } = useI18n()
+const { token } = useUser()
+const { accountId } = useAccount()
+
+const emit = defineEmits(['close', 'delete'])
+
+const show = defineModel('show', { type: Boolean, default: false })
+const entityId = defineModel('entityId', { type: String, default: undefined })
+const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
+const entityTypeId = defineModel('entityTypeId', { type: String, default: undefined })
+
+defineProps({
+  canDelete: { type: Boolean, default: false }
+})
+
+const entityTypeStore = useEntityTypeStore()
+const { entityTypes } = storeToRefs(entityTypeStore)
+
+const rawEntity = ref()
+const isLoading = ref(false)
+const isUpdating = ref(false)
+
+const typeId = computed(() => entityTypeId.value || getValue(rawEntity.value?._type, 'reference'))
+
+const title = computed(() => {
+  if (entityParentId.value) {
+    return t('titleChild', { name: entity.value.type?.label?.toLowerCase() })
+  }
+  if (!entityParentId.value && entityTypeId.value) {
+    return t('titleAdd', { name: entity.value.type?.label?.toLowerCase() })
+  }
+  if (!entityParentId.value && entityId.value) {
+    return t('titleEdit', { name: entity.value.type?.label?.toLowerCase() })
+  }
+
+  return ''
+})
+
+const entityType = computed(() => entityTypes.value?.[typeId.value] || {})
+
+const plugins = computed(() => entityType.value?.plugins?.filter((x) => x.type === (entityId.value ? 'entity-edit' : 'entity-add')).map((x) => {
+  const url = new URL(x.url)
+
+  url.searchParams.append('account', accountId.value)
+
+  if (entityId.value) {
+    url.searchParams.append('entity', entityId.value)
+  }
+  if (entityParentId.value) {
+    url.searchParams.append('parent', entityParentId.value)
+  }
+  if (entityTypeId.value) {
+    url.searchParams.append('type', entityTypeId.value)
+  }
+
+  url.searchParams.append('locale', locale.value)
+  url.searchParams.append('token', token.value)
+
+  return {
+    ...x,
+    url: url.toString()
+  }
+}) || [])
+
+const entity = computed(() => {
+  const result = {
+    _id: rawEntity.value?._id,
+    _sharing: getValue(rawEntity.value?._sharing),
+    name: getValue(rawEntity.value?.name),
+    type: entityType.value?.type || {},
+    props: entityTypes.value[typeId.value]?.props.map((x) => ({
+      ...x,
+      values: x.default && !rawEntity.value && x.type !== 'reference'
+        ? [makeDefaultValue(x.type, x.default)]
+        : []
+    })) || []
+  }
+
+  for (const property in rawEntity.value) {
+    const existingProperty = result.props.find((x) => x.name === property)
+
+    if (existingProperty) {
+      existingProperty.values = rawEntity.value[property]
+    }
+    else {
+      result.props.push({ name: property, values: rawEntity.value[property] })
+    }
+  }
+
+  return result
+})
+
+const properties = computed(() => {
+  if (!entity.value || !entity?.value?.props) return []
+
+  const propsObject = {}
+
+  entity.value.props.forEach((property) => {
+    if (!property.type) return
+    if (property.name?.startsWith('_')) return
+    if (property.readonly) return
+    if (property.formula) return
+    if (property.hidden) return
+
+    const group = property.group || ''
+    const ordinal = property.ordinal || 0
+
+    if (!propsObject[group]) {
+      propsObject[group] = {
+        name: group,
+        children: [],
+        ordinal: 0
+      }
+    }
+
+    property.values.sort(propertyValuesSorter)
+
+    propsObject[group].ordinal += ordinal
+    propsObject[group].children.push(property)
+  })
+
+  const result = Object.values(propsObject)
+
+  result.forEach((m) => {
+    m.ordinal = m.name ? m.ordinal / m.children.length : 0
+    m.children.sort(propsSorter)
+  })
+
+  result.sort(propsSorter)
+
+  return result
+})
+
+watch([show, entityId, entityTypeId], loadEntity, { immediate: true })
+
+async function loadEntity () {
+  if (!show.value) return
+
+  isLoading.value = true
+
+  if (entityId.value) {
+    rawEntity.value = await apiGetEntity(entityId.value)
+  }
+
+  if (typeId.value && !entityTypes.value[typeId.value]) {
+    entityTypeStore.get(typeId.value)
+  }
+
+  isLoading.value = false
+}
+
+async function onDelete () {
+  if (!entityId.value) return
+
+  isUpdating.value = true
+
+  await apiDeleteEntity(entityId.value)
+
+  isUpdating.value = false
+
+  emit('delete')
+}
+
+async function onClose () {
+  await until(isUpdating).not.toBeTruthy()
+
+  emit('close')
+}
+</script>
+
+<template>
+  <my-drawer
+    v-model:show="show"
+    :is-loading="isLoading"
+    :title="title"
+    @close="onClose()"
+  >
+    <n-tabs
+      animated
+      class="size-full"
+      default-value="default"
+      justify-content="center"
+      pane-class="p-0!"
+      pane-wrapper-class="size-full"
+      :class="plugins?.length ? '' : ''"
+      :tab-class="plugins?.length ? '' : '!hidden'"
+      :type="plugins?.length ? 'line' : 'bar'"
+    >
+      <n-tab-pane
+        class="size-full overflow-auto pt-0"
+        display-directive="show:lazy"
+        name="default"
+        :tab="t('defaultPlugin')"
+      >
+        <div
+          v-if="entity.type.description"
+          class="px-3 pt-4 pb-0 text-gray-500 md:px-6"
+        >
+          <my-markdown :source="entity.type.description" />
+        </div>
+
+        <div
+          v-for="pg in properties"
+          :key="pg.name"
+          class="px-3 py-4 md:px-6"
+        >
+          <h2
+            v-if="pg.name"
+            class="px-1 pt-6 text-center font-bold text-gray-500 uppercase"
+          >
+            {{ pg.name }}
+          </h2>
+
+          <property-list
+            v-model:entity-id="entityId"
+            v-model:properties="pg.children"
+            v-model:entity-parent-id="entityParentId"
+            v-model:entity-type-id="entityTypeId"
+            v-model:is-updating="isUpdating"
+            :entity-sharing="entity._sharing"
+            edit
+          />
+        </div>
+      </n-tab-pane>
+
+      <n-tab-pane
+        v-for="plugin in plugins"
+        :key="plugin._id"
+        class="size-full overflow-auto"
+        display-directive="show:lazy"
+        :name="plugin._id"
+        :tab="plugin.name"
+      >
+        <iframe
+          :src="plugin.url"
+          class="size-full"
+          frameborder="0"
+        />
+      </n-tab-pane>
+    </n-tabs>
+
+    <template
+      v-if="canDelete && entityId"
+      #footer
+    >
+      <n-popconfirm
+        :negative-text="t('cancel')"
+        :positive-text="t('delete')"
+        :positive-button-props="{ type: 'error', loading: isUpdating }"
+        @positive-click="onDelete()"
+      >
+        <template #trigger>
+          <my-button
+            :bg="false"
+            type="error"
+            :disabled="isUpdating"
+            :focusable="false"
+            :label="t('deleteEntity')"
+          />
+        </template>
+
+        <template #icon>
+          <my-icon
+            class="text-red-500"
+            icon="delete"
+          />
+        </template>
+
+        {{ t('confirmDelete') }}
+      </n-popconfirm>
+    </template>
+  </my-drawer>
+</template>
+
+<i18n lang="yaml">
+  en:
+    titleAdd: Add new {name}
+    titleChild: Add {name} as a new child
+    titleEdit: Edit {name}
+    defaultPlugin: Manual input
+    deleteEntity: Delete entity
+    confirmDelete: Are you sure you want to delete this entity?
+    delete: Delete
+    cancel: Cancel
+  et:
+    titleAdd: Lisa uus {name}
+    titleChild: Lisa {name} uue alamobjektina
+    titleEdit: Muuda objekti {name}
+    defaultPlugin: Sisesta käsitsi
+    deleteEntity: Kustuta objekt
+    confirmDelete: Kas oled kindel, et soovid selle objekti kustutada?
+    delete: Kustuta
+    cancel: Tühista
+</i18n>

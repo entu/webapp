@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+html,
+body,
+#__nuxt {
+  @apply size-full;
+  @apply overflow-hidden;
+  @apply antialiased;
+}
+
+@media (max-width: 767px) {
+  html,
+  body {
+    background-color: #1E434C;
+  }
+}
+
+.link {
+  @apply text-sky-800;
+}
+
+a.link {
+  @apply hover:underline;
+}
+
+@media print {
+  *:not(.print-as-is) {
+    @apply h-auto!;
+  }
+}

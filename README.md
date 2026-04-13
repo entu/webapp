@@ -11,7 +11,7 @@ npm install
 Make **.env** file and configure required enviroment parameters. Example is in .env.example file:
 
 ```
-NUXT_PUBLIC_API_URL=https://api.entu.app
+NUXT_PUBLIC_API_URL=https://entu.app/api
 ```
 
 ## Development Server
@@ -29,3 +29,15 @@ Build the application for production:
 ```bash
 npm run generate
 ```
+
+## Documentation
+
+Build and preview the documentation site:
+
+```bash
+npm run docs:dev      # dev server at http://localhost:5173
+npm run docs:build    # build to docs/.vitepress/dist/
+npm run docs:preview  # preview the built site
+```
+
+Documentation source files are in `docs/`.
