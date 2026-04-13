@@ -64,7 +64,7 @@ onMounted(async () => {
   <div class="relative flex h-full flex-col">
     <entity-toolbar />
 
-    <template v-if="!userId">
+    <template v-if="!userId && !isQuery">
       <change-log class="absolute right-3 hidden max-w-80 md:block" />
 
       <div class="flex flex-1 items-center justify-center p-6">
