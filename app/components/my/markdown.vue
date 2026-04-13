@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { marked } from 'marked'
 
@@ -17,6 +16,8 @@ const md = computed(() => marked.parse(props.source))
 </template>
 
 <style>
+@reference "tailwindcss";
+
 .markdown p {
   @apply mb-3 last-of-type:mb-0;
 }

@@ -46,7 +46,7 @@ function handleAdvancedSearch (query) {
     <input
       id="search"
       v-model="searchText"
-      class="w-full bg-transparent py-3 pr-3 placeholder:italic placeholder:text-gray-400 focus:outline-none"
+      class="w-full bg-transparent py-3 pr-3 placeholder:text-gray-400 placeholder:italic focus:outline-none"
       :placeholder="t('search')"
     >
     <button

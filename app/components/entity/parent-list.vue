@@ -19,7 +19,7 @@ const { accountId } = useAccount()
         v-for="parent in parents"
         :key="parent._id"
         :to="{ path: `/${accountId}/${parent.reference}`, query }"
-        class="link flex-1 flex-nowrap overflow-hidden truncate whitespace-nowrap text-center"
+        class="link flex-1 flex-nowrap truncate overflow-hidden text-center whitespace-nowrap"
       >
         {{ parent.string }}
       </nuxt-link>

@@ -11,7 +11,7 @@ const { userId } = useUser()
 const entityTypeStore = useEntityTypeStore()
 const { entityTypes } = storeToRefs(entityTypeStore)
 
-const contentRef = ref()
+const contentRef = useTemplateRef('contentRef')
 const { width: contentWidth } = useElementSize(contentRef)
 const isNarrow = computed(() => contentWidth.value < 600)
 
@@ -229,10 +229,10 @@ const showHistoryDrawer = computed({
 
 watch(() => entity?.value?.name, (value) => {
   if (value) {
-    useHead({ title: `${value} · ${accountId.value}` })
+    useHeadSafe({ title: `${value} · ${accountId.value}` })
   }
   else {
-    useHead({ title: accountId.value })
+    useHeadSafe({ title: accountId.value })
   }
 }, { immediate: true })
 
@@ -376,7 +376,7 @@ onMounted(async () => {
               >
                 <h2
                   v-if="pg.name"
-                  class="px-1 pt-6 text-center font-bold uppercase text-gray-500"
+                  class="px-1 pt-6 text-center font-bold text-gray-500 uppercase"
                 >
                   {{ pg.name }}
                 </h2>

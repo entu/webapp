@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NDrawer, NDrawerContent, NSpin } from 'naive-ui'
 
@@ -20,7 +19,7 @@ defineProps({
   title: { type: String, default: '' }
 })
 
-const closeRef = ref()
+const closeRef = useTemplateRef('closeRef')
 useFocus(closeRef, { initialValue: true })
 
 function close () {
@@ -45,12 +44,12 @@ onKeyStroke('Escape', close)
     @mask-click="close"
   >
     <n-drawer-content
-      body-content-class="!p-0"
+      body-content-class="p-0!"
       header-class="w-full"
     >
       <template #header>
         <div class="flex w-full items-center justify-between">
-          <h2 class="overflow-hidden truncate whitespace-nowrap">
+          <h2 class="truncate overflow-hidden whitespace-nowrap">
             {{ title }}
           </h2>
 
@@ -90,6 +89,8 @@ onKeyStroke('Escape', close)
 </template>
 
 <style>
+@reference "tailwindcss";
+
 .n-drawer-header__main {
   @apply w-full;
 }

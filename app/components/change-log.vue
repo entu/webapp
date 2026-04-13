@@ -75,6 +75,8 @@ function showAllChanges () {
 </template>
 
 <style scoped>
+@reference "tailwindcss";
+
 :deep(h2) {
   @apply first-of-type:mt-0 mt-8 text-center text-lg font-semibold text-[#1E434C];
 }

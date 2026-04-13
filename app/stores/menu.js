@@ -1,4 +1,4 @@
-export const useMenueStore = defineStore('menu', () => {
+export const useMenuStore = defineStore('menu', () => {
   const route = useRoute()
   const { accountId } = useAccount()
 
@@ -50,9 +50,9 @@ export const useMenueStore = defineStore('menu', () => {
   watch(accountId, get, { immediate: true })
 
   watch([() => route.query, menuResult], () => {
-    const query = window.location.search.substring(1)
+    const query = new URLSearchParams(route.query).toString()
 
-    activeMenu.value = query ? menuEntities.value?.find((x) => window.location.search.substring(1).startsWith(getValue(x.query))) : undefined
+    activeMenu.value = query ? menuEntities.value?.find((x) => query.startsWith(getValue(x.query))) : undefined
   }, { immediate: true })
 
   return {

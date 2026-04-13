@@ -25,7 +25,7 @@ watch(() => route.fullPath, () => {
   showMobileMenu.value = false
 })
 
-const siderRef = ref()
+const siderRef = useTemplateRef('siderRef')
 const isHovered = useElementHover(siderRef, { delayEnter: 200, delayLeave: 600 })
 
 const showTable = ref(false)
@@ -82,8 +82,8 @@ function changeMenu (collapsed) {
         ref="siderRef"
         class="print:hidden"
         collapse-mode="width"
-        collapsed-trigger-class="!top-7.5 !text-white !bg-[#1E434C] !shaddow-none !border-white"
-        trigger-class="!top-5 !-left-1 !text-white !opacity-80 !bg-transparent !shaddow-none !border-transparent hover:!border-white"
+        collapsed-trigger-class="top-7.5! text-white! bg-[#1E434C]! shaddow-none! border-white!"
+        trigger-class="top-5! -left-1! text-white! opacity-80! bg-transparent! shaddow-none! border-transparent! hover:border-white!"
         :class="{ 'm-2 mr-0 rounded-md': !menuCollapsed }"
         :collapsed="menuCollapsed"
         :collapsed-width="60"
@@ -191,11 +191,11 @@ function changeMenu (collapsed) {
         placement="right"
         :width="windowWidth"
       >
-        <n-drawer-content body-content-class="!p-0">
+        <n-drawer-content body-content-class="p-0!">
           <div class="flex h-full flex-col bg-[#1E434C]">
             <div class="flex items-center justify-between px-3 py-4">
               <div
-                class="cursor-pointer text-sm uppercase text-white opacity-80 hover:opacity-100"
+                class="cursor-pointer text-sm text-white uppercase opacity-80 hover:opacity-100"
                 @click="setMobileLanguage"
               >
                 {{ langLabel }}

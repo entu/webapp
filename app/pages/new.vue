@@ -86,7 +86,7 @@ onMounted(() => {
     <div class="flex w-full flex-col items-center">
       <div class="flex w-full justify-end px-4 pt-4">
         <span
-          class="cursor-pointer text-xs font-bold uppercase text-gray-500"
+          class="cursor-pointer text-xs font-bold text-gray-500 uppercase"
           @click="setLanguage()"
         >
           {{ t('language') }}
@@ -183,7 +183,7 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="mb-4 mt-auto px-4 text-center text-sm text-gray-500">
+    <div class="mt-auto mb-4 px-4 text-center text-sm text-gray-500">
       <a
         target="_blank"
         :href="t('docsUrl')"

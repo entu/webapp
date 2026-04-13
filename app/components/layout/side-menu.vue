@@ -12,10 +12,11 @@ defineProps({
 const { account, accounts } = useAccount()
 const { menuCollapsed, token, userId, userName } = useUser()
 
-const menuStore = useMenueStore()
+const menuStore = useMenuStore()
 const { menuEntities } = storeToRefs(menuStore)
 
-const activeMenu = ref(window.location.search.substring(1) || window.location.pathname)
+const route = useRoute()
+const activeMenu = ref(new URLSearchParams(route.query).toString() || route.path)
 
 const accountMenu = computed(() => {
   const menu = []
@@ -332,10 +333,10 @@ function linkReplace (url) {
   <div class="flex min-h-full w-full flex-col justify-between py-1">
     <div
       v-if="showLang && !menuCollapsed"
-      class="mb-6 ml-2 mr-3 mt-1 flex items-center justify-end"
+      class="mt-1 mr-3 mb-6 ml-2 flex items-center justify-end"
     >
       <div
-        class="cursor-pointer text-sm uppercase text-white opacity-80"
+        class="cursor-pointer text-sm text-white uppercase opacity-80"
         @click="setLanguage()"
       >
         {{ t('language') }}

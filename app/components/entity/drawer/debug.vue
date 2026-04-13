@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { stringify } from 'yaml'
 import hljs from 'highlight.js/lib/core'
@@ -37,7 +36,7 @@ function showYaml (value) {
         :title="t('entity')"
       >
         <div
-          class="whitespace-pre rounded-md bg-slate-50 p-2 font-mono text-xs"
+          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre"
           v-html="showYaml(entity)"
         />
       </n-collapse-item>
@@ -47,7 +46,7 @@ function showYaml (value) {
         :title="t('properties')"
       >
         <div
-          class="whitespace-pre rounded-md bg-slate-50 p-2 font-mono text-xs"
+          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre"
           v-html="showYaml(properties)"
         />
       </n-collapse-item>
@@ -57,7 +56,7 @@ function showYaml (value) {
         :title="t('rawEntity')"
       >
         <div
-          class="whitespace-pre rounded-md bg-slate-50 p-2 font-mono text-xs"
+          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre"
           v-html="showYaml(rawEntity)"
         />
       </n-collapse-item>

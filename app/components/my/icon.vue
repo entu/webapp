@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 const props = defineProps({
   icon: { type: String, required: true }
@@ -15,6 +14,8 @@ const iconName = computed(() => props.icon.includes(':') ? props.icon : `local:$
 </template>
 
 <style>
+@reference "tailwindcss";
+
 :deep(svg) {
   @apply m-0;
 }

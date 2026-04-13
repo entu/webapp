@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NInputNumber, NCheckbox, NButton } from 'naive-ui'
 
@@ -156,7 +155,7 @@ async function onClose () {
             />
 
             <div
-              class="mb-2 ml-6 mt-1 flex flex-wrap gap-1"
+              class="mt-1 mb-2 ml-6 flex flex-wrap gap-1"
               :class="{ 'opacity-50': isPropertyDisabled(property) }"
             >
               <span

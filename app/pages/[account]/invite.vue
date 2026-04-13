@@ -38,7 +38,7 @@ onMounted(async () => {
     <div class="my-8 flex w-full grow flex-col gap-8 px-4 sm:mx-auto sm:w-96">
       <div class="-mb-6">
         <span
-          class="float-right cursor-pointer text-xs font-bold uppercase text-gray-500"
+          class="float-right cursor-pointer text-xs font-bold text-gray-500 uppercase"
           @click="setLanguage()"
         >
           {{ t('language') }}

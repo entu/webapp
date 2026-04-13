@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 html,
 body,
@@ -27,6 +25,6 @@ a.link {
 
 @media print {
   *:not(.print-as-is) {
-    @apply !h-auto;
+    @apply h-auto!;
   }
 }

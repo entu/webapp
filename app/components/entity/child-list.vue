@@ -272,7 +272,7 @@ onMounted(async () => {
               </nuxt-link>
             </td>
 
-            <td class="pr-1 pt-1">
+            <td class="pt-1 pr-1">
               <n-popover
                 class="max-w-sm"
                 placement="left"

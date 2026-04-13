@@ -5,7 +5,7 @@ const route = useRoute()
 const { t } = useI18n()
 const { accountId } = useAccount()
 
-const listElement = ref(null)
+const listElement = useTemplateRef('listElement')
 const entitiesList = ref([])
 const entitiesCount = ref(null)
 const limit = ref(Math.ceil(window.innerHeight / 48) + 3)
@@ -203,7 +203,7 @@ function handleSort (column) {
             <th
               v-for="column in tableColumnsWithTypes"
               :key="column.name"
-              class="cursor-pointer select-none border-r border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 last:border-r-0 hover:bg-gray-100"
+              class="cursor-pointer border-r border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 select-none last:border-r-0 hover:bg-gray-100"
               @click="handleSort(column.name)"
             >
               <div class="flex items-center justify-between">

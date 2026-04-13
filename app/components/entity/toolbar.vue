@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NButtonGroup } from 'naive-ui'
 
@@ -12,7 +11,7 @@ const props = defineProps({
 const { path, query } = useRoute()
 const { t } = useI18n()
 
-const toolbarRef = ref()
+const toolbarRef = useTemplateRef('toolbarRef')
 const { width: windowWidth } = useWindowSize()
 
 const isOverflowing = ref(true)
@@ -65,7 +64,7 @@ const checkOverflow = useDebounceFn(() => {
   isMeasuring.value = false
 }, 200)
 
-const menuStore = useMenueStore()
+const menuStore = useMenuStore()
 const { activeMenu, addFromEntities } = storeToRefs(menuStore)
 
 const addByActiveMenuOptions = computed(() => activeMenu.value?.addFrom || [])

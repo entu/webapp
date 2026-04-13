@@ -11,13 +11,25 @@ export default withNuxt({
     '@stylistic/quote-props': ['error', 'as-needed'],
     '@stylistic/space-before-function-paren': ['error', 'always'],
     'unicorn/prefer-at': 'error',
-    'unicorn/prefer-date-now': 'error'
+    'unicorn/prefer-date-now': 'error',
+    'vue/multi-word-component-names': 'off'
   }
 }).prepend([
   ...tailwind.configs['flat/recommended'],
   {
     settings: {
-      tailwindcss: { config: '.config/tailwind.config.ts' }
+      tailwindcss: {
+        config: {},
+        whitelist: [
+          'active',
+          // 'link',
+          // 'list-item',
+          'list-item-img',
+          'list-item-text',
+          'markdown'
+          // 'print-as-is'
+        ]
+      }
     }
   }
 ])

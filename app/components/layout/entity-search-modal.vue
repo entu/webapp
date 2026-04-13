@@ -347,7 +347,7 @@ onMounted(async () => {
               name="sortDirection"
             >
               <n-radio-button
-                class="flex items-center justify-center !px-2"
+                class="flex items-center justify-center px-2!"
                 :title="t('ascending')"
                 :value="''"
               >
@@ -357,7 +357,7 @@ onMounted(async () => {
                 />
               </n-radio-button>
               <n-radio-button
-                class="flex items-center justify-center !px-2"
+                class="flex items-center justify-center px-2!"
                 :title="t('descending')"
                 :value="'-'"
               >

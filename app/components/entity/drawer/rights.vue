@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NCheckbox, NDivider, NRadio, NRadioGroup } from 'naive-ui'
 import { apiDeleteProperty } from '~/utils/api'
@@ -216,7 +215,7 @@ async function onClose () {
       </div>
 
       <div>
-        <n-divider class="!text-gray-500">
+        <n-divider class="text-gray-500!">
           {{ t('userRightsParent') }}
         </n-divider>
 
@@ -252,7 +251,7 @@ async function onClose () {
       </div>
 
       <div>
-        <n-divider class="!text-gray-500">
+        <n-divider class="text-gray-500!">
           {{ t('userRightsEntity') }}
         </n-divider>
 

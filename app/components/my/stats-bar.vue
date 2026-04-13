@@ -14,41 +14,37 @@ const props = defineProps({
 })
 
 const usagePercent = computed(() => {
-  const { usage, deleted, limit } = props
-  const total = usage + deleted
+  const total = props.usage + props.deleted
 
-  if (!usage) return 0
-  if (!limit || usage > limit) return Math.round(usage * 100 / total)
+  if (!props.usage) return 0
+  if (!props.limit || props.usage > props.limit) return Math.round(props.usage * 100 / total)
 
-  return Math.round(usage * 100 / limit)
+  return Math.round(props.usage * 100 / props.limit)
 })
 
 const deletedPercent = computed(() => {
-  const { usage, deleted, limit } = props
-  const total = usage + deleted
+  const total = props.usage + props.deleted
 
-  if (!deleted) return 0
-  if (!limit || deleted > limit) return Math.round(deleted * 100 / total)
+  if (!props.deleted) return 0
+  if (!props.limit || props.deleted > props.limit) return Math.round(props.deleted * 100 / total)
 
-  return Math.round(deleted * 100 / limit)
+  return Math.round(props.deleted * 100 / props.limit)
 })
 
 const limitPercent = computed(() => {
-  const { usage, deleted, limit } = props
-  const total = usage + deleted
+  const total = props.usage + props.deleted
 
-  if (!limit) return undefined
+  if (!props.limit) return undefined
   if (!total) return undefined
-  if (total <= limit) return undefined
+  if (total <= props.limit) return undefined
 
-  return Math.round(limit * 100 / total)
+  return Math.round(props.limit * 100 / total)
 })
 
 const overLimit = computed(() => {
-  const { usage, deleted, limit } = props
-  if (!limit) return undefined
+  if (!props.limit) return undefined
 
-  const over = usage + deleted - limit
+  const over = props.usage + props.deleted - props.limit
 
   if (over > 0) return over
 

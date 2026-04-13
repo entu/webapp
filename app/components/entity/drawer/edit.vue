@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NPopconfirm, NTabs, NTabPane } from 'naive-ui'
 import { makeDefaultValue } from '~/utils/api'
@@ -14,7 +13,7 @@ const entityId = defineModel('entityId', { type: String, default: undefined })
 const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
 const entityTypeId = defineModel('entityTypeId', { type: String, default: undefined })
 
-const props = defineProps({
+defineProps({
   canDelete: { type: Boolean, default: false }
 })
 
@@ -25,7 +24,7 @@ const rawEntity = ref()
 const isLoading = ref(false)
 const isUpdating = ref(false)
 
-const typeId = computed(() => props.entityTypeId || getValue(rawEntity.value?._type, 'reference'))
+const typeId = computed(() => entityTypeId.value || getValue(rawEntity.value?._type, 'reference'))
 
 const title = computed(() => {
   if (entityParentId.value) {
@@ -136,7 +135,7 @@ const properties = computed(() => {
   return result
 })
 
-watch([show, entityId, () => props.entityTypeId], loadEntity, { immediate: true })
+watch([show, entityId, entityTypeId], loadEntity, { immediate: true })
 
 async function loadEntity () {
   if (!show.value) return
@@ -185,7 +184,7 @@ async function onClose () {
       class="size-full"
       default-value="default"
       justify-content="center"
-      pane-class="!p-0"
+      pane-class="p-0!"
       pane-wrapper-class="size-full"
       :class="plugins?.length ? '' : ''"
       :tab-class="plugins?.length ? '' : '!hidden'"
@@ -199,7 +198,7 @@ async function onClose () {
       >
         <div
           v-if="entity.type.description"
-          class="px-3 pb-0 pt-4 text-gray-500 md:px-6"
+          class="px-3 pt-4 pb-0 text-gray-500 md:px-6"
         >
           <my-markdown :source="entity.type.description" />
         </div>
@@ -211,7 +210,7 @@ async function onClose () {
         >
           <h2
             v-if="pg.name"
-            class="px-1 pt-6 text-center font-bold uppercase text-gray-500"
+            class="px-1 pt-6 text-center font-bold text-gray-500 uppercase"
           >
             {{ pg.name }}
           </h2>

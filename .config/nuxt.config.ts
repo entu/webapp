@@ -1,10 +1,11 @@
+import tailwindcss from '@tailwindcss/vite'
+
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/fonts',
     '@nuxt/icon',
     '@nuxtjs/i18n',
-    '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
     '@vueuse/nuxt',
     'nuxtjs-naive-ui'
@@ -28,6 +29,7 @@ export default defineNuxtConfig({
       ]
     }
   },
+  css: ['~/assets/tailwind.css'],
   vue: {
     compilerOptions: {
       isCustomElement: (tag) => tag === 'stripe-pricing-table'
@@ -41,62 +43,19 @@ export default defineNuxtConfig({
       title: 'Entu',
       stripePricingTableIds: '',
       stripePublishableKey: ''
-    },
-    graphqlBasePath: '',
-    jwtSecret: '',
-    mongodbUrl: '',
-    oauthId: '',
-    oauthSecret: '',
-    runAggregation: false,
-    s3Region: '',
-    s3Endpoint: '',
-    s3Bucket: '',
-    s3Key: '',
-    s3Secret: '',
-    sesRegion: '',
-    sesEmail: '',
-    sesKey: '',
-    sesSecret: '',
-    stripeKey: '',
-    stripeEndpointSecret: ''
-  },
-  routeRules: {
-    '/api/**': { cors: true }
+    }
   },
   future: {
     compatibilityVersion: 4
   },
   experimental: {
-    checkOutdatedBuildInterval: 10 * 1000
+    checkOutdatedBuildInterval: 10 * 1000,
+    viewTransition: true,
+    typedPages: true
   },
-  compatibilityDate: '2024-08-05',
-  nitro: {
-    experimental: {
-      openAPI: true
-    },
-    openAPI: {
-      meta: {
-        title: 'Entu API Documentation'
-      },
-      production: 'prerender',
-      route: '/api/docs/openapi.json',
-      ui: {
-        scalar: {
-          route: '/api/docs',
-          spec: {
-            url: 'https://entu.app/api/openapi'
-          },
-          theme: 'default',
-          hideDownloadButton: true,
-          hideModels: true,
-          tagsSorter: 'alpha',
-          operationsSorter: 'alpha'
-        },
-        swagger: false
-      }
-    }
-  },
+  compatibilityDate: '2025-04-01',
   vite: {
+    plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
         'yaml',
@@ -129,9 +88,5 @@ export default defineNuxtConfig({
       prefix: 'local',
       dir: './app/assets/icons'
     }]
-  },
-  tailwindcss: {
-    cssPath: './app/assets/tailwind.css',
-    configPath: '~~/.config/tailwind.config.ts'
   }
 })

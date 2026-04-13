@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NPopover } from 'naive-ui'
 
@@ -27,7 +26,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
       class="grid grid-cols-1 gap-0 pt-3 first-of-type:pt-0 md:grid-cols-3 md:gap-4 md:border-t md:border-gray-100 md:pt-0 md:first-of-type:border-t-0"
     >
       <div
-        class="flex justify-start gap-2 pb-0 pt-1 font-medium text-[#1E434C] md:justify-end md:py-2 md:text-right"
+        class="flex justify-start gap-2 pt-1 pb-0 font-medium text-[#1E434C] md:justify-end md:py-2 md:text-right"
         :class="{ 'text-red-700': property.mandatory && (edit || !property.values) }"
       >
         <span
@@ -120,7 +119,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
         </div>
       </div>
 
-      <div class="pb-1 pt-0 md:col-span-2 md:py-1">
+      <div class="pt-0 pb-1 md:col-span-2 md:py-1">
         <property-edit
           v-if="edit"
           v-model:entity-id="entityId"

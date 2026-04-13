@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NEmpty } from 'naive-ui'
 
@@ -12,7 +11,7 @@ const emit = defineEmits(['close'])
 const show = defineModel('show', { type: Boolean, default: false })
 const entityId = defineModel('entityId', { type: String, required: true })
 
-const menuStore = useMenueStore()
+const menuStore = useMenuStore()
 const { addFromEntities } = storeToRefs(menuStore)
 
 const rawEntity = ref()
@@ -111,7 +110,7 @@ async function onClose () {
         class="mb-2 flex items-center justify-between gap-2"
       >
         <nuxt-link
-          class="link overflow-hidden truncate whitespace-nowrap"
+          class="link truncate overflow-hidden whitespace-nowrap"
           :to="{ path: `/${accountId}/${parent.reference}`, query }"
         >
           {{ parent.string || parent.reference }}

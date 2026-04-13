@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NPagination, NSpin, NTooltip } from 'naive-ui'
 
@@ -190,7 +189,7 @@ function formatValue (val, decimals) {
           class="w-full table-auto"
         >
           <thead>
-            <tr class="whitespace-nowrap text-left">
+            <tr class="text-left whitespace-nowrap">
               <th class="p-3">
                 {{ t('editor') }}
               </th>
@@ -234,7 +233,7 @@ function formatValue (val, decimals) {
                 </td>
 
                 <!-- property name -->
-                <td class="whitespace-nowrap px-3 py-2 align-top">
+                <td class="px-3 py-2 align-top whitespace-nowrap">
                   <span class="font-medium text-slate-500">{{ item.label }}</span>
                 </td>
 

@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NImage, NImageGroup, NSpin } from 'naive-ui'
 
@@ -7,7 +6,7 @@ const props = defineProps({
   thumbnail: { type: String, required: true }
 })
 
-const imageRef = ref()
+const imageRef = useTemplateRef('imageRef')
 const isLoading = ref(false)
 const urlsLoaded = ref(false)
 const urls = ref([])

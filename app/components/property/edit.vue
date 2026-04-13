@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NDatePicker, NInput, NInputNumber, NSelect, NSwitch, NUpload, NUploadTrigger, NUploadFileList } from 'naive-ui'
 import { apiDeleteProperty } from '~/utils/api'
@@ -281,6 +280,10 @@ async function addValue (properties) {
 
   newValue._id = property._id
 
+  if (property.filename) {
+    newValue.filename = property.filename
+  }
+
   if (props.type === 'counter') {
     newValue.string = property.string
   }
@@ -353,6 +356,7 @@ async function uploadFile ({ file, onProgress, onFinish, onError }) {
   request.open(sendForm.method, sendForm.url)
 
   for (const header in sendForm.headers) {
+    if (header.toLowerCase() === 'content-length') continue
     request.setRequestHeader(header, sendForm.headers[header])
   }
 
@@ -399,9 +403,7 @@ function syncValues () {
   oldValues.value = cloneData(newValues.value)
 }
 
-async function copyToClipboard (text) {
-  await navigator.clipboard.writeText(text)
-}
+const { copy } = useClipboard()
 </script>
 
 <template>
@@ -447,7 +449,7 @@ async function copyToClipboard (text) {
       <n-select
         v-if="isMultilingual"
         v-model:value="value.language"
-        class="!w-20 self-start"
+        class="w-20! self-start"
         placeholder=""
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
@@ -497,7 +499,7 @@ async function copyToClipboard (text) {
         />
         <my-button
           icon="copy"
-          @click="copyToClipboard(value.string)"
+          @click="copy(value.string)"
         />
       </template>
 

@@ -5,7 +5,7 @@ const route = useRoute()
 const { t } = useI18n()
 const { accountId } = useAccount()
 
-const listElement = ref(null)
+const listElement = useTemplateRef('listElement')
 const entitiesList = ref([])
 const entitiesCount = ref(null)
 const limit = ref(Math.ceil(window.innerHeight / 48) + 3)
@@ -90,7 +90,7 @@ async function getEntities () {
 }
 
 function color () {
-  const colors = ['!bg-amber-200', '!bg-blue-200', '!bg-cyan-200', '!bg-emerald-200', '!bg-fuchsia-200', '!bg-gray-200', '!bg-green-200', '!bg-indigo-200', '!bg-lime-200', '!bg-neutral-200', '!bg-orange-200', '!bg-pink-200', '!bg-purple-200', '!bg-red-200', '!bg-rose-200', '!bg-sky-200', '!bg-slate-200', '!bg-stone-200', '!bg-teal-200', '!bg-violet-200', '!bg-yellow-200', '!bg-zinc-200'
+  const colors = ['bg-amber-200!', 'bg-blue-200!', 'bg-cyan-200!', 'bg-emerald-200!', 'bg-fuchsia-200!', 'bg-gray-200!', 'bg-green-200!', 'bg-indigo-200!', 'bg-lime-200!', 'bg-neutral-200!', 'bg-orange-200!', 'bg-pink-200!', 'bg-purple-200!', 'bg-red-200!', 'bg-rose-200!', 'bg-sky-200!', 'bg-slate-200!', 'bg-stone-200!', 'bg-teal-200!', 'bg-violet-200!', 'bg-yellow-200!', 'bg-zinc-200!'
   ]
   const rnd = Math.floor(Math.random() * colors.length)
 
@@ -160,6 +160,8 @@ function color () {
 </template>
 
 <style scoped>
+@reference "tailwindcss";
+
 .list-item {
   @apply h-12 px-3;
   @apply flex items-center gap-3;
@@ -194,15 +196,15 @@ function color () {
 }
 
 .list-item.active  > .list-item-text {
-  @apply !border-white;
+  @apply border-white!;
 }
 
 .list-item:hover + .list-item > .list-item-text {
-  @apply !border-zinc-50;
+  @apply border-zinc-50!;
 }
 
 .list-item.active + .list-item > .list-item-text {
-  @apply !border-zinc-100;
+  @apply border-zinc-100!;
 }
 
 .list-item:not(:first-child):not(:hover) > .list-item-text {

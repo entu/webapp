@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NButtonGroup } from 'naive-ui'
 
@@ -26,7 +25,7 @@ const rights = ref([
 
 <template>
   <div class="mb-4 flex items-center justify-between gap-2">
-    <div class="grow overflow-hidden truncate whitespace-nowrap">
+    <div class="grow truncate overflow-hidden whitespace-nowrap">
       <nuxt-link
         class="link"
         :to="to"
@@ -50,7 +49,7 @@ const rights = ref([
       <my-button
         v-for="r in rights"
         :key="r"
-        :class="{ '!bg-blue-400 !text-white': value === r }"
+        :class="{ 'bg-blue-400! text-white!': value === r }"
         :disabled="disabled"
         :icon="`rights-${r}`"
         :tooltip="t(r)"

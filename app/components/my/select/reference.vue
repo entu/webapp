@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NEmpty, NSelect } from 'naive-ui'
 
@@ -21,7 +20,7 @@ const searchingReferences = ref(false)
 const referenceOptions = computed(() => {
   if (rawReferences.value) {
     return rawReferences.value?.filter((x) => !props.exclude?.includes(x._id))?.map((x) => ({
-      class: '!pr-2',
+      class: 'pr-2!',
       label: getValue(x.name) || x._id,
       type: getValue(x._type),
       value: x._id
@@ -119,6 +118,8 @@ function renderReferenceOption (option) {
 </template>
 
 <style>
+@reference "tailwindcss";
+
 .n-base-select-option__content {
   @apply w-full;
 }

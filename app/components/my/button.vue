@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <script setup>
 import { NButton, NPopover } from 'naive-ui'
 
@@ -14,7 +13,7 @@ defineProps({
 <template>
   <n-popover
     v-if="!!tooltip"
-    class="max-w-sm !bg-white text-sm"
+    class="max-w-sm bg-white! text-sm"
   >
     <template #trigger>
       <n-button
@@ -40,7 +39,7 @@ defineProps({
       </n-button>
     </template>
 
-    <div class="text-sm !text-slate-900">
+    <div class="text-sm text-slate-900!">
       {{ tooltip }}
     </div>
   </n-popover>

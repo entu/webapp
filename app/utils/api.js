@@ -45,7 +45,6 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
 
   const { accountId } = useAccount()
   const { token, logOut } = useUser()
-  let body = null
 
   requests.value++
 
@@ -54,29 +53,29 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
   }
 
   const url = new URL(runtimeConfig.public.apiUrl)
+  const base = url.pathname.replace(/\/$/, '')
 
   if (accountId.value) {
-    url.pathname = `${url.pathname}/${accountId.value}`
+    url.pathname = `${base}/${accountId.value}/${pathname || ''}`
+  } else if (pathname) {
+    url.pathname = `${base}/${pathname}`
   }
 
-  if (pathname) {
-    url.pathname = `${url.pathname}/${pathname}`
-  }
+  const query = method === 'GET'
+    ? Object.fromEntries(Object.entries(params).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v]))
+    : undefined
 
-  if (method === 'GET') {
-    url.search = new URLSearchParams(params).toString()
-  }
-  else {
-    headers = { 'Content-Type': 'application/json', ...headers }
-    body = JSON.stringify(params)
-  }
-
-  const result = await fetch(url, { method, headers, body }).then((response) => {
-    if (!response.ok && response.status === 401) {
-      logOut()
+  const result = await $fetch(url.toString(), {
+    method,
+    headers,
+    ...(query
+      ? { query }
+      : { body: params }),
+    onResponseError ({ response }) {
+      if (response.status === 401) {
+        logOut()
+      }
     }
-
-    return response.json()
   })
 
   requests.value--
