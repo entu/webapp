@@ -416,12 +416,14 @@ onMounted(async () => {
             :label="t('value')"
             :show-feedback="false"
           >
+            <!-- eslint-disable vue/prefer-true-attribute-shorthand -->
             <n-switch
               v-if="getPropertyType(filter.field) === 'boolean' || filter.operator === 'exists'"
               v-model:value="filter.value"
               :checked-value="true"
               :unchecked-value="false"
             />
+            <!-- eslint-enable vue/prefer-true-attribute-shorthand -->
             <n-input-number
               v-else-if="getPropertyType(filter.field) === 'number' || getPropertyType(filter.field) === 'filesize'"
               v-model:value="filter.value"

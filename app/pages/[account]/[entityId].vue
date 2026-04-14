@@ -377,8 +377,8 @@ onMounted(async () => {
             class="mb-5 flex flex-col items-center gap-3"
           >
             <entity-meta-info
+              narrow
               :entity="entity"
-              :narrow="true"
               :photos="rawEntity.photo"
               :right="right"
               :thumbnail="entity._thumbnail"
