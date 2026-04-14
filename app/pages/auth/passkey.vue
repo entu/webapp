@@ -123,9 +123,9 @@ async function authenticateWithPasskey () {
           </n-card>
 
           <n-button
-            type="primary"
-            size="large"
             block
+            size="large"
+            type="primary"
             @click="authenticateWithPasskey"
           >
             {{ t('authenticateButton') }}

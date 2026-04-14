@@ -298,8 +298,8 @@ onMounted(async () => {
     :title="t('title')"
   >
     <n-form
-      :model="searchForm"
       label-placement="top"
+      :model="searchForm"
     >
       <div class="flex flex-col gap-3 md:flex-row md:items-end">
         <n-form-item
@@ -322,8 +322,8 @@ onMounted(async () => {
         >
           <n-select
             v-model:value="searchForm.types"
-            filterable
             clearable
+            filterable
             max-tag-count="responsive"
             multiple
             :options="entityTypeOptions"
@@ -352,8 +352,8 @@ onMounted(async () => {
                 :value="''"
               >
                 <my-icon
-                  icon="arrow-down"
                   class="text-xs"
+                  icon="arrow-down"
                 />
               </n-radio-button>
               <n-radio-button
@@ -362,8 +362,8 @@ onMounted(async () => {
                 :value="'-'"
               >
                 <my-icon
-                  icon="arrow-up"
                   class="text-xs"
+                  icon="arrow-up"
                 />
               </n-radio-button>
             </n-radio-group>

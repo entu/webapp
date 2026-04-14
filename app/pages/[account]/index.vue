@@ -26,7 +26,9 @@ const showAddDrawer = computed({
     return false
   },
   set: (value) => {
-    if (!value) onDrawerClose()
+    if (!value) {
+      onDrawerClose()
+    }
   }
 })
 
@@ -135,28 +137,28 @@ onMounted(async () => {
             class="my-3"
             color="rgb(23,162,184)"
             deleted-color="rgba(23,162,184,.3)"
-            :label="t('entities')"
-            :usage="stats.entities.usage"
             :deleted="stats.entities.deleted"
+            :label="t('entities')"
             :limit="stats.entities.limit"
+            :usage="stats.entities.usage"
           />
           <my-stats-bar
             class="my-3"
             color="rgb(255,193,7)"
             deleted-color="rgba(255,193,7,.3)"
+            :deleted="stats.properties.deleted"
             :label="t('properties')"
             :usage="stats.properties.usage"
-            :deleted="stats.properties.deleted"
           />
           <my-stats-bar
             class="my-3"
-            is-bytes
             color="rgb(40,167,69)"
             deleted-color="rgba(40,167,69,.3)"
-            :label="t('files')"
-            :usage="stats.files.usage"
+            is-bytes
             :deleted="stats.files.deleted"
+            :label="t('files')"
             :limit="stats.files.limit"
+            :usage="stats.files.usage"
           />
           <my-stats-bar
             class="my-3"
@@ -164,8 +166,8 @@ onMounted(async () => {
             deleted-color="rgba(108,117,125,.3)"
             show-total
             :label="t('requests')"
-            :usage="stats.requests.usage"
             :limit="stats.requests.limit"
+            :usage="stats.requests.usage"
           />
         </div>
 

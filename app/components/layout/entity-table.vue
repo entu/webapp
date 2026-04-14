@@ -104,8 +104,13 @@ useInfiniteScroll(listElement, async () => {
 
 onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
   if (route.hash) return
-  if (e.code === 'ArrowDown' && scrollIdx.value < entitiesList.value.length - 1) scrollIdx.value++
-  if (e.code === 'ArrowUp' && scrollIdx.value > 0) scrollIdx.value--
+
+  if (e.code === 'ArrowDown' && scrollIdx.value < entitiesList.value.length - 1) {
+    scrollIdx.value++
+  }
+  if (e.code === 'ArrowUp' && scrollIdx.value > 0) {
+    scrollIdx.value--
+  }
 
   listElementScroll.value = scrollIdx.value * 48 - 148
 
@@ -211,13 +216,13 @@ function handleSort (column) {
 
                 <my-icon
                   v-if="sortField === column.name"
-                  :icon="sortDirection === 'desc' ? 'sort-descending' : 'sort-ascending'"
                   class="ml-2 size-3 text-gray-600"
+                  :icon="sortDirection === 'desc' ? 'sort-descending' : 'sort-ascending'"
                 />
                 <my-icon
                   v-else
-                  icon="sort-ascending"
                   class="ml-2 size-3 text-gray-400 opacity-0 group-hover:opacity-30"
+                  icon="sort-ascending"
                 />
               </div>
             </th>
@@ -237,10 +242,10 @@ function handleSort (column) {
               class="max-w-xs border-r border-gray-200 px-3 py-2 text-sm last:border-r-0"
             >
               <layout-entity-table-cell
-                :values="entity[column.name] || []"
-                :is-name="column.name === 'name'"
                 :entity-id="entity._id"
                 :fallback-id="entity._id"
+                :is-name="column.name === 'name'"
+                :values="entity[column.name] || []"
               />
             </td>
 

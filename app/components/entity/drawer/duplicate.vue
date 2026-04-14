@@ -129,10 +129,10 @@ async function onClose () {
           </h3>
           <n-input-number
             v-model:value="duplicateCount"
-            :min="1"
-            :max="50"
             class="w-full"
             :disabled="isUpdating"
+            :max="50"
+            :min="1"
           />
         </div>
 
@@ -147,10 +147,10 @@ async function onClose () {
         >
           <div class="px-3 py-2 md:px-6">
             <n-checkbox
+              class="mt-0.5"
               :checked="!ignoredProperties.includes(property.name)"
               :disabled="isPropertyDisabled(property)"
               :label="property.label"
-              class="mt-0.5"
               @update:checked="() => toggleProperty(property.name)"
             />
 
@@ -181,8 +181,8 @@ async function onClose () {
     <template #footer>
       <n-button
         type="primary"
-        :loading="isUpdating"
         :disabled="isLoading || duplicateCount < 1"
+        :loading="isUpdating"
         @click="onDuplicate()"
       >
         {{ duplicateCount === 1 ? t('createDuplicate') : t('createDuplicates', { count: duplicateCount }) }}

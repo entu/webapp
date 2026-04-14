@@ -35,12 +35,12 @@ onKeyStroke('Escape', close)
   <n-drawer
     v-model:show="show"
     placement="right"
-    :resizable="!isMobile"
     :close-on-esc="false"
     :default-width="drawerDefaultWidth"
     :mask-closable="false"
     :max-width="drawerMaxWidth"
     :min-width="drawerMinWidth"
+    :resizable="!isMobile"
     @mask-click="close"
   >
     <n-drawer-content
@@ -62,9 +62,9 @@ onKeyStroke('Escape', close)
       </template>
 
       <n-spin
-        :show="isLoading"
         class="h-full max-h-full max-w-full"
         content-class="size-full"
+        :show="isLoading"
       >
         <div class="size-full">
           <slot />

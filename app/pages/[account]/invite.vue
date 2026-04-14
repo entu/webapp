@@ -56,8 +56,8 @@ onMounted(async () => {
         <nuxt-link
           v-for="provider in authProviders"
           :key="provider.value"
-          :to="{ path: `/auth/${provider.value}`, query: { invite: token } }"
           class="flex items-center gap-2 border-b py-2 last-of-type:border-b-0"
+          :to="{ path: `/auth/${provider.value}`, query: { invite: token } }"
         >
           <my-icon :icon="provider.icon" />
           {{ t(`auth-${provider.value}`) }}

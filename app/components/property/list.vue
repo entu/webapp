@@ -54,8 +54,8 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
             >
               <template #trigger>
                 <my-icon
-                  icon="sharing-public"
                   class="cursor-help text-sm text-orange-400"
+                  icon="sharing-public"
                 />
               </template>
 
@@ -71,8 +71,8 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
             >
               <template #trigger>
                 <my-icon
-                  icon="sharing-domain"
                   class="cursor-help text-sm text-yellow-600"
+                  icon="sharing-domain"
                 />
               </template>
 
@@ -88,8 +88,8 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
             >
               <template #trigger>
                 <my-icon
-                  icon="sharing-domain"
                   class="cursor-help text-sm text-yellow-600"
+                  icon="sharing-domain"
                 />
               </template>
 
@@ -106,8 +106,8 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
           >
             <template #trigger>
               <my-icon
-                icon="info"
                 class="cursor-help text-sm text-blue-600"
+                icon="info"
               />
             </template>
 
@@ -127,14 +127,14 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
           v-model:entity-type-id="entityTypeId"
           v-model:updating="isUpdating"
           :decimals="property.decimals"
-          :is-multilingual="property.multilingual"
+          :disabled="isUpdating"
           :is-list="property.list"
+          :is-multilingual="property.multilingual"
           :property="property.name"
           :reference-query="property.referenceQuery"
           :set="property.set?.map(x => x.string)"
           :type="property.type"
           :values="property.values"
-          :disabled="isUpdating"
         />
         <property-view
           v-else-if="!edit && property.values"

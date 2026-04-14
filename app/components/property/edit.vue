@@ -52,8 +52,12 @@ const uploadKey = computed(() => fileList.value.map((x) => x.id).join('|') || '0
 
 watch(() => props.values, () => {
   oldValues.value = cloneData(props.values.map((x) => {
-    if (x.date) x.date = new Date(x.date).getTime()
-    if (x.datetime) x.datetime = new Date(x.datetime).getTime()
+    if (x.date) {
+      x.date = new Date(x.date).getTime()
+    }
+    if (x.datetime) {
+      x.datetime = new Date(x.datetime).getTime()
+    }
 
     return x
   }))
@@ -80,7 +84,9 @@ function manageEmptyFields () {
           // Remove extra empty fields, keep only the first one
           emptyFieldsForLanguage.slice(1).forEach((field) => {
             const index = newValues.value.indexOf(field)
-            if (index > -1) newValues.value.splice(index, 1)
+            if (index > -1) {
+              newValues.value.splice(index, 1)
+            }
           })
         }
       }
@@ -93,14 +99,18 @@ function manageEmptyFields () {
           // Remove empty fields for languages that have existing values
           emptyFieldsForLanguage.forEach((field) => {
             const index = newValues.value.indexOf(field)
-            if (index > -1) newValues.value.splice(index, 1)
+            if (index > -1) {
+              newValues.value.splice(index, 1)
+            }
           })
         }
         else if (!hasExistingValue && emptyFieldsForLanguage.length > 1) {
           // Keep only one empty field for languages without existing values
           emptyFieldsForLanguage.slice(1).forEach((field) => {
             const index = newValues.value.indexOf(field)
-            if (index > -1) newValues.value.splice(index, 1)
+            if (index > -1) {
+              newValues.value.splice(index, 1)
+            }
           })
         }
       }
@@ -122,7 +132,9 @@ function manageEmptyFields () {
         // Remove extra empty fields, keep only the first two
         emptyFields.slice(2).forEach((field) => {
           const index = newValues.value.indexOf(field)
-          if (index > -1) newValues.value.splice(index, 1)
+          if (index > -1) {
+            newValues.value.splice(index, 1)
+          }
         })
       }
     }
@@ -135,14 +147,18 @@ function manageEmptyFields () {
         // Remove empty fields when there are existing values
         emptyFields.forEach((field) => {
           const index = newValues.value.indexOf(field)
-          if (index > -1) newValues.value.splice(index, 1)
+          if (index > -1) {
+            newValues.value.splice(index, 1)
+          }
         })
       }
       else if (!hasExistingValue && emptyFields.length > 1) {
         // Keep only one empty field when no existing values
         emptyFields.slice(1).forEach((field) => {
           const index = newValues.value.indexOf(field)
-          if (index > -1) newValues.value.splice(index, 1)
+          if (index > -1) {
+            newValues.value.splice(index, 1)
+          }
         })
       }
     }
@@ -415,10 +431,10 @@ const { copy } = useClipboard()
       <n-upload
         :key="uploadKey"
         abstract
-        :multiple="isList"
-        :default-file-list="fileList"
-        :show-cancel-button="false"
         :custom-request="uploadFile"
+        :default-file-list="fileList"
+        :multiple="isList"
+        :show-cancel-button="false"
         @remove="({ file }) => deleteFile(file)"
       >
         <n-upload-file-list
@@ -452,8 +468,8 @@ const { copy } = useClipboard()
         class="w-20! self-start"
         placeholder=""
         :loading="loadingInputs.includes(value._id)"
-        :readonly="disabled"
         :options="languageOptions"
+        :readonly="disabled"
         @update:value="updateValue(value)"
       />
 
@@ -601,11 +617,11 @@ const { copy } = useClipboard()
         class="w-full"
         clearable
         placeholder=""
-        :loading="loadingInputs.includes(value._id)"
-        :readonly="disabled"
-        :precision="decimals"
         :format="value => value?.toLocaleString(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })"
+        :loading="loadingInputs.includes(value._id)"
         :parse="value => parseFloat(value?.replace(/,/g, '.'))"
+        :precision="decimals"
+        :readonly="disabled"
         @blur="updateValue(value)"
         @update:value="manageEmptyFields()"
       />
@@ -650,9 +666,9 @@ const { copy } = useClipboard()
         v-model="value.reference"
         placeholder=""
         :loading="loadingInputs.includes(value._id)"
-        :readonly="disabled"
-        :query="referenceQuery"
         :options="referenceOptions"
+        :query="referenceQuery"
+        :readonly="disabled"
         @update:value="updateValue(value)"
       />
 

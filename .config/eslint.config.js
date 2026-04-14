@@ -4,7 +4,9 @@ import unicorn from 'eslint-plugin-unicorn'
 import withNuxt from '../.nuxt/eslint.config.mjs'
 
 export default withNuxt({
-  plugins: { unicorn },
+  plugins: { 
+    unicorn 
+  },
   rules: {
     '@stylistic/arrow-parens': ['error', 'always'],
     '@stylistic/comma-dangle': ['error', 'never'],
@@ -12,7 +14,25 @@ export default withNuxt({
     '@stylistic/space-before-function-paren': ['error', 'always'],
     'unicorn/prefer-at': 'error',
     'unicorn/prefer-date-now': 'error',
-    'vue/multi-word-component-names': 'off'
+    'vue/attributes-order': ['error', {
+      alphabetical: true,
+      order: [
+        'DEFINITION',
+        'LIST_RENDERING',
+        'CONDITIONALS',
+        'RENDER_MODIFIERS',
+        'GLOBAL',
+        ['UNIQUE', 'SLOT'],
+        'TWO_WAY_BINDING',
+        ['OTHER_DIRECTIVES', 'CONTENT'],
+        ['ATTR_STATIC', 'ATTR_SHORTHAND_BOOL'],
+        'ATTR_DYNAMIC',
+        'EVENTS'
+      ]
+    }],
+    'vue/define-emits-declaration': 'error',
+    'vue/multi-word-component-names': 'off',
+    'vue/prefer-use-template-ref': 'error'
   }
 }).prepend([
   ...tailwind.configs['flat/recommended'],

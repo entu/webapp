@@ -36,8 +36,8 @@ function showYaml (value) {
         :title="t('entity')"
       >
         <div
-          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre"
           v-html="showYaml(entity)"
+          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre"
         />
       </n-collapse-item>
 
@@ -46,8 +46,8 @@ function showYaml (value) {
         :title="t('properties')"
       >
         <div
-          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre"
           v-html="showYaml(properties)"
+          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre"
         />
       </n-collapse-item>
 
@@ -56,8 +56,8 @@ function showYaml (value) {
         :title="t('rawEntity')"
       >
         <div
-          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre"
           v-html="showYaml(rawEntity)"
+          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre"
         />
       </n-collapse-item>
     </n-collapse>

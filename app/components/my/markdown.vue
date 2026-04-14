@@ -10,8 +10,8 @@ const md = computed(() => marked.parse(props.source))
 
 <template>
   <div
-    class="markdown"
     v-html="md"
+    class="markdown"
   />
 </template>
 

@@ -22,8 +22,8 @@ const placement = computed(() => props.narrow ? 'top' : 'left')
     v-if="thumbnail"
     class="print-as-is flex-none"
     :class="{ 'w-full': placement === 'left' }"
-    :thumbnail="thumbnail"
     :photos="photos"
+    :thumbnail="thumbnail"
   />
 
   <template v-if="userId">

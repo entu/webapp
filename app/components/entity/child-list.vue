@@ -224,9 +224,9 @@ onMounted(async () => {
                 <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
                   <img
                     v-if="row._thumbnail"
-                    :src="row._thumbnail"
                     class="print-as-is size-7 rounded-full object-cover transition-opacity group-hover:opacity-0"
                     :class="color()"
+                    :src="row._thumbnail"
                   >
 
                   <div
@@ -247,9 +247,7 @@ onMounted(async () => {
             <td
               v-for="column in visibleColumns"
               :key="column.name"
-              :class="{
-                'text-right': column.type === 'number',
-              }"
+              :class="{ 'text-right': column.type === 'number' }"
             >
               <nuxt-link
                 class="flex size-full items-center px-3 py-2"

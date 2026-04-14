@@ -345,9 +345,9 @@ function linkReplace (url) {
 
     <a
       v-if="!menuCollapsed"
-      :href="`/${account?._id || ''}`"
-      tabindex="-1"
       class="outline-none"
+      tabindex="-1"
+      :href="`/${account?._id || ''}`"
       @click="useAnalytics('click_logo')"
     >
       <img
@@ -361,8 +361,8 @@ function linkReplace (url) {
       accordion
       class="grow"
       collapse-mode="width"
-      :collapsed-width="60"
       :collapsed="menuCollapsed"
+      :collapsed-width="60"
       :default-expanded-keys="accountMenu.length === 1 ? [accountMenu.at(0).key] : undefined"
       :indent="32"
       :options="accountMenu"
@@ -375,8 +375,8 @@ function linkReplace (url) {
       v-model:value="activeMenu"
       accordion
       collapse-mode="width"
-      :collapsed-width="60"
       :collapsed="menuCollapsed"
+      :collapsed-width="60"
       :indent="32"
       :options="userMenu"
       :root-indent="18"
@@ -386,8 +386,8 @@ function linkReplace (url) {
       v-else
       accordion
       collapse-mode="width"
-      :collapsed-width="60"
       :collapsed="menuCollapsed"
+      :collapsed-width="60"
       :default-expanded-keys="['auth-group']"
       :indent="0"
       :options="authMenu"
