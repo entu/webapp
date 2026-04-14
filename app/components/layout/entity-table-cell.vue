@@ -39,8 +39,8 @@ const hasMultipleValues = computed(() => localeValues.value.length > 1)
     class="truncate"
   >
     <n-popover
-      trigger="hover"
       placement="bottom-start"
+      trigger="hover"
     >
       <template #trigger>
         <div class="cursor-help">

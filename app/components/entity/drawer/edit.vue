@@ -99,12 +99,12 @@ const properties = computed(() => {
 
   const propsObject = {}
 
-  entity.value.props.forEach((property) => {
-    if (!property.type) return
-    if (property.name?.startsWith('_')) return
-    if (property.readonly) return
-    if (property.formula) return
-    if (property.hidden) return
+  for (const property of entity.value.props) {
+    if (!property.type) continue
+    if (property.name?.startsWith('_')) continue
+    if (property.readonly) continue
+    if (property.formula) continue
+    if (property.hidden) continue
 
     const group = property.group || ''
     const ordinal = property.ordinal || 0
@@ -121,14 +121,14 @@ const properties = computed(() => {
 
     propsObject[group].ordinal += ordinal
     propsObject[group].children.push(property)
-  })
+  }
 
   const result = Object.values(propsObject)
 
-  result.forEach((m) => {
+  for (const m of result) {
     m.ordinal = m.name ? m.ordinal / m.children.length : 0
     m.children.sort(propsSorter)
-  })
+  }
 
   result.sort(propsSorter)
 
@@ -186,8 +186,7 @@ async function onClose () {
       justify-content="center"
       pane-class="p-0!"
       pane-wrapper-class="size-full"
-      :class="plugins?.length ? '' : ''"
-      :tab-class="plugins?.length ? '' : '!hidden'"
+      :tab-class="{ '!hidden': !plugins?.length }"
       :type="plugins?.length ? 'line' : 'bar'"
     >
       <n-tab-pane
@@ -217,12 +216,12 @@ async function onClose () {
 
           <property-list
             v-model:entity-id="entityId"
-            v-model:properties="pg.children"
             v-model:entity-parent-id="entityParentId"
             v-model:entity-type-id="entityTypeId"
             v-model:is-updating="isUpdating"
-            :entity-sharing="entity._sharing"
+            v-model:properties="pg.children"
             edit
+            :entity-sharing="entity._sharing"
           />
         </div>
       </n-tab-pane>
@@ -236,9 +235,9 @@ async function onClose () {
         :tab="plugin.name"
       >
         <iframe
-          :src="plugin.url"
           class="size-full"
           frameborder="0"
+          :src="plugin.url"
         />
       </n-tab-pane>
     </n-tabs>
@@ -249,14 +248,14 @@ async function onClose () {
     >
       <n-popconfirm
         :negative-text="t('cancel')"
-        :positive-text="t('delete')"
         :positive-button-props="{ type: 'error', loading: isUpdating }"
+        :positive-text="t('delete')"
         @positive-click="onDelete()"
       >
         <template #trigger>
           <my-button
-            :bg="false"
             type="error"
+            :bg="false"
             :disabled="isUpdating"
             :focusable="false"
             :label="t('deleteEntity')"

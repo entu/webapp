@@ -35,8 +35,13 @@ useInfiniteScroll(listElement, async () => {
 
 onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
   if (route.hash) return
-  if (e.code === 'ArrowDown' && scrollIdx.value < entitiesList.value.length - 1) scrollIdx.value++
-  if (e.code === 'ArrowUp' && scrollIdx.value > 0) scrollIdx.value--
+
+  if (e.code === 'ArrowDown' && scrollIdx.value < entitiesList.value.length - 1) {
+    scrollIdx.value++
+  }
+  if (e.code === 'ArrowUp' && scrollIdx.value > 0) {
+    scrollIdx.value--
+  }
 
   listElementScroll.value = scrollIdx.value * 48 - 148
 
@@ -118,9 +123,9 @@ function color () {
       >
         <img
           v-if="entity._thumbnail"
-          :src="entity._thumbnail"
-          :class="entity.color"
           class="list-item-img"
+          :class="entity.color"
+          :src="entity._thumbnail"
         >
         <div
           v-else

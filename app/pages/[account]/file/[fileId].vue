@@ -18,8 +18,8 @@ onMounted(async () => {
 <template>
   <n-spin
     class="size-full"
-    :show="isLoading"
     :delay="1000"
+    :show="isLoading"
   />
 </template>
 

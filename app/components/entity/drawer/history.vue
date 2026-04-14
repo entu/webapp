@@ -57,7 +57,9 @@ async function loadHistory () {
   const propDefs = {}
   const typedProps = entityTypes.value[props.typeId]?.props || []
   for (const p of typedProps) {
-    if (p.name) propDefs[p.name] = p
+    if (p.name) {
+      propDefs[p.name] = p
+    }
   }
 
   // Fetch names for all unique editors in parallel
@@ -104,8 +106,12 @@ async function loadHistory () {
     const fOld = formatValue(item.old, entry.decimals)
     const fNew = formatValue(item.new, entry.decimals)
 
-    if (fOld) entry.oldValues.push({ ...fOld, at: item.at })
-    if (fNew) entry.newValues.push({ ...fNew, at: item.at })
+    if (fOld) {
+      entry.oldValues.push({ ...fOld, at: item.at })
+    }
+    if (fNew) {
+      entry.newValues.push({ ...fNew, at: item.at })
+    }
   }
 
   groups.value = Object.values(buckets).sort((a, b) => {
@@ -242,8 +248,8 @@ function formatValue (val, decimals) {
                   <n-tooltip
                     v-for="v in item.oldValues"
                     :key="v.text"
-                    :disabled="!v.at"
                     placement="right"
+                    :disabled="!v.at"
                   >
                     <template #trigger>
                       <div class="flex items-center gap-1.5 text-red-700 line-through">
@@ -274,8 +280,8 @@ function formatValue (val, decimals) {
                   <n-tooltip
                     v-for="v in item.newValues"
                     :key="v.text"
-                    :disabled="!v.at"
                     placement="right"
+                    :disabled="!v.at"
                   >
                     <template #trigger>
                       <div class="flex items-center gap-1.5 text-green-700">

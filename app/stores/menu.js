@@ -42,9 +42,9 @@ export const useMenuStore = defineStore('menu', () => {
       ].join(',')
     })
 
-    menuResult.value.entities?.forEach((entity) => {
+    for (const entity of menuResult.value.entities ?? []) {
       entity.addFrom = addFromEntities.value?.filter((x) => x.addFrom?.includes(entity._id))
-    })
+    }
   }
 
   watch(accountId, get, { immediate: true })

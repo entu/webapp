@@ -38,7 +38,7 @@ watch(() => route.query, () => {
   // Parse sort and direction
   const sortParam = route.query.sort || ''
   if (sortParam.startsWith('-')) {
-    searchForm.value.sort = sortParam.substring(1)
+    searchForm.value.sort = sortParam.slice(1)
     searchForm.value.sortDirection = '-'
   }
   else {
@@ -53,8 +53,8 @@ watch(() => route.query, () => {
     searchForm.value.types = route.query['_type.string'].split(',')
   }
 
-  Object.keys(route.query).forEach((key) => {
-    if (['q', '_type.string', '_type.string.in', 'sort', 'limit', 'skip'].includes(key)) return
+  for (const key of Object.keys(route.query)) {
+    if (['q', '_type.string', '_type.string.in', 'sort', 'limit', 'skip'].includes(key)) continue
 
     const fieldArray = key.split('.')
     let operator = fieldArray.at(-1)
@@ -88,7 +88,7 @@ watch(() => route.query, () => {
       operator,
       value
     })
-  })
+  }
 
   if (searchForm.value.properties.length === 0) {
     searchForm.value.properties = [{ field: '', operator: '' }]
@@ -153,25 +153,25 @@ watch(() => searchForm.value.types, async (newTypes) => {
 watch(() => searchForm.value.properties.map((f) => f.field), (newFields, oldFields) => {
   if (!oldFields) return
 
-  newFields.forEach((newField, index) => {
+  for (const [index, newField] of newFields.entries()) {
     const oldField = oldFields[index]
 
     if (oldField && newField && getPropertyType(oldField) !== getPropertyType(newField)) {
       searchForm.value.properties[index].value = undefined
     }
-  })
+  }
 }, { deep: true })
 
 watch(() => searchForm.value.properties.map((f) => f.operator), (newOperators, oldOperators) => {
   if (!oldOperators) return
 
-  newOperators.forEach((newOperator, index) => {
+  for (const [index, newOperator] of newOperators.entries()) {
     const oldOperator = oldOperators[index]
 
     if (oldOperator !== newOperator && newOperator === 'exists') {
       searchForm.value.properties[index].value = true
     }
-  })
+  }
 }, { deep: true })
 
 function addCustomFilter () {
@@ -245,14 +245,14 @@ function handleSearch () {
     query['_type.string.in'] = searchForm.value.types.join(',')
   }
 
-  searchForm.value.properties.forEach((filter) => {
-    if (!filter.field) return
-    if (filter.value === undefined || filter.value === null || filter.value === '') return
+  for (const filter of searchForm.value.properties) {
+    if (!filter.field) continue
+    if (filter.value === undefined || filter.value === null || filter.value === '') continue
 
     const key = [filter.field, filter.operator].filter(Boolean).join('.')
 
     query[key] = filter.value
-  })
+  }
 
   if (searchForm.value.sort) {
     query.sort = `${searchForm.value.sortDirection}${searchForm.value.sort}`
@@ -298,8 +298,8 @@ onMounted(async () => {
     :title="t('title')"
   >
     <n-form
-      :model="searchForm"
       label-placement="top"
+      :model="searchForm"
     >
       <div class="flex flex-col gap-3 md:flex-row md:items-end">
         <n-form-item
@@ -322,8 +322,8 @@ onMounted(async () => {
         >
           <n-select
             v-model:value="searchForm.types"
-            filterable
             clearable
+            filterable
             max-tag-count="responsive"
             multiple
             :options="entityTypeOptions"
@@ -352,8 +352,8 @@ onMounted(async () => {
                 :value="''"
               >
                 <my-icon
-                  icon="arrow-down"
                   class="text-xs"
+                  icon="arrow-down"
                 />
               </n-radio-button>
               <n-radio-button
@@ -362,8 +362,8 @@ onMounted(async () => {
                 :value="'-'"
               >
                 <my-icon
-                  icon="arrow-up"
                   class="text-xs"
+                  icon="arrow-up"
                 />
               </n-radio-button>
             </n-radio-group>
@@ -416,12 +416,14 @@ onMounted(async () => {
             :label="t('value')"
             :show-feedback="false"
           >
+            <!-- eslint-disable vue/prefer-true-attribute-shorthand -->
             <n-switch
               v-if="getPropertyType(filter.field) === 'boolean' || filter.operator === 'exists'"
               v-model:value="filter.value"
               :checked-value="true"
               :unchecked-value="false"
             />
+            <!-- eslint-enable vue/prefer-true-attribute-shorthand -->
             <n-input-number
               v-else-if="getPropertyType(filter.field) === 'number' || getPropertyType(filter.field) === 'filesize'"
               v-model:value="filter.value"

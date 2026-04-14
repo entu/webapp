@@ -16,7 +16,9 @@ watchDebounced(searchText, async (value) => {
 
   const routeConfig = { ...route, query: { ...route.query, q: value } }
 
-  if (!value) delete routeConfig.query.q
+  if (!value) {
+    delete routeConfig.query.q
+  }
 
   await navigateTo(routeConfig, { replace: true })
 }, { debounce: 500, maxWait: 5000 })
@@ -35,8 +37,8 @@ function handleAdvancedSearch (query) {
 <template>
   <div class="ml-3 flex h-12 items-center gap-3">
     <label
-      for="search"
       class="flex h-7 w-8 items-center justify-center"
+      for="search"
     >
       <my-icon
         class="text-gray-400"

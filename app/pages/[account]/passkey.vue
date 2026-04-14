@@ -118,9 +118,9 @@ function getDeviceName () {
 
           <div class="space-y-4 text-center">
             <n-button
-              type="primary"
-              size="large"
               block
+              size="large"
+              type="primary"
               @click="registerPasskey"
             >
               {{ t('registerButton') }}

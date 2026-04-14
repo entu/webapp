@@ -17,10 +17,10 @@ defineProps({
   >
     <template #trigger>
       <n-button
-        :secondary="bg"
-        :quaternary="!bg"
         :circle="circle"
+        :quaternary="!bg"
         :round="!circle"
+        :secondary="bg"
         v-bind="$attrs"
       >
         <template
@@ -46,9 +46,9 @@ defineProps({
 
   <n-button
     v-else
-    :secondary="bg"
-    :quaternary="!bg"
     :circle="circle"
+    :quaternary="!bg"
+    :secondary="bg"
     v-bind="$attrs"
   >
     <template

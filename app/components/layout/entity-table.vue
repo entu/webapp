@@ -41,7 +41,7 @@ const tableColumnsWithTypes = computed(() => {
   const uniqueKeys = [...new Set(allKeys)]
 
   // For each property, determine its type by examining the values
-  uniqueKeys.forEach((propertyName) => {
+  for (const propertyName of uniqueKeys) {
     let detectedType = 'string' // default fallback
 
     // Look through entities to find the first non-empty value for this property
@@ -87,7 +87,7 @@ const tableColumnsWithTypes = computed(() => {
     }
 
     columnsWithTypes.push({ name: propertyName, type: detectedType })
-  })
+  }
 
   return columnsWithTypes
 })
@@ -104,8 +104,13 @@ useInfiniteScroll(listElement, async () => {
 
 onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
   if (route.hash) return
-  if (e.code === 'ArrowDown' && scrollIdx.value < entitiesList.value.length - 1) scrollIdx.value++
-  if (e.code === 'ArrowUp' && scrollIdx.value > 0) scrollIdx.value--
+
+  if (e.code === 'ArrowDown' && scrollIdx.value < entitiesList.value.length - 1) {
+    scrollIdx.value++
+  }
+  if (e.code === 'ArrowUp' && scrollIdx.value > 0) {
+    scrollIdx.value--
+  }
 
   listElementScroll.value = scrollIdx.value * 48 - 148
 
@@ -120,7 +125,7 @@ watch(() => route.query, (value) => {
   if (value.sort) {
     const sortParam = value.sort
     const isDescending = sortParam.startsWith('-')
-    const fieldName = isDescending ? sortParam.substring(1) : sortParam
+    const fieldName = isDescending ? sortParam.slice(1) : sortParam
 
     sortDirection.value = isDescending ? 'desc' : 'asc'
     sortField.value = fieldName.includes('.') ? fieldName.split('.').at(0) : fieldName
@@ -211,13 +216,13 @@ function handleSort (column) {
 
                 <my-icon
                   v-if="sortField === column.name"
-                  :icon="sortDirection === 'desc' ? 'sort-descending' : 'sort-ascending'"
                   class="ml-2 size-3 text-gray-600"
+                  :icon="sortDirection === 'desc' ? 'sort-descending' : 'sort-ascending'"
                 />
                 <my-icon
                   v-else
-                  icon="sort-ascending"
                   class="ml-2 size-3 text-gray-400 opacity-0 group-hover:opacity-30"
+                  icon="sort-ascending"
                 />
               </div>
             </th>
@@ -237,10 +242,10 @@ function handleSort (column) {
               class="max-w-xs border-r border-gray-200 px-3 py-2 text-sm last:border-r-0"
             >
               <layout-entity-table-cell
-                :values="entity[column.name] || []"
-                :is-name="column.name === 'name'"
                 :entity-id="entity._id"
                 :fallback-id="entity._id"
+                :is-name="column.name === 'name'"
+                :values="entity[column.name] || []"
               />
             </td>
 

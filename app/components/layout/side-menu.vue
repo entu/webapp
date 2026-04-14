@@ -22,7 +22,7 @@ const accountMenu = computed(() => {
   const menu = []
   const menuObject = {}
 
-  menuEntities.value.forEach((entity) => {
+  for (const entity of menuEntities.value) {
     const group = getValue(entity.group)?.toLowerCase()
     const ordinal = getValue(entity.ordinal, 'number') || 0
 
@@ -34,13 +34,13 @@ const accountMenu = computed(() => {
         label: getValue(entity.group),
         children: menuCollapsed.value
           ? [{
-              key: `group-${group}-${entity.group}`,
-              name: '            1',
-              label: () => h('strong', {}, { default: () => getValue(entity.group)?.toUpperCase() })
-            }, {
-              name: '            2',
-              type: 'divider'
-            }]
+            key: `group-${group}-${entity.group}`,
+            name: '            1',
+            label: () => h('strong', {}, { default: () => getValue(entity.group)?.toUpperCase() })
+          }, {
+            name: '            2',
+            type: 'divider'
+          }]
           : [],
         ordinal: 0
       }
@@ -52,16 +52,16 @@ const accountMenu = computed(() => {
       name: getValue(entity.name),
       label: () => getValue(entity.query)?.startsWith('http') || getValue(entity.query)?.startsWith('/')
         ? h(NuxtLink, { class: 'flex items-center justify-between', to: linkReplace(getValue(entity.query)), target: '_blank' },
-            () => [
-              getValue(entity.name),
-              h(MyIcon, { icon: 'external-link' })
-            ])
+          () => [
+            getValue(entity.name),
+            h(MyIcon, { icon: 'external-link' })
+          ])
         : h(NuxtLink, { to: { path: `/${account.value?._id}`, query: queryStringToObject(getValue(entity.query)) } },
-            { default: () => getValue(entity.name) }
-          ),
+          { default: () => getValue(entity.name) }
+        ),
       ordinal
     })
-  })
+  }
 
   const menuArray = Object.values(menuObject).map((m) => ({
     ...m,
@@ -76,33 +76,33 @@ const accountMenu = computed(() => {
       label: account.value?.name,
       children: menuCollapsed.value
         ? [{
-            key: `account-${account.value?._id}`,
-            name: '            1',
-            label: () => h(NuxtLink,
-              { to: { path: `/${account.value?._id}` } },
-              () => h('strong', {}, { default: () => account.value?.name })
-            )
-          }, {
-            name: '            2',
-            type: 'divider'
-          },
-          ...accounts.value.filter((x) => x._id !== account.value?._id).map((x) => ({
-            key: `account-${account.value?._id}-${x._id}`,
-            name: x.name,
-            label: () => h(NuxtLink,
-              { to: { path: `/${x._id}` } },
-              { default: () => x.name }
-            )
-          }))
-          ]
+          key: `account-${account.value?._id}`,
+          name: '            1',
+          label: () => h(NuxtLink,
+            { to: { path: `/${account.value?._id}` } },
+            () => h('strong', {}, { default: () => account.value?.name })
+          )
+        }, {
+          name: '            2',
+          type: 'divider'
+        },
+        ...accounts.value.filter((x) => x._id !== account.value?._id).map((x) => ({
+          key: `account-${account.value?._id}-${x._id}`,
+          name: x.name,
+          label: () => h(NuxtLink,
+            { to: { path: `/${x._id}` } },
+            { default: () => x.name }
+          )
+        }))
+        ]
         : accounts.value.filter((x) => x._id !== account.value?._id).map((x) => ({
-            key: `account-${x._id}`,
-            name: x.name,
-            label: () => h(NuxtLink,
-              { to: { path: `/${x._id}` } },
-              { default: () => x.name }
-            )
-          }))
+          key: `account-${x._id}`,
+          name: x.name,
+          label: () => h(NuxtLink,
+            { to: { path: `/${x._id}` } },
+            { default: () => x.name }
+          )
+        }))
     })
 
     menu.push({
@@ -120,12 +120,12 @@ const accountMenu = computed(() => {
       children: menuCollapsed.value
         ? menuArray.at(0).children
         : [
-            {
-              type: 'divider',
-              props: { style: { margin: '.5rem' } }
-            },
-            ...menuArray.at(0).children
-          ]
+          {
+            type: 'divider',
+            props: { style: { margin: '.5rem' } }
+          },
+          ...menuArray.at(0).children
+        ]
     })
   }
   else if (menuEntities.value.length > 0) {
@@ -138,12 +138,12 @@ const accountMenu = computed(() => {
       ),
       children: menuCollapsed.value
         ? [{
-            key: `account-${account.value?._id}`,
-            name: '            1',
-            label: () => h(NuxtLink,
-              { to: { path: `/${account.value?._id}` } },
-              { default: () => h('strong', {}, { default: () => account.value?.name }) })
-          }]
+          key: `account-${account.value?._id}`,
+          name: '            1',
+          label: () => h(NuxtLink,
+            { to: { path: `/${account.value?._id}` } },
+            { default: () => h('strong', {}, { default: () => account.value?.name }) })
+        }]
         : undefined
     })
 
@@ -237,14 +237,14 @@ const authMenu = computed(() => {
       label: () => h('strong', { }, { default: () => t('signIn') }),
       children: menuCollapsed.value
         ? [
-            {
-              key: 'auth-title',
-              name: '            1',
-              icon: () => h(MyIcon, { icon: 'login' }),
-              label: () => h('strong', { }, { default: () => t('signIn').toUpperCase() })
-            },
-            ...providers
-          ]
+          {
+            key: 'auth-title',
+            name: '            1',
+            icon: () => h(MyIcon, { icon: 'login' }),
+            label: () => h('strong', { }, { default: () => t('signIn').toUpperCase() })
+          },
+          ...providers
+        ]
         : providers
     }]
 })
@@ -262,22 +262,22 @@ const userMenu = computed(() => {
       ),
       children: menuCollapsed.value
         ? [{
-            key: `user-${userId.value}`,
-            name: '            1',
-            label: () => h(NuxtLink,
-              { to: { path: `/${account.value?._id}/${userId.value}` } },
-              { default: () => h('strong', {}, { default: () => userName.value || t('userEntity') }) }
-            )
-          }, {
-            type: 'divider',
-            props: { style: { margin: '.5rem' } }
-          }, {
-            key: `language-${locale.value}`,
-            label: () => h('a',
-              { onClick: () => setLanguage() },
-              { default: () => t('language') }
-            )
-          }]
+          key: `user-${userId.value}`,
+          name: '            1',
+          label: () => h(NuxtLink,
+            { to: { path: `/${account.value?._id}/${userId.value}` } },
+            { default: () => h('strong', {}, { default: () => userName.value || t('userEntity') }) }
+          )
+        }, {
+          type: 'divider',
+          props: { style: { margin: '.5rem' } }
+        }, {
+          key: `language-${locale.value}`,
+          label: () => h('a',
+            { onClick: () => setLanguage() },
+            { default: () => t('language') }
+          )
+        }]
         : undefined
     })
   }
@@ -345,9 +345,9 @@ function linkReplace (url) {
 
     <a
       v-if="!menuCollapsed"
-      :href="`/${account?._id || ''}`"
-      tabindex="-1"
       class="outline-none"
+      tabindex="-1"
+      :href="`/${account?._id || ''}`"
       @click="useAnalytics('click_logo')"
     >
       <img
@@ -361,8 +361,8 @@ function linkReplace (url) {
       accordion
       class="grow"
       collapse-mode="width"
-      :collapsed-width="60"
       :collapsed="menuCollapsed"
+      :collapsed-width="60"
       :default-expanded-keys="accountMenu.length === 1 ? [accountMenu.at(0).key] : undefined"
       :indent="32"
       :options="accountMenu"
@@ -375,8 +375,8 @@ function linkReplace (url) {
       v-model:value="activeMenu"
       accordion
       collapse-mode="width"
-      :collapsed-width="60"
       :collapsed="menuCollapsed"
+      :collapsed-width="60"
       :indent="32"
       :options="userMenu"
       :root-indent="18"
@@ -386,8 +386,8 @@ function linkReplace (url) {
       v-else
       accordion
       collapse-mode="width"
-      :collapsed-width="60"
       :collapsed="menuCollapsed"
+      :collapsed-width="60"
       :default-expanded-keys="['auth-group']"
       :indent="0"
       :options="authMenu"

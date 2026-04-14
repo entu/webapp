@@ -58,10 +58,10 @@ const properties = computed(() => {
 
   const propsObject = {}
 
-  entity.value.props.forEach((property) => {
-    if (property.name?.startsWith('_') && property.label === undefined) return
-    if (property.name === 'name') return
-    if (property.hidden) return
+  for (const property of entity.value.props) {
+    if (property.name?.startsWith('_') && property.label === undefined) continue
+    if (property.name === 'name') continue
+    if (property.hidden) continue
 
     const group = property.group || ''
     const ordinal = property.ordinal || 0
@@ -76,14 +76,14 @@ const properties = computed(() => {
 
     propsObject[group].ordinal += ordinal
     propsObject[group].children.push(property)
-  })
+  }
 
   const result = Object.values(propsObject)
 
-  result.forEach((m) => {
+  for (const m of result) {
     m.ordinal = m.name ? m.ordinal / m.children.length : 0
     m.children.sort(propsSorter)
-  })
+  }
 
   result.sort(propsSorter)
 
@@ -127,7 +127,9 @@ const showAddDrawer = computed({
     return false
   },
   set: (value) => {
-    if (!value) onDrawerClose()
+    if (!value) {
+      onDrawerClose()
+    }
   }
 })
 const showChildDrawer = computed({
@@ -139,7 +141,9 @@ const showChildDrawer = computed({
     return false
   },
   set: (value) => {
-    if (!value) onDrawerClose()
+    if (!value) {
+      onDrawerClose()
+    }
   }
 })
 const showEditDrawer = computed({
@@ -151,7 +155,9 @@ const showEditDrawer = computed({
     return false
   },
   set: (value) => {
-    if (!value) onDrawerClose()
+    if (!value) {
+      onDrawerClose()
+    }
   }
 })
 const showEditChildDrawer = computed({
@@ -163,7 +169,9 @@ const showEditChildDrawer = computed({
     return false
   },
   set: (value) => {
-    if (!value) onDrawerClose()
+    if (!value) {
+      onDrawerClose()
+    }
   }
 })
 const showDuplicateDrawer = computed({
@@ -175,7 +183,9 @@ const showDuplicateDrawer = computed({
     return false
   },
   set: (value) => {
-    if (!value) onDrawerClose()
+    if (!value) {
+      onDrawerClose()
+    }
   }
 })
 const showParentsDrawer = computed({
@@ -187,7 +197,9 @@ const showParentsDrawer = computed({
     return false
   },
   set: (value) => {
-    if (!value) onDrawerClose()
+    if (!value) {
+      onDrawerClose()
+    }
   }
 })
 const showRightsDrawer = computed({
@@ -199,7 +211,9 @@ const showRightsDrawer = computed({
     return false
   },
   set: (value) => {
-    if (!value) onDrawerClose()
+    if (!value) {
+      onDrawerClose()
+    }
   }
 })
 const showDebugDrawer = computed({
@@ -211,7 +225,9 @@ const showDebugDrawer = computed({
     return false
   },
   set: (value) => {
-    if (!value) onDrawerClose()
+    if (!value) {
+      onDrawerClose()
+    }
   }
 })
 const showHistoryDrawer = computed({
@@ -223,7 +239,9 @@ const showHistoryDrawer = computed({
     return false
   },
   set: (value) => {
-    if (!value) onDrawerClose()
+    if (!value) {
+      onDrawerClose()
+    }
   }
 })
 
@@ -359,16 +377,16 @@ onMounted(async () => {
             class="mb-5 flex flex-col items-center gap-3"
           >
             <entity-meta-info
+              narrow
               :entity="entity"
-              :right="right"
-              :narrow="true"
-              :thumbnail="entity._thumbnail"
               :photos="rawEntity.photo"
+              :right="right"
+              :thumbnail="entity._thumbnail"
             />
           </div>
 
           <!-- Wide: properties + thumbnail side by side -->
-          <div :class="isNarrow ? '' : 'flex flex-row gap-5 pr-5'">
+          <div :class="{ 'flex flex-row gap-5 pr-5': !isNarrow }">
             <div class="grow">
               <template
                 v-for="pg in properties"
@@ -384,8 +402,8 @@ onMounted(async () => {
                 <property-list
                   v-if="pg.children && pg.children.some(x => x.mandatory || x.values)"
                   class="md:pl-5"
-                  :properties="pg.children"
                   :entity-sharing="entity._sharing"
+                  :properties="pg.children"
                 />
               </template>
             </div>
@@ -397,18 +415,18 @@ onMounted(async () => {
             >
               <entity-meta-info
                 :entity="entity"
-                :right="right"
                 :narrow="false"
-                :thumbnail="entity._thumbnail"
                 :photos="rawEntity.photo"
+                :right="right"
+                :thumbnail="entity._thumbnail"
               />
             </div>
           </div>
         </div>
 
         <n-collapse
-          :default-expanded-names="[0]"
           class="mt-8 md:pr-5"
+          :default-expanded-names="[0]"
         >
           <n-collapse-item
             v-for="child, idx in childs"
@@ -423,8 +441,8 @@ onMounted(async () => {
             <entity-child-list
               class="w-full md:pl-5"
               :entity-id="entityId"
-              :type-id="child._id"
               :reference-field="child.referenceField"
+              :type-id="child._id"
             />
           </n-collapse-item>
         </n-collapse>
@@ -439,38 +457,38 @@ onMounted(async () => {
     </div>
 
     <entity-drawer-edit
-      v-model:show="showAddDrawer"
       v-model:entity-id="newEntityId"
+      v-model:show="showAddDrawer"
       :entity-type-id="addTypeId"
     />
     <entity-drawer-edit
-      v-model:show="showChildDrawer"
       v-model:entity-id="newEntityId"
+      v-model:show="showChildDrawer"
       :entity-parent-id="entityId"
       :entity-type-id="addTypeId"
     />
     <entity-drawer-edit
-      v-model:show="showEditDrawer"
       v-model:entity-id="entityId"
+      v-model:show="showEditDrawer"
       :can-delete="right.owner"
       @delete="router.back()"
     />
     <entity-drawer-edit
-      v-model:show="showEditChildDrawer"
       v-model:entity-id="addTypeId"
+      v-model:show="showEditChildDrawer"
       @close="onChildEditClose()"
     />
     <entity-drawer-duplicate
-      v-model:show="showDuplicateDrawer"
       v-model:entity-id="entityId"
+      v-model:show="showDuplicateDrawer"
     />
     <entity-drawer-parents
-      v-model:show="showParentsDrawer"
       v-model:entity-id="entityId"
+      v-model:show="showParentsDrawer"
     />
     <entity-drawer-rights
-      v-model:show="showRightsDrawer"
       v-model:entity-id="entityId"
+      v-model:show="showRightsDrawer"
     />
     <entity-drawer-debug
       v-model:show="showDebugDrawer"
@@ -479,8 +497,8 @@ onMounted(async () => {
       :raw-entity="rawEntity"
     />
     <entity-drawer-history
-      v-model:show="showHistoryDrawer"
       v-model:entity-id="entityId"
+      v-model:show="showHistoryDrawer"
       :type-id="typeId"
     />
   </div>

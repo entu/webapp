@@ -59,8 +59,8 @@ console.log(
   <n-config-provider
     class="h-full"
     inline-theme-disabled
-    :locale="currentLocale"
     :date-locale="currentDateLocale"
+    :locale="currentLocale"
     :theme-overrides="themeOverrides"
   >
     <n-notification-provider :max="5">

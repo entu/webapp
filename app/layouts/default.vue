@@ -48,7 +48,7 @@ nuxtApp.hooks.hook('app:manifest:update', (a) => {
 
   updateNotification = notification.info({
     content: t('updateContent'),
-    meta: new Date(a.timestamp).toISOString().substring(0, 19).replace('T', ' '),
+    meta: new Date(a.timestamp).toISOString().slice(0, 19).replace('T', ' '),
     action: () => h(NButton, {
       type: 'primary',
       round: true,
@@ -114,7 +114,10 @@ function changeMenu (collapsed) {
           <template #resize-trigger>
             <div
               class="h-full print:hidden"
-              :class="menuCollapsed ? 'py-0' : 'py-2'"
+              :class="{
+                'py-0': menuCollapsed,
+                'py-2': !menuCollapsed,
+              }"
             >
               <div class="h-full w-0.5 bg-gray-300 hover:bg-gray-400" />
             </div>
@@ -145,14 +148,14 @@ function changeMenu (collapsed) {
           <my-icon
             v-if="route.params.entityId && isQuery"
             class="cursor-pointer text-white opacity-80 hover:opacity-100"
-            style="font-size: 1.5rem"
             icon="arrow-left"
+            style="font-size: 1.5rem"
             @click="navigateTo({ path: `/${accountId}`, query: route.query })"
           />
           <img
             v-else
-            src="/logo.png"
             class="h-6 w-auto cursor-pointer"
+            src="/logo.png"
             @click="navigateTo('/')"
           >
 
@@ -162,8 +165,8 @@ function changeMenu (collapsed) {
 
           <my-icon
             class="ml-auto cursor-pointer text-white opacity-80 hover:opacity-100"
-            style="font-size: 1.5rem"
             icon="menu"
+            style="font-size: 1.5rem"
             @click="showMobileMenu = true"
           />
         </div>
@@ -203,8 +206,8 @@ function changeMenu (collapsed) {
 
               <my-icon
                 class="cursor-pointer text-white opacity-80 hover:opacity-100"
-                style="font-size: 1.5rem"
                 icon="menu"
+                style="font-size: 1.5rem"
                 @click="showMobileMenu = false"
               />
             </div>

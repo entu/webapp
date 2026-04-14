@@ -13,8 +13,12 @@ export async function apiGetEntity (entityId, props = []) {
 
 export async function apiGetEntityHistory (entityId, { limit, skip } = {}) {
   const params = {}
-  if (limit) params.limit = limit
-  if (skip) params.skip = skip
+  if (limit) {
+    params.limit = limit
+  }
+  if (skip) {
+    params.skip = skip
+  }
   return await apiRequest(`entity/${entityId}/history`, params)
 }
 
@@ -57,7 +61,8 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
 
   if (accountId.value) {
     url.pathname = `${base}/${accountId.value}/${pathname || ''}`
-  } else if (pathname) {
+  }
+  else if (pathname) {
     url.pathname = `${base}/${pathname}`
   }
 
@@ -87,14 +92,24 @@ function resolveDate (defaultStr) {
   const match = defaultStr.match(/^([+-])(\d+)([hdwmy])$/)
 
   if (match) {
-    const n = parseInt(match[2], 10) * (match[1] === '+' ? 1 : -1)
+    const n = Number.parseInt(match.at(2), 10) * (match.at(1) === '+' ? 1 : -1)
     const d = new Date()
 
-    if (match[3] === 'h') d.setHours(d.getHours() + n)
-    else if (match[3] === 'd') d.setDate(d.getDate() + n)
-    else if (match[3] === 'w') d.setDate(d.getDate() + n * 7)
-    else if (match[3] === 'm') d.setMonth(d.getMonth() + n)
-    else if (match[3] === 'y') d.setFullYear(d.getFullYear() + n)
+    if (match.at(3) === 'h') {
+      d.setHours(d.getHours() + n)
+    }
+    else if (match.at(3) === 'd') {
+      d.setDate(d.getDate() + n)
+    }
+    else if (match.at(3) === 'w') {
+      d.setDate(d.getDate() + n * 7)
+    }
+    else if (match.at(3) === 'm') {
+      d.setMonth(d.getMonth() + n)
+    }
+    else if (match.at(3) === 'y') {
+      d.setFullYear(d.getFullYear() + n)
+    }
 
     return d.getTime()
   }

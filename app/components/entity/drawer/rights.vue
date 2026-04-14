@@ -184,8 +184,8 @@ async function onClose () {
         >
           <n-radio
             class="w-full"
-            value="private"
             size="large"
+            value="private"
             :label="t('sharingPrivate')"
           />
           <div class="mb-6 ml-7 text-gray-500">
@@ -194,8 +194,8 @@ async function onClose () {
 
           <n-radio
             class="w-full"
-            value="domain"
             size="large"
+            value="domain"
             :label="t('sharingDomain')"
           />
           <div class="mb-6 ml-7 text-gray-500">
@@ -204,8 +204,8 @@ async function onClose () {
 
           <n-radio
             class="w-full"
-            value="public"
             size="large"
+            value="public"
             :label="t('sharingPublic')"
           />
           <div class="mb-6 ml-7 text-gray-500">
@@ -234,8 +234,8 @@ async function onClose () {
         <div class="mt-6 flex flex-col items-center justify-center gap-2">
           <n-checkbox
             v-model:checked="inheritRights"
-            :disabled="!entityRights.length"
             size="large"
+            :disabled="!entityRights.length"
             @update:checked="updateInheritRights($event)"
           >
             {{ t('inheritRights') }}

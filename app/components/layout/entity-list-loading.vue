@@ -39,8 +39,8 @@ const progressPercentage = computed(() => {
       type="line"
       :height="6"
       :percentage="progressPercentage"
-      :show-indicator="false"
       :processing="isLoading"
+      :show-indicator="false"
     />
   </div>
 </template>

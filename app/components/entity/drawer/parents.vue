@@ -25,6 +25,7 @@ const entityTypeId = computed(() => rawEntity.value?._type?.at(0)?.reference)
 const parentQuery = computed(() => {
   const base = `_expander.reference=${userId.value}`
   if (!entityTypeId.value) return base
+
   const typeEntry = addFromEntities.value?.find((x) => x.value === entityTypeId.value)
   if (!typeEntry?.addFrom?.length) return base
   if (typeEntry.addFrom.length === 1) return `${base}&_type.reference=${typeEntry.addFrom.at(0)}`
@@ -135,9 +136,9 @@ async function onClose () {
       <my-select-reference
         v-model="newParent"
         class="my-6"
+        :exclude="[...parents.map(x => x.reference), entityId]"
         :placeholder="t('selectNewParent')"
         :query="parentQuery"
-        :exclude="[...parents.map(x => x.reference), entityId]"
         @update:value="onAddParent($event)"
       />
     </div>
