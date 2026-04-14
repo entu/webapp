@@ -92,7 +92,7 @@ function resolveDate (defaultStr) {
   const match = defaultStr.match(/^([+-])(\d+)([hdwmy])$/)
 
   if (match) {
-    const n = parseInt(match.at(2), 10) * (match.at(1) === '+' ? 1 : -1)
+    const n = Number.parseInt(match.at(2), 10) * (match.at(1) === '+' ? 1 : -1)
     const d = new Date()
 
     if (match.at(3) === 'h') {

@@ -48,7 +48,7 @@ nuxtApp.hooks.hook('app:manifest:update', (a) => {
 
   updateNotification = notification.info({
     content: t('updateContent'),
-    meta: new Date(a.timestamp).toISOString().substring(0, 19).replace('T', ' '),
+    meta: new Date(a.timestamp).toISOString().slice(0, 19).replace('T', ' '),
     action: () => h(NButton, {
       type: 'primary',
       round: true,

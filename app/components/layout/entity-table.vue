@@ -41,7 +41,7 @@ const tableColumnsWithTypes = computed(() => {
   const uniqueKeys = [...new Set(allKeys)]
 
   // For each property, determine its type by examining the values
-  uniqueKeys.forEach((propertyName) => {
+  for (const propertyName of uniqueKeys) {
     let detectedType = 'string' // default fallback
 
     // Look through entities to find the first non-empty value for this property
@@ -87,7 +87,7 @@ const tableColumnsWithTypes = computed(() => {
     }
 
     columnsWithTypes.push({ name: propertyName, type: detectedType })
-  })
+  }
 
   return columnsWithTypes
 })
@@ -125,7 +125,7 @@ watch(() => route.query, (value) => {
   if (value.sort) {
     const sortParam = value.sort
     const isDescending = sortParam.startsWith('-')
-    const fieldName = isDescending ? sortParam.substring(1) : sortParam
+    const fieldName = isDescending ? sortParam.slice(1) : sortParam
 
     sortDirection.value = isDescending ? 'desc' : 'asc'
     sortField.value = fieldName.includes('.') ? fieldName.split('.').at(0) : fieldName

@@ -58,10 +58,10 @@ const properties = computed(() => {
 
   const propsObject = {}
 
-  entity.value.props.forEach((property) => {
-    if (property.name?.startsWith('_') && property.label === undefined) return
-    if (property.name === 'name') return
-    if (property.hidden) return
+  for (const property of entity.value.props) {
+    if (property.name?.startsWith('_') && property.label === undefined) continue
+    if (property.name === 'name') continue
+    if (property.hidden) continue
 
     const group = property.group || ''
     const ordinal = property.ordinal || 0
@@ -76,14 +76,14 @@ const properties = computed(() => {
 
     propsObject[group].ordinal += ordinal
     propsObject[group].children.push(property)
-  })
+  }
 
   const result = Object.values(propsObject)
 
-  result.forEach((m) => {
+  for (const m of result) {
     m.ordinal = m.name ? m.ordinal / m.children.length : 0
     m.children.sort(propsSorter)
-  })
+  }
 
   result.sort(propsSorter)
 

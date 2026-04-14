@@ -34,21 +34,19 @@ const deletedPercent = computed(() => {
 const limitPercent = computed(() => {
   const total = props.usage + props.deleted
 
-  if (!props.limit) return undefined
-  if (!total) return undefined
-  if (total <= props.limit) return undefined
+  if (!props.limit) return
+  if (!total) return
+  if (total <= props.limit) return
 
   return Math.round(props.limit * 100 / total)
 })
 
 const overLimit = computed(() => {
-  if (!props.limit) return undefined
+  if (!props.limit) return 0
 
   const over = props.usage + props.deleted - props.limit
 
-  if (over > 0) return over
-
-  return undefined
+  return over > 0 ? over : 0
 })
 
 const usageStr = computed(() => props.isBytes ? humanFileSize(n, props.usage) : n(props.usage))

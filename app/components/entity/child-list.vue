@@ -139,7 +139,7 @@ function renderColumn (value, type, decimals) {
   }
 
   if (type === 'boolean' && getValue(value, 'boolean')) {
-    return undefined
+    return
   }
 
   if (type === 'datetime' && getValue(value, 'datetime')) {

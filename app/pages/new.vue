@@ -29,7 +29,7 @@ function validateName () {
   databaseName.value = databaseName.value?.replace(/[^a-z0-9_]/gi, '').toLowerCase()
 
   while (databaseName.value && (/^[_0-9]/.test(databaseName.value))) {
-    databaseName.value = databaseName.value.substring(1)
+    databaseName.value = databaseName.value.slice(1)
   }
 }
 

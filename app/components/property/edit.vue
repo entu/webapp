@@ -40,11 +40,11 @@ const isOwnEntity = computed(() => userId.value === entityId.value)
 
 const fileList = computed(() => props.type === 'file'
   ? newValues.value.filter((x) => x._id !== undefined).map((x) => ({
-      id: x._id,
-      name: x.filename,
-      url: `/${accountId.value}/file/${x._id}`,
-      status: 'finished'
-    }))
+    id: x._id,
+    name: x.filename,
+    url: `/${accountId.value}/file/${x._id}`,
+    status: 'finished'
+  }))
   : []
 )
 
@@ -69,7 +69,7 @@ watch(() => props.values, () => {
 
 function manageEmptyFields () {
   if (props.isMultilingual) {
-    languageOptions.forEach((langOption) => {
+    for (const langOption of languageOptions) {
       const hasExistingValue = newValues.value.some((x) => x._id !== undefined && x.language === langOption.value)
       const emptyFieldsForLanguage = newValues.value.filter((x) =>
         x._id === undefined && x.language === langOption.value
@@ -82,12 +82,12 @@ function manageEmptyFields () {
         }
         else if (emptyFieldsForLanguage.length > 1) {
           // Remove extra empty fields, keep only the first one
-          emptyFieldsForLanguage.slice(1).forEach((field) => {
+          for (const field of emptyFieldsForLanguage.slice(1)) {
             const index = newValues.value.indexOf(field)
             if (index > -1) {
               newValues.value.splice(index, 1)
             }
-          })
+          }
         }
       }
       else {
@@ -97,24 +97,24 @@ function manageEmptyFields () {
         }
         else if (hasExistingValue && emptyFieldsForLanguage.length > 0) {
           // Remove empty fields for languages that have existing values
-          emptyFieldsForLanguage.forEach((field) => {
+          for (const field of emptyFieldsForLanguage) {
             const index = newValues.value.indexOf(field)
             if (index > -1) {
               newValues.value.splice(index, 1)
             }
-          })
+          }
         }
         else if (!hasExistingValue && emptyFieldsForLanguage.length > 1) {
           // Keep only one empty field for languages without existing values
-          emptyFieldsForLanguage.slice(1).forEach((field) => {
+          for (const field of emptyFieldsForLanguage.slice(1)) {
             const index = newValues.value.indexOf(field)
             if (index > -1) {
               newValues.value.splice(index, 1)
             }
-          })
+          }
         }
       }
-    })
+    }
   }
   else {
     const emptyFields = newValues.value.filter((x) => x._id === undefined)
@@ -130,12 +130,12 @@ function manageEmptyFields () {
       }
       else if (emptyFields.length > 2) {
         // Remove extra empty fields, keep only the first two
-        emptyFields.slice(2).forEach((field) => {
+        for (const field of emptyFields.slice(2)) {
           const index = newValues.value.indexOf(field)
           if (index > -1) {
             newValues.value.splice(index, 1)
           }
-        })
+        }
       }
     }
     else {
@@ -145,21 +145,21 @@ function manageEmptyFields () {
       }
       else if (hasExistingValue && emptyFields.length > 0) {
         // Remove empty fields when there are existing values
-        emptyFields.forEach((field) => {
+        for (const field of emptyFields) {
           const index = newValues.value.indexOf(field)
           if (index > -1) {
             newValues.value.splice(index, 1)
           }
-        })
+        }
       }
       else if (!hasExistingValue && emptyFields.length > 1) {
         // Keep only one empty field when no existing values
-        emptyFields.slice(1).forEach((field) => {
+        for (const field of emptyFields.slice(1)) {
           const index = newValues.value.indexOf(field)
           if (index > -1) {
             newValues.value.splice(index, 1)
           }
-        })
+        }
       }
     }
   }
