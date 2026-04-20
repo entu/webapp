@@ -14,7 +14,7 @@ onMounted(async () => {
     ? `${window.location.origin}/auth/callback?invite=${encodeURIComponent(route.query.invite)}&key=`
     : `${window.location.origin}/auth/callback?key=`
 
-  await navigateTo(`${runtimeConfig.public.apiUrl}/auth/${route.params.provider}?next=${encodeURIComponent(callbackUrl)}`, { external: true })
+  await navigateTo(`${runtimeConfig.public.apiUrl.replace(/\/$/, '')}/auth/${route.params.provider}?next=${encodeURIComponent(callbackUrl)}`, { external: true })
 })
 </script>
 
