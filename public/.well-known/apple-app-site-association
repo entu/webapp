@@ -1,5 +1,14 @@
 {
   "webcredentials": {
     "apps": ["6B4F7S5J46.app.entu"]
+  },
+  "applinks": {
+    "apps": [],
+    "details": [{
+      "appIDs": ["6B4F7S5J46.app.entu"],
+      "components": [
+        { "/": "/auth/app-callback", "comment": "Native app OAuth callback" }
+      ]
+    }]
   }
 }
