@@ -7,7 +7,9 @@
     "details": [{
       "appIDs": ["6B4F7S5J46.app.entu"],
       "components": [
-        { "/": "/auth/app-callback", "comment": "Native app OAuth callback" }
+        { "/": "/auth/app-callback", "comment": "Native app OAuth callback" },
+        { "/": "/*/*", "comment": "Database + entity deep link" },
+        { "/": "/*", "comment": "Database deep link" }
       ]
     }]
   }
