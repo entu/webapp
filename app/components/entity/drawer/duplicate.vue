@@ -16,6 +16,7 @@ const isLoading = ref(false)
 const isUpdating = ref(false)
 const duplicateCount = ref(1)
 const ignoredProperties = ref([])
+const lastDuplicatedCount = ref(0)
 
 const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
 const entityType = computed(() => entityTypes.value?.[typeId.value] || {})
@@ -77,6 +78,7 @@ async function loadEntity () {
 
   // Reset ignored properties (all properties start as included)
   ignoredProperties.value = []
+  lastDuplicatedCount.value = 0
 
   isLoading.value = false
 }
@@ -100,10 +102,11 @@ async function onDuplicate () {
   if (duplicateCount.value < 1) return
 
   isUpdating.value = true
+  lastDuplicatedCount.value = 0
 
   await apiDuplicateEntity(entityId.value, duplicateCount.value, ignoredProperties.value)
 
-  emit('close')
+  lastDuplicatedCount.value = duplicateCount.value
   isUpdating.value = false
 }
 
@@ -179,7 +182,15 @@ async function onClose () {
     </div>
 
     <template #footer>
+      <span
+        v-if="lastDuplicatedCount > 0"
+        class="text-sm text-green-600"
+      >
+        {{ lastDuplicatedCount === 1 ? t('successOne') : t('successMany', { count: lastDuplicatedCount }) }}
+      </span>
+
       <n-button
+        v-else
         type="primary"
         :disabled="isLoading || duplicateCount < 1"
         :loading="isUpdating"
@@ -199,6 +210,8 @@ en:
   more: "+{count} more"
   createDuplicate: "Create Duplicate"
   createDuplicates: "Create {count} Duplicates"
+  successOne: "Duplicate created."
+  successMany: "{count} duplicates created."
 et:
   title: "Dubleeri - {name}"
   numberOfCopies: "Koopiate arv"
@@ -206,4 +219,6 @@ et:
   more: "+{count} veel"
   createDuplicate: "Loo koopia"
   createDuplicates: "Loo {count} koopiat"
+  successOne: "Koopia loodud."
+  successMany: "Loodud {count} koopiat."
 </i18n>
