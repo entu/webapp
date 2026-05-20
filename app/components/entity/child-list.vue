@@ -220,7 +220,7 @@ onMounted(async () => {
             class="group border-t border-gray-200 hover:bg-gray-50"
           >
             <td>
-              <div class="relative ml-1 w-7">
+              <div class="relative ml-1 size-7">
                 <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
                   <img
                     v-if="row._thumbnail"
@@ -237,8 +237,10 @@ onMounted(async () => {
                 </nuxt-link>
 
                 <my-button
-                  class="absolute inset-0 size-7 rounded-full bg-white opacity-0 transition-opacity group-hover:opacity-100"
+                  circle
+                  class="absolute! inset-0 bg-white opacity-0 transition-opacity group-hover:opacity-100"
                   icon="edit"
+                  size="small"
                   @click.stop="navigateTo({ path, query, hash: `#edit-${row._id}` }, { replace: true })"
                 />
               </div>
