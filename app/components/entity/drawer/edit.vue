@@ -293,5 +293,5 @@ async function onClose () {
     deleteEntity: Kustuta objekt
     confirmDelete: Kas oled kindel, et soovid selle objekti kustutada?
     delete: Kustuta
-    cancel: Tühista
+    cancel: Loobu
 </i18n>

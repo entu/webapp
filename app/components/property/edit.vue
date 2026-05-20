@@ -67,6 +67,29 @@ watch(() => props.values, () => {
   manageEmptyFields()
 }, { immediate: true, deep: true })
 
+function isEmptyValue (value) {
+  if (value._id !== undefined) return false
+
+  let key
+
+  switch (props.type) {
+    case 'text':
+    case 'counter':
+      key = 'string'
+      break
+    case 'file':
+      key = 'filename'
+      break
+    default:
+      key = props.type
+      break
+  }
+
+  const content = value[key]
+
+  return content === undefined || content === null || content === ''
+}
+
 function manageEmptyFields () {
   if (props.isMultilingual) {
     for (const langOption of languageOptions) {
@@ -76,13 +99,15 @@ function manageEmptyFields () {
       )
 
       if (props.isList) {
-        // List: always need exactly one empty field per language
-        if (emptyFieldsForLanguage.length === 0) {
+        // List: keep exactly one empty (no-content) field per language
+        const emptyContentFields = newValues.value.filter((x) => isEmptyValue(x) && x.language === langOption.value)
+
+        if (emptyContentFields.length === 0) {
           newValues.value.push({ language: langOption.value })
         }
-        else if (emptyFieldsForLanguage.length > 1) {
+        else if (emptyContentFields.length > 1) {
           // Remove extra empty fields, keep only the first one
-          for (const field of emptyFieldsForLanguage.slice(1)) {
+          for (const field of emptyContentFields.slice(1)) {
             const index = newValues.value.indexOf(field)
             if (index > -1) {
               newValues.value.splice(index, 1)
@@ -117,20 +142,16 @@ function manageEmptyFields () {
     }
   }
   else {
-    const emptyFields = newValues.value.filter((x) => x._id === undefined)
-    const hasExistingValue = newValues.value.some((x) => x._id !== undefined)
-
     if (props.isList) {
-      // List: always need exactly two empty fields
-      if (emptyFields.length < 2) {
-        const fieldsToAdd = 2 - emptyFields.length
-        for (let i = 0; i < fieldsToAdd; i++) {
-          newValues.value.push({})
-        }
+      // List: keep exactly one empty (no-content) field
+      const emptyFields = newValues.value.filter((x) => isEmptyValue(x))
+
+      if (emptyFields.length === 0) {
+        newValues.value.push({})
       }
-      else if (emptyFields.length > 2) {
-        // Remove extra empty fields, keep only the first two
-        for (const field of emptyFields.slice(2)) {
+      else if (emptyFields.length > 1) {
+        // Remove extra empty fields, keep only the first one
+        for (const field of emptyFields.slice(1)) {
           const index = newValues.value.indexOf(field)
           if (index > -1) {
             newValues.value.splice(index, 1)
@@ -139,6 +160,9 @@ function manageEmptyFields () {
       }
     }
     else {
+      const emptyFields = newValues.value.filter((x) => x._id === undefined)
+      const hasExistingValue = newValues.value.some((x) => x._id !== undefined)
+
       // Non-list: only show one empty field if no existing value
       if (!hasExistingValue && emptyFields.length === 0) {
         newValues.value.push({})
@@ -310,6 +334,7 @@ async function addValue (properties) {
 
   if (props.property === 'entu_user') {
     newValue.invite = property.invite
+    newValue.email = property.email
 
     if (isOwnEntity.value && property.invite) {
       await navigateTo({ path: `/${accountId.value}/invite`, query: { token: property.invite } })
