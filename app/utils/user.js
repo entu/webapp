@@ -1,5 +1,5 @@
 export const useUser = () => {
-  const { account, accounts } = useAccount()
+  const { account } = useAccount()
   const token = useLocalStorage('token')
   const user = useLocalStorage('user', {})
   const menuCollapsed = useLocalStorage('menu-collapsed', false)
@@ -10,9 +10,16 @@ export const useUser = () => {
   const userName = computed(() => account.value?.user?.name)
 
   function logOut () {
-    accounts.value = undefined
-    token.value = undefined
-    user.value = undefined
+    const locale = localStorage.getItem('locale')
+
+    localStorage.clear()
+    sessionStorage.clear()
+
+    if (locale) {
+      localStorage.setItem('locale', locale)
+    }
+
+    window.location.href = '/'
   }
 
   return {

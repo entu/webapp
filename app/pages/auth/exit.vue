@@ -2,21 +2,12 @@
 import { NSpin } from 'naive-ui'
 
 const { t } = useI18n()
-const { accounts } = useAccount()
 const { logOut } = useUser()
 
-onMounted(async () => {
+onMounted(() => {
   useHead({ title: t('title') })
 
-  let path = '/'
-
-  if (accounts.value.length === 1) {
-    path = `/${accounts.value.at(0)._id}`
-  }
-
   logOut()
-
-  await navigateTo({ path, query: {} })
 })
 </script>
 
