@@ -30,7 +30,6 @@ const entity = computed(() => {
 
   const result = {
     _id: rawEntity.value._id,
-    _thumbnail: rawEntity.value._thumbnail,
     _sharing: getValue(rawEntity.value._sharing),
     name: getValue(rawEntity.value.name),
     type: cloneData(entityTypes.value[typeId.value]?.type || {}),
@@ -38,7 +37,7 @@ const entity = computed(() => {
   }
 
   for (const property in rawEntity.value) {
-    if (['_id', '_thumbnail'].includes(property)) continue
+    if (property === '_id') continue
 
     const existingProperty = result.props.find((x) => x.name === property)
 
@@ -52,6 +51,9 @@ const entity = computed(() => {
 
   return result
 })
+
+const thumbnailEntityId = computed(() => rawEntity.value?.photo?.length ? rawEntity.value._id : undefined)
+const { url: thumbnailUrl } = useEntityThumbnail(thumbnailEntityId, 800)
 
 const properties = computed(() => {
   if (!entity.value || !entity?.value?.props) return []
@@ -373,7 +375,7 @@ onMounted(async () => {
 
           <!-- Narrow: thumbnail + type + sharing centered between title and properties -->
           <div
-            v-if="isNarrow && (userId || entity._thumbnail)"
+            v-if="isNarrow && (userId || thumbnailUrl)"
             class="mb-5 flex flex-col items-center gap-3"
           >
             <entity-meta-info
@@ -381,7 +383,7 @@ onMounted(async () => {
               :entity="entity"
               :photos="rawEntity.photo"
               :right="right"
-              :thumbnail="entity._thumbnail"
+              :thumbnail="thumbnailUrl"
             />
           </div>
 
@@ -410,7 +412,7 @@ onMounted(async () => {
 
             <!-- Wide: thumbnail + type + sharing in right column -->
             <div
-              v-if="!isNarrow && (userId || entity._thumbnail)"
+              v-if="!isNarrow && (userId || thumbnailUrl)"
               class="flex min-w-32 flex-col gap-3"
             >
               <entity-meta-info
@@ -418,7 +420,7 @@ onMounted(async () => {
                 :narrow="false"
                 :photos="rawEntity.photo"
                 :right="right"
-                :thumbnail="entity._thumbnail"
+                :thumbnail="thumbnailUrl"
               />
             </div>
           </div>

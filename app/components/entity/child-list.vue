@@ -109,7 +109,7 @@ async function getEntities (setPage, setPageSize, setSorter) {
     [props.referenceField]: props.entityId,
     '_type.reference': props.typeId,
     props: [
-      '_thumbnail',
+      'photo',
       '_sharing',
       'name',
       ...rawColumns.value.map((c) => c.name)
@@ -222,18 +222,17 @@ onMounted(async () => {
             <td>
               <div class="relative ml-1 size-7">
                 <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
-                  <img
-                    v-if="row._thumbnail"
+                  <entity-thumb
                     class="print-as-is size-7 rounded-full object-cover transition-opacity group-hover:opacity-0"
                     :class="color()"
-                    :src="row._thumbnail"
+                    :entity-id="row._id"
+                    :has-photo="!!row.photo?.length"
                   >
-
-                  <div
-                    v-else
-                    class="print-as-is size-7 rounded-full transition-opacity group-hover:opacity-0"
-                    :class="color()"
-                  />
+                    <div
+                      class="print-as-is size-7 rounded-full transition-opacity group-hover:opacity-0"
+                      :class="color()"
+                    />
+                  </entity-thumb>
                 </nuxt-link>
 
                 <my-button

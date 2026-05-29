@@ -78,7 +78,7 @@ async function getEntities () {
   const { entities, count } = await apiGetEntities({
     ...route.query,
     props: [
-      '_thumbnail',
+      'photo',
       'name'
     ],
     limit: limit.value,
@@ -121,19 +121,19 @@ function color () {
         }"
         :to="{ path: `/${accountId}/${entity._id}`, query: route.query }"
       >
-        <img
-          v-if="entity._thumbnail"
+        <entity-thumb
           class="list-item-img"
           :class="entity.color"
-          :src="entity._thumbnail"
+          :entity-id="entity._id"
+          :has-photo="!!entity.photo?.length"
         >
-        <div
-          v-else
-          class="list-item-img"
-          :class="entity.color"
-        >
-          {{ `${getValue(entity.name)}`.at(0) }}
-        </div>
+          <div
+            class="list-item-img"
+            :class="entity.color"
+          >
+            {{ `${getValue(entity.name)}`.at(0) }}
+          </div>
+        </entity-thumb>
 
         <div class="list-item-text">
           {{ getValue(entity.name) || entity._id }}
