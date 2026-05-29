@@ -1,5 +1,36 @@
+// Refresh the token when less than this many milliseconds remain before expiry
+const TOKEN_REFRESH_THRESHOLD = 1000 * 60 * 60
+
+// Module-level in-flight refresh so a burst of requests triggers a single refresh
+let refreshPromise = null
+
 export function useRequestCounter () {
   return useState('requests', () => 0)
+}
+
+async function ensureFreshToken () {
+  const { token, tokenExpiry, setToken, logOut } = useUser()
+
+  if (!token.value || !tokenExpiry.value) return
+
+  const remaining = new Date(tokenExpiry.value).getTime() - Date.now()
+  if (remaining > TOKEN_REFRESH_THRESHOLD) return
+
+  if (!refreshPromise) {
+    const runtimeConfig = useRuntimeConfig()
+    const url = new URL(runtimeConfig.public.apiUrl)
+    const base = url.pathname.replace(/\/$/, '')
+    url.pathname = `${base}/auth/refresh`
+
+    refreshPromise = $fetch(url.toString(), { headers: { Authorization: `Bearer ${token.value}` } })
+      .then((result) => setToken(result))
+      .catch(() => logOut())
+      .finally(() => {
+        refreshPromise = null
+      })
+  }
+
+  await refreshPromise
 }
 
 export async function apiGetEntities (params) {
@@ -51,6 +82,8 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
   const { token, logOut } = useUser()
 
   requests.value++
+
+  await ensureFreshToken()
 
   if (token.value) {
     headers = { Authorization: `Bearer ${token.value}`, ...headers }

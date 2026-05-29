@@ -3,7 +3,7 @@ import { NButton, NSpin, NCard } from 'naive-ui'
 import { startAuthentication, browserSupportsWebAuthn, platformAuthenticatorIsAvailable } from '@simplewebauthn/browser'
 
 const { t } = useI18n()
-const { token } = useUser()
+const { setToken } = useUser()
 const { accounts } = useAccount()
 
 const canUsePasskey = ref(false)
@@ -56,7 +56,7 @@ async function authenticateWithPasskey () {
     }
 
     if (result.token) {
-      token.value = result.token
+      setToken(result)
     }
 
     // Navigate to first account

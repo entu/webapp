@@ -3,7 +3,7 @@ import { NSpin } from 'naive-ui'
 
 const route = useRoute()
 const { t } = useI18n()
-const { token, user } = useUser()
+const { setToken, user } = useUser()
 const { accounts } = useAccount()
 
 definePageMeta({ layout: 'blank' })
@@ -34,12 +34,7 @@ onMounted(async () => {
     accounts.value = []
   }
 
-  if (authResponse.token) {
-    token.value = authResponse.token
-  }
-  else {
-    token.value = undefined
-  }
+  setToken(authResponse)
 
   if (authResponse.user) {
     user.value = authResponse.user

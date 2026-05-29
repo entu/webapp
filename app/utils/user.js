@@ -1,6 +1,7 @@
 export const useUser = () => {
   const { account } = useAccount()
   const token = useLocalStorage('token')
+  const tokenExpiry = useLocalStorage('token-expiry', '')
   const user = useLocalStorage('user', {})
   const menuCollapsed = useLocalStorage('menu-collapsed', false)
   const listWidth = useLocalStorage('list-width', 0.25)
@@ -8,6 +9,11 @@ export const useUser = () => {
 
   const userId = computed(() => account.value?.user?._id)
   const userName = computed(() => account.value?.user?.name)
+
+  function setToken (authResponse) {
+    token.value = authResponse?.token
+    tokenExpiry.value = authResponse?.expires || ''
+  }
 
   function logOut () {
     const locale = localStorage.getItem('locale')
@@ -26,8 +32,10 @@ export const useUser = () => {
     listWidth,
     logOut,
     menuCollapsed,
+    setToken,
     tablePageSize,
     token,
+    tokenExpiry,
     user,
     userId,
     userName
