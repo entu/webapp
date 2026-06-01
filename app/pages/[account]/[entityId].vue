@@ -53,7 +53,7 @@ const entity = computed(() => {
 })
 
 const thumbnailEntityId = computed(() => rawEntity.value?.photo?.length ? rawEntity.value._id : undefined)
-const { url: thumbnailUrl } = useEntityThumbnail(thumbnailEntityId, 800)
+const { url: thumbnailUrl } = useEntityThumbnail(thumbnailEntityId, 200)
 
 const properties = computed(() => {
   if (!entity.value || !entity?.value?.props) return []
