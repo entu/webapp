@@ -65,13 +65,14 @@ export default defineNuxtConfig({
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: [
-        'yaml',
-        'highlight.js/lib/core',
-        'highlight.js/lib/languages/yaml',
         '@vue/devtools-core',
         '@vue/devtools-kit',
+        'dompurify',
+        'highlight.js/lib/core',
+        'highlight.js/lib/languages/yaml',
+        'marked',
         'naive-ui',
-        'marked'
+        'yaml'
       ]
     }
   },
@@ -97,6 +98,7 @@ export default defineNuxtConfig({
     }]
   },
   sentry: {
+    configDir: '.config',
     org: 'entu',
     project: 'webapp'
   }

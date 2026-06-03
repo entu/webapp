@@ -1,0 +1,8 @@
+import * as Sentry from '@sentry/nuxt'
+
+const { sentry, commitHash } = useRuntimeConfig().public
+
+Sentry.init({
+  dsn: sentry.dsn,
+  release: commitHash || undefined
+})
