@@ -4,5 +4,8 @@ const { sentry, commitHash } = useRuntimeConfig().public
 
 Sentry.init({
   dsn: sentry.dsn,
-  release: commitHash || undefined
+  release: commitHash || undefined,
+  tracesSampleRate: 0.1,
+  tracePropagationTargets: ['api.entu.app']
 })
+
