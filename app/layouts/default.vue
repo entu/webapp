@@ -191,6 +191,7 @@ function changeMenu (collapsed) {
       <!-- Left-side nav overlay -->
       <n-drawer
         v-model:show="showMobileMenu"
+        class="print:hidden"
         placement="right"
         :width="windowWidth"
       >

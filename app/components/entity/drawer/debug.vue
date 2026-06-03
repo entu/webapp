@@ -1,4 +1,5 @@
 <script setup>
+import DOMPurify from 'dompurify'
 import { stringify } from 'yaml'
 import hljs from 'highlight.js/lib/core'
 import yaml from 'highlight.js/lib/languages/yaml'
@@ -20,7 +21,7 @@ defineProps({
 
 hljs.registerLanguage('yaml', yaml)
 function showYaml (value) {
-  return hljs.highlight(stringify(value), { language: 'yaml' }).value
+  return DOMPurify.sanitize(hljs.highlight(stringify(value), { language: 'yaml' }).value)
 }
 </script>
 
