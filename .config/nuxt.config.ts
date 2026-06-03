@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxtjs/i18n',
     '@pinia/nuxt',
+    '@sentry/nuxt/module',
     '@vueuse/nuxt',
     'nuxtjs-naive-ui'
   ],
@@ -42,8 +43,14 @@ export default defineNuxtConfig({
       commitHash: '',
       title: 'Entu',
       stripePricingTableIds: '',
-      stripePublishableKey: ''
+      stripePublishableKey: '',
+      sentry: {
+        dsn: ''
+      }
     }
+  },
+  sourcemap: {
+    client: 'hidden'
   },
   future: {
     compatibilityVersion: 4
@@ -88,5 +95,9 @@ export default defineNuxtConfig({
       prefix: 'local',
       dir: './app/assets/icons'
     }]
+  },
+  sentry: {
+    org: 'entu',
+    project: 'webapp'
   }
 })
