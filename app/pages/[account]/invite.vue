@@ -72,6 +72,7 @@ onMounted(async () => {
     </div>
     <div class="mb-2 px-4 text-center text-sm text-gray-500">
       <a
+        rel="noopener noreferrer"
         target="_blank"
         :href="t('docsUrl')"
       >{{ t('docs') }}</a>
@@ -79,6 +80,7 @@ onMounted(async () => {
       <span class="mx-2">&middot;</span>
 
       <a
+        rel="noopener noreferrer"
         target="_blank"
         :href="t('pricingUrl')"
       >{{ t('pricing') }}</a>
@@ -86,6 +88,7 @@ onMounted(async () => {
       <span class="mx-2">&middot;</span>
 
       <a
+        rel="noopener noreferrer"
         target="_blank"
         :href="t('termsUrl')"
       >{{ t('terms') }}</a>
