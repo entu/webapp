@@ -1,11 +1,12 @@
 <script setup>
+import DOMPurify from 'dompurify'
 import { marked } from 'marked'
 
 const props = defineProps({
   source: { type: String, default: null }
 })
 
-const md = computed(() => marked.parse(props.source))
+const md = computed(() => DOMPurify.sanitize(marked.parse(props.source)))
 </script>
 
 <template>
