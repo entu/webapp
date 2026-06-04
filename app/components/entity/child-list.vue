@@ -1,6 +1,6 @@
 <script setup>
 import { NPagination, NPopover } from 'naive-ui'
-import { MyIcon, NuxtLink } from '#components'
+import { NuxtLink } from '#components'
 
 const props = defineProps({
   entityId: { type: String, required: true },
@@ -8,7 +8,7 @@ const props = defineProps({
   referenceField: { type: String, required: true }
 })
 
-const { path, query } = useRoute()
+const { query } = useRoute()
 const { locale, d, t } = useI18n()
 const { accountId } = useAccount()
 const { tablePageSize } = useUser()
@@ -111,6 +111,9 @@ async function getEntities (setPage, setPageSize, setSorter) {
     props: [
       'photo',
       '_sharing',
+      '_owner',
+      '_editor',
+      '_viewer',
       'name',
       ...rawColumns.value.map((c) => c.name)
     ].join(','),
@@ -223,25 +226,17 @@ onMounted(async () => {
               <div class="relative ml-1 size-7">
                 <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
                   <entity-thumb
-                    class="print-as-is size-7 rounded-full object-cover transition-opacity group-hover:opacity-0"
+                    class="print-as-is size-7 rounded-full object-cover"
                     :class="color()"
                     :entity-id="row._id"
                     :has-photo="!!row.photo?.length"
                   >
                     <div
-                      class="print-as-is size-7 rounded-full transition-opacity group-hover:opacity-0"
+                      class="print-as-is size-7 rounded-full"
                       :class="color()"
                     />
                   </entity-thumb>
                 </nuxt-link>
-
-                <my-button
-                  circle
-                  class="absolute! inset-0 bg-white opacity-0 transition-opacity group-hover:opacity-100"
-                  icon="edit"
-                  size="small"
-                  @click.stop="navigateTo({ path, query, hash: `#edit-${row._id}` }, { replace: true })"
-                />
               </div>
             </td>
 
@@ -271,42 +266,54 @@ onMounted(async () => {
               </nuxt-link>
             </td>
 
-            <td class="pt-1 pr-1">
-              <n-popover
-                class="max-w-sm"
-                placement="left"
-              >
-                <template #trigger>
-                  <my-icon
-                    v-if="renderColumn(row._sharing, 'string') === 'public'"
-                    class="text-gray-500 group-hover:text-orange-600"
-                    icon="sharing-public"
-                  />
-                  <my-icon
-                    v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
-                    class="text-gray-500 group-hover:text-yellow-600"
-                    icon="sharing-domain"
-                  />
-                  <my-icon
-                    v-else
-                    class="text-gray-500 group-hover:text-green-600"
-                    icon="sharing-private"
-                  />
-                </template>
+            <td class="relative pt-1 pr-1">
+              <div class="flex items-center justify-end gap-1">
+                <n-popover
+                  v-if="!isMobile"
+                  class="max-w-sm"
+                  placement="left"
+                >
+                  <template #trigger>
+                    <my-icon
+                      v-if="renderColumn(row._sharing, 'string') === 'public'"
+                      class="text-gray-500 group-hover:text-orange-600"
+                      icon="sharing-public"
+                    />
+                    <my-icon
+                      v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
+                      class="text-gray-500 group-hover:text-yellow-600"
+                      icon="sharing-domain"
+                    />
+                    <my-icon
+                      v-else
+                      class="text-gray-500 group-hover:text-green-600"
+                      icon="sharing-private"
+                    />
+                  </template>
 
-                <span
-                  v-if="renderColumn(row._sharing, 'string') === 'public'"
-                  class="text-sm text-orange-600"
-                >{{ t('sharingPublic') }}</span>
-                <span
-                  v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
-                  class="text-sm text-yellow-600"
-                >{{ t('sharingDomain') }}</span>
-                <span
-                  v-else
-                  class="text-sm text-green-600"
-                >{{ t('sharingPrivate') }}</span>
-              </n-popover>
+                  <span
+                    v-if="renderColumn(row._sharing, 'string') === 'public'"
+                    class="text-sm text-orange-600"
+                  >{{ t('sharingPublic') }}</span>
+                  <span
+                    v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
+                    class="text-sm text-yellow-600"
+                  >{{ t('sharingDomain') }}</span>
+                  <span
+                    v-else
+                    class="text-sm text-green-600"
+                  >{{ t('sharingPrivate') }}</span>
+                </n-popover>
+              </div>
+
+              <div class="absolute inset-y-0 right-0 flex items-center bg-transparent group-hover:bg-gray-50 pl-4 pr-1">
+                <entity-child-actions
+                  :editor="row._editor"
+                  :entity-id="row._id"
+                  :owner="row._owner"
+                  @refresh="getEntities()"
+                />
+              </div>
             </td>
           </tr>
         </tbody>

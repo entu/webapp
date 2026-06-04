@@ -1,3 +1,9 @@
+## 2026-06-04
+- **Inline actions on child & reference tables**: Edit, Duplicate, Parents, and Rights buttons now appear on hover directly on each row in child and reference tables.
+
+## 2026-05-29
+- **Auth token auto-refresh**: Tokens are now refreshed automatically using.
+
 ## 2026-03-12
 - **Strict entity type validation**: Creating an entity now requires a `_type` value; system properties (`_type`, `_parent`, `_sharing`, etc.) are protected from deletion and validated on write
 - **Property default values**: Default values defined on entity types are now applied automatically on both the client (edit drawer) and server (API) when creating or editing entities
