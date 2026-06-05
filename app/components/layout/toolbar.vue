@@ -1,13 +1,18 @@
 <script setup>
-import { NInputGroup, NButtonGroup, NInput, useThemeVars, NPopover } from 'naive-ui'
+import { NInputGroup, NInput, NPopover } from 'naive-ui'
 import { useAnalytics } from '~/utils/analytics'
-
-const themeVars = useThemeVars()
 
 const route = useRoute()
 const { t } = useI18n()
-const { listWidth, userId } = useUser()
-const { entityId, right, typeId, typeName } = useEntity()
+const { listWidth, showTable, userId } = useUser()
+const { right } = useEntity()
+
+const isQuery = computed(() => Object.keys(route.query).length > 0)
+
+function toggleView () {
+  showTable.value = !showTable.value
+  useAnalytics('toggle_view', { table: showTable.value })
+}
 
 const showSearchModal = ref(false)
 const searchText = ref(route.query.q || '')
@@ -98,28 +103,11 @@ const checkOverflow = useDebounceFn(() => {
 }, 200)
 
 const menuStore = useMenuStore()
-const { activeMenu, addFromEntities } = storeToRefs(menuStore)
+const { activeMenu } = storeToRefs(menuStore)
 
 const addByActiveMenuOptions = computed(() => activeMenu.value?.addFrom || [])
 
-const addChildOptions = computed(() => {
-  let result = addFromEntities.value?.filter((x) => !['entity', 'menu'].includes(typeName.value) && x.addFrom.includes(entityId.value))
-
-  if (result.length === 0) {
-    result = addFromEntities.value?.filter((x) => x.addFrom.includes(typeId.value))
-  }
-
-  result.sort((a, b) => a.label.localeCompare(b.label))
-
-  return result
-})
-
-const searchWidth = computed(() => {
-  if (isMobile.value) return
-  if (listWidth.value > 0.3) return { width: 300 }
-
-  return { width: `${listWidth.value * 100}%` }
-})
+const searchWidth = computed(() => !showTable.value && !isMobile.value ? { width: `${listWidth.value * 100}%` } : undefined)
 
 watch(windowWidth, (newWidth) => {
   if (isOverflowing.value && newWidth <= minWidthForLabels.value) return
@@ -152,12 +140,12 @@ onUnmounted(() => {
 <template>
   <div
     ref="toolbarRef"
-    class="flex items-center gap-2 print:hidden "
+    class="flex items-center gap-2 print:hidden"
     :class="{ 'opacity-0': isMeasuring }"
   >
     <div
-      v-if="userId"
-      class="w-full pr-2"
+      v-if="userId && !(isMobile && route.params.entityId)"
+      class="w-64 pr-2"
       :style="searchWidth"
     >
       <n-input-group>
@@ -205,63 +193,18 @@ onUnmounted(() => {
       />
     </div>
 
-    <n-button-group
-      v-if="entityId"
-      class="flex items-center"
-    >
-      <entity-toolbar-add
-        v-if="right.expander"
-        icon="expand"
-        is-child
-        :options="addChildOptions"
-        :show-label="!isOverflowing"
-      />
-    </n-button-group>
+    <layout-entity-actions
+      v-if="!showTable"
+      :show-label="!isOverflowing"
+    />
 
-    <n-button-group
-      v-if="entityId"
-      class="flex items-center"
-    >
-      <my-button
-        v-if="right.editor"
-        icon="edit"
-        :label="isOverflowing ? undefined : t('edit')"
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#edit` }, { replace: true })"
-      />
-
-      <my-button
-        v-if="right.owner"
-        icon="copy"
-        :label="isOverflowing ? undefined : t('duplicate')"
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate` }, { replace: true })"
-      />
-
-      <my-button
-        v-if="right.editor"
-        icon="tree-view"
-        :label="isOverflowing ? undefined : t('parents')"
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#parents` }, { replace: true })"
-      />
-
-      <my-button
-        v-if="right.owner"
-        icon="user-multiple"
-        :label="isOverflowing ? undefined : t('rights')"
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#rights` }, { replace: true })"
-      />
-    </n-button-group>
-
-    <n-button-group
-      v-if="entityId"
-      class="flex items-center"
-    >
-      <my-button
-        v-if="right.editor"
-        icon="history"
-        :label="isOverflowing ? undefined : t('history')"
-        @click="navigateTo({ path: route.path, query: route.query, hash: `#history` }, { replace: true })"
-      />
-    </n-button-group>
+    <my-button
+      v-if="!isMobile && userId && isQuery && !route.params.entityId"
+      circle
+      :icon="showTable ? 'list' : 'table'"
+      :title="showTable ? t('listView') : t('tableView')"
+      @click="toggleView()"
+    />
   </div>
 </template>
 
@@ -276,17 +219,11 @@ onUnmounted(() => {
   en:
     search: Search Entity
     advancedSearch: Advanced Search
-    edit: Edit
-    duplicate: Duplicate
-    parents: Parents
-    rights: Rights
-    history: History
+    listView: List view
+    tableView: Table view
   et:
     search: Otsi objekti
     advancedSearch: Täpsem otsing
-    edit: Muuda
-    duplicate: Dubleeri
-    parents: Kuuluvus
-    rights: Õigused
-    history: Ajalugu
+    listView: Loendivaade
+    tableView: Tabelivaade
 </i18n>

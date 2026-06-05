@@ -8,7 +8,7 @@ const route = useRoute()
 const { t } = useI18n()
 
 const { account, accountId, showMobileMenu } = useAccount()
-const { menuCollapsed, listWidth } = useUser()
+const { menuCollapsed, listWidth, showTable } = useUser()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 const langLabel = computed(() => locale.value === 'en' ? 'Eesti keel' : 'English')
 
@@ -28,19 +28,9 @@ watch(() => route.fullPath, () => {
 const siderRef = useTemplateRef('siderRef')
 const isHovered = useElementHover(siderRef, { delayEnter: 200, delayLeave: 600 })
 
-const showTable = ref(false)
+const entityDrawerWidth = ref(Math.round(window.innerWidth * 0.6))
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
-
-watch(listWidth, (value) => {
-  if (value > 0.5 && !showTable.value) {
-    useAnalytics('show_table')
-    showTable.value = true
-  }
-  else if (value <= 0.5) {
-    showTable.value = false
-  }
-}, { immediate: true })
 
 let updateNotification
 nuxtApp.hooks.hook('app:manifest:update', (a) => {
@@ -67,6 +57,10 @@ nuxtApp.hooks.hook('app:manifest:update', (a) => {
 function changeMenu (collapsed) {
   useAnalytics('click_menu', { collapsed })
   menuCollapsed.value = collapsed
+}
+
+async function onDrawerClose () {
+  await navigateTo({ path: `/${accountId.value}`, query: route.query })
 }
 </script>
 
@@ -101,7 +95,36 @@ function changeMenu (collapsed) {
         <layout-toolbar class="m-2 shrink-0" />
 
         <div
-          v-if="isQuery"
+          v-if="isQuery && showTable"
+          class="relative mb-2 min-h-0 grow"
+        >
+          <layout-entity-table class="absolute inset-x-2 inset-y-0" />
+
+          <my-drawer
+            v-if="route.params.entityId"
+            v-model:width="entityDrawerWidth"
+            show
+            @close="onDrawerClose"
+          >
+            <template #header>
+              <div class="flex grow justify-end">
+                <layout-entity-actions :show-label="entityDrawerWidth >= 720" />
+              </div>
+            </template>
+
+            <slot />
+          </my-drawer>
+
+          <div
+            v-else
+            class="hidden"
+          >
+            <slot />
+          </div>
+        </div>
+
+        <div
+          v-else-if="isQuery"
           class="relative mb-2 min-h-0 grow"
         >
           <n-split
@@ -110,12 +133,11 @@ function changeMenu (collapsed) {
             direction="horizontal"
             pane1-class="print:hidden"
             pane2-class="py-2 grow overflow-y-auto"
-            :max="1"
+            :max="0.5"
             :min="0.25"
           >
             <template #1>
-              <layout-entity-table v-if="showTable" />
-              <layout-entity-list v-else />
+              <layout-entity-list />
             </template>
 
             <template #resize-trigger>
@@ -189,7 +211,7 @@ function changeMenu (collapsed) {
             v-if="accountId"
             class="flex h-full flex-col overflow-hidden"
           >
-            <layout-toolbar class="shrink-0 pt-2" />
+            <layout-toolbar class="shrink-0 p-2" />
 
             <div
               v-if="route.params.entityId"
@@ -202,8 +224,7 @@ function changeMenu (collapsed) {
               v-else-if="isQuery"
               class="grow overflow-hidden"
             >
-              <layout-entity-table v-if="showTable" />
-              <layout-entity-list v-else />
+              <layout-entity-list />
             </div>
 
             <div

@@ -1,5 +1,5 @@
 <script setup>
-import { NButton, NSpin, NCard } from 'naive-ui'
+import { NSpin, NCard } from 'naive-ui'
 import { startRegistration, browserSupportsWebAuthn, platformAuthenticatorIsAvailable } from '@simplewebauthn/browser'
 
 const { t } = useI18n()

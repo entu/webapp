@@ -28,6 +28,12 @@ function close () {
   emit('close')
 }
 
+function onUpdateWidth (value) {
+  if (!isMobile.value) {
+    width.value = value
+  }
+}
+
 onKeyStroke('Escape', close)
 </script>
 
@@ -42,22 +48,19 @@ onKeyStroke('Escape', close)
     :min-width="drawerMinWidth"
     :resizable="!isMobile"
     @mask-click="close"
+    @update:width="onUpdateWidth"
   >
     <n-drawer-content
       body-content-class="p-0!"
-      header-class="w-full"
+      header-class="w-full p-2!"
     >
       <template #header>
-        <div class="flex w-full items-center justify-between">
-          <h2 class="truncate overflow-hidden whitespace-nowrap">
-            {{ title }}
-          </h2>
-
-          <my-icon
-            class="cursor-pointer hover:bg-slate-100"
-            icon="close"
-            @click="close"
-          />
+        <div class="flex w-full items-center justify-between gap-2">
+          <slot name="header">
+            <h2 class="truncate overflow-hidden p-2 whitespace-nowrap">
+              {{ title }}
+            </h2>
+          </slot>
         </div>
       </template>
 

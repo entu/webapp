@@ -1,5 +1,5 @@
 <script setup>
-import { NAlert, NButton, NCard, NInput, NSpin } from 'naive-ui'
+import { NAlert, NCard, NInput, NSpin } from 'naive-ui'
 
 definePageMeta({ layout: 'blank' })
 

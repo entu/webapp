@@ -1,5 +1,5 @@
 <script setup>
-import { NSpin, NButton } from 'naive-ui'
+import { NSpin } from 'naive-ui'
 
 const route = useRoute()
 const { t } = useI18n()

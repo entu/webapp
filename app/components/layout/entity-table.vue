@@ -199,7 +199,7 @@ function handleSort (column) {
     >
       <table
         v-if="entitiesList.length > 0"
-        class="w-full border-collapse "
+        class="w-full border-collapse"
       >
         <thead class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50">
           <tr>

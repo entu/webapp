@@ -1,5 +1,5 @@
 <script setup>
-import { NInputNumber, NCheckbox, NButton } from 'naive-ui'
+import { NInputNumber, NCheckbox } from 'naive-ui'
 
 const { t } = useI18n()
 

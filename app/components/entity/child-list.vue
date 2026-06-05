@@ -113,7 +113,6 @@ async function getEntities (setPage, setPageSize, setSorter) {
       '_sharing',
       '_owner',
       '_editor',
-      '_viewer',
       'name',
       ...rawColumns.value.map((c) => c.name)
     ].join(','),

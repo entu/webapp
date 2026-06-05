@@ -1,5 +1,5 @@
 <script setup>
-import { NButton, NCard } from 'naive-ui'
+import { NCard } from 'naive-ui'
 
 const { t } = useI18n()
 

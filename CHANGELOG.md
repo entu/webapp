@@ -1,3 +1,8 @@
+## 2026-06-05
+- **Global cross-type search**: A single search box in the toolbar now queries across all entity types at once, not just the active menu item.
+- **List / table view toggle**: A toolbar button switches between list+detail and full-width table view; in table view, opening an entity shows it in a resizable drawer.
+- **Redesigned toolbar**: Search, add, and entity actions (edit, duplicate, parents, rights, history) are unified into one persistent toolbar above the list, with a refreshed button design.
+
 ## 2026-06-04
 - **Inline actions on child & reference tables**: Edit, Duplicate, Parents, and Rights buttons now appear on hover directly on each row in child and reference tables.
 
