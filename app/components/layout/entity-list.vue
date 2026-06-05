@@ -105,11 +105,9 @@ function color () {
 
 <template>
   <div class="flex h-full flex-col print:hidden">
-    <layout-entity-search />
-
     <div
       ref="listElement"
-      class="relative grow overflow-y-auto py-1"
+      class="relative grow overflow-y-auto"
     >
       <nuxt-link
         v-for="(entity, idx) in entitiesList"
@@ -219,11 +217,7 @@ function color () {
 
 <i18n lang="yaml">
   en:
-    search: Search Entity
-    advancedSearch: Advanced Search
     noResults: No entities found
   et:
-    search: Otsi objekti
-    advancedSearch: Täpsem otsing
     noResults: Objekte ei leitud
 </i18n>

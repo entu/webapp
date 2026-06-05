@@ -24,28 +24,23 @@ onMounted(async () => {
     >
       <div class="flex w-64 flex-col gap-4">
         <div class="md:hidden">
-          <n-button
+          <my-button
             block
             size="large"
             type="info"
+            :label="t('signIn')"
             @click="showMobileMenu = true"
-          >
-            {{ t('signIn') }}
-          </n-button>
+          />
         </div>
 
-        <n-button
+        <my-button
           block
+          icon="add"
           secondary
           size="large"
+          :label="t('new')"
           @click="navigateTo('/new')"
-        >
-          <my-icon
-            class="mr-2"
-            icon="add"
-          />
-          {{ t('new') }}
-        </n-button>
+        />
       </div>
     </div>
 
@@ -55,28 +50,23 @@ onMounted(async () => {
     >
       <div class="flex w-64 flex-col gap-4">
         <div class="md:hidden">
-          <n-button
+          <my-button
             block
             size="large"
             type="info"
+            :label="t('signIn')"
             @click="showMobileMenu = true"
-          >
-            {{ t('signIn') }}
-          </n-button>
+          />
         </div>
 
         <n-button
           block
+          icon="add"
           secondary
           size="large"
+          :label="t('new')"
           @click="navigateTo('/new')"
-        >
-          <my-icon
-            class="mr-2"
-            icon="add"
-          />
-          {{ t('new') }}
-        </n-button>
+        />
       </div>
     </div>
 

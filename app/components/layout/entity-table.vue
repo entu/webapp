@@ -193,8 +193,6 @@ function handleSort (column) {
 
 <template>
   <div class="flex h-full flex-col print:hidden">
-    <layout-entity-search />
-
     <div
       ref="listElement"
       class="relative grow overflow-auto border-t border-gray-200"
@@ -317,15 +315,11 @@ function handleSort (column) {
 
 <i18n lang="yaml">
   en:
-    search: Search Entity
-    advancedSearch: Advanced Search
     noResults: No entities found
     sharingPrivate: Private entity
     sharingDomain: Anyone with account can see
     sharingPublic: Public entity
   et:
-    search: Otsi objekti
-    advancedSearch: Täpsem otsing
     noResults: Objekte ei leitud
     sharingPrivate: Privaatne objekt
     sharingDomain: Kõik kasutajad näevad seda objekti

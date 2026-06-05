@@ -306,7 +306,7 @@ onMounted(async () => {
                 </n-popover>
               </div>
 
-              <div class="absolute inset-y-0 right-0 flex items-center bg-transparent group-hover:bg-gray-50 pl-4 pr-1">
+              <div class="absolute inset-y-0 right-0 flex items-center bg-transparent pr-1 pl-4 group-hover:bg-gray-50">
                 <entity-child-actions
                   :editor="row._editor"
                   :entity-id="row._id"

@@ -456,45 +456,41 @@ onMounted(async () => {
             class="self-end"
             :show-feedback="false"
           >
-            <n-button
-              quaternary
+            <my-button
+              circle
+              icon="delete"
               type="error"
+              :bg="false"
               @click="removeCustomFilter(index)"
             >
               <my-icon icon="delete" />
-            </n-button>
+            </my-button>
           </n-form-item>
         </div>
 
-        <n-button
+        <my-button
           class="w-full"
           dashed
+          icon="add"
+          :label="t('addFilter')"
           @click="addCustomFilter"
-        >
-          <template #icon>
-            <my-icon icon="add" />
-          </template>
-
-          {{ t('addFilter') }}
-        </n-button>
+        />
       </div>
     </n-form>
 
     <template #action>
       <div class="flex justify-between">
-        <n-button @click="resetForm">
-          {{ t('reset') }}
-        </n-button>
+        <my-button
+          :label=" t('reset')"
+          @click="resetForm"
+        />
 
-        <n-button
+        <my-button
+          icon="search"
           type="primary"
+          :label="t('search') "
           @click="handleSearch"
-        >
-          <template #icon>
-            <my-icon icon="search" />
-          </template>
-          {{ t('search') }}
-        </n-button>
+        />
       </div>
     </template>
   </n-modal>

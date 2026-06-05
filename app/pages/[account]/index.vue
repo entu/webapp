@@ -64,36 +64,29 @@ onMounted(async () => {
 
 <template>
   <div class="relative flex h-full flex-col">
-    <entity-toolbar />
-
     <template v-if="!userId && !isQuery">
       <change-log class="absolute right-3 hidden max-w-80 md:block" />
 
       <div class="flex flex-1 items-center justify-center p-6">
         <div class="flex w-64 flex-col gap-4">
           <div class="md:hidden">
-            <n-button
+            <my-button
               block
               size="large"
               type="info"
+              :label="t('signIn')"
               @click="showMobileMenu = true"
-            >
-              {{ t('signIn') }}
-            </n-button>
+            />
           </div>
 
-          <n-button
+          <my-button
             block
+            icon="add"
             secondary
             size="large"
+            :label="t('new')"
             @click="navigateTo('/new')"
-          >
-            <my-icon
-              class="mr-2"
-              icon="add"
-            />
-            {{ t('new') }}
-          </n-button>
+          />
         </div>
       </div>
 

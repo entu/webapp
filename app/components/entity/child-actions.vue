@@ -1,5 +1,5 @@
 <script setup>
-import { NDropdown } from 'naive-ui'
+import { NButtonGroup, NDropdown } from 'naive-ui'
 import { MyIcon } from '#components'
 
 const props = defineProps({
@@ -69,41 +69,39 @@ function onDropdownSelect (key) {
   <div class="flex items-center gap-1">
     <template v-if="!isMobile">
       <div class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-        <my-button
-          v-if="isEditor"
-          circle
-          icon="edit"
-          size="small"
-          :title="t('edit')"
-          @click.stop="showEditDrawer = true"
-        />
+        <n-button-group>
+          <my-button
+            v-if="isEditor"
+            icon="edit"
+            size="small"
+            :title="t('edit')"
+            @click.stop="showEditDrawer = true"
+          />
 
-        <my-button
-          v-if="isOwner"
-          circle
-          icon="copy"
-          size="small"
-          :title="t('duplicate')"
-          @click.stop="showDuplicateDrawer = true"
-        />
+          <my-button
+            v-if="isOwner"
+            icon="copy"
+            size="small"
+            :title="t('duplicate')"
+            @click.stop="showDuplicateDrawer = true"
+          />
 
-        <my-button
-          v-if="isEditor"
-          circle
-          icon="tree-view"
-          size="small"
-          :title="t('parents')"
-          @click.stop="showParentsDrawer = true"
-        />
+          <my-button
+            v-if="isEditor"
+            icon="tree-view"
+            size="small"
+            :title="t('parents')"
+            @click.stop="showParentsDrawer = true"
+          />
 
-        <my-button
-          v-if="isOwner"
-          circle
-          icon="sharing-private"
-          size="small"
-          :title="t('rights')"
-          @click.stop="showRightsDrawer = true"
-        />
+          <my-button
+            v-if="isOwner"
+            icon="sharing-private"
+            size="small"
+            :title="t('rights')"
+            @click.stop="showRightsDrawer = true"
+          />
+        </n-button-group>
       </div>
     </template>
 

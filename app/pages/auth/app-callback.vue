@@ -28,7 +28,7 @@ onMounted(() => {
         </p>
       </n-card>
 
-      <n-button
+      <my-button
         block
         rel="noopener noreferrer"
         size="large"
@@ -36,9 +36,8 @@ onMounted(() => {
         target="_blank"
         type="primary"
         :href="appStoreUrl"
-      >
-        {{ t('authAppCallback.downloadButton') }}
-      </n-button>
+        :label="t('authAppCallback.downloadButton')"
+      />
     </div>
   </div>
 </template>

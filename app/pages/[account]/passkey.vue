@@ -117,14 +117,13 @@ function getDeviceName () {
           </n-card>
 
           <div class="space-y-4 text-center">
-            <n-button
+            <my-button
               block
               size="large"
               type="primary"
+              :label="t('registerButton')"
               @click="registerPasskey"
-            >
-              {{ t('registerButton') }}
-            </n-button>
+            />
 
             <p
               v-if="registerError"

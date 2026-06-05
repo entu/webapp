@@ -148,16 +148,15 @@ onMounted(() => {
         {{ error }}
       </n-alert>
 
-      <n-button
+      <my-button
         secondary
         size="large"
         strong
         type="success"
         :disabled="!isValidForm"
+        :label="t('create')"
         @click="createDatabase()"
-      >
-        {{ t('create') }}
-      </n-button>
+      />
     </div>
 
     <div

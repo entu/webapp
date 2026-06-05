@@ -189,15 +189,14 @@ async function onClose () {
         {{ lastDuplicatedCount === 1 ? t('successOne') : t('successMany', { count: lastDuplicatedCount }) }}
       </span>
 
-      <n-button
+      <my-button
         v-else
         type="primary"
         :disabled="isLoading || duplicateCount < 1"
+        :label="duplicateCount === 1 ? t('createDuplicate') : t('createDuplicates', { count: duplicateCount })"
         :loading="isUpdating"
         @click="onDuplicate()"
-      >
-        {{ duplicateCount === 1 ? t('createDuplicate') : t('createDuplicates', { count: duplicateCount }) }}
-      </n-button>
+      />
     </template>
   </my-drawer>
 </template>

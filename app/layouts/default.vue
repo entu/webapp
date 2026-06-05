@@ -84,7 +84,7 @@ function changeMenu (collapsed) {
         collapse-mode="width"
         collapsed-trigger-class="top-7.5! text-white! bg-[#1E434C]! shaddow-none! border-white!"
         trigger-class="top-5! -left-1! text-white! opacity-80! bg-transparent! shaddow-none! border-transparent! hover:border-white!"
-        :class="{ 'm-2 mr-0 rounded-md': !menuCollapsed }"
+        :class="{ 'm-2 mr-0 rounded-2xl': !menuCollapsed }"
         :collapsed="menuCollapsed"
         :collapsed-width="60"
         :show-trigger="!menuCollapsed || isHovered ? 'arrow-circle' : undefined"
@@ -95,38 +95,47 @@ function changeMenu (collapsed) {
       </n-layout-sider>
 
       <div
-        v-if="accountId && isQuery"
-        class="grow overflow-y-auto"
+        v-if="accountId"
+        class="flex grow flex-col overflow-hidden"
       >
-        <n-split
-          v-model:size="listWidth"
-          direction="horizontal"
-          :max="1"
-          :min="0.25"
-          :pane1-class="!menuCollapsed ? 'py-2 print:hidden' : 'print:hidden'"
-          :pane2-class="!isQuery ? 'pl-4 py-2 grow overflow-y-auto' : 'py-2 grow overflow-y-auto'"
+        <layout-toolbar class="m-2 shrink-0" />
+
+        <div
+          v-if="isQuery"
+          class="relative mb-2 min-h-0 grow"
         >
-          <template #1>
-            <layout-entity-table v-if="showTable" />
-            <layout-entity-list v-else />
-          </template>
+          <n-split
+            v-model:size="listWidth"
+            class="absolute inset-0"
+            direction="horizontal"
+            pane1-class="print:hidden"
+            pane2-class="py-2 grow overflow-y-auto"
+            :max="1"
+            :min="0.25"
+          >
+            <template #1>
+              <layout-entity-table v-if="showTable" />
+              <layout-entity-list v-else />
+            </template>
 
-          <template #resize-trigger>
-            <div
-              class="h-full print:hidden"
-              :class="{
-                'py-0': menuCollapsed,
-                'py-2': !menuCollapsed,
-              }"
-            >
-              <div class="h-full w-0.5 bg-gray-300 hover:bg-gray-400" />
-            </div>
-          </template>
+            <template #resize-trigger>
+              <div class="h-full print:hidden">
+                <div class="h-full w-0.5 bg-gray-300 hover:bg-gray-400" />
+              </div>
+            </template>
 
-          <template #2>
-            <slot />
-          </template>
-        </n-split>
+            <template #2>
+              <slot />
+            </template>
+          </n-split>
+        </div>
+
+        <div
+          v-else
+          class="grow overflow-y-auto py-2"
+        >
+          <slot />
+        </div>
       </div>
 
       <div
@@ -176,8 +185,34 @@ function changeMenu (collapsed) {
           class="grow overflow-hidden"
           style="padding-bottom: env(safe-area-inset-bottom)"
         >
-          <layout-entity-table v-if="accountId && showTable && !route.params.entityId" />
-          <layout-entity-list v-else-if="accountId && isQuery && !route.params.entityId" />
+          <div
+            v-if="accountId"
+            class="flex h-full flex-col overflow-hidden"
+          >
+            <layout-toolbar class="shrink-0 pt-2" />
+
+            <div
+              v-if="route.params.entityId"
+              class="grow overflow-y-auto py-2"
+            >
+              <slot />
+            </div>
+
+            <div
+              v-else-if="isQuery"
+              class="grow overflow-hidden"
+            >
+              <layout-entity-table v-if="showTable" />
+              <layout-entity-list v-else />
+            </div>
+
+            <div
+              v-else
+              class="grow overflow-y-auto py-2"
+            >
+              <slot />
+            </div>
+          </div>
 
           <div
             v-else

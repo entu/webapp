@@ -48,6 +48,7 @@ defineProps({
     v-else
     :circle="circle"
     :quaternary="!bg"
+    :round="!circle"
     :secondary="bg"
     v-bind="$attrs"
   >

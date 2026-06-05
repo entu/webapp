@@ -15,15 +15,13 @@ const contentRef = useTemplateRef('contentRef')
 const { width: contentWidth } = useElementSize(contentRef)
 const isNarrow = computed(() => contentWidth.value < 600)
 
+const { rawEntity, right, typeId } = useEntity()
+
 const entityId = ref(route.params.entityId)
 const newEntityId = ref()
-const rawEntity = ref()
 const rawChilds = ref([])
 const rawReferences = ref([])
 const isLoading = ref(false)
-
-const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
-const typeName = computed(() => getValue(rawEntity.value?._type, 'string'))
 
 const entity = computed(() => {
   if (!rawEntity.value) return {}
@@ -108,13 +106,6 @@ const childs = computed(() => [
     referenceField: '_reference.reference'
   }))
 ].sort((a, b) => `${a.type} - ${a.label}`.localeCompare(`${b.type} - ${b.label}`)))
-
-const right = computed(() => ({
-  owner: rawEntity.value?._owner?.some((x) => x.reference === userId.value) || false,
-  editor: rawEntity.value?._editor?.some((x) => x.reference === userId.value) || false,
-  expander: rawEntity.value?._expander?.some((x) => x.reference === userId.value) || false,
-  viewer: rawEntity.value?._viewer?.some((x) => x.reference === userId.value) || false
-}))
 
 const drawerType = computed(() => userId.value ? route.hash.replace('#', '').split('-').at(0) : undefined)
 
@@ -341,17 +332,14 @@ onMounted(async () => {
   loadChilds()
   loadReferences()
 })
+
+onUnmounted(() => {
+  rawEntity.value = null
+})
 </script>
 
 <template>
   <div class="relative flex h-full flex-col">
-    <entity-toolbar
-      :entity-id="entityId"
-      :right="right"
-      :type-id="typeId"
-      :type-name="typeName"
-    />
-
     <transition>
       <div
         v-if="rawEntity"

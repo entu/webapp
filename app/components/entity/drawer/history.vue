@@ -1,5 +1,5 @@
 <script setup>
-import { NPagination, NSpin, NTooltip } from 'naive-ui'
+import { NPagination, NSpin, NPopover } from 'naive-ui'
 
 const { t, d, n, locale } = useI18n()
 const { accountId } = useAccount()
@@ -245,7 +245,7 @@ function formatValue (val, decimals) {
 
                 <!-- old values -->
                 <td class="px-3 py-2 align-top">
-                  <n-tooltip
+                  <n-popover
                     v-for="v in item.oldValues"
                     :key="v.text"
                     placement="right"
@@ -272,12 +272,12 @@ function formatValue (val, decimals) {
                       </div>
                     </template>
                     {{ v.at ? d(new Date(v.at), 'datetimeseconds') : '' }}
-                  </n-tooltip>
+                  </n-popover>
                 </td>
 
                 <!-- new values -->
                 <td class="px-3 py-2 align-top">
-                  <n-tooltip
+                  <n-popover
                     v-for="v in item.newValues"
                     :key="v.text"
                     placement="right"
@@ -304,7 +304,7 @@ function formatValue (val, decimals) {
                       </div>
                     </template>
                     {{ v.at ? d(new Date(v.at), 'datetimeseconds') : '' }}
-                  </n-tooltip>
+                  </n-popover>
                 </td>
               </tr>
             </template>

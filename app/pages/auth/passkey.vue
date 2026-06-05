@@ -122,14 +122,13 @@ async function authenticateWithPasskey () {
             </div>
           </n-card>
 
-          <n-button
+          <my-button
             block
             size="large"
             type="primary"
+            :label="t('authenticateButton')"
             @click="authenticateWithPasskey"
-          >
-            {{ t('authenticateButton') }}
-          </n-button>
+          />
         </template>
       </template>
     </div>
