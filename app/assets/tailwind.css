@@ -8,7 +8,7 @@ body,
   @apply antialiased;
 }
 
-@media (max-width: 767px) {
+@media screen and (max-width: 767px) {
   html,
   body {
     background-color: #1E434C;
@@ -24,7 +24,9 @@ a.link {
 }
 
 @media print {
+  /* Force the app out of its fixed, absolutely-positioned, clipped screen
+     layout so the entity detail flows normally onto the page. */
   *:not(.print-as-is) {
-    @apply h-auto!;
+    @apply h-auto! overflow-visible! static!;
   }
 }

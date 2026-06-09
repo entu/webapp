@@ -74,7 +74,7 @@ async function onDrawerClose () {
     >
       <n-layout-sider
         ref="siderRef"
-        class="print:hidden"
+        class="print:hidden!"
         collapse-mode="width"
         collapsed-trigger-class="top-7.5! text-white! bg-[#1E434C]! shaddow-none! border-white!"
         trigger-class="top-5! -left-1! text-white! opacity-80! bg-transparent! shaddow-none! border-transparent! hover:border-white!"
@@ -92,7 +92,7 @@ async function onDrawerClose () {
         v-if="accountId"
         class="flex grow flex-col overflow-hidden"
       >
-        <layout-toolbar class="m-2 shrink-0" />
+        <layout-toolbar class="m-2 shrink-0 print:hidden!" />
 
         <div
           v-if="isQuery && showTable"
