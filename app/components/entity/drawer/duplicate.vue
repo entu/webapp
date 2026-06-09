@@ -18,6 +18,10 @@ const duplicateCount = ref(1)
 const ignoredProperties = ref([])
 const lastDuplicatedCount = ref(0)
 
+// Tracks the latest load so a slow response can't overwrite rawEntity after the
+// drawer was reopened for another entity (the instance is reused).
+let requestId = 0
+
 const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
 const entityType = computed(() => entityTypes.value?.[typeId.value] || {})
 const entityName = computed(() => getValue(rawEntity.value?.name))
@@ -70,11 +74,19 @@ async function loadEntity () {
 
   isLoading.value = true
 
-  rawEntity.value = await apiGetEntity(entityId.value)
+  const currentRequest = ++requestId
+
+  const entity = await apiGetEntity(entityId.value)
+
+  if (currentRequest !== requestId) return
+
+  rawEntity.value = entity
 
   if (typeId.value && !entityTypes.value[typeId.value]) {
     await entityTypeStore.get(typeId.value)
   }
+
+  if (currentRequest !== requestId) return
 
   // Reset ignored properties (all properties start as included)
   ignoredProperties.value = []

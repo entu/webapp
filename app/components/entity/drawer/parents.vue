@@ -20,6 +20,10 @@ const canRemoveParents = ref([])
 const isLoading = ref(false)
 const isUpdating = ref(false)
 
+// Tracks the latest load so a slow response can't overwrite state after the
+// drawer was reopened for another entity (the instance is reused).
+let requestId = 0
+
 const entityName = computed(() => getValue(rawEntity.value?.name))
 const entityTypeId = computed(() => rawEntity.value?._type?.at(0)?.reference)
 const parentQuery = computed(() => {
@@ -43,21 +47,34 @@ async function loadEntity () {
   if (!entityId.value) return
 
   isLoading.value = true
+  canRemoveParents.value = []
 
-  rawEntity.value = await apiGetEntity(entityId.value, [
+  const currentRequest = ++requestId
+
+  const entity = await apiGetEntity(entityId.value, [
     'name',
     '_parent',
     '_type'
   ])
 
+  if (currentRequest !== requestId) return
+
+  rawEntity.value = entity
+
+  const removable = []
+
   for (let i = 0; i < rawEntity.value._parent?.length; i++) {
     const parentId = rawEntity.value._parent[i].reference
     const parentEntity = await apiGetEntity(parentId, ['_expander'])
 
+    if (currentRequest !== requestId) return
+
     if (parentEntity?._expander?.some((x) => x.reference === userId.value)) {
-      canRemoveParents.value.push(parentId)
+      removable.push(parentId)
     }
   }
+
+  canRemoveParents.value = removable
 
   isLoading.value = false
 }

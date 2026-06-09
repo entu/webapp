@@ -1,11 +1,10 @@
 <script setup>
 import { NDatePicker, NInput, NInputNumber, NSelect, NSwitch, NUpload, NUploadTrigger, NUploadFileList } from 'naive-ui'
-import { apiDeleteProperty } from '~/utils/api'
 
 const entityId = defineModel('entityId', { type: String, default: undefined })
 const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
 const entityTypeId = defineModel('entityTypeId', { type: String, default: undefined })
-const isUpdating = defineModel('updating', { type: Boolean, default: false })
+const isUpdating = defineModel('isUpdating', { type: Boolean, default: false })
 
 const props = defineProps({
   decimals: { type: Number, default: 0 },
@@ -68,26 +67,7 @@ watch(() => props.values, () => {
 }, { immediate: true, deep: true })
 
 function isEmptyValue (value) {
-  if (value._id !== undefined) return false
-
-  let key
-
-  switch (props.type) {
-    case 'text':
-    case 'counter':
-      key = 'string'
-      break
-    case 'file':
-      key = 'filename'
-      break
-    default:
-      key = props.type
-      break
-  }
-
-  const content = value[key]
-
-  return content === undefined || content === null || content === ''
+  return isEmptyPropertyValue(value, props.type)
 }
 
 function manageEmptyFields () {
@@ -195,25 +175,8 @@ async function updateValue (newValue) {
   const _id = newValue._id
   const language = newValue.language
   const properties = []
-  let property = null
-  let value = null
-
-  switch (props.type) {
-    case 'text':
-      property = 'string'
-      break
-    case 'counter':
-      property = 'string'
-      break
-    case 'file':
-      property = 'filename'
-      break
-    default:
-      property = props.type
-      break
-  }
-
-  value = newValue[property]
+  const property = propertyValueKey(props.type)
+  let value = newValue[property]
 
   if (typeof value === 'string') {
     value = value.trim() || null
@@ -391,36 +354,19 @@ async function uploadFile ({ file, onProgress, onFinish, onError }) {
     return
   }
 
-  const sendForm = property.upload
+  try {
+    await uploadBlob(file.file, property.upload, onProgress)
 
-  const request = new XMLHttpRequest()
-  request.open(sendForm.method, sendForm.url)
+    file._id = property._id
+    file.url = `/${accountId.value}/file/${property._id}`
 
-  for (const header in sendForm.headers) {
-    if (header.toLowerCase() === 'content-length') continue
-    request.setRequestHeader(header, sendForm.headers[header])
+    newFiles.value[file.id] = property._id
+
+    onFinish()
   }
-
-  request.upload.addEventListener('progress', function (e) {
-    const percent = (e.loaded / e.total) * 100
-    onProgress({ percent })
-  })
-
-  request.addEventListener('load', function () {
-    if (request.status === 200) {
-      file._id = property._id
-      file.url = `/${accountId.value}/file/${property._id}`
-
-      newFiles.value[file.id] = property._id
-
-      onFinish()
-    }
-    else {
-      onError()
-    }
-  })
-
-  request.send(file.file)
+  catch {
+    onError()
+  }
 }
 
 async function deleteFile (file) {

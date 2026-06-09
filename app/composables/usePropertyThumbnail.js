@@ -8,6 +8,14 @@ export function usePropertyThumbnail (propertyId, size = 200) {
   const url = ref()
 
   let loaded = false
+  let requestId = 0
+
+  // Reset when the property changes so a reused instance doesn't keep showing
+  // the previous property's thumbnail (load-on-demand is re-armed per id).
+  watch(() => toValue(propertyId), () => {
+    loaded = false
+    url.value = undefined
+  })
 
   async function load () {
     if (loaded) return
@@ -16,12 +24,18 @@ export function usePropertyThumbnail (propertyId, size = 200) {
     if (!id) return
 
     loaded = true
+    const currentRequest = ++requestId
 
     try {
       const result = await apiGetPropertyThumbnail(id, toValue(size))
+
+      if (currentRequest !== requestId) return
+
       url.value = result?.url
     }
     catch {
+      if (currentRequest !== requestId) return
+
       url.value = undefined
     }
   }

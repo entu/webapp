@@ -1,6 +1,5 @@
 <script setup>
 import { NInputGroup, NInput, NPopover } from 'naive-ui'
-import { useAnalytics } from '~/utils/analytics'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -50,7 +49,7 @@ function handleAdvancedSearch (advancedQuery) {
 
 const toolbarRef = useTemplateRef('toolbarRef')
 const { width: windowWidth } = useWindowSize()
-const isMobile = computed(() => windowWidth.value < 768)
+const { isMobile } = useIsMobile()
 
 const isOverflowing = ref(true)
 const minWidthForLabels = ref(0)

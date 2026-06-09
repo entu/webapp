@@ -6,101 +6,17 @@ const { t } = useI18n()
 const { accountId } = useAccount()
 
 const listElement = useTemplateRef('listElement')
-const entitiesList = ref([])
-const entitiesCount = ref(null)
-const limit = ref(Math.ceil(window.innerHeight / 48) + 3)
-const skip = ref(0)
-const isLoading = ref(false)
-const isLoadingOnScroll = ref(false)
-const locationSearch = ref(null)
-const scrollIdx = ref(0)
 
-const { y: listElementScroll } = useScroll(listElement)
-
-const debouncedScroll = useDebounceFn(async () => {
-  await navigateTo({ path: `/${accountId.value}/${entitiesList.value.at(scrollIdx.value)._id}`, query: route.query })
-}, 300)
-
-const isQuery = computed(() => Object.keys(route.query).length > 0)
-
-useInfiniteScroll(listElement, async () => {
-  if (isLoading.value) return
-  if (limit.value === 0) return
-  if (entitiesCount.value === 0) return
-
-  isLoadingOnScroll.value = true
-  await getEntities()
-  isLoadingOnScroll.value = false
-}, { distance: 150 })
-
-onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
-  if (route.hash) return
-
-  if (e.code === 'ArrowDown' && scrollIdx.value < entitiesList.value.length - 1) {
-    scrollIdx.value++
-  }
-  if (e.code === 'ArrowUp' && scrollIdx.value > 0) {
-    scrollIdx.value--
-  }
-
-  listElementScroll.value = scrollIdx.value * 48 - 148
-
-  debouncedScroll()
+const {
+  entitiesList,
+  entitiesCount,
+  isLoading,
+  isLoadingOnScroll,
+  scrollIdx
+} = useEntities(listElement, {
+  fetchProps: ['photo', 'name'],
+  mapEntity: (entity) => ({ ...entity, color: randomColor('200!') })
 })
-
-watch(() => route.query, (value) => {
-  const newSearch = new URLSearchParams(value).toString()
-  if (locationSearch.value === newSearch) return
-
-  skip.value = 0
-  entitiesCount.value = null
-  entitiesList.value = []
-  locationSearch.value = newSearch
-
-  getEntities(true)
-}, { deep: true, immediate: true })
-
-watch(() => route.params.entityId, (value) => {
-  scrollIdx.value = entitiesList.value.findIndex((x) => x._id === value) || 0
-}, { immediate: true })
-
-async function getEntities () {
-  if (entitiesCount.value > 0 && entitiesCount.value <= skip.value) return
-
-  if (!isQuery.value) {
-    skip.value = 0
-    entitiesList.value = []
-    return
-  }
-
-  isLoading.value = true
-
-  const { entities, count } = await apiGetEntities({
-    ...route.query,
-    props: [
-      'photo',
-      'name'
-    ],
-    limit: limit.value,
-    skip: skip.value
-  })
-
-  entitiesList.value = [...entitiesList.value, ...entities.map((e) => ({ ...e, color: color() }))]
-  entitiesCount.value = count
-  skip.value += limit.value
-
-  scrollIdx.value = entitiesList.value.findIndex((x) => x._id === route.params.entityId) || 0
-
-  isLoading.value = false
-}
-
-function color () {
-  const colors = ['bg-amber-200!', 'bg-blue-200!', 'bg-cyan-200!', 'bg-emerald-200!', 'bg-fuchsia-200!', 'bg-gray-200!', 'bg-green-200!', 'bg-indigo-200!', 'bg-lime-200!', 'bg-neutral-200!', 'bg-orange-200!', 'bg-pink-200!', 'bg-purple-200!', 'bg-red-200!', 'bg-rose-200!', 'bg-sky-200!', 'bg-slate-200!', 'bg-stone-200!', 'bg-teal-200!', 'bg-violet-200!', 'bg-yellow-200!', 'bg-zinc-200!'
-  ]
-  const rnd = Math.floor(Math.random() * colors.length)
-
-  return colors[rnd]
-}
 </script>
 
 <template>
@@ -170,6 +86,7 @@ function color () {
   @apply flex items-center gap-3;
   @apply hover:bg-zinc-50;
   @apply hover:border-y border-zinc-50;
+  @apply focus:outline-none focus-visible:outline-none;
   touch-action: manipulation;
 }
 

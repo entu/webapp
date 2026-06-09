@@ -3,7 +3,7 @@ import { NDrawer, NDrawerContent, NSpin } from 'naive-ui'
 
 const { t } = useI18n()
 const { width: windowWidth } = useWindowSize()
-const isMobile = computed(() => windowWidth.value < 768)
+const { isMobile } = useIsMobile()
 
 const show = defineModel('show', { type: Boolean, default: false })
 const width = defineModel('width', { type: Number, default: window.innerWidth / 2 })

@@ -21,6 +21,10 @@ const entityTypeOptions = ref([])
 const properties = ref([])
 const loading = ref(false)
 
+// Tracks the latest property load so a slow response for a previous type
+// selection can't overwrite the options after the selection changed.
+let requestId = 0
+
 // Sort options with common fields
 const sortOptions = [
   { value: '', label: t('id') },
@@ -103,12 +107,16 @@ watch(() => searchForm.value.types, async (newTypes) => {
 
   loading.value = true
 
+  const currentRequest = ++requestId
+
   const response = await apiGetEntities({
     '_type.string': 'property',
     '_parent.string.in': newTypes.join(','),
     props: '_parent,name,label,type',
     limit: 1000
   })
+
+  if (currentRequest !== requestId) return
 
   const propOptions = response.entities?.map((x) => ({
     value: `${getValue(x.name)?.trim()}.${getPropertySearchField(getValue(x.type).trim())}`,
@@ -121,7 +129,7 @@ watch(() => searchForm.value.types, async (newTypes) => {
     const existingLabel = acc.find((x) => x.label === curr.label)
 
     if (existingValue && existingLabel) {
-      // existing.label = `${existing.label} (${curr.parent}.${curr.name})`
+      // Same value and label already present — nothing to merge.
     }
     else if (existingValue) {
       existingValue.label = [...new Set([...existingValue.label.split(', '), curr.label])].sort().join(', ')

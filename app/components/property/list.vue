@@ -125,7 +125,7 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
           v-model:entity-id="entityId"
           v-model:entity-parent-id="entityParentId"
           v-model:entity-type-id="entityTypeId"
-          v-model:updating="isUpdating"
+          v-model:is-updating="isUpdating"
           :decimals="property.decimals"
           :disabled="isUpdating"
           :is-list="property.list"

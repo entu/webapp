@@ -5,7 +5,7 @@ const props = defineProps({
   values: { type: Array, required: true },
   isName: { type: Boolean, default: false },
   entityId: { type: String, required: true },
-  fallbackId: { type: String, default: null }
+  fallbackId: { type: String, default: undefined }
 })
 
 const { locale } = useI18n()

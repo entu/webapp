@@ -2,7 +2,7 @@
 import { NImage, NImageGroup, NSpin } from 'naive-ui'
 
 const props = defineProps({
-  photos: { type: Array, default: null },
+  photos: { type: Array, default: undefined },
   thumbnail: { type: String, required: true }
 })
 
@@ -10,6 +10,15 @@ const imageRef = useTemplateRef('imageRef')
 const isLoading = ref(false)
 const urlsLoaded = ref(false)
 const urls = ref([])
+
+// The instance can be reused across entity navigations, so clear the lazily
+// loaded gallery whenever the thumbnail (i.e. the entity) changes — otherwise
+// the previous entity's photos linger.
+watch(() => props.thumbnail, () => {
+  isLoading.value = false
+  urlsLoaded.value = false
+  urls.value = []
+})
 
 async function loadImages () {
   useAnalytics('show_photo')
@@ -48,7 +57,7 @@ async function loadImages () {
     />
   </div>
 
-  <n-image-group v-if="photos.length > 1">
+  <n-image-group v-if="photos && photos.length > 1">
     <n-image
       v-for="url in urls"
       :key="url"

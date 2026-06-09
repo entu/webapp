@@ -3,7 +3,7 @@ import DOMPurify from 'dompurify'
 import { marked } from 'marked'
 
 const props = defineProps({
-  source: { type: String, default: null }
+  source: { type: String, default: undefined }
 })
 
 const md = computed(() => DOMPurify.sanitize(marked.parse(props.source)))

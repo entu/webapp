@@ -3,27 +3,34 @@ import { NEmpty, NSpin, NPopover } from 'naive-ui'
 
 const route = useRoute()
 const { t } = useI18n()
-const { accountId } = useAccount()
 
 const listElement = useTemplateRef('listElement')
-const entitiesList = ref([])
-const entitiesCount = ref(null)
-const limit = ref(Math.ceil(window.innerHeight / 48) + 3)
-const skip = ref(0)
-const isLoading = ref(false)
-const isLoadingOnScroll = ref(false)
-const locationSearch = ref(null)
-const scrollIdx = ref(0)
+
 const sortField = ref(null)
 const sortDirection = ref('asc')
 
-const { y: listElementScroll } = useScroll(listElement)
+const {
+  entitiesList,
+  entitiesCount,
+  isLoading,
+  isLoadingOnScroll
+} = useEntities(listElement, {
+  onQueryChange: (query) => {
+    // Update sort state from URL
+    if (query.sort) {
+      const sortParam = query.sort
+      const isDescending = sortParam.startsWith('-')
+      const fieldName = isDescending ? sortParam.slice(1) : sortParam
 
-const debouncedScroll = useDebounceFn(async () => {
-  await navigateTo({ path: `/${accountId.value}/${entitiesList.value.at(scrollIdx.value)._id}`, query: route.query })
-}, 300)
-
-const isQuery = computed(() => Object.keys(route.query).length > 0)
+      sortDirection.value = isDescending ? 'desc' : 'asc'
+      sortField.value = fieldName.includes('.') ? fieldName.split('.').at(0) : fieldName
+    }
+    else {
+      sortField.value = null
+      sortDirection.value = 'asc'
+    }
+  }
+})
 
 const tableColumnsWithTypes = computed(() => {
   if (!entitiesList.value.length) return [{ name: 'name', type: 'string' }]
@@ -91,87 +98,6 @@ const tableColumnsWithTypes = computed(() => {
 
   return columnsWithTypes
 })
-
-useInfiniteScroll(listElement, async () => {
-  if (isLoading.value) return
-  if (limit.value === 0) return
-  if (entitiesCount.value === 0) return
-
-  isLoadingOnScroll.value = true
-  await getEntities()
-  isLoadingOnScroll.value = false
-}, { distance: 150 })
-
-onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
-  if (route.hash) return
-
-  if (e.code === 'ArrowDown' && scrollIdx.value < entitiesList.value.length - 1) {
-    scrollIdx.value++
-  }
-  if (e.code === 'ArrowUp' && scrollIdx.value > 0) {
-    scrollIdx.value--
-  }
-
-  listElementScroll.value = scrollIdx.value * 48 - 148
-
-  debouncedScroll()
-})
-
-watch(() => route.query, (value) => {
-  const newSearch = new URLSearchParams(value).toString()
-  if (locationSearch.value === newSearch) return
-
-  // Update sort state from URL
-  if (value.sort) {
-    const sortParam = value.sort
-    const isDescending = sortParam.startsWith('-')
-    const fieldName = isDescending ? sortParam.slice(1) : sortParam
-
-    sortDirection.value = isDescending ? 'desc' : 'asc'
-    sortField.value = fieldName.includes('.') ? fieldName.split('.').at(0) : fieldName
-  }
-  else {
-    sortField.value = null
-    sortDirection.value = 'asc'
-  }
-
-  skip.value = 0
-  entitiesCount.value = null
-  entitiesList.value = []
-  locationSearch.value = newSearch
-
-  getEntities(true)
-}, { deep: true, immediate: true })
-
-watch(() => route.params.entityId, (value) => {
-  scrollIdx.value = entitiesList.value.findIndex((x) => x._id === value) || 0
-}, { immediate: true })
-
-async function getEntities () {
-  if (entitiesCount.value > 0 && entitiesCount.value <= skip.value) return
-
-  if (!isQuery.value) {
-    skip.value = 0
-    entitiesList.value = []
-    return
-  }
-
-  isLoading.value = true
-
-  const { entities, count } = await apiGetEntities({
-    ...route.query,
-    limit: limit.value,
-    skip: skip.value
-  })
-
-  entitiesList.value = [...entitiesList.value, ...entities]
-  entitiesCount.value = count
-  skip.value += limit.value
-
-  scrollIdx.value = entitiesList.value.findIndex((x) => x._id === route.params.entityId) || 0
-
-  isLoading.value = false
-}
 
 function handleSort (column) {
   // If clicking the same column, toggle direction; otherwise start with 'asc'

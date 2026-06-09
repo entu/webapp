@@ -19,7 +19,7 @@ function setMobileLanguage () {
 }
 
 const { width: windowWidth } = useWindowSize()
-const isMobile = computed(() => windowWidth.value < 768)
+const { isMobile } = useIsMobile()
 
 watch(() => route.fullPath, () => {
   showMobileMenu.value = false

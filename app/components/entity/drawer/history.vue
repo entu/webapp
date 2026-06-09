@@ -11,7 +11,7 @@ const show = defineModel('show', { type: Boolean, default: false })
 const entityId = defineModel('entityId', { type: String, required: true })
 
 const props = defineProps({
-  typeId: { type: String, default: null }
+  typeId: { type: String, default: undefined }
 })
 
 const entityTypeStore = useEntityTypeStore()
@@ -22,6 +22,10 @@ const isLoading = ref(false)
 const page = ref(1)
 const pageSize = ref(25)
 const total = ref(0)
+
+// Tracks the latest load so a slow response (reopened for another entity or a
+// fast page click) can't overwrite the freshly requested history.
+let requestId = 0
 
 watch([show, entityId], () => {
   page.value = 1
@@ -35,6 +39,8 @@ async function loadHistory () {
   isLoading.value = true
   groups.value = []
 
+  const currentRequest = ++requestId
+
   // Ensure entity type definitions are loaded
   if (props.typeId && !entityTypes.value[props.typeId]) {
     await entityTypeStore.get(props.typeId)
@@ -44,6 +50,8 @@ async function loadHistory () {
     limit: pageSize.value,
     skip: pageSize.value * (page.value - 1)
   })
+
+  if (currentRequest !== requestId) return
 
   total.value = count
 
@@ -70,6 +78,8 @@ async function loadHistory () {
     const entity = await apiGetEntity(id, ['name'])
     userNames[id] = getValue(entity?.name) || null
   }))
+
+  if (currentRequest !== requestId) return
 
   // Group by user + 1-minute bucket, newest first
   const buckets = {}

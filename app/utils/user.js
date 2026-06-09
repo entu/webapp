@@ -1,4 +1,4 @@
-export const useUser = () => {
+export function useUser () {
   const { account } = useAccount()
   const token = useLocalStorage('token')
   const tokenExpiry = useLocalStorage('token-expiry', '')

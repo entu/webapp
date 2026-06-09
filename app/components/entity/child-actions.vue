@@ -12,8 +12,7 @@ const emit = defineEmits(['refresh'])
 
 const { t } = useI18n()
 const { userId } = useUser()
-const { width: windowWidth } = useWindowSize()
-const isMobile = computed(() => windowWidth.value < 768)
+const { isMobile } = useIsMobile()
 
 const isOwner = computed(() => props.owner?.some((x) => x.reference === userId.value) || false)
 const isEditor = computed(() => props.owner?.some((x) => x.reference === userId.value) || props.editor?.some((x) => x.reference === userId.value) || false)
@@ -23,6 +22,8 @@ const showDuplicateDrawer = ref(false)
 const showParentsDrawer = ref(false)
 const showRightsDrawer = ref(false)
 
+// Drawers render in place over the current view (with the child's entityId), so
+// acting on a child row never navigates away to the child entity's own page.
 function onDrawerClose () {
   showEditDrawer.value = false
   showDuplicateDrawer.value = false

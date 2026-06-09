@@ -17,6 +17,10 @@ const referenceCount = ref(null)
 const rawReferences = ref(null)
 const searchingReferences = ref(false)
 
+// Tracks the latest search so a slow response for a previous query can't
+// overwrite the results after the user typed a newer query.
+let requestId = 0
+
 const referenceOptions = computed(() => {
   if (rawReferences.value) {
     return rawReferences.value?.filter((x) => !props.exclude?.includes(x._id))?.map((x) => ({
@@ -37,6 +41,8 @@ watchDebounced(referenceSearch, async (q = '') => {
   searchingReferences.value = true
   referenceCount.value = null
 
+  const currentRequest = ++requestId
+
   let filter = {
     q,
     props: [
@@ -52,6 +58,8 @@ watchDebounced(referenceSearch, async (q = '') => {
   }
 
   const { entities, count } = await apiGetEntities(filter)
+
+  if (currentRequest !== requestId) return
 
   rawReferences.value = entities
   referenceCount.value = count

@@ -1,4 +1,4 @@
-export const useEntity = () => {
+export function useEntity () {
   const { userId } = useUser()
 
   const rawEntity = useState('entity.raw', () => null)

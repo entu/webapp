@@ -4,13 +4,13 @@ import { NPopover } from 'naive-ui'
 const { n, t } = useI18n()
 
 const props = defineProps({
-  label: { type: String, default: null },
+  label: { type: String, default: undefined },
   usage: { type: Number, default: 0 },
   deleted: { type: Number, default: 0 },
   limit: { type: Number, default: 0 },
   isBytes: { type: Boolean, default: false },
-  color: { type: String, default: null },
-  deletedColor: { type: String, default: null }
+  color: { type: String, default: undefined },
+  deletedColor: { type: String, default: undefined }
 })
 
 const usagePercent = computed(() => {

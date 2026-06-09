@@ -1,7 +1,22 @@
 export const useEntityTypeStore = defineStore('entityType', () => {
   const entityTypes = ref({})
 
+  // In-flight fetches keyed by _id, so concurrent callers reuse one request
+  // instead of each firing the same three API calls and writing the result twice.
+  const pending = {}
+
   async function get (_id) {
+    if (entityTypes.value[_id]) return
+    if (pending[_id]) return pending[_id]
+
+    pending[_id] = fetchType(_id).finally(() => {
+      delete pending[_id]
+    })
+
+    return pending[_id]
+  }
+
+  async function fetchType (_id) {
     const rawPlugins = await apiGetEntities({
       '_type.string': 'plugin',
       props: [

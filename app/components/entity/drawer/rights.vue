@@ -1,6 +1,5 @@
 <script setup>
 import { NCheckbox, NDivider, NRadio, NRadioGroup } from 'naive-ui'
-import { apiDeleteProperty } from '~/utils/api'
 
 const { query } = useRoute()
 const { t } = useI18n()
@@ -18,6 +17,10 @@ const sharing = ref()
 const isLoading = ref(false)
 const isUpdating = ref(false)
 const inheritRights = ref(false)
+
+// Tracks the latest load so a slow response can't overwrite state after the
+// drawer was reopened for another entity (the instance is reused).
+let requestId = 0
 
 const entityName = computed(() => getValue(rawEntity.value?.name))
 
@@ -59,7 +62,9 @@ async function loadEntity () {
 
   isLoading.value = true
 
-  rawEntity.value = await apiGetEntity(entityId.value, [
+  const currentRequest = ++requestId
+
+  const entity = await apiGetEntity(entityId.value, [
     'name',
     '_noaccess',
     '_viewer',
@@ -73,6 +78,10 @@ async function loadEntity () {
     '_sharing',
     '_inheritrights'
   ])
+
+  if (currentRequest !== requestId) return
+
+  rawEntity.value = entity
 
   sharing.value = getValue(rawEntity.value?._sharing) || 'private'
   inheritRights.value = getValue(rawEntity.value?._inheritrights, 'boolean') || false

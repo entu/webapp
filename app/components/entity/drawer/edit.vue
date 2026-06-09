@@ -1,6 +1,5 @@
 <script setup>
 import { NPopconfirm, NTabs, NTabPane } from 'naive-ui'
-import { makeDefaultValue } from '~/utils/api'
 
 const { locale, t } = useI18n()
 const { token } = useUser()
@@ -23,6 +22,10 @@ const { entityTypes } = storeToRefs(entityTypeStore)
 const rawEntity = ref()
 const isLoading = ref(false)
 const isUpdating = ref(false)
+
+// Tracks the latest load so a slow response can't overwrite rawEntity after the
+// drawer was reopened for another entity (the instance is reused).
+let requestId = 0
 
 const typeId = computed(() => entityTypeId.value || getValue(rawEntity.value?._type, 'reference'))
 
@@ -142,8 +145,14 @@ async function loadEntity () {
 
   isLoading.value = true
 
+  const currentRequest = ++requestId
+
   if (entityId.value) {
-    rawEntity.value = await apiGetEntity(entityId.value)
+    const entity = await apiGetEntity(entityId.value)
+
+    if (currentRequest !== requestId) return
+
+    rawEntity.value = entity
   }
 
   if (typeId.value && !entityTypes.value[typeId.value]) {
@@ -186,7 +195,7 @@ async function onClose () {
       justify-content="center"
       pane-class="p-0!"
       pane-wrapper-class="size-full"
-      :tab-class="{ '!hidden': !plugins?.length }"
+      :tab-class="plugins?.length ? undefined : '!hidden'"
       :type="plugins?.length ? 'line' : 'bar'"
     >
       <n-tab-pane

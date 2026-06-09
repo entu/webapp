@@ -12,8 +12,7 @@ const { query } = useRoute()
 const { locale, d, t } = useI18n()
 const { accountId } = useAccount()
 const { tablePageSize } = useUser()
-const { width: windowWidth } = useWindowSize()
-const isMobile = computed(() => windowWidth.value < 768)
+const { isMobile } = useIsMobile()
 
 const rawEntities = ref()
 const rawColumns = ref([{
@@ -26,6 +25,10 @@ const isLoading = ref(false)
 const total = ref(0)
 const page = ref(1)
 const sorter = ref()
+
+// Tracks the latest fetch so a slow earlier page/sort response can't overwrite
+// a newer one (the instance is reused as entityId/typeId change).
+let requestId = 0
 
 async function getTypes () {
   const { entities } = await apiGetEntities({
@@ -71,6 +74,8 @@ async function getTypes () {
 
 async function getEntities (setPage, setPageSize, setSorter) {
   isLoading.value = true
+
+  const currentRequest = ++requestId
 
   if (setPage) {
     page.value = setPage
@@ -121,18 +126,12 @@ async function getEntities (setPage, setPageSize, setSorter) {
     skip: tablePageSize.value * (page.value - 1)
   })
 
+  if (currentRequest !== requestId) return
+
   rawEntities.value = entities
   total.value = count
 
   isLoading.value = false
-}
-
-function color () {
-  const colors = ['bg-amber-50', 'bg-blue-50', 'bg-cyan-50', 'bg-emerald-50', 'bg-fuchsia-50', 'bg-gray-50', 'bg-green-50', 'bg-indigo-50', 'bg-lime-50', 'bg-neutral-50', 'bg-orange-50', 'bg-pink-50', 'bg-purple-50', 'bg-red-50', 'bg-rose-50', 'bg-sky-50', 'bg-slate-50', 'bg-stone-50', 'bg-teal-50', 'bg-violet-50', 'bg-yellow-50', 'bg-zinc-50'
-  ]
-  const rnd = Math.floor(Math.random() * colors.length)
-
-  return colors[rnd]
 }
 
 function renderColumn (value, type, decimals) {
@@ -226,13 +225,13 @@ onMounted(async () => {
                 <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
                   <entity-avatar
                     class="print-as-is size-7 rounded-full object-cover"
-                    :class="color()"
+                    :class="randomColor('50')"
                     :entity-id="row._id"
                     :has-photo="!!row.photo?.length"
                   >
                     <div
                       class="print-as-is size-7 rounded-full"
-                      :class="color()"
+                      :class="randomColor('50')"
                     />
                   </entity-avatar>
                 </nuxt-link>
