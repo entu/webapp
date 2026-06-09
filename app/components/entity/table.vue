@@ -239,7 +239,7 @@ function handleSort (column) {
               :key="`${entity._id}-${column.name}`"
               class="max-w-xs border-r border-gray-200 px-3 py-2 text-sm last:border-r-0"
             >
-              <layout-entity-table-cell
+              <entity-table-cell
                 :entity-id="entity._id"
                 :fallback-id="entity._id"
                 :is-name="column.name === 'name'"
@@ -296,7 +296,7 @@ function handleSort (column) {
       <n-spin />
     </div>
 
-    <layout-entity-list-loading
+    <entity-list-loading
       v-if="entitiesCount !== 0"
       class="max-w-96"
       :is-loading="isLoadingOnScroll"

@@ -224,7 +224,7 @@ onMounted(async () => {
             <td>
               <div class="relative ml-1 size-7">
                 <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
-                  <entity-thumb
+                  <entity-avatar
                     class="print-as-is size-7 rounded-full object-cover"
                     :class="color()"
                     :entity-id="row._id"
@@ -234,7 +234,7 @@ onMounted(async () => {
                       class="print-as-is size-7 rounded-full"
                       :class="color()"
                     />
-                  </entity-thumb>
+                  </entity-avatar>
                 </nuxt-link>
               </div>
             </td>

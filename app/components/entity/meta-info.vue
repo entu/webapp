@@ -18,7 +18,7 @@ const placement = computed(() => props.narrow ? 'top' : 'left')
 </script>
 
 <template>
-  <entity-thumbnail
+  <entity-photo
     v-if="thumbnail"
     class="print-as-is flex-none"
     :class="{ 'w-full': placement === 'left' }"

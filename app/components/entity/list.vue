@@ -119,7 +119,7 @@ function color () {
         }"
         :to="{ path: `/${accountId}/${entity._id}`, query: route.query }"
       >
-        <entity-thumb
+        <entity-avatar
           class="list-item-img"
           :class="entity.color"
           :entity-id="entity._id"
@@ -131,7 +131,7 @@ function color () {
           >
             {{ `${getValue(entity.name)}`.at(0) }}
           </div>
-        </entity-thumb>
+        </entity-avatar>
 
         <div class="list-item-text">
           {{ getValue(entity.name) || entity._id }}
@@ -146,7 +146,7 @@ function color () {
       <n-spin />
     </div>
 
-    <layout-entity-list-loading
+    <entity-list-loading
       v-if="entitiesCount !== 0"
       :is-loading="isLoadingOnScroll"
       :loaded-count="entitiesList.length"

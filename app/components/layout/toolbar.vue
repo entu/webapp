@@ -179,7 +179,7 @@ onUnmounted(() => {
       </n-input-group>
 
       <!-- Advanced Search Modal -->
-      <layout-entity-search-modal
+      <entity-search-modal
         v-if="userId"
         v-model:show="showSearchModal"
         @search="handleAdvancedSearch"
@@ -193,7 +193,7 @@ onUnmounted(() => {
       />
     </div>
 
-    <layout-entity-actions
+    <entity-actions
       v-if="!showTable"
       :show-label="!isOverflowing"
     />

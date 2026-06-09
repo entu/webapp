@@ -98,7 +98,7 @@ async function onDrawerClose () {
           v-if="isQuery && showTable"
           class="relative mb-2 min-h-0 grow"
         >
-          <layout-entity-table class="absolute inset-x-2 inset-y-0" />
+          <entity-table class="absolute inset-x-2 inset-y-0" />
 
           <my-drawer
             v-if="route.params.entityId"
@@ -108,7 +108,7 @@ async function onDrawerClose () {
           >
             <template #header>
               <div class="flex grow justify-end">
-                <layout-entity-actions :show-label="entityDrawerWidth >= 720" />
+                <entity-actions :show-label="entityDrawerWidth >= 720" />
               </div>
             </template>
 
@@ -137,7 +137,7 @@ async function onDrawerClose () {
             :min="0.25"
           >
             <template #1>
-              <layout-entity-list />
+              <entity-list />
             </template>
 
             <template #resize-trigger>
@@ -224,7 +224,7 @@ async function onDrawerClose () {
               v-else-if="isQuery"
               class="grow overflow-hidden"
             >
-              <layout-entity-list />
+              <entity-list />
             </div>
 
             <div
