@@ -3,7 +3,7 @@ defineOptions({ inheritAttrs: false })
 
 const props = defineProps({
   entityId: { type: String, required: true },
-  size: { type: Number, default: 200 },
+  size: { type: Number, default: 50 },
   hasPhoto: { type: Boolean, default: false }
 })
 
