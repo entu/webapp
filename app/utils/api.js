@@ -46,6 +46,10 @@ export async function apiGetEntityThumbnail (entityId, size = 200) {
   return await apiRequest(`entity/${entityId}/thumbnail/${size}`)
 }
 
+export async function apiGetPropertyThumbnail (propertyId, size = 200) {
+  return await apiRequest(`property/${propertyId}/thumbnail/${size}`)
+}
+
 export async function apiGetEntityHistory (entityId, { limit, skip } = {}) {
   const params = {}
   if (limit) {

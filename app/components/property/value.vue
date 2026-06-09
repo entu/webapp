@@ -1,5 +1,7 @@
 <script setup>
-defineProps({
+import { NPopover, NSpin } from 'naive-ui'
+
+const props = defineProps({
   entityId: { type: String, default: null },
   value: { type: Object, required: true },
   decimals: { type: Number, default: undefined },
@@ -10,6 +12,34 @@ defineProps({
 const { query } = useRoute()
 const { locale, d, n, t } = useI18n()
 const { accountId } = useAccount()
+
+const PREVIEWABLE_EXTENSIONS = new Set([
+  'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff', 'tif', 'avif', 'heic', 'heif', 'pdf'
+])
+
+function isPreviewableExtension (filename) {
+  if (!filename) return false
+
+  const extension = filename.split('.').pop()?.toLowerCase()
+  if (!extension) return false
+
+  return PREVIEWABLE_EXTENSIONS.has(extension)
+}
+
+const isPreviewableFile = computed(() => {
+  const filetype = props.value?.filetype
+
+  if (filetype) return filetype.startsWith('image/') || filetype === 'application/pdf'
+
+  return isPreviewableExtension(props.value?.filename)
+})
+
+const { url: thumbnailUrl, load: loadThumbnail } = usePropertyThumbnail(() => props.value?._id, 400)
+const { url: thumbnailIconUrl, load: loadThumbnailIcon } = usePropertyThumbnail(() => props.value?._id, 50)
+
+watch(isPreviewableFile, (previewable) => {
+  if (previewable) loadThumbnailIcon()
+}, { immediate: true })
 </script>
 
 <template>
@@ -44,19 +74,51 @@ const { accountId } = useAccount()
   </template>
 
   <template v-else-if="value.filename !== undefined">
-    <nuxt-link
-      class="link"
-      target="_blank"
-      :to="{ path: `/${accountId}/file/${value._id}`, query }"
-    >
-      {{ value.filename || value._id }}
-    </nuxt-link>
+    <span class="flex items-center gap-2 leading-tight">
+      <n-popover
+        v-if="isPreviewableFile && thumbnailIconUrl"
+        class="rounded-md bg-white p-1 shadow-lg"
+        placement="top"
+        raw
+        trigger="hover"
+        @update:show="(show) => show && loadThumbnail()"
+      >
+        <template #trigger>
+          <img
+            class="size-5 shrink-0 rounded border border-gray-200 bg-gray-50 object-cover"
+            :alt="value.filename || value._id"
+            :src="thumbnailIconUrl"
+          >
+        </template>
 
-    <span
-      v-if="value.filesize"
-      class="ml-2 text-sm text-slate-500"
-    >
-      {{ humanFileSize(n, value.filesize) }}
+        <img
+          v-if="thumbnailUrl"
+          class="max-h-64 max-w-64 rounded border border-gray-200 bg-gray-50"
+          :alt="value.filename || value._id"
+          :src="thumbnailUrl"
+        >
+        <div
+          v-else
+          class="flex h-24 w-24 items-center justify-center"
+        >
+          <n-spin size="small" />
+        </div>
+      </n-popover>
+
+      <nuxt-link
+        class="link"
+        target="_blank"
+        :to="{ path: `/${accountId}/file/${value._id}`, query }"
+      >
+        {{ value.filename || value._id }}
+      </nuxt-link>
+
+      <span
+        v-if="value.filesize"
+        class="text-sm text-slate-500"
+      >
+        {{ humanFileSize(n, value.filesize) }}
+      </span>
     </span>
   </template>
 
