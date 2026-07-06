@@ -52,12 +52,6 @@ watch(isLoading, (value) => {
     nextTick(() => inputRef.value?.focus())
   }
 })
-
-watch(isOpen, (value) => {
-  if (!value) return
-
-  useAnalytics('show_ai')
-})
 </script>
 
 <template>

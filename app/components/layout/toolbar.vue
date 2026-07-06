@@ -40,7 +40,10 @@ watchDebounced(searchText, async (value) => {
 const chatStore = useChatStore()
 
 function toggleChat () {
-  useAnalytics('toggle_chat', { open: !chatStore.isOpen })
+  if (chatStore.isOpen) {
+    useAnalytics('show_ai')
+  }
+
   chatStore.isOpen = !chatStore.isOpen
 }
 
