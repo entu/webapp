@@ -59,9 +59,9 @@ async function authenticateWithPasskey () {
       setToken(result)
     }
 
-    // Navigate to first account
+    // Navigate to overview (redirects to the single db when there is only one)
     if (result.accounts?.length > 0) {
-      await navigateTo({ path: `/${result.accounts.at(0)._id}` })
+      await navigateTo({ path: '/' })
     }
   }
   catch (error) {

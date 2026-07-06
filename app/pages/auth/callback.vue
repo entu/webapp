@@ -50,7 +50,7 @@ onMounted(async () => {
     await navigateTo(to)
   }
   else if (accounts.value.length > 0) {
-    await navigateTo({ path: `/${accounts.value.at(0)._id}` })
+    await navigateTo({ path: '/' })
   }
   else {
     await navigateTo({ path: '/new' })

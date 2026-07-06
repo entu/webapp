@@ -126,42 +126,7 @@ onMounted(async () => {
         vertical
       >
         <div class="flex grow flex-col justify-center">
-          <my-stats-bar
-            class="my-3"
-            color="rgb(23,162,184)"
-            deleted-color="rgba(23,162,184,.3)"
-            :deleted="stats.entities.deleted"
-            :label="t('entities')"
-            :limit="stats.entities.limit"
-            :usage="stats.entities.usage"
-          />
-          <my-stats-bar
-            class="my-3"
-            color="rgb(255,193,7)"
-            deleted-color="rgba(255,193,7,.3)"
-            :deleted="stats.properties.deleted"
-            :label="t('properties')"
-            :usage="stats.properties.usage"
-          />
-          <my-stats-bar
-            class="my-3"
-            color="rgb(40,167,69)"
-            deleted-color="rgba(40,167,69,.3)"
-            is-bytes
-            :deleted="stats.files.deleted"
-            :label="t('files')"
-            :limit="stats.files.limit"
-            :usage="stats.files.usage"
-          />
-          <my-stats-bar
-            class="my-3"
-            color="rgb(108,117,125)"
-            deleted-color="rgba(108,117,125,.3)"
-            show-total
-            :label="t('tokens')"
-            :limit="stats.tokens.limit"
-            :usage="stats.tokens.usage"
-          />
+          <my-db-stats :stats="stats" />
         </div>
 
         <div class="pb-4 text-center text-sm text-gray-500">
@@ -211,10 +176,6 @@ onMounted(async () => {
   en:
     signIn: Sign In
     new: Create New Database
-    entities: Entities
-    properties: Properties
-    files: Files
-    tokens: AI tokens (in this month)
     terms: Terms of Service
     termsUrl: https://entu.ee/terms/
     pricing: Pricing
@@ -224,10 +185,6 @@ onMounted(async () => {
   et:
     signIn: Sisene
     new: Loo uus andmebaas
-    entities: Objekte
-    properties: Parameetreid
-    files: Faile
-    tokens: AI tokeneid (selles kuus)
     terms: Kasutustingimused
     termsUrl: https://entu.ee/et/terms/
     pricing: Hinnad

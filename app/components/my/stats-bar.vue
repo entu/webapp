@@ -59,7 +59,7 @@ const overLimitStr = computed(() => overLimit.value && props.isBytes ? humanFile
 <template>
   <n-popover content-class="grid grid-cols-2">
     <template #trigger>
-      <div class="my-3 cursor-help rounded p-2 hover:bg-gray-50">
+      <div class="cursor-help rounded p-2 hover:bg-gray-50">
         <div class="flex justify-between">
           <div>
             {{ label }}
