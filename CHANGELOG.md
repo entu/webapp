@@ -1,3 +1,6 @@
+## 2026-07-06
+- **Entu AI chat assistant**: A new sparkles button in the toolbar opens a chat assistant that knows your configuration and can propose entity type, property, and data changes — applied only after your confirmation.
+
 ## 2026-06-05
 - **Global cross-type search**: A single search box in the toolbar now queries across all entity types at once, not just the active menu item.
 - **List / table view toggle**: A toolbar button switches between list+detail and full-width table view; in table view, opening an entity shows it in a resizable drawer.

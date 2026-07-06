@@ -279,6 +279,8 @@ async function onDrawerClose () {
         </n-drawer-content>
       </n-drawer>
     </template>
+
+    <chat-drawer />
   </div>
 </template>
 

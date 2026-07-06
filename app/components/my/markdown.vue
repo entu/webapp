@@ -3,10 +3,17 @@ import DOMPurify from 'dompurify'
 import { marked } from 'marked'
 
 const props = defineProps({
-  source: { type: String, default: undefined }
+  source: { type: String, default: undefined },
+  newTab: { type: Boolean, default: false }
 })
 
-const md = computed(() => DOMPurify.sanitize(marked.parse(props.source)))
+const md = computed(() => {
+  const html = DOMPurify.sanitize(marked.parse(props.source))
+
+  if (!props.newTab) return html
+
+  return html.replaceAll('<a href', '<a target="_blank" rel="noopener" href')
+})
 </script>
 
 <template>
@@ -33,5 +40,18 @@ const md = computed(() => DOMPurify.sanitize(marked.parse(props.source)))
 
 .markdown ol {
   @apply list-decimal pl-6;
+}
+
+.markdown hr {
+  @apply my-3 border-gray-200;
+}
+
+.markdown table {
+  @apply my-3 border-collapse;
+}
+
+.markdown th,
+.markdown td {
+  @apply border border-gray-200 px-2 py-1 text-left;
 }
 </style>

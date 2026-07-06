@@ -100,8 +100,13 @@ export const useEntityTypeStore = defineStore('entityType', () => {
     }
   }
 
+  function clear () {
+    entityTypes.value = {}
+  }
+
   return {
     entityTypes,
-    get
+    get,
+    clear
   }
 })

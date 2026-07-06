@@ -227,3 +227,11 @@ export function queryStringToObject (q) {
 export async function apiDuplicateEntity (entityId, count = 1, ignoredProperties = []) {
   return await apiRequest(`entity/${entityId}/duplicate`, { count, ignoredProperties }, {}, 'POST')
 }
+
+export async function apiAiChat (messages) {
+  return await apiRequest('ai/chat', { messages }, {}, 'POST')
+}
+
+export async function apiAiExecute (operations) {
+  return await apiRequest('ai/execute', { operations }, {}, 'POST')
+}

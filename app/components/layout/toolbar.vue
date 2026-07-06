@@ -37,6 +37,13 @@ watchDebounced(searchText, async (value) => {
   await navigateTo({ path: route.path, query }, { replace: true })
 }, { debounce: 500, maxWait: 5000 })
 
+const chatStore = useChatStore()
+
+function toggleChat () {
+  useAnalytics('toggle_chat', { open: !chatStore.isOpen })
+  chatStore.isOpen = !chatStore.isOpen
+}
+
 function openAdvancedSearch () {
   useAnalytics('show_search')
   showSearchModal.value = true
@@ -204,6 +211,15 @@ onUnmounted(() => {
       :title="showTable ? t('listView') : t('tableView')"
       @click="toggleView()"
     />
+
+    <my-button
+      v-if="userId"
+      circle
+      class="bg-[#1E434C]! text-white! hover:bg-[#162E35]!"
+      icon="sparkles"
+      :title="t('entuAi')"
+      @click="toggleChat()"
+    />
   </div>
 </template>
 
@@ -220,9 +236,11 @@ onUnmounted(() => {
     advancedSearch: Advanced Search
     listView: List view
     tableView: Table view
+    entuAi: Entu AI
   et:
     search: Otsi objekti
     advancedSearch: Täpsem otsing
     listView: Loendivaade
     tableView: Tabelivaade
+    entuAi: Entu AI
 </i18n>

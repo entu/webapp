@@ -158,9 +158,9 @@ onMounted(async () => {
             color="rgb(108,117,125)"
             deleted-color="rgba(108,117,125,.3)"
             show-total
-            :label="t('requests')"
-            :limit="stats.requests.limit"
-            :usage="stats.requests.usage"
+            :label="t('tokens')"
+            :limit="stats.tokens.limit"
+            :usage="stats.tokens.usage"
           />
         </div>
 
@@ -214,7 +214,7 @@ onMounted(async () => {
     entities: Entities
     properties: Properties
     files: Files
-    requests: Requests in this month
+    tokens: AI tokens (in this month)
     terms: Terms of Service
     termsUrl: https://entu.ee/terms/
     pricing: Pricing
@@ -227,7 +227,7 @@ onMounted(async () => {
     entities: Objekte
     properties: Parameetreid
     files: Faile
-    requests: Päringuid selles kuus
+    tokens: AI tokeneid (selles kuus)
     terms: Kasutustingimused
     termsUrl: https://entu.ee/et/terms/
     pricing: Hinnad
