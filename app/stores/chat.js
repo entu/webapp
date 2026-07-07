@@ -5,6 +5,7 @@ export const useChatStore = defineStore('chat', () => {
   const { accountId } = useAccount()
 
   const messages = ref([])
+  const usage = ref({ total: 0, cached: 0 })
   const isOpen = ref(false)
   const isLoading = ref(false)
   const isExecuting = ref(false)
@@ -40,6 +41,9 @@ export const useChatStore = defineStore('chat', () => {
 
     try {
       const response = await apiAiChat(apiHistory())
+
+      usage.value.total += response.usage?.total || 0
+      usage.value.cached += response.usage?.cached || 0
 
       messages.value.push({
         role: 'assistant',
@@ -107,6 +111,7 @@ export const useChatStore = defineStore('chat', () => {
 
   function reset () {
     messages.value = []
+    usage.value = { total: 0, cached: 0 }
     isLoading.value = false
     isExecuting.value = false
   }
@@ -120,6 +125,7 @@ export const useChatStore = defineStore('chat', () => {
 
   return {
     messages,
+    usage,
     isOpen,
     isLoading,
     isExecuting,

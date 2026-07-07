@@ -1,10 +1,10 @@
 <script setup>
 import { NInput, NInputGroup, NPopover } from 'naive-ui'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 const chatStore = useChatStore()
-const { messages, isOpen, isLoading } = storeToRefs(chatStore)
+const { messages, usage, isOpen, isLoading } = storeToRefs(chatStore)
 
 const inputText = ref('')
 const drawerWidth = ref(Math.min(600, window.innerWidth))
@@ -14,6 +14,16 @@ const inputRef = useTemplateRef('inputRef')
 const visibleMessages = computed(() => messages.value.filter((x) => !x.hidden))
 
 const canSend = computed(() => !isLoading.value && !!inputText.value.trim())
+
+const usedTokens = computed(() => Math.max(0, usage.value.total - usage.value.cached))
+
+const usedPercent = computed(() => {
+  const { total } = usage.value
+
+  if (!total) return 0
+
+  return Math.min(100, Math.round((usedTokens.value / total) * 100))
+})
 
 const examples = computed(() => [t('example1'), t('example2'), t('example3')])
 
@@ -145,6 +155,25 @@ watch(isLoading, (value) => {
           </n-input>
         </n-input-group>
       </div>
+
+      <n-popover
+        v-if="usage.total"
+        trigger="hover"
+      >
+        <template #trigger>
+          <div class="shrink-0">
+            <div class="h-1 w-full overflow-hidden bg-gray-200">
+              <div
+                class="h-full bg-[#1E434C] transition-all"
+                :style="{ width: `${usedPercent}%` }"
+              />
+            </div>
+          </div>
+        </template>
+        <div class="text-sm">
+          {{ t('tokensUsed', { used: usedTokens.toLocaleString(locale), cached: usage.cached.toLocaleString(locale) }) }}
+        </div>
+      </n-popover>
     </div>
 
     <template #footer>
@@ -165,6 +194,7 @@ watch(isLoading, (value) => {
     placeholder: Ask Entu AI...
     send: Send
     thinking: Thinking...
+    tokensUsed: 'Used {used} tokens · Cached {cached}'
     newChat: New chat
     emptyHint: Entu AI can answer questions about your data and propose changes. Nothing is changed without your confirmation.
     example1: What entity types do I have?
@@ -175,6 +205,7 @@ watch(isLoading, (value) => {
     placeholder: Küsi Entu AI-lt...
     send: Saada
     thinking: Mõtlen...
+    tokensUsed: 'Kasutatud {used} tokenit · vahemälust {cached}'
     newChat: Uus vestlus
     emptyHint: Entu AI oskab vastata küsimustele sinu andmete kohta ja pakkuda välja muudatusi. Midagi ei muudeta ilma sinu kinnituseta.
     example1: Millised objektitüübid mul on?
