@@ -1,5 +1,6 @@
 ## 2026-07-06
 - **Entu AI chat assistant**: A new sparkles button in the toolbar opens a chat assistant that knows your configuration and can propose entity type, property, and data changes — applied only after your confirmation.
+- **Faster account statistics**: The account usage view loads noticeably faster — storage usage is computed in a single database pass, large counts use fast estimates, and results are briefly cached.
 
 ## 2026-06-05
 - **Global cross-type search**: A single search box in the toolbar now queries across all entity types at once, not just the active menu item.
