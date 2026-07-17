@@ -15,7 +15,7 @@ const {
   scrollIdx
 } = useEntities(listElement, {
   fetchProps: ['photo', 'name'],
-  mapEntity: (entity) => ({ ...entity, color: randomColor('200!') })
+  mapEntity: (entity) => ({ ...entity, color: nameColor(getValue(entity.name), '200!') })
 })
 </script>
 

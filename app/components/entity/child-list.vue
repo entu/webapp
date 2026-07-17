@@ -225,13 +225,13 @@ onMounted(async () => {
                 <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
                   <entity-avatar
                     class="print-as-is size-7 rounded-full object-cover"
-                    :class="randomColor('50')"
+                    :class="nameColor(getValue(row.name), '50')"
                     :entity-id="row._id"
                     :has-photo="!!row.photo?.length"
                   >
                     <div
                       class="print-as-is size-7 rounded-full"
-                      :class="randomColor('50')"
+                      :class="nameColor(getValue(row.name), '50')"
                     />
                   </entity-avatar>
                 </nuxt-link>

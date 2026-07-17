@@ -352,7 +352,7 @@ function linkReplace (url) {
     >
       <img
         class="mx-auto size-14 md:size-24"
-        src="/logo.png"
+        src="/logo.svg"
       >
     </a>
 

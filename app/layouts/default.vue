@@ -76,7 +76,7 @@ async function onDrawerClose () {
         ref="siderRef"
         class="print:hidden!"
         collapse-mode="width"
-        collapsed-trigger-class="top-7.5! text-white! bg-[#1E434C]! shaddow-none! border-white!"
+        collapsed-trigger-class="top-7.5! text-white! bg-brand! shaddow-none! border-white!"
         trigger-class="top-5! -left-1! text-white! opacity-80! bg-transparent! shaddow-none! border-transparent! hover:border-white!"
         :class="{ 'm-2 mr-0 rounded-2xl': !menuCollapsed }"
         :collapsed="menuCollapsed"
@@ -173,7 +173,7 @@ async function onDrawerClose () {
       <div class="flex h-full flex-col">
         <!-- Mobile top bar -->
         <div
-          class="relative flex items-center bg-[#1E434C] px-3 pb-4 text-white print:hidden"
+          class="bg-brand relative flex items-center px-3 pb-4 text-white print:hidden"
           style="padding-top: calc(env(safe-area-inset-top) + 1rem)"
         >
           <my-icon
@@ -186,7 +186,7 @@ async function onDrawerClose () {
           <img
             v-else
             class="h-6 w-auto cursor-pointer"
-            src="/logo.png"
+            src="/logo.svg"
             @click="navigateTo('/')"
           >
 
@@ -252,7 +252,7 @@ async function onDrawerClose () {
         :width="windowWidth"
       >
         <n-drawer-content body-content-class="p-0!">
-          <div class="flex h-full flex-col bg-[#1E434C]">
+          <div class="bg-brand flex h-full flex-col">
             <div class="flex items-center justify-between px-3 py-4">
               <div
                 class="cursor-pointer text-sm text-white uppercase opacity-80 hover:opacity-100"

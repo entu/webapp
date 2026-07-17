@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+@theme {
+  /* Entu brand triad — single CSS source of truth. Keep in sync with
+     `themeOverrides` in app/utils/app.js and the native app's asset
+     catalog (EntuBrand / AccentColor colorsets). */
+  --color-brand: #1E434C;
+  --color-brand-hover: #162E35;
+  --color-brand-pressed: #0F2027;
+}
+
 html,
 body,
 #__nuxt {
@@ -11,7 +20,7 @@ body,
 @media screen and (max-width: 767px) {
   html,
   body {
-    background-color: #1E434C;
+    background-color: var(--color-brand);
   }
 }
 

@@ -34,7 +34,7 @@ function showAllChanges () {
     <!-- Latest changelog entry in top right corner -->
     <div v-if="latestChangelogEntry">
       <div class="mb-2 flex items-center justify-between">
-        <span class="truncate font-semibold text-[#1E434C]">
+        <span class="text-brand truncate font-semibold">
           {{ t('changelog') }}
         </span>
         <span class="text-sm text-slate-500">
@@ -75,10 +75,10 @@ function showAllChanges () {
 </template>
 
 <style scoped>
-@reference "tailwindcss";
+@reference "~/assets/tailwind.css";
 
 :deep(h2) {
-  @apply first-of-type:mt-0 mt-8 text-center text-lg font-semibold text-[#1E434C];
+  @apply first-of-type:mt-0 mt-8 text-center text-lg font-semibold text-brand;
 }
 
 :deep(ul) {

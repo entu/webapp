@@ -1,25 +1,41 @@
+// Brand colour triad — the JS source of truth for the Naive UI theme.
+// Keep in sync with the `--color-brand*` tokens in app/assets/tailwind.css
+// and the native app's asset catalog (EntuBrand / AccentColor colorsets).
+export const brandColor = '#1E434C'
+export const brandColorHover = '#162E35'
+export const brandColorPressed = '#0F2027'
+
+// Dashboard stat colours — mirrored exactly in the native app's
+// DashboardView stat colour extension.
+export const statColors = {
+  entities: { color: 'rgb(23,162,184)', deletedColor: 'rgba(23,162,184,.3)' },
+  properties: { color: 'rgb(255,193,7)', deletedColor: 'rgba(255,193,7,.3)' },
+  files: { color: 'rgb(40,167,69)', deletedColor: 'rgba(40,167,69,.3)' },
+  tokens: { color: 'rgb(108,117,125)', deletedColor: 'rgba(108,117,125,.3)' }
+}
+
 export const themeOverrides = {
   common: {
     fontFamily: 'Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif',
     fontSize: '16px',
-    primaryColor: '#1E434C',
-    primaryColorHover: '#162E35',
-    primaryColorPressed: '#0F2027'
+    primaryColor: brandColor,
+    primaryColorHover: brandColorHover,
+    primaryColorPressed: brandColorPressed
   },
   Collapse: {
     dividerColor: '#FFFFFF'
   },
   Drawer: {
     borderRadius: '0',
-    resizableTriggerColorHover: '#1E434C'
+    resizableTriggerColorHover: brandColor
   },
   Input: {
-    borderFocus: '1px solid #1E434C',
-    borderHover: '1px solid #1E434C',
+    borderFocus: `1px solid ${brandColor}`,
+    borderHover: `1px solid ${brandColor}`,
     boxShadowFocus: '0 0 0 2px rgba(3, 117, 255, 0.2)'
   },
   Layout: {
-    siderColor: '#1E434C'
+    siderColor: brandColor
   },
   Menu: {
     arrowColor: 'rgba(255, 255, 255, 0.7)',
@@ -56,8 +72,8 @@ export const themeOverrides = {
     menuBoxShadow: '0 0 0 1px rgb(3, 117, 255)',
     peers: {
       InternalSelection: {
-        borderFocus: '1px solid #1E434C',
-        borderHover: '1px solid #1E434C'
+        borderFocus: `1px solid ${brandColor}`,
+        borderHover: `1px solid ${brandColor}`
       }
     }
   },

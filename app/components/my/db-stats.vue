@@ -16,9 +16,9 @@ const emit = defineEmits(['sort'])
       @click="interactive && emit('sort', 'entities')"
     >
       <my-stats-bar
-        color="rgb(23,162,184)"
-        deleted-color="rgba(23,162,184,.3)"
+        :color="statColors.entities.color"
         :deleted="stats.entities.deleted"
+        :deleted-color="statColors.entities.deletedColor"
         :label="t('entities')"
         :limit="stats.entities.limit"
         :usage="stats.entities.usage"
@@ -30,9 +30,9 @@ const emit = defineEmits(['sort'])
       @click="interactive && emit('sort', 'properties')"
     >
       <my-stats-bar
-        color="rgb(255,193,7)"
-        deleted-color="rgba(255,193,7,.3)"
+        :color="statColors.properties.color"
         :deleted="stats.properties.deleted"
+        :deleted-color="statColors.properties.deletedColor"
         :label="t('properties')"
         :usage="stats.properties.usage"
       />
@@ -43,10 +43,10 @@ const emit = defineEmits(['sort'])
       @click="interactive && emit('sort', 'files')"
     >
       <my-stats-bar
-        color="rgb(40,167,69)"
-        deleted-color="rgba(40,167,69,.3)"
         is-bytes
+        :color="statColors.files.color"
         :deleted="stats.files.deleted"
+        :deleted-color="statColors.files.deletedColor"
         :label="t('files')"
         :limit="stats.files.limit"
         :usage="stats.files.usage"
@@ -58,9 +58,9 @@ const emit = defineEmits(['sort'])
       @click="interactive && emit('sort', 'tokens')"
     >
       <my-stats-bar
-        color="rgb(108,117,125)"
-        deleted-color="rgba(108,117,125,.3)"
         show-total
+        :color="statColors.tokens.color"
+        :deleted-color="statColors.tokens.deletedColor"
         :label="t('tokens')"
         :limit="stats.tokens.limit"
         :usage="stats.tokens.usage"

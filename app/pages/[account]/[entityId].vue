@@ -355,7 +355,7 @@ onUnmounted(() => {
 
         <div class="pt-5">
           <h1
-            class="mb-4 text-center text-2xl font-bold text-[#1E434C] md:pl-5 md:text-left"
+            class="text-brand mb-4 text-center text-2xl font-bold md:pl-5 md:text-left"
             @click="$event.altKey && navigateTo({ path: route.path, query: route.query, hash: '#debug' }, { replace: true })"
           >
             {{ entity.name?.trim() || entity._id }}

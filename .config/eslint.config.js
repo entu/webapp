@@ -58,6 +58,10 @@ export default withNuxt({
         config: {},
         whitelist: [
           'active',
+          // Brand token utilities from @theme in app/assets/tailwind.css —
+          // the plugin can't see Tailwind v4 CSS-defined theme colors.
+          'bg-brand(!|-hover!?|-pressed!?)?',
+          'text-brand',
           // 'link',
           // 'list-item',
           'list-item-img',
