@@ -54,7 +54,7 @@ async function registerPasskey () {
     // Complete registration with device name
     await apiRequest('passkey', {
       ...credential,
-      expectedChallenge: options.challenge,
+      challengeToken: options.challengeToken,
       deviceName: getDeviceName()
     }, {}, 'POST')
 

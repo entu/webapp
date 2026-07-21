@@ -47,7 +47,7 @@ async function authenticateWithPasskey () {
     // Complete authentication
     const result = await apiRequest('auth/passkey', {
       ...credential,
-      expectedChallenge: options.challenge
+      challengeToken: options.challengeToken
     }, {}, 'POST')
 
     // Store authentication data
