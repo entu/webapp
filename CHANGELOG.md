@@ -1,6 +1,17 @@
 ## 2026-08-17
 - **Simplified signup**: Creating a database now takes just a name and a sign-in — no payment step, live name availability check, and the new database opens immediately with you as its owner. Plan and billing are set up later on the billing page.
 - **Sign-in improvements**: The front page lists all sign-in methods directly, and renewing a session re-checks your database access so new databases appear and revoked ones disappear without signing in again.
+- **Protected system properties**: Server-managed properties (such as billing settings) can no longer be modified or deleted through the client API.
+
+## 2026-07-22
+- **Invite links expire in 24 hours**: Invitation links are now valid for 24 hours, and credential properties got stricter server-side protection.
+
+## 2026-07-17
+- **Refreshed brand colors and avatars**: Unified brand colors across the app and gave every user a consistent, deterministic avatar.
+- **Multilingual definitions in AI chat**: The AI assistant can now read and propose entity type and property definition texts in multiple languages.
+
+## 2026-07-15
+- **Database organization info**: The account overview now includes the database's organization details.
 
 ## 2026-07-06
 - **Entu AI chat assistant**: A new sparkles button in the toolbar opens a chat assistant that knows your configuration and can propose entity type, property, and data changes — applied only after your confirmation.
