@@ -1,4 +1,5 @@
 // @ts-check
+import { fileURLToPath } from 'node:url'
 import tailwind from 'eslint-plugin-tailwindcss'
 import unicorn from 'eslint-plugin-unicorn'
 import withNuxt from '../.nuxt/eslint.config.mjs'
@@ -19,7 +20,7 @@ export default withNuxt({
     '@stylistic/object-curly-spacing': ['error', 'always'],
     '@stylistic/quote-props': ['error', 'as-needed'],
     '@stylistic/space-before-function-paren': ['error', 'always'],
-    'unicorn/no-array-for-each': 'error',
+    'unicorn/no-for-each': 'error',
     'unicorn/no-lonely-if': 'error',
     'unicorn/no-useless-undefined': 'error',
     'unicorn/prefer-array-flat-map': 'error',
@@ -51,11 +52,11 @@ export default withNuxt({
     'vue/prefer-use-template-ref': 'error'
   }
 }).prepend([
-  ...tailwind.configs['flat/recommended'],
+  tailwind.configs.recommended,
   {
     settings: {
       tailwindcss: {
-        config: {},
+        cssConfigPath: fileURLToPath(new URL('../app/assets/tailwind.css', import.meta.url)),
         whitelist: [
           'active',
           // Brand token utilities from @theme in app/assets/tailwind.css —
