@@ -1,3 +1,7 @@
+## 2026-08-17
+- **Simplified signup**: Creating a database now takes just a name and a sign-in — no payment step, live name availability check, and the new database opens immediately with you as its owner. Plan and billing are set up later on the billing page.
+- **Sign-in improvements**: The front page lists all sign-in methods directly, and renewing a session re-checks your database access so new databases appear and revoked ones disappear without signing in again.
+
 ## 2026-07-06
 - **Entu AI chat assistant**: A new sparkles button in the toolbar opens a chat assistant that knows your configuration and can propose entity type, property, and data changes — applied only after your confirmation.
 - **Faster account statistics**: The account usage view loads noticeably faster — storage usage is computed in a single database pass, large counts use fast estimates, and results are briefly cached.
