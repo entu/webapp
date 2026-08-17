@@ -18,15 +18,17 @@ function updateNaiveUILocale (localeValue) {
   }
 }
 
-// Set initial locale from localStorage or browser language
+// Set initial locale from query parameter, localStorage or browser language
 onMounted(() => {
-  let targetLocale = localStorage.getItem('locale')
+  const queryLocale = new URLSearchParams(window.location.search).get('locale')
+  let targetLocale = ['en', 'et'].includes(queryLocale) ? queryLocale : localStorage.getItem('locale')
 
   if (!targetLocale) {
     const defaultLocale = navigator?.language?.split('-')?.at(0) || 'en'
     targetLocale = ['en', 'et'].includes(defaultLocale) ? defaultLocale : 'en'
-    localStorage.setItem('locale', targetLocale)
   }
+
+  localStorage.setItem('locale', targetLocale)
 
   // Only set locale if it's different from current
   if (locale.value !== targetLocale) {
