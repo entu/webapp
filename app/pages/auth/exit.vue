@@ -1,7 +1,5 @@
 <script setup>
-import { NSpin } from 'naive-ui'
-
-definePageMeta({ layout: 'blank' })
+definePageMeta({ layout: 'spinner' })
 
 const { t } = useI18n()
 const { logOut } = useUser()
@@ -14,11 +12,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <n-spin
-    class="size-full"
-    show
-    :delay="1000"
-  />
+  <div />
 </template>
 
 <i18n lang="yaml">

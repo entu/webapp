@@ -1,4 +1,6 @@
 <script setup>
+definePageMeta({ layout: 'spinner' })
+
 const { locale, t } = useI18n()
 
 onMounted(async () => {
