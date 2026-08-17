@@ -1,29 +1,58 @@
 <script setup>
-import { NAlert, NCard, NInput, NSpin } from 'naive-ui'
+import { NAlert, NCard, NInput } from 'naive-ui'
 
 definePageMeta({ layout: 'blank' })
 
 const runtimeConfig = useRuntimeConfig()
 const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
-const route = useRoute()
+const { token, tokenExpiry } = useUser()
+
+const authProviders = [
+  { value: 'e-mail', icon: 'e-mail' },
+  { value: 'google', icon: 'google' },
+  { value: 'apple', icon: 'apple' },
+  { value: 'smart-id', icon: 'smart-id' },
+  { value: 'mobile-id', icon: 'mobile-id' },
+  { value: 'id-card', icon: 'id-card' }
+]
 
 const databaseName = ref('')
-const sessionId = ref(null)
-const isSettingUp = ref(false)
+const availability = ref()
+const isChecking = ref(false)
+const isCreating = ref(false)
 const error = ref()
 
-const isValidForm = computed(() => databaseName.value.length >= 4 && databaseName.value.length <= 12)
+let checkTimeout = null
+let checkCounter = 0
 
-const pricingTableId = computed(() => {
-  const tables = Object.fromEntries(
-    (runtimeConfig.public.stripePricingTableIds || '').split(',').map((s) => s.split(':'))
-  )
+const isSignedIn = computed(() => !!token.value && !!tokenExpiry.value && new Date(tokenExpiry.value).getTime() > Date.now())
+const isValidFormat = computed(() => /^[a-z][a-z0-9_]{3,11}$/.test(databaseName.value))
+const isAvailable = computed(() => isValidFormat.value && availability.value === 'available')
 
-  return tables[locale.value] || tables.en || ''
+const inputStatus = computed(() => availability.value && availability.value !== 'available' ? 'error' : undefined)
+
+const statusMessage = computed(() => {
+  if (isChecking.value) return t('checking')
+  if (!availability.value) return
+  if (availability.value === 'available') return t('available')
+
+  return t(`error-${availability.value}`)
 })
 
-const successUrl = computed(() => `${window.location.origin}/new?session={CHECKOUT_SESSION_ID}`)
+watch(databaseName, () => {
+  availability.value = undefined
+  error.value = undefined
+  isChecking.value = false
+  checkCounter++
+
+  clearTimeout(checkTimeout)
+
+  if (!isValidFormat.value) return
+
+  isChecking.value = true
+  checkTimeout = setTimeout(checkAvailability, 400)
+})
 
 function validateName () {
   databaseName.value = databaseName.value?.replace(/[^a-z0-9_]/gi, '').toLowerCase()
@@ -33,24 +62,49 @@ function validateName () {
   }
 }
 
+async function checkAvailability () {
+  const requestId = ++checkCounter
+
+  try {
+    const { available, reason } = await $fetch(`${runtimeConfig.public.apiUrl}/new/${databaseName.value}`)
+
+    if (requestId !== checkCounter) return
+
+    availability.value = available ? 'available' : reason
+  }
+  catch (e) {
+    if (requestId !== checkCounter) return
+
+    error.value = e.data?.statusMessage || e.message
+  }
+
+  isChecking.value = false
+}
+
 async function createDatabase () {
-  isSettingUp.value = true
+  if (!isAvailable.value || isCreating.value) return
+
+  isCreating.value = true
   error.value = undefined
 
   try {
-    const res = await $fetch(`${runtimeConfig.public.apiUrl}/new`, {
-      method: 'PUT',
-      body: { database: databaseName.value, sessionId: sessionId.value }
-    })
+    const db = await setupNewDatabase(token.value, databaseName.value)
 
-    if (res.inviteToken) {
-      navigateTo(`/${res.db}/invite?token=${res.inviteToken}`)
-    }
+    await navigateTo(`/${db}`)
   }
   catch (e) {
     error.value = e.data?.statusMessage || e.message
-    isSettingUp.value = false
+    isCreating.value = false
+
+    checkAvailability()
   }
+}
+
+function signInWith (provider) {
+  if (!isAvailable.value) return
+
+  sessionStorage.setItem('new-database', databaseName.value)
+  navigateTo(`/auth/${provider}`)
 }
 
 function setLanguage () {
@@ -63,10 +117,7 @@ function setLanguage () {
 }
 
 onMounted(() => {
-  useHead({
-    title: t('title'),
-    script: [{ src: 'https://js.stripe.com/v3/pricing-table.js', async: true }]
-  })
+  useHead({ title: t('title') })
 
   const savedName = sessionStorage.getItem('new-database')
 
@@ -75,8 +126,11 @@ onMounted(() => {
     sessionStorage.removeItem('new-database')
   }
 
-  if (route.query.session) {
-    sessionId.value = route.query.session
+  const savedError = sessionStorage.getItem('new-database-error')
+
+  if (savedError) {
+    error.value = savedError
+    sessionStorage.removeItem('new-database-error')
   }
 })
 </script>
@@ -103,34 +157,32 @@ onMounted(() => {
       </div>
     </div>
 
-    <div
-      v-if="isSettingUp"
-      class="mb-8 flex w-full flex-col gap-8 px-4 sm:mx-auto sm:w-96"
-    >
-      <n-card :title="t('pendingTitle')">
-        <div class="flex flex-col gap-8 py-8">
-          <my-markdown
-            class="text-sm"
-            :source="t('pendingInfo')"
-          />
-          <div class="flex justify-center">
-            <n-spin size="medium" />
-          </div>
-        </div>
-      </n-card>
+    <div class="flex flex-col items-center gap-1 px-4 pb-6 text-center">
+      <div class="text-xl font-semibold">
+        {{ t('title') }}
+      </div>
+      <div class="text-sm text-gray-500">
+        {{ t('description') }}
+      </div>
     </div>
 
-    <div
-      v-else-if="sessionId"
-      class="mb-8 flex w-full flex-col gap-8 px-4 sm:mx-auto sm:w-96"
-    >
-      <n-card :title="t('title')">
+    <div class="mb-8 flex w-full flex-col gap-8 px-4 sm:mx-auto sm:w-96">
+      <n-card>
         <n-input
           v-model:value="databaseName"
           autofocus
           :placeholder="t('databaseName')"
+          :status="inputStatus"
           @input="validateName()"
         />
+
+        <p
+          v-if="statusMessage"
+          class="mt-2 text-sm"
+          :class="{ 'text-red-600': inputStatus === 'error', 'text-gray-500': isChecking, 'text-green-600': isAvailable }"
+        >
+          {{ statusMessage }}
+        </p>
 
         <template #footer>
           <my-markdown
@@ -149,37 +201,41 @@ onMounted(() => {
       </n-alert>
 
       <my-button
+        v-if="isSignedIn"
         secondary
         size="large"
         strong
         type="success"
-        :disabled="!isValidForm"
+        :disabled="!isAvailable"
         :label="t('create')"
+        :loading="isCreating"
         @click="createDatabase()"
       />
-    </div>
 
-    <div
-      v-else
-      class="mb-8 flex w-full flex-col gap-8"
-    >
-      <div class="mx-auto w-full max-w-2xl px-4 text-center">
-        <p class="mb-3 text-2xl font-bold text-gray-900">
-          {{ t('pricingTitle') }}
-        </p>
-        <my-markdown
-          class="text-base text-gray-900"
-          :source="t('pricingInfo')"
-        />
-      </div>
+      <n-card
+        v-else
+        :title="t('signInTitle')"
+      >
+        <div
+          v-for="provider in authProviders"
+          :key="provider.value"
+          class="flex items-center gap-2 border-b border-b-gray-200 py-2 last-of-type:border-b-0"
+          :class="{
+            'cursor-pointer': isAvailable,
+            'pointer-events-none opacity-40': !isAvailable,
+          }"
+          @click="signInWith(provider.value)"
+        >
+          <my-icon :icon="provider.icon" />
+          {{ t(`auth-${provider.value}`) }}
+        </div>
 
-      <div class="w-full border-y border-[#efeff5] bg-white pt-8">
-        <stripe-pricing-table
-          :pricing-table-id="pricingTableId"
-          :publishable-key="runtimeConfig.public.stripePublishableKey"
-          :success-url="successUrl"
-        />
-      </div>
+        <template #footer>
+          <p class="mt-1 text-sm text-gray-500">
+            {{ t('signInInfo') }}
+          </p>
+        </template>
+      </n-card>
     </div>
 
     <div class="mt-auto mb-4 px-4 text-center text-sm text-gray-500">
@@ -208,14 +264,25 @@ onMounted(() => {
 <i18n lang="yaml">
   en:
     language: Eesti keel
-    title: Choose your database name
+    title: Create a new Entu database
+    description: Choose a permanent name for your database. It will be ready to use right away.
     databaseName: Database name
-    databaseInfo: Database name can contain only letters and underscores, must start with a letter, be 4–12 characters long, and cannot be changed later.
+    databaseInfo: Database name can contain only letters, numbers and underscores, must start with a letter, be 4–12 characters long, and cannot be changed later.
+    checking: Checking availability…
+    available: This name is available
+    error-format: This name contains invalid characters
+    error-length: The name must be 4–12 characters long
+    error-reserved: This name is reserved
+    error-taken: This name is already taken
     create: Create Database
-    pricingTitle: Create a new Entu database
-    pricingInfo: "Choose a plan to start your free trial. Subscriptions and payments are handled securely by Stripe. Once your billing details are confirmed, you'll be able to choose your database name and create your first user account."
-    pendingTitle: Creating your database
-    pendingInfo: We are creating your database. This takes just a moment, you will be redirected automatically.
+    signInTitle: Sign in to create your database
+    signInInfo: Choose a database name above, then sign in with one of these options. Your database is created right after you sign in.
+    auth-e-mail: E-mail
+    auth-google: Google
+    auth-apple: Apple
+    auth-smart-id: Smart-ID
+    auth-mobile-id: Mobile-ID
+    auth-id-card: ID-Card
     error: Error
     terms: Terms of Service
     termsUrl: https://entu.ee/terms/
@@ -225,14 +292,25 @@ onMounted(() => {
     docsUrl: https://entu.ee/overview/
   et:
     language: English
-    title: Valige andmebaasi nimi
+    title: Loo uus Entu andmebaas
+    description: Vali oma andmebaasile püsiv nimi. See on kohe kasutamiseks valmis.
     databaseName: Andmebaasi nimi
-    databaseInfo: Andmebaasi nimi võib sisaldada ainult tähti ja allkriipse, peab algama tähega, olema 4–12 tähemärki pikk ning seda ei saa hiljem muuta.
+    databaseInfo: Andmebaasi nimi võib sisaldada ainult tähti, numbreid ja allkriipse, peab algama tähega, olema 4–12 tähemärki pikk ning seda ei saa hiljem muuta.
+    checking: Kontrollime saadavust…
+    available: See nimi on vaba
+    error-format: Nimi sisaldab keelatud tähemärke
+    error-length: Nimi peab olema 4–12 tähemärki pikk
+    error-reserved: See nimi on reserveeritud
+    error-taken: See nimi on juba kasutusel
     create: Loo andmebaas
-    pricingTitle: Loo uus Entu andmebaas
-    pricingInfo: "Valige pakett tasuta prooviperioodi alustamiseks. Tellimused ja maksed haldab turvaliselt Stripe. Pärast arveldusandmete kinnitamist saate valida andmebaasi nime ja luua oma esimese kasutajakonto."
-    pendingTitle: Loome teie andmebaasi
-    pendingInfo: Loome teie andmebaasi. See võtab vaid hetke, teid suunatakse automaatselt edasi.
+    signInTitle: Andmebaasi loomiseks logi sisse
+    signInInfo: Vali üleval andmebaasi nimi ja logi seejärel sisse ühega neist valikutest. Sinu andmebaas luuakse kohe pärast sisselogimist.
+    auth-e-mail: E-post
+    auth-google: Google
+    auth-apple: Apple
+    auth-smart-id: Smart-ID
+    auth-mobile-id: Mobiil-ID
+    auth-id-card: ID-kaart
     error: Viga
     terms: Kasutustingimused
     termsUrl: https://entu.ee/et/terms/

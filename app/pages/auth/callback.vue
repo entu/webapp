@@ -40,7 +40,25 @@ onMounted(async () => {
     user.value = authResponse.user
   }
 
-  if (newUser.new) {
+  const newDatabase = !invite && sessionStorage.getItem('new-database')
+
+  if (newDatabase) {
+    try {
+      const db = await setupNewDatabase(authResponse.token, newDatabase)
+
+      sessionStorage.removeItem('new-database')
+      nextPage.value = {}
+
+      await navigateTo(`/${db}`)
+    }
+    catch (e) {
+      sessionStorage.setItem('new-database-error', e.data?.statusMessage || e.message)
+      nextPage.value = {}
+
+      await navigateTo('/new')
+    }
+  }
+  else if (newUser.new) {
     await navigateTo({ path: `/${authAccount}/${newUser?._id}`, hash: 'edit' })
   }
   else if (!invite && nextPage.value.path !== '/') {

@@ -150,6 +150,15 @@ onMounted(async () => {
             </div>
           </div>
         </div>
+
+        <div class="flex justify-center pt-12">
+          <my-button
+            icon="add"
+            secondary
+            :label="t('new')"
+            @click="navigateTo('/new')"
+          />
+        </div>
       </div>
     </div>
 
