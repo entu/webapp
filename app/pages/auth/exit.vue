@@ -1,6 +1,8 @@
 <script setup>
 import { NSpin } from 'naive-ui'
 
+definePageMeta({ layout: 'blank' })
+
 const { t } = useI18n()
 const { logOut } = useUser()
 

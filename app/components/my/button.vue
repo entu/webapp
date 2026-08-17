@@ -4,6 +4,7 @@ import { NButton, NPopover } from 'naive-ui'
 defineProps({
   bg: { type: Boolean, default: true },
   circle: { type: Boolean, default: false },
+  ghost: { type: Boolean, default: false },
   icon: { type: String, default: undefined },
   label: { type: String, default: undefined },
   tooltip: { type: String, default: undefined }
@@ -18,9 +19,10 @@ defineProps({
     <template #trigger>
       <n-button
         :circle="circle"
-        :quaternary="!bg"
+        :ghost="ghost"
+        :quaternary="!ghost && !bg"
         :round="!circle"
-        :secondary="bg"
+        :secondary="!ghost && bg"
         v-bind="$attrs"
       >
         <template
@@ -47,9 +49,10 @@ defineProps({
   <n-button
     v-else
     :circle="circle"
-    :quaternary="!bg"
+    :ghost="ghost"
+    :quaternary="!ghost && !bg"
     :round="!circle"
-    :secondary="bg"
+    :secondary="!ghost && bg"
     v-bind="$attrs"
   >
     <template

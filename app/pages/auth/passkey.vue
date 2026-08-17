@@ -2,6 +2,8 @@
 import { NSpin, NCard } from 'naive-ui'
 import { startAuthentication, browserSupportsWebAuthn, platformAuthenticatorIsAvailable } from '@simplewebauthn/browser'
 
+definePageMeta({ layout: 'blank' })
+
 const { t } = useI18n()
 const { setToken } = useUser()
 const { accounts } = useAccount()
@@ -76,7 +78,7 @@ async function authenticateWithPasskey () {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-white p-4">
+  <div class="flex min-h-full items-center justify-center p-4">
     <div class="w-full max-w-fit space-y-6">
       <n-spin
         v-if="isAuthenticating"

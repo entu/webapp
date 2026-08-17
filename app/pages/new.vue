@@ -136,7 +136,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex min-h-full flex-col overflow-auto bg-gray-50">
+  <div class="flex min-h-full flex-col">
     <div class="flex w-full flex-col items-center">
       <div class="flex w-full justify-end px-4 pt-4">
         <span
@@ -238,26 +238,7 @@ onMounted(() => {
       </n-card>
     </div>
 
-    <div class="mt-auto mb-4 px-4 text-center text-sm text-gray-500">
-      <a
-        target="_blank"
-        :href="t('docsUrl')"
-      >{{ t('docs') }}</a>
-
-      <span class="mx-2">&middot;</span>
-
-      <a
-        target="_blank"
-        :href="t('pricingUrl')"
-      >{{ t('pricing') }}</a>
-
-      <span class="mx-2">&middot;</span>
-
-      <a
-        target="_blank"
-        :href="t('termsUrl')"
-      >{{ t('terms') }}</a>
-    </div>
+    <my-footer class="mt-auto mb-4" />
   </div>
 </template>
 
@@ -284,12 +265,6 @@ onMounted(() => {
     auth-mobile-id: Mobile-ID
     auth-id-card: ID-Card
     error: Error
-    terms: Terms of Service
-    termsUrl: https://entu.ee/terms/
-    pricing: Pricing
-    pricingUrl: https://entu.ee/#pricing
-    docs: Documentation
-    docsUrl: https://entu.ee/overview/
   et:
     language: English
     title: Loo uus Entu andmebaas
@@ -312,10 +287,4 @@ onMounted(() => {
     auth-mobile-id: Mobiil-ID
     auth-id-card: ID-kaart
     error: Viga
-    terms: Kasutustingimused
-    termsUrl: https://entu.ee/et/terms/
-    pricing: Hinnad
-    pricingUrl: https://entu.ee/et/#hinnad
-    docs: Dokumentatsioon
-    docsUrl: https://entu.ee/et/overview/
 </i18n>

@@ -65,8 +65,6 @@ onMounted(async () => {
 <template>
   <div class="relative flex h-full flex-col">
     <template v-if="!userId && !isQuery">
-      <change-log class="absolute right-3 hidden max-w-80 md:block" />
-
       <div class="flex flex-1 items-center justify-center p-6">
         <div class="flex w-64 flex-col gap-4">
           <div class="md:hidden">
@@ -90,26 +88,7 @@ onMounted(async () => {
         </div>
       </div>
 
-      <div class="shrink-0 p-4 text-center text-sm text-gray-500">
-        <a
-          target="_blank"
-          :href="t('docsUrl')"
-        >{{ t('docs') }}</a>
-
-        <span class="mx-2">&middot;</span>
-
-        <a
-          target="_blank"
-          :href="t('pricingUrl')"
-        >{{ t('pricing') }}</a>
-
-        <span class="mx-2">&middot;</span>
-
-        <a
-          target="_blank"
-          :href="t('termsUrl')"
-        >{{ t('terms') }}</a>
-      </div>
+      <my-footer class="shrink-0 py-4" />
     </template>
 
     <div
@@ -129,26 +108,7 @@ onMounted(async () => {
           <my-db-stats :stats="stats" />
         </div>
 
-        <div class="pb-4 text-center text-sm text-gray-500">
-          <a
-            target="_blank"
-            :href="t('docsUrl')"
-          >{{ t('docs') }}</a>
-
-          <span class="mx-2">&middot;</span>
-
-          <a
-            target="_blank"
-            :href="t('pricingUrl')"
-          >{{ t('pricing') }}</a>
-
-          <span class="mx-2">&middot;</span>
-
-          <a
-            target="_blank"
-            :href="t('termsUrl')"
-          >{{ t('terms') }}</a>
-        </div>
+        <my-footer class="pb-4" />
       </div>
     </transition>
 
@@ -176,19 +136,7 @@ onMounted(async () => {
   en:
     signIn: Sign In
     new: Create New Database
-    terms: Terms of Service
-    termsUrl: https://entu.ee/terms/
-    pricing: Pricing
-    pricingUrl: https://entu.ee/#pricing
-    docs: Documentation
-    docsUrl: https://entu.ee/overview/
   et:
     signIn: Sisene
     new: Loo uus andmebaas
-    terms: Kasutustingimused
-    termsUrl: https://entu.ee/et/terms/
-    pricing: Hinnad
-    pricingUrl: https://entu.ee/et/#hinnad
-    docs: Dokumentatsioon
-    docsUrl: https://entu.ee/et/overview/
 </i18n>

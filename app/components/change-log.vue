@@ -1,27 +1,10 @@
 <script setup>
 import changelog from '~~/CHANGELOG.md?raw'
 
-const { t, d } = useI18n()
+const { t } = useI18n()
 
 // Drawer state
 const showChangelogDrawer = ref(false)
-
-// Extract the latest changelog entry
-const latestChangelogEntry = computed(() => {
-  if (!changelog) return null
-
-  const sections = changelog.split('## ').filter(Boolean)
-  if (!sections.length) return null
-
-  const firstSection = sections.at(0)
-  const lines = firstSection.split('\n')
-  const dateString = lines.at(0)
-  const content = lines.slice(1).join('\n')
-
-  const date = new Date(dateString)
-
-  return { date, content }
-})
 
 function showAllChanges () {
   useAnalytics('show_changelog')
@@ -30,34 +13,12 @@ function showAllChanges () {
 </script>
 
 <template>
-  <div>
-    <!-- Latest changelog entry in top right corner -->
-    <div v-if="latestChangelogEntry">
-      <div class="mb-2 flex items-center justify-between">
-        <span class="text-brand truncate font-semibold">
-          {{ t('changelog') }}
-        </span>
-        <span class="text-sm text-slate-500">
-          {{ d(latestChangelogEntry.date, 'date') }}
-        </span>
-      </div>
+  <span>
+    <button
+      class="cursor-pointer"
+      @click="showAllChanges()"
+    >{{ t('changelog') }}</button>
 
-      <my-markdown
-        class="text-sm"
-        :source="latestChangelogEntry.content"
-      />
-
-      <div class="mt-3 text-center">
-        <button
-          class="link text-xs font-semibold"
-          @click="showAllChanges()"
-        >
-          {{ t('showAllChanges') }}
-        </button>
-      </div>
-    </div>
-
-    <!-- Changelog drawer -->
     <my-drawer
       v-model:show="showChangelogDrawer"
       closable
@@ -71,7 +32,7 @@ function showAllChanges () {
         :source="changelog"
       />
     </my-drawer>
-  </div>
+  </span>
 </template>
 
 <style scoped>
@@ -93,8 +54,6 @@ function showAllChanges () {
 <i18n lang="yaml">
   en:
     changelog: Latest Changes
-    showAllChanges: Show all changes
   et:
-    changelog: Viimased muudatused - EN
-    showAllChanges: Näita kõiki muudatusi
+    changelog: Viimased muudatused
 </i18n>

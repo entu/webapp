@@ -1,18 +1,27 @@
 <script setup>
-import { NSpin } from 'naive-ui'
+import { NButtonGroup, NSpin } from 'naive-ui'
 
-definePageMeta({
-  layout: 'default',
-  middleware () {
-    if (useAccount().accounts.value?.length) {
-      setPageLayout('blank')
-    }
-  }
-})
+definePageMeta({ layout: 'blank' })
 
 const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
-const { accounts, showMobileMenu } = useAccount()
+const { accounts } = useAccount()
+
+const authProviderGroups = [
+  [
+    { value: 'passkey', icon: 'passkey' }
+  ],
+  [
+    { value: 'e-mail', icon: 'e-mail' },
+    { value: 'apple', icon: 'apple' },
+    { value: 'google', icon: 'google' }
+  ],
+  [
+    { value: 'smart-id', icon: 'smart-id' },
+    { value: 'mobile-id', icon: 'mobile-id' },
+    { value: 'id-card', icon: 'id-card' }
+  ]
+]
 
 const isRedirecting = ref(false)
 const dbStats = ref([])
@@ -68,7 +77,7 @@ onMounted(async () => {
 <template>
   <div
     v-if="accounts?.length"
-    class="flex min-h-full flex-col overflow-auto bg-gray-50"
+    class="flex min-h-full flex-col"
   >
     <div class="flex w-full justify-end px-4 pt-4">
       <span
@@ -153,8 +162,9 @@ onMounted(async () => {
 
         <div class="flex justify-center pt-12">
           <my-button
+            ghost
             icon="add"
-            secondary
+            size="large"
             :label="t('new')"
             @click="navigateTo('/new')"
           />
@@ -162,105 +172,120 @@ onMounted(async () => {
       </div>
     </div>
 
-    <div class="shrink-0 p-4 text-center text-sm text-gray-500">
-      <a
-        target="_blank"
-        :href="t('docsUrl')"
-      >{{ t('docs') }}</a>
-
-      <span class="mx-2">&middot;</span>
-
-      <a
-        target="_blank"
-        :href="t('pricingUrl')"
-      >{{ t('pricing') }}</a>
-
-      <span class="mx-2">&middot;</span>
-
-      <a
-        target="_blank"
-        :href="t('termsUrl')"
-      >{{ t('terms') }}</a>
-    </div>
+    <my-footer class="shrink-0 py-4" />
   </div>
 
   <div
     v-else
-    class="relative flex h-full flex-col"
+    class="flex min-h-full flex-col"
   >
-    <change-log class="absolute right-3 hidden max-w-80 md:block" />
+    <div class="flex w-full justify-end px-4 pt-4">
+      <span
+        class="cursor-pointer text-xs font-bold text-gray-500 uppercase"
+        @click="setLanguage()"
+      >
+        {{ t('language') }}
+      </span>
+    </div>
 
-    <div class="flex flex-1 items-center justify-center p-6">
-      <div class="flex w-64 flex-col gap-4">
-        <div class="md:hidden">
-          <my-button
-            block
-            size="large"
-            type="info"
-            :label="t('signIn')"
-            @click="showMobileMenu = true"
-          />
-        </div>
+    <div class="flex justify-center py-4">
+      <a href="/">
+        <img
+          class="size-24"
+          src="/logo.png"
+        >
+      </a>
+    </div>
 
-        <my-button
-          block
-          icon="add"
-          secondary
-          size="large"
-          :label="t('new')"
-          @click="navigateTo('/new')"
-        />
+    <div class="flex flex-col items-center gap-1 px-4 pb-6 text-center">
+      <div class="text-xl font-semibold">
+        {{ t('signInTitle') }}
+      </div>
+      <div class="max-w-72 text-sm text-gray-500">
+        {{ t('signInDescription') }}
       </div>
     </div>
 
-    <div class="shrink-0 p-4 text-center text-sm text-gray-500">
-      <a
-        target="_blank"
-        :href="t('docsUrl')"
-      >{{ t('docs') }}</a>
+    <div class="mb-8 flex w-full flex-col gap-8 px-4 sm:mx-auto sm:w-72">
+      <div class="flex flex-col gap-3">
+        <n-button-group
+          v-for="(group, index) in authProviderGroups"
+          :key="index"
+          class="flex! w-full flex-col"
+          vertical
+        >
+          <my-button
+            v-for="provider in group"
+            :key="provider.value"
+            class="w-full justify-start! px-6!"
+            size="large"
+            :icon="provider.icon"
+            :label="t(`auth-${provider.value}`)"
+            @click="navigateTo(`/auth/${provider.value}`)"
+          />
+        </n-button-group>
+      </div>
 
-      <span class="mx-2">&middot;</span>
-
-      <a
-        target="_blank"
-        :href="t('pricingUrl')"
-      >{{ t('pricing') }}</a>
-
-      <span class="mx-2">&middot;</span>
-
-      <a
-        target="_blank"
-        :href="t('termsUrl')"
-      >{{ t('terms') }}</a>
+      <my-button
+        block
+        ghost
+        icon="add"
+        size="large"
+        :label="t('new')"
+        @click="navigateTo('/new')"
+      />
     </div>
+
+    <my-footer class="mt-auto mb-4" />
   </div>
 </template>
+
+<style scoped>
+/* Group corners match a standalone button's visible radius (half of the 2.5rem button height) */
+.n-button-group :deep(.n-button) {
+  border-radius: 0;
+}
+
+.n-button-group :deep(.n-button:first-child) {
+  border-top-left-radius: 1.25rem;
+  border-top-right-radius: 1.25rem;
+}
+
+.n-button-group :deep(.n-button:last-child) {
+  border-bottom-left-radius: 1.25rem;
+  border-bottom-right-radius: 1.25rem;
+}
+</style>
 
 <i18n lang="yaml">
   en:
     language: Eesti keel
-    signIn: Sign In
+    signInTitle: Sign in to Entu
+    signInDescription: Choose how you want to sign in. You will be taken to your databases.
+    auth-passkey: Passkey
+    auth-e-mail: E-mail
+    auth-google: Google
+    auth-apple: Apple
+    auth-smart-id: Smart-ID
+    auth-mobile-id: Mobile-ID
+    auth-id-card: ID-Card
     new: Create New Database
     selectTitle: Select a database
     selectDescription: You have access to multiple databases. Choose one to continue.
     loadError: Could not load stats
-    docs: Documentation
-    docsUrl: https://entu.ee/overview/
-    pricing: Pricing
-    pricingUrl: https://entu.ee/#pricing
-    terms: Terms of Service
-    termsUrl: https://entu.ee/terms/
   et:
     language: English
-    signIn: Sisene
+    signInTitle: Sisene Entusse
+    signInDescription: Vali, kuidas soovid sisse logida. Seejärel jõuad oma andmebaasidesse.
+    auth-passkey: Turvavõti
+    auth-e-mail: E-post
+    auth-google: Google
+    auth-apple: Apple
+    auth-smart-id: Smart-ID
+    auth-mobile-id: Mobiil-ID
+    auth-id-card: ID-kaart
     new: Loo uus andmebaas
     selectTitle: Vali andmebaas
     selectDescription: Sul on ligipääs mitmele andmebaasile. Vali üks jätkamiseks.
     loadError: Statistika laadimine ebaõnnestus
-    docs: Dokumentatsioon
-    docsUrl: https://entu.ee/et/overview/
-    pricing: Hinnad
-    pricingUrl: https://entu.ee/et/#hinnad
-    terms: Kasutustingimused
-    termsUrl: https://entu.ee/et/terms/
 </i18n>

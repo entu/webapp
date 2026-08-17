@@ -14,7 +14,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex min-h-screen items-center justify-center bg-white p-4">
+  <div class="flex min-h-full items-center justify-center p-4">
     <div class="w-full max-w-fit space-y-6">
       <div class="text-center">
         <h1 class="text-2xl font-bold text-gray-900">

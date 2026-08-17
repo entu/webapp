@@ -1,6 +1,8 @@
 <script setup>
 import { NSpin } from 'naive-ui'
 
+definePageMeta({ layout: 'blank' })
+
 const runtimeConfig = useRuntimeConfig()
 const route = useRoute()
 const { t } = useI18n()

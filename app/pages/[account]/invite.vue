@@ -34,7 +34,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex size-full flex-col overflow-auto bg-gray-50">
+  <div class="flex min-h-full flex-col">
     <div class="my-8 flex w-full grow flex-col gap-8 px-4 sm:mx-auto sm:w-96">
       <div class="-mb-6">
         <span
@@ -70,29 +70,7 @@ onMounted(async () => {
         </template>
       </n-card>
     </div>
-    <div class="mb-2 px-4 text-center text-sm text-gray-500">
-      <a
-        rel="noopener noreferrer"
-        target="_blank"
-        :href="t('docsUrl')"
-      >{{ t('docs') }}</a>
-
-      <span class="mx-2">&middot;</span>
-
-      <a
-        rel="noopener noreferrer"
-        target="_blank"
-        :href="t('pricingUrl')"
-      >{{ t('pricing') }}</a>
-
-      <span class="mx-2">&middot;</span>
-
-      <a
-        rel="noopener noreferrer"
-        target="_blank"
-        :href="t('termsUrl')"
-      >{{ t('terms') }}</a>
-    </div>
+    <my-footer class="mb-2" />
   </div>
 </template>
 
@@ -107,12 +85,6 @@ onMounted(async () => {
     auth-smart-id: Smart-ID
     auth-mobile-id: Mobile-ID
     auth-id-card: ID-Card
-    terms: Terms of Service
-    termsUrl: https://entu.ee/terms/
-    pricing: Pricing
-    pricingUrl: https://entu.ee/#pricing
-    docs: Documentation
-    docsUrl: https://entu.ee/overview/
   et:
     language: English
     title: Sind on kutsutud liituma Entu andmebaasiga {db}
@@ -123,10 +95,4 @@ onMounted(async () => {
     auth-smart-id: Smart-ID
     auth-mobile-id: Mobiil-ID
     auth-id-card: ID-kaart
-    terms: Kasutustingimused
-    termsUrl: https://entu.ee/et/terms/
-    pricing: Hinnad
-    pricingUrl: https://entu.ee/et/#hinnad
-    docs: Dokumentatsioon
-    docsUrl: https://entu.ee/et/overview/
 </i18n>
