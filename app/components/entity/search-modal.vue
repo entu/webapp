@@ -54,7 +54,7 @@ watch(() => route.query, () => {
     searchForm.value.types = [route.query['_type.string']]
   }
   if (route.query['_type.string.in']) {
-    searchForm.value.types = route.query['_type.string'].split(',')
+    searchForm.value.types = route.query['_type.string.in'].split(',')
   }
 
   for (const key of Object.keys(route.query)) {
