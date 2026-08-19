@@ -1,3 +1,6 @@
+## 2026-08-19
+- **Entity sharing between databases**: Databases can now mirror selected entities to each other. The sharing database describes its offer with a share_out entity and shares entities by granting it viewer rights; the receiving database accepts with a share_in entity that also sets where mirrors are placed and who sees them. Mirrors are read-only copies that stay in sync automatically and disappear when sharing ends.
+
 ## 2026-08-17
 - **Simplified signup**: Creating a database now takes just a name and a sign-in — no payment step, live name availability check, and the new database opens immediately with you as its owner. Plan and billing are set up later on the billing page.
 - **Sign-in improvements**: The front page lists all sign-in methods directly, and renewing a session re-checks your database access so new databases appear and revoked ones disappear without signing in again.
