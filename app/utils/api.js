@@ -38,6 +38,8 @@ export async function apiGetEntities (params) {
 }
 
 export async function apiGetEntity (entityId, props = []) {
+  if (!entityId) return
+
   const { entity } = await apiRequest(`entity/${entityId}`, props.length ? { props: props?.join(',') } : undefined)
   return entity
 }
