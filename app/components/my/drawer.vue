@@ -22,6 +22,8 @@ defineProps({
 const closeRef = useTemplateRef('closeRef')
 useFocus(closeRef, { initialValue: true })
 
+useModalDepth(show)
+
 function close () {
   show.value = false
   isLoading.value = false

@@ -13,6 +13,14 @@ export function propertyValueKey (type) {
   }
 }
 
+// Maps a property type to the datatype segment of the Mongo search path (e.g. `author.string`).
+export function propertySearchField (type) {
+  if (type === 'file') return 'filename'
+  if (type === 'reference') return 'string'
+
+  return type
+}
+
 // True when a property value carries no persisted id and no content for its
 // type — i.e. an empty input row that should not be saved.
 export function isEmptyPropertyValue (value, type) {

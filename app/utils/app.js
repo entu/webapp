@@ -106,3 +106,8 @@ export function humanFileSize (n, bytes, si = true, dp = 2) {
 export function cloneData (data) {
   return JSON.parse(JSON.stringify(data))
 }
+
+// Substitutes the {DATABASE} and {LOCALE} placeholders in a configured menu link.
+export function linkReplace (url, accountId, locale) {
+  return url.replace('{DATABASE}', accountId).replace('{LOCALE}', locale)
+}

@@ -1,3 +1,14 @@
+// Addable child types for an entity: types listing it in add_from, else types listing its type.
+export function getAddChildOptions (addFromEntities, entityId, typeId, typeName) {
+  let result = addFromEntities?.filter((x) => !['entity', 'menu'].includes(typeName) && x.addFrom.includes(entityId)) || []
+
+  if (result.length === 0) {
+    result = addFromEntities?.filter((x) => x.addFrom.includes(typeId)) || []
+  }
+
+  return [...result].sort((a, b) => a.label.localeCompare(b.label))
+}
+
 export function useEntity () {
   const { userId } = useUser()
 

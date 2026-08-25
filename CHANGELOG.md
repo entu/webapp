@@ -1,3 +1,6 @@
+## 2026-08-25
+- **Command palette**: Press ⌘K (Ctrl+K on Windows/Linux) to search entities, run actions, navigate, and filter or sort by entity type and properties.
+
 ## 2026-08-19
 - **Entity sharing between databases**: Databases can now mirror selected entities to each other. The sharing database describes its offer with a share_out entity and shares entities by granting it viewer rights; the receiving database accepts with a share_in entity that also sets where mirrors are placed and who sees them. Mirrors are read-only copies that stay in sync automatically and disappear when sharing ends.
 

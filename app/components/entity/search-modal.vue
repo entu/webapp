@@ -8,6 +8,8 @@ const show = defineModel('show', { type: Boolean, default: false })
 
 const emit = defineEmits(['search'])
 
+useModalDepth(show)
+
 // Form data
 const searchForm = ref({
   q: route.query.q || '',
@@ -119,7 +121,7 @@ watch(() => searchForm.value.types, async (newTypes) => {
   if (currentRequest !== requestId) return
 
   const propOptions = response.entities?.map((x) => ({
-    value: `${getValue(x.name)?.trim()}.${getPropertySearchField(getValue(x.type).trim())}`,
+    value: `${getValue(x.name)?.trim()}.${propertySearchField(getValue(x.type).trim())}`,
     label: getValue(x.label)?.trim() || getValue(x.name)?.trim(),
     parent: getValue(x._parent)?.trim(),
     name: getValue(x.name)?.trim(),
@@ -188,17 +190,6 @@ function addCustomFilter () {
 
 function removeCustomFilter (index) {
   searchForm.value.properties.splice(index, 1)
-}
-
-function getPropertySearchField (propertyType) {
-  switch (propertyType) {
-    case 'file':
-      return 'filename'
-    case 'reference':
-      return 'string'
-    default:
-      return propertyType
-  }
 }
 
 function getPropertyType (fieldName) {

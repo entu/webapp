@@ -14,17 +14,7 @@ const { entityId, right, typeId, typeName } = useEntity()
 const menuStore = useMenuStore()
 const { addFromEntities } = storeToRefs(menuStore)
 
-const addChildOptions = computed(() => {
-  let result = addFromEntities.value?.filter((x) => !['entity', 'menu'].includes(typeName.value) && x.addFrom.includes(entityId.value))
-
-  if (result.length === 0) {
-    result = addFromEntities.value?.filter((x) => x.addFrom.includes(typeId.value))
-  }
-
-  result.sort((a, b) => a.label.localeCompare(b.label))
-
-  return result
-})
+const addChildOptions = computed(() => getAddChildOptions(addFromEntities.value, entityId.value, typeId.value, typeName.value))
 </script>
 
 <template>

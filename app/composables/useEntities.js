@@ -15,6 +15,7 @@ export function useEntities (listElement, options = {}) {
 
   const route = useRoute()
   const { accountId } = useAccount()
+  const paletteStore = usePaletteStore()
 
   const entitiesList = ref([])
   const entitiesCount = ref(null)
@@ -48,6 +49,7 @@ export function useEntities (listElement, options = {}) {
   }, { distance: 150 })
 
   onKeyStroke(['ArrowDown', 'ArrowUp'], (e) => {
+    if (paletteStore.isOpen || paletteStore.modalDepth > 0) return
     if (route.hash) return
 
     if (e.code === 'ArrowDown' && scrollIdx.value < entitiesList.value.length - 1) {

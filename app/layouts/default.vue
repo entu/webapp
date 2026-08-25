@@ -62,6 +62,18 @@ function changeMenu (collapsed) {
 async function onDrawerClose () {
   await navigateTo({ path: `/${accountId.value}`, query: route.query })
 }
+
+const paletteStore = usePaletteStore()
+
+function onPaletteKey (event) {
+  if (!(event.metaKey || event.ctrlKey) || event.key?.toLowerCase() !== 'k') return
+  if (!accountId.value) return
+
+  event.preventDefault()
+  paletteStore.toggle()
+}
+
+useEventListener(window, 'keydown', onPaletteKey)
 </script>
 
 <template>
@@ -281,6 +293,8 @@ async function onDrawerClose () {
     </template>
 
     <chat-drawer />
+
+    <palette-command-palette />
   </div>
 </template>
 

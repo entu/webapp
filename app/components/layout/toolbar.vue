@@ -13,7 +13,10 @@ function toggleView () {
   useAnalytics('toggle_view', { table: showTable.value })
 }
 
-const showSearchModal = ref(false)
+// Shared with the ⌘K palette so its Advanced Search command can open the modal.
+const paletteStore = usePaletteStore()
+const { showSearchModal } = storeToRefs(paletteStore)
+
 const searchText = ref(route.query.q || '')
 
 watch(() => route.query.q, (newValue) => {
