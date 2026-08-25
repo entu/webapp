@@ -10,13 +10,17 @@ const { locale, setLocale } = useI18n({ useScope: 'global' })
 const token = route.query.token
 const db = route.params.account
 
-const authProviders = [
-  { value: 'e-mail', icon: 'e-mail' },
-  { value: 'google', icon: 'google' },
-  { value: 'apple', icon: 'apple' },
-  { value: 'smart-id', icon: 'smart-id' },
-  { value: 'mobile-id', icon: 'mobile-id' },
-  { value: 'id-card', icon: 'id-card' }
+const authProviderGroups = [
+  [
+    { value: 'apple', icon: 'apple' },
+    { value: 'google', icon: 'google' },
+    { value: 'e-mail', icon: 'e-mail' }
+  ],
+  [
+    { value: 'smart-id', icon: 'smart-id' },
+    { value: 'mobile-id', icon: 'mobile-id' },
+    { value: 'id-card', icon: 'id-card' }
+  ]
 ]
 
 function setLanguage () {
@@ -53,15 +57,22 @@ onMounted(async () => {
       </a>
 
       <n-card :title="t('title', { db })">
-        <nuxt-link
-          v-for="provider in authProviders"
-          :key="provider.value"
-          class="flex items-center gap-2 border-b py-2 last-of-type:border-b-0"
-          :to="{ path: `/auth/${provider.value}`, query: { invite: token } }"
-        >
-          <my-icon :icon="provider.icon" />
-          {{ t(`auth-${provider.value}`) }}
-        </nuxt-link>
+        <div class="flex flex-col gap-6">
+          <div
+            v-for="(group, index) in authProviderGroups"
+            :key="index"
+          >
+            <nuxt-link
+              v-for="provider in group"
+              :key="provider.value"
+              class="flex items-center gap-2 border-b py-2 last-of-type:border-b-0"
+              :to="{ path: `/auth/${provider.value}`, query: { invite: token } }"
+            >
+              <my-icon :icon="provider.icon" />
+              {{ t(`auth-${provider.value}`) }}
+            </nuxt-link>
+          </div>
+        </div>
 
         <template #footer>
           <p class="mt-1 text-sm text-gray-500">

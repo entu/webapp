@@ -12,9 +12,9 @@ const authProviderGroups = [
     { value: 'passkey', icon: 'passkey' }
   ],
   [
-    { value: 'e-mail', icon: 'e-mail' },
     { value: 'apple', icon: 'apple' },
-    { value: 'google', icon: 'google' }
+    { value: 'google', icon: 'google' },
+    { value: 'e-mail', icon: 'e-mail' }
   ],
   [
     { value: 'smart-id', icon: 'smart-id' },

@@ -61,9 +61,19 @@ async function authenticateWithPasskey () {
       setToken(result)
     }
 
-    // Navigate to overview (redirects to the single db when there is only one)
+    // Navigate back to the saved page, or to overview (redirects to the single db when there is only one)
     if (result.accounts?.length > 0) {
-      await navigateTo({ path: '/' })
+      const nextPage = useLocalStorage('next', { path: '/' })
+
+      if (nextPage.value.path !== '/') {
+        const to = { path: nextPage.value?.path || '/', query: nextPage.value?.query }
+        nextPage.value = {}
+
+        await navigateTo(to)
+      }
+      else {
+        await navigateTo({ path: '/' })
+      }
     }
   }
   catch (error) {

@@ -8,13 +8,17 @@ const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 const { token, tokenExpiry } = useUser()
 
-const authProviders = [
-  { value: 'e-mail', icon: 'e-mail' },
-  { value: 'google', icon: 'google' },
-  { value: 'apple', icon: 'apple' },
-  { value: 'smart-id', icon: 'smart-id' },
-  { value: 'mobile-id', icon: 'mobile-id' },
-  { value: 'id-card', icon: 'id-card' }
+const authProviderGroups = [
+  [
+    { value: 'apple', icon: 'apple' },
+    { value: 'google', icon: 'google' },
+    { value: 'e-mail', icon: 'e-mail' }
+  ],
+  [
+    { value: 'smart-id', icon: 'smart-id' },
+    { value: 'mobile-id', icon: 'mobile-id' },
+    { value: 'id-card', icon: 'id-card' }
+  ]
 ]
 
 const databaseName = ref('')
@@ -216,18 +220,25 @@ onMounted(() => {
         v-else
         :title="t('signInTitle')"
       >
-        <div
-          v-for="provider in authProviders"
-          :key="provider.value"
-          class="flex items-center gap-2 border-b border-b-gray-200 py-2 last-of-type:border-b-0"
-          :class="{
-            'cursor-pointer': isAvailable,
-            'pointer-events-none opacity-40': !isAvailable,
-          }"
-          @click="signInWith(provider.value)"
-        >
-          <my-icon :icon="provider.icon" />
-          {{ t(`auth-${provider.value}`) }}
+        <div class="flex flex-col gap-6">
+          <div
+            v-for="(group, index) in authProviderGroups"
+            :key="index"
+          >
+            <div
+              v-for="provider in group"
+              :key="provider.value"
+              class="flex items-center gap-2 border-b border-b-gray-200 py-2 last-of-type:border-b-0"
+              :class="{
+                'cursor-pointer': isAvailable,
+                'pointer-events-none opacity-40': !isAvailable,
+              }"
+              @click="signInWith(provider.value)"
+            >
+              <my-icon :icon="provider.icon" />
+              {{ t(`auth-${provider.value}`) }}
+            </div>
+          </div>
         </div>
 
         <template #footer>
