@@ -31,19 +31,12 @@ export default defineNuxtConfig({
     }
   },
   css: ['~/assets/tailwind.css'],
-  vue: {
-    compilerOptions: {
-      isCustomElement: (tag) => tag === 'stripe-pricing-table'
-    }
-  },
   spaLoadingTemplate: false,
   runtimeConfig: {
     public: {
       apiUrl: '',
       commitHash: '',
       title: 'Entu',
-      stripePricingTableIds: '',
-      stripePublishableKey: '',
       sentry: {
         dsn: ''
       }
