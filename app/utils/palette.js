@@ -88,3 +88,8 @@ export function paletteQueryPairs (queryState) {
 
   return pairs
 }
+
+// Platform-aware label for the palette keyboard shortcut.
+export function paletteShortcutLabel () {
+  return /Mac/.test(navigator.platform || navigator.userAgent) ? '⌘K' : 'Ctrl K'
+}

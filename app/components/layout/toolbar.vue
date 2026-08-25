@@ -1,5 +1,5 @@
 <script setup>
-import { NInputGroup, NInput, NPopover } from 'naive-ui'
+import { NInputGroup, NInput } from 'naive-ui'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -16,6 +16,8 @@ function toggleView () {
 // Shared with the ⌘K palette so its Advanced Search command can open the modal.
 const paletteStore = usePaletteStore()
 const { showSearchModal } = storeToRefs(paletteStore)
+
+const paletteKeyHint = paletteShortcutLabel()
 
 const searchText = ref(route.query.q || '')
 
@@ -48,11 +50,6 @@ function toggleChat () {
   }
 
   chatStore.isOpen = !chatStore.isOpen
-}
-
-function openAdvancedSearch () {
-  useAnalytics('show_search')
-  showSearchModal.value = true
 }
 
 function handleAdvancedSearch (advancedQuery) {
@@ -174,18 +171,11 @@ onUnmounted(() => {
           </template>
 
           <template #suffix>
-            <n-popover>
-              <template #trigger>
-                <my-icon
-                  class="cursor-pointer"
-                  icon="search-advanced"
-                  @click="openAdvancedSearch()"
-                />
-              </template>
-              <div class="text-sm">
-                {{ t('advancedSearch') }}
-              </div>
-            </n-popover>
+            <span
+              v-if="!isMobile && !searchText"
+              class="cursor-pointer text-xs font-medium whitespace-nowrap text-gray-500"
+              @click="paletteStore.toggle()"
+            >{{ paletteKeyHint }}</span>
           </template>
         </n-input>
       </n-input-group>
@@ -239,13 +229,11 @@ onUnmounted(() => {
 <i18n lang="yaml">
   en:
     search: Search Entity
-    advancedSearch: Advanced Search
     listView: List view
     tableView: Table view
     entuAi: Entu AI
   et:
     search: Otsi objekti
-    advancedSearch: Täpsem otsing
     listView: Loendivaade
     tableView: Tabelivaade
     entuAi: Entu AI

@@ -26,6 +26,7 @@ export const usePaletteStore = defineStore('palette', () => {
     queryState.value = paletteEmptyState()
     recents.value = storedRecents.value[accountId.value] || []
     isOpen.value = true
+    useAnalytics('show_palette')
 
     loadTypeOptions()
   }

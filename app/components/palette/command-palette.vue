@@ -161,18 +161,23 @@ const navigationRows = computed(() => {
   return rows.map(withFoldedTitle)
 })
 
+function advancedSearchRow () {
+  return {
+    id: 'advancedSearch',
+    icon: 'search-advanced',
+    title: t('advancedSearch'),
+    run: () => {
+      useAnalytics('show_search')
+      paletteStore.showSearchModal = true
+    }
+  }
+}
+
 const appCommandRows = computed(() => {
   const rows = []
 
   if (userId.value) {
-    rows.push({
-      id: 'advancedSearch',
-      icon: 'search-advanced',
-      title: t('advancedSearch'),
-      run: () => {
-        paletteStore.showSearchModal = true
-      }
-    })
+    rows.push(advancedSearchRow())
 
     rows.push({
       id: 'aiChat',
@@ -577,6 +582,10 @@ const emptySections = computed(() => {
     result.push({ id: 'recent', title: t('paletteRecent'), rows: recentRows })
   }
 
+  if (userId.value) {
+    result.push({ id: 'commands', title: '', rows: [advancedSearchRow()] })
+  }
+
   return result
 })
 
@@ -843,9 +852,9 @@ onKeyStroke('Escape', (event) => {
         @click.self="paletteStore.close()"
       >
         <div class="palette-panel flex max-h-[calc(100vh-8rem)] w-full max-w-[560px] flex-col overflow-hidden rounded-[15px] bg-white shadow-2xl">
-          <div class="flex items-start gap-2 px-3.5 py-2.5">
+          <div class="flex items-center gap-2 px-3.5 py-2.5">
             <my-icon
-              class="mt-1 text-sm text-gray-400"
+              class="text-sm text-gray-400"
               icon="search"
             />
 
@@ -888,7 +897,7 @@ onKeyStroke('Escape', (event) => {
                 <input
                   ref="inputRef"
                   v-model="query"
-                  class="w-full bg-transparent py-0.5 text-sm outline-none"
+                  class="w-full bg-transparent py-0.5 text-base outline-none"
                   :placeholder="stateEmpty ? t('paletteSearchPlaceholder') : ''"
                   @keydown="onKeydown"
                 >
@@ -897,7 +906,7 @@ onKeyStroke('Escape', (event) => {
                   v-if="!query && stateEmpty"
                   class="absolute inset-y-0 right-0 flex items-center"
                 >
-                  <span class="rounded border border-gray-300 px-1 text-[10px] font-medium text-gray-400">⌘K</span>
+                  <span class="inline-flex h-4 items-center rounded border border-gray-300 px-1 text-xs leading-none font-medium text-gray-400">{{ paletteShortcutLabel() }}</span>
                 </span>
               </div>
             </div>
@@ -915,7 +924,7 @@ onKeyStroke('Escape', (event) => {
             >
               <div
                 v-if="section.title"
-                class="truncate px-2.5 pt-2 pb-1 text-[10px] font-semibold tracking-wide text-gray-400 uppercase"
+                class="truncate px-2.5 pt-2 pb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase"
               >
                 {{ section.title }}
               </div>
@@ -939,7 +948,7 @@ onKeyStroke('Escape', (event) => {
 
             <div
               v-if="flatRows.length === 0"
-              class="py-4 text-center text-[13px] text-gray-400"
+              class="py-4 text-center text-sm text-gray-400"
             >
               {{ isEmptyState ? t('paletteNoRecents') : t('noResults') }}
             </div>
@@ -947,7 +956,7 @@ onKeyStroke('Escape', (event) => {
 
           <div class="h-px shrink-0 bg-gray-200" />
 
-          <div class="flex items-center gap-1 px-3.5 py-2 text-[11px] text-gray-400">
+          <div class="flex items-center gap-1 px-3.5 py-2 text-xs text-gray-400">
             <template v-if="queryState.draft">
               <span class="palette-keycap">⌥</span>
               <span>{{ t('paletteOptionHint') }}</span>
@@ -981,7 +990,7 @@ onKeyStroke('Escape', (event) => {
 @reference "tailwindcss";
 
 .palette-keycap {
-  @apply rounded border border-gray-300 px-1 text-[10px] font-medium text-gray-500;
+  @apply inline-flex h-4 items-center rounded border border-gray-300 px-1 text-xs leading-none font-medium text-gray-500;
 }
 
 .palette-enter-active,

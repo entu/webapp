@@ -28,7 +28,7 @@ const tintClass = computed(() => ({
 
 <template>
   <span
-    class="flex max-w-full items-center gap-1 rounded-[7px] py-0.5 pr-1 pl-2 text-xs font-medium"
+    class="flex max-w-full items-center gap-1 rounded-[7px] py-0.5 pr-1 pl-2 text-sm font-medium"
     :class="tintClass"
   >
     <button

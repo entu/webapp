@@ -59,7 +59,7 @@ const segments = computed(() => {
 
 <template>
   <div
-    class="flex min-h-9 cursor-pointer items-center gap-2 rounded-lg px-2.5 py-1 text-[13px]"
+    class="flex min-h-9 cursor-pointer items-center gap-2 rounded-lg px-2.5 py-1 text-sm"
     :class="{
       'bg-[#0071E3] text-white': selected,
       'hover:bg-black/5': !selected,
@@ -73,7 +73,7 @@ const segments = computed(() => {
       :has-photo="hasPhoto"
     >
       <div
-        class="flex size-6 shrink-0 items-center justify-center rounded-md text-[11px] text-gray-600"
+        class="flex size-6 shrink-0 items-center justify-center rounded-md text-xs text-gray-600"
         :class="[avatarColor]"
       >
         {{ initial }}
@@ -82,7 +82,7 @@ const segments = computed(() => {
 
     <my-icon
       v-else-if="icon"
-      class="w-4 shrink-0 text-xs"
+      class="w-4 shrink-0 text-sm"
       :class="{
         'text-white/80': selected,
         'text-gray-500': !selected,
@@ -107,7 +107,7 @@ const segments = computed(() => {
 
     <div
       v-if="detail"
-      class="shrink-0 text-[11px]"
+      class="shrink-0 text-xs"
       :class="{
         'text-white/70': selected,
         'text-gray-400': !selected,
@@ -118,7 +118,7 @@ const segments = computed(() => {
 
     <span
       v-if="keyHint"
-      class="shrink-0 rounded border px-1 text-[10px] font-medium"
+      class="inline-flex h-4 shrink-0 items-center rounded border px-1 text-xs leading-none font-medium"
       :class="{
         'border-white/40 text-white/85': selected,
         'border-gray-300 text-gray-500': !selected,
@@ -127,7 +127,7 @@ const segments = computed(() => {
 
     <span
       v-if="selected"
-      class="shrink-0 rounded border border-white/40 px-1 text-[10px] font-medium text-white/85"
+      class="inline-flex h-4 shrink-0 items-center rounded border border-white/40 px-1 text-xs leading-none font-medium text-white/85"
     >↩</span>
   </div>
 </template>
