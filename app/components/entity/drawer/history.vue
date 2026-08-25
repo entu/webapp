@@ -3,7 +3,7 @@ import { NPagination, NSpin, NPopover } from 'naive-ui'
 
 const { t, d, n, locale } = useI18n()
 const { accountId } = useAccount()
-const { query } = useRoute()
+const route = useRoute()
 
 const emit = defineEmits(['close'])
 
@@ -270,7 +270,7 @@ function formatValue (val, decimals) {
                         <nuxt-link
                           v-if="v.href"
                           class="underline"
-                          :to="{ path: v.href, query }"
+                          :to="{ path: v.href, query: route.query }"
                         >{{ v.text }}</nuxt-link>
                         <template v-else>
                           {{ v.text }}
@@ -302,7 +302,7 @@ function formatValue (val, decimals) {
                         <nuxt-link
                           v-if="v.href"
                           class="underline"
-                          :to="{ path: v.href, query }"
+                          :to="{ path: v.href, query: route.query }"
                         >{{ v.text }}</nuxt-link>
                         <template v-else>
                           {{ v.text }}

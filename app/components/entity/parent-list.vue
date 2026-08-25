@@ -3,7 +3,7 @@ defineProps({
   parents: { type: Array, required: true }
 })
 
-const { query } = useRoute()
+const route = useRoute()
 const { accountId } = useAccount()
 </script>
 
@@ -19,7 +19,7 @@ const { accountId } = useAccount()
         v-for="parent in parents"
         :key="parent._id"
         class="link flex-1 flex-nowrap truncate overflow-hidden text-center whitespace-nowrap"
-        :to="{ path: `/${accountId}/${parent.reference}`, query }"
+        :to="{ path: `/${accountId}/${parent.reference}`, query: route.query }"
       >
         {{ parent.string }}
       </nuxt-link>

@@ -9,7 +9,7 @@ const props = defineProps({
   isName: { type: Boolean, default: false }
 })
 
-const { query } = useRoute()
+const route = useRoute()
 const { locale, d, n, t } = useI18n()
 const { accountId } = useAccount()
 
@@ -46,7 +46,7 @@ watch(isPreviewableFile, (previewable) => {
   <template v-if="value.string !== undefined && isName && entityId">
     <nuxt-link
       class="link"
-      :to="{ path: `/${accountId}/${entityId}`, query }"
+      :to="{ path: `/${accountId}/${entityId}`, query: route.query }"
     >
       {{ value.string }}
     </nuxt-link>
@@ -55,7 +55,7 @@ watch(isPreviewableFile, (previewable) => {
   <template v-else-if="value.reference !== undefined && value.datetime !== undefined">
     <nuxt-link
       class="link"
-      :to="{ path: `/${accountId}/${value.reference}`, query }"
+      :to="{ path: `/${accountId}/${value.reference}`, query: route.query }"
     >
       {{ value.string }}
     </nuxt-link>
@@ -67,7 +67,7 @@ watch(isPreviewableFile, (previewable) => {
   <template v-else-if="value.reference !== undefined && value.datetime === undefined">
     <nuxt-link
       class="link"
-      :to="{ path: `/${accountId}/${value.reference}`, query }"
+      :to="{ path: `/${accountId}/${value.reference}`, query: route.query }"
     >
       {{ value.string }}
     </nuxt-link>
@@ -108,7 +108,7 @@ watch(isPreviewableFile, (previewable) => {
       <nuxt-link
         class="link"
         target="_blank"
-        :to="{ path: `/${accountId}/file/${value._id}`, query }"
+        :to="{ path: `/${accountId}/file/${value._id}`, query: route.query }"
       >
         {{ value.filename || value._id }}
       </nuxt-link>

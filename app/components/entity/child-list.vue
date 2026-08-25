@@ -8,7 +8,7 @@ const props = defineProps({
   referenceField: { type: String, required: true }
 })
 
-const { query } = useRoute()
+const route = useRoute()
 const { locale, d, t } = useI18n()
 const { accountId } = useAccount()
 const { tablePageSize } = useUser()
@@ -222,7 +222,7 @@ onMounted(async () => {
           >
             <td>
               <div class="relative ml-1 size-7">
-                <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query }">
+                <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query: route.query }">
                   <entity-avatar
                     class="print-as-is size-7 rounded-full object-cover"
                     :class="nameColor(getValue(row.name), '50')"
@@ -249,7 +249,7 @@ onMounted(async () => {
                   'justify-center': column.type === 'boolean',
                   'justify-end': column.type === 'number',
                 }"
-                :to="{ path: `/${accountId}/${row._id}`, query }"
+                :to="{ path: `/${accountId}/${row._id}`, query: route.query }"
               >
                 {{ renderColumn(row[column.name], column.type, column.decimals) }}
 

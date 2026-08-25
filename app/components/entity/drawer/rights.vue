@@ -1,7 +1,7 @@
 <script setup>
 import { NCheckbox, NDivider, NRadio, NRadioGroup } from 'naive-ui'
 
-const { query } = useRoute()
+const route = useRoute()
 const { t } = useI18n()
 const { accountId } = useAccount()
 const { userId } = useUser()
@@ -236,7 +236,7 @@ async function onClose () {
             class="mb-4 flex items-center justify-between gap-2"
             disabled
             :label="user.string?.trim() || user.reference"
-            :to="{ path: `/${accountId}/${user.reference}`, query }"
+            :to="{ path: `/${accountId}/${user.reference}`, query: route.query }"
           />
         </template>
 
@@ -272,7 +272,7 @@ async function onClose () {
           deletable
           :disabled="user.reference === userId"
           :label="user.string?.trim() || user.reference"
-          :to="{ path: `/${accountId}/${user.reference}`, query }"
+          :to="{ path: `/${accountId}/${user.reference}`, query: route.query }"
           @update:value="onEditRight(user._id, user.reference, $event)"
         />
 
