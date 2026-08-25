@@ -177,14 +177,6 @@ const authMenu = computed(() => {
       type: 'divider'
     },
     {
-      key: 'auth-email',
-      icon: () => h(MyIcon, { icon: 'e-mail' }),
-      label: () => h(NuxtLink,
-        { to: { path: '/auth/e-mail' } },
-        { default: () => t('email') }
-      )
-    },
-    {
       key: 'auth-apple',
       icon: () => h(MyIcon, { icon: 'apple' }),
       label: () => h(NuxtLink,
@@ -198,6 +190,14 @@ const authMenu = computed(() => {
       label: () => h(NuxtLink,
         { to: { path: '/auth/google' } },
         { default: () => 'Google' }
+      )
+    },
+    {
+      key: 'auth-email',
+      icon: () => h(MyIcon, { icon: 'e-mail' }),
+      label: () => h(NuxtLink,
+        { to: { path: '/auth/e-mail' } },
+        { default: () => t('email') }
       )
     },
     {
