@@ -119,16 +119,24 @@ const {
   @apply border-white!;
 }
 
-.list-item:hover + .list-item > .list-item-text {
-  @apply border-zinc-50!;
-}
-
 .list-item.active + .list-item > .list-item-text {
   @apply border-zinc-100!;
 }
 
-.list-item:not(:first-child):not(:hover) > .list-item-text {
-  @apply border-zinc-200;
+@media (hover: hover) {
+  .list-item:hover + .list-item > .list-item-text {
+    @apply border-zinc-50!;
+  }
+
+  .list-item:not(:first-child):not(:hover) > .list-item-text {
+    @apply border-zinc-200;
+  }
+}
+
+@media (hover: none) {
+  .list-item:not(:first-child) > .list-item-text {
+    @apply border-zinc-200;
+  }
 }
 </style>
 

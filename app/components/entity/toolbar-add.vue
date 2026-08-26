@@ -41,6 +41,7 @@ const label = computed(() => {
     v-if="userId && options.length > 1"
     content-style="padding:0;border:none"
     footer-style="padding:0;border:none"
+    trigger="click"
   >
     <template #trigger>
       <my-button

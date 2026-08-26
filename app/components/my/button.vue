@@ -1,6 +1,8 @@
 <script setup>
 import { NButton, NPopover } from 'naive-ui'
 
+const { isMobile } = useIsMobile()
+
 defineProps({
   bg: { type: Boolean, default: true },
   circle: { type: Boolean, default: false },
@@ -15,6 +17,7 @@ defineProps({
   <n-popover
     v-if="!!tooltip"
     class="max-w-sm bg-white! text-sm"
+    :disabled="isMobile"
   >
     <template #trigger>
       <n-button
