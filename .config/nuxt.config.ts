@@ -82,6 +82,9 @@ export default defineNuxtConfig({
     ],
     defaultLocale: 'en',
     strategy: 'no_prefix',
+    detectBrowserLanguage: {
+      useCookie: false
+    },
     vueI18n: '~~/.config/i18n.config.ts'
   },
   icon: {

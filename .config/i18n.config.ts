@@ -11,10 +11,6 @@ export default defineI18nConfig(() => ({
       datetimeseconds: { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }
     }
   },
-  detectBrowserLanguage: {
-    useCookie: false,
-    redirectOn: 'root'
-  },
   fallbackWarn: false,
   missingWarn: false,
   legacy: false
