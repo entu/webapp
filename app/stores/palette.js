@@ -19,10 +19,10 @@ export const usePaletteStore = defineStore('palette', () => {
   let typeOptionsPromise = null
   let propertyCache = {}
 
-  function open () {
+  function open (initialQuery = '') {
     if (modalDepth.value > 0) return
 
-    query.value = ''
+    query.value = initialQuery
     queryState.value = paletteEmptyState()
     recents.value = storedRecents.value[accountId.value] || []
     isOpen.value = true

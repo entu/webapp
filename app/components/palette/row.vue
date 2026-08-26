@@ -118,7 +118,7 @@ const segments = computed(() => {
 
     <span
       v-if="keyHint"
-      class="inline-flex h-4 shrink-0 items-center rounded border px-1 text-xs leading-none font-medium"
+      class="inline-flex h-4 shrink-0 items-center rounded border px-1 pt-1 text-xs leading-none font-medium"
       :class="{
         'border-white/40 text-white/85': selected,
         'border-gray-300 text-gray-500': !selected,
@@ -127,7 +127,7 @@ const segments = computed(() => {
 
     <span
       v-if="selected"
-      class="inline-flex h-4 shrink-0 items-center rounded border border-white/40 px-1 text-xs leading-none font-medium text-white/85"
+      class="inline-flex h-4 shrink-0 items-center rounded border border-white/40 px-1 pt-1 text-xs leading-none font-medium text-white/85"
     >↩</span>
   </div>
 </template>

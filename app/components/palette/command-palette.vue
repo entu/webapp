@@ -906,7 +906,7 @@ onKeyStroke('Escape', (event) => {
                   v-if="!query && stateEmpty"
                   class="absolute inset-y-0 right-0 flex items-center"
                 >
-                  <span class="inline-flex h-4 items-center rounded border border-gray-300 px-1 text-xs leading-none font-medium text-gray-400">{{ paletteShortcutLabel() }}</span>
+                  <span class="inline-flex h-4 items-center rounded border border-gray-300 px-1 pt-0.5 text-xs leading-none font-medium text-gray-400">{{ paletteShortcutLabel() }}</span>
                 </span>
               </div>
             </div>
@@ -974,9 +974,9 @@ onKeyStroke('Escape', (event) => {
             </template>
 
             <template v-else>
-              <span class="palette-keycap">↑</span>
-              <span class="palette-keycap">↓</span>
-              <span class="palette-keycap">↩</span>
+              <span class="palette-keycap pb-0.5">↑</span>
+              <span class="palette-keycap pb-0.5">↓</span>
+              <span class="palette-keycap pt-1">↩</span>
               <span class="palette-keycap">esc</span>
             </template>
           </div>

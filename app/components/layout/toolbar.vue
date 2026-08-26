@@ -172,9 +172,9 @@ onUnmounted(() => {
 
           <template #suffix>
             <span
-              v-if="!isMobile && !searchText"
+              v-if="!isMobile"
               class="cursor-pointer text-xs font-medium whitespace-nowrap text-gray-500"
-              @click="paletteStore.toggle()"
+              @click="paletteStore.open(searchText)"
             >{{ paletteKeyHint }}</span>
           </template>
         </n-input>
