@@ -244,6 +244,7 @@ async function onClose () {
         :tab="plugin.name"
       >
         <iframe
+          allow="camera"
           class="size-full"
           frameborder="0"
           :src="plugin.url"

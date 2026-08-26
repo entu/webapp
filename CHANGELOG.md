@@ -1,3 +1,6 @@
+## 2026-08-26
+- **Barcode scanning in ESTER and Discogs import**: The ESTER and Discogs import plugins can now scan barcodes with the camera directly from the search field — ISBN codes on books in ESTER, EAN/UPC codes on records and CDs in Discogs.
+
 ## 2026-08-25
 - **Command palette**: Press ⌘K (Ctrl+K on Windows/Linux) to search entities, run actions, navigate, and filter or sort by entity type and properties.
 
