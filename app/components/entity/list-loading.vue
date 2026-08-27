@@ -16,7 +16,7 @@ const progressPercentage = computed(() => {
 </script>
 
 <template>
-  <div class="sticky bottom-0 mx-auto w-full space-y-1 bg-gradient-to-t from-white to-transparent px-2 py-2.5 text-center">
+  <div class="sticky bottom-0 mx-auto w-full space-y-1 bg-linear-to-t from-white to-transparent px-2 py-2.5 text-center">
     <div
       v-if="totalCount !== null"
       class="flex justify-between text-sm"

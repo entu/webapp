@@ -848,10 +848,10 @@ onKeyStroke('Escape', (event) => {
     <transition name="palette">
       <div
         v-if="isOpen"
-        class="fixed inset-0 z-[2000] flex items-start justify-center bg-black/12 px-6 pt-16 print:hidden md:pt-[120px]"
+        class="fixed inset-0 z-2000 flex items-start justify-center bg-black/12 px-6 pt-16 md:pt-30 print:hidden"
         @click.self="paletteStore.close()"
       >
-        <div class="palette-panel flex max-h-[calc(100vh-8rem)] w-full max-w-[560px] flex-col overflow-hidden rounded-[15px] bg-white shadow-2xl">
+        <div class="palette-panel flex max-h-[calc(100vh-8rem)] w-full max-w-140 flex-col overflow-hidden rounded-[15px] bg-white shadow-2xl">
           <div class="flex items-center gap-2 px-3.5 py-2.5">
             <my-icon
               class="text-sm text-gray-400"
@@ -916,7 +916,7 @@ onKeyStroke('Escape', (event) => {
 
           <div
             ref="listRef"
-            class="max-h-[360px] overflow-y-auto p-1"
+            class="max-h-90 overflow-y-auto p-1"
           >
             <template
               v-for="section in indexedSections"

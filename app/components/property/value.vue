@@ -99,7 +99,7 @@ watch(isPreviewableFile, (previewable) => {
         >
         <div
           v-else
-          class="flex h-24 w-24 items-center justify-center"
+          class="flex size-24 items-center justify-center"
         >
           <n-spin size="small" />
         </div>

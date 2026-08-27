@@ -185,7 +185,7 @@ useEventListener(window, 'keydown', onPaletteKey)
       <div class="flex h-full flex-col">
         <!-- Mobile top bar -->
         <div
-          class="bg-brand relative flex items-center px-3 pb-4 text-white print:hidden"
+          class="relative flex items-center bg-brand px-3 pb-4 text-white print:hidden"
           style="padding-top: calc(env(safe-area-inset-top) + 1rem)"
         >
           <my-icon
@@ -264,7 +264,7 @@ useEventListener(window, 'keydown', onPaletteKey)
         :width="windowWidth"
       >
         <n-drawer-content body-content-class="p-0!">
-          <div class="bg-brand flex h-full flex-col">
+          <div class="flex h-full flex-col bg-brand">
             <div class="flex items-center justify-between px-3 py-4">
               <div
                 class="cursor-pointer text-sm text-white uppercase opacity-80 hover:opacity-100"

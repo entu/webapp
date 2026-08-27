@@ -176,7 +176,7 @@ async function onClose () {
               <span
                 v-for="(value, index) in property.values.slice(0, 3)"
                 :key="index"
-                class="max-w-[300px] truncate rounded bg-gray-100 px-2 py-0.5 text-xs"
+                class="max-w-75 truncate rounded bg-gray-100 px-2 py-0.5 text-xs"
               >
                 {{ value.string || value.number || value.filename || value.date || value.datetime || value.boolean }}
               </span>

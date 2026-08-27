@@ -211,7 +211,7 @@ onUnmounted(() => {
     <my-button
       v-if="userId"
       circle
-      class="bg-[#1E434C]! text-white! hover:bg-[#162E35]!"
+      class="bg-brand! text-white! hover:bg-brand-hover!"
       icon="sparkles"
       :title="t('entuAi')"
       @click="toggleChat()"

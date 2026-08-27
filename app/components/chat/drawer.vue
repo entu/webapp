@@ -164,7 +164,7 @@ watch(isLoading, (value) => {
           <div class="shrink-0">
             <div class="h-1 w-full overflow-hidden bg-gray-200">
               <div
-                class="h-full bg-[#1E434C] transition-all"
+                class="h-full bg-brand transition-all"
                 :style="{ width: `${usedPercent}%` }"
               />
             </div>

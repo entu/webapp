@@ -30,7 +30,7 @@ const proposalStatus = computed(() => {
   >
     <div
       v-if="message.role === 'user'"
-      class="max-w-[85%] rounded-2xl rounded-br-sm bg-[#1E434C] px-4 py-2 whitespace-pre-wrap text-white"
+      class="max-w-[85%] rounded-2xl rounded-br-sm bg-brand px-4 py-2 whitespace-pre-wrap text-white"
     >
       {{ message.content }}
     </div>
