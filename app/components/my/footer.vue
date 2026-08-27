@@ -32,7 +32,7 @@ const { t } = useI18n()
     termsUrl: https://entu.ee/terms/
   et:
     docs: Dokumentatsioon
-    docsUrl: https://entu.ee/et/overview/
+    docsUrl: https://entu.ee/et/ulevaade/
     terms: Kasutustingimused
-    termsUrl: https://entu.ee/et/terms/
+    termsUrl: https://entu.ee/et/kasutustingimused/
 </i18n>

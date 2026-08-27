@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     'nuxtjs-naive-ui'
   ],
   ssr: false,
+  devtools: { enabled: false },
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
