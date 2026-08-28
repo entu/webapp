@@ -237,6 +237,11 @@ useEventListener(window, 'keydown', onPaletteKey)
               class="grow overflow-hidden"
             >
               <entity-list />
+
+              <!-- NuxtPage must stay mounted or route changes and #add drawers stop working -->
+              <div class="hidden">
+                <slot />
+              </div>
             </div>
 
             <div
