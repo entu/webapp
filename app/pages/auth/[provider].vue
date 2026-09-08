@@ -3,7 +3,7 @@ definePageMeta({ layout: 'spinner' })
 
 const runtimeConfig = useRuntimeConfig()
 const route = useRoute()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 
 onMounted(async () => {
   useHead({ title: t('title') })
@@ -14,7 +14,7 @@ onMounted(async () => {
     ? `${window.location.origin}/auth/callback?invite=${encodeURIComponent(route.query.invite)}&key=`
     : `${window.location.origin}/auth/callback?key=`
 
-  await navigateTo(`${runtimeConfig.public.apiUrl.replace(/\/$/, '')}/auth/${route.params.provider}?next=${encodeURIComponent(callbackUrl)}`, { external: true })
+  await navigateTo(`${runtimeConfig.public.apiUrl.replace(/\/$/, '')}/auth/${route.params.provider}?next=${encodeURIComponent(callbackUrl)}&lang=${locale.value}`, { external: true })
 })
 </script>
 
