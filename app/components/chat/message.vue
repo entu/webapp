@@ -45,6 +45,7 @@ const proposalStatus = computed(() => {
 
       <my-markdown
         v-else
+        internal-links
         new-tab
         :source="message.content"
       />
