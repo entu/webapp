@@ -1,5 +1,8 @@
 import tailwindcss from '@tailwindcss/vite'
 
+// Sentry release creation, sourcemap upload and build telemetry run on every build unless SENTRY_UPLOAD=false — set that in the local .env.
+const sentryUpload = process.env.SENTRY_UPLOAD !== 'false'
+
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
@@ -97,6 +100,9 @@ export default defineNuxtConfig({
   sentry: {
     configDir: '.config',
     org: 'entu',
-    project: 'webapp'
+    project: 'webapp',
+    telemetry: sentryUpload,
+    sourcemaps: { disable: !sentryUpload },
+    release: { create: sentryUpload, finalize: sentryUpload }
   }
 })
