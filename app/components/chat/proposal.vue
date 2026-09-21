@@ -30,9 +30,15 @@ function opEntityId (index) {
 function opIcon (op) {
   const name = op?.toLowerCase() || ''
 
-  if (name.includes('delete')) return 'delete'
-  if (name.includes('add') || name.includes('create')) return 'add'
-  if (name.includes('edit') || name.includes('update') || name.includes('set')) return 'edit'
+  if (name.includes('delete')) {
+    return 'delete'
+  }
+  if (name.includes('add') || name.includes('create')) {
+    return 'add'
+  }
+  if (name.includes('edit') || name.includes('update') || name.includes('set')) {
+    return 'edit'
+  }
 
   return 'data'
 }
@@ -42,9 +48,15 @@ function opStatus (index) {
 
   const error = props.results?.error
 
-  if (!error) return 'applied'
-  if (index < error.index) return 'applied'
-  if (index === error.index) return 'failed'
+  if (!error) {
+    return 'applied'
+  }
+  if (index < error.index) {
+    return 'applied'
+  }
+  if (index === error.index) {
+    return 'failed'
+  }
 
   return 'skipped'
 }

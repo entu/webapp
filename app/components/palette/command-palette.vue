@@ -56,7 +56,9 @@ function actionHash (hash) {
 }
 
 const entityActionRows = computed(() => {
-  if (!rawEntity.value || !route.params.entityId) return []
+  if (!rawEntity.value || !route.params.entityId) {
+    return []
+  }
 
   const rows = []
 
@@ -96,7 +98,9 @@ const entityActionRows = computed(() => {
 })
 
 const createRows = computed(() => {
-  if (!userId.value) return []
+  if (!userId.value) {
+    return []
+  }
 
   const options = activeMenu.value?.addFrom || []
 
@@ -434,7 +438,9 @@ function typeSuggestionRows (folded) {
 }
 
 function propertySuggestionRows (folded) {
-  if (!queryState.value.entityType) return []
+  if (!queryState.value.entityType) {
+    return []
+  }
 
   const matches = rankedMatches(properties.value, folded)
 
@@ -493,7 +499,9 @@ const typedRows = computed(() => {
   const folded = foldedQuery.value
   const state = queryState.value
 
-  if (state.draft) return valueRows.value
+  if (state.draft) {
+    return valueRows.value
+  }
 
   if (!stateEmpty.value) {
     const rows = []
@@ -514,7 +522,9 @@ const typedRows = computed(() => {
     return rows
   }
 
-  if (!q) return []
+  if (!q) {
+    return []
+  }
 
   const scored = []
 
@@ -590,7 +600,9 @@ const emptySections = computed(() => {
 })
 
 const sections = computed(() => {
-  if (isEmptyState.value) return emptySections.value
+  if (isEmptyState.value) {
+    return emptySections.value
+  }
 
   const rows = typedRows.value
   const hits = rows.filter((x) => x.isEntityHit)

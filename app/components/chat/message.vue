@@ -10,14 +10,20 @@ const summaryText = computed(() => {
 
   if (!summary) return
 
-  if (!summary.failed) return t('appliedAll')
+  if (!summary.failed) {
+    return t('appliedAll')
+  }
 
   return t('appliedSome', { applied: summary.applied, total: summary.total })
 })
 
 const proposalStatus = computed(() => {
-  if (props.message.declined) return 'declined'
-  if (props.message.executionResults) return 'executed'
+  if (props.message.declined) {
+    return 'declined'
+  }
+  if (props.message.executionResults) {
+    return 'executed'
+  }
 
   return 'pending'
 })

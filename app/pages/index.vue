@@ -30,13 +30,17 @@ const sortKey = ref()
 function metricTotal (item) {
   const metric = item.stats?.[sortKey.value]
 
-  if (!metric) return -1
+  if (!metric) {
+    return -1
+  }
 
   return (metric.usage ?? 0) + (metric.deleted ?? 0)
 }
 
 const sortedDbStats = computed(() => {
-  if (!sortKey.value) return dbStats.value
+  if (!sortKey.value) {
+    return dbStats.value
+  }
 
   return [...dbStats.value].sort((a, b) => metricTotal(b) - metricTotal(a))
 })

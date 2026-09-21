@@ -10,7 +10,9 @@ const props = defineProps({
 const { t } = useI18n()
 
 const progressPercentage = computed(() => {
-  if (!props.totalCount || props.totalCount === 0) return 0
+  if (!props.totalCount || props.totalCount === 0) {
+    return 0
+  }
   return Math.round((props.loadedCount / props.totalCount) * 100)
 })
 </script>

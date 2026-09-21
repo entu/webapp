@@ -139,9 +139,7 @@ function renderColumn (value, type, decimals) {
     return getValue(value, 'number').toLocaleString(locale.value, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
   }
 
-  if (type === 'boolean' && getValue(value, 'boolean')) {
-    return
-  }
+  if (type === 'boolean' && getValue(value, 'boolean')) return
 
   if (type === 'datetime' && getValue(value, 'datetime')) {
     return d(getValue(value, 'datetime'), 'datetime')

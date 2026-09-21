@@ -13,7 +13,9 @@ const md = computed(() => {
     ? plainExternalLinks(DOMPurify.sanitize(marked.parse(props.source)))
     : DOMPurify.sanitize(marked.parse(props.source))
 
-  if (!props.newTab) return html
+  if (!props.newTab) {
+    return html
+  }
 
   return html.replaceAll('<a href', '<a target="_blank" rel="noopener" href')
 })

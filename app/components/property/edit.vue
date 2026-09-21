@@ -294,8 +294,7 @@ async function addValue (properties) {
   if (props.property === 'entu_api_key') {
     newValue.string = property.string
   }
-
-  if (props.property === 'entu_user') {
+  else if (props.property === 'entu_user') {
     newValue.invite = property.invite
     newValue.email = property.email
 

@@ -24,7 +24,9 @@ const rawReferences = ref([])
 const isLoading = ref(false)
 
 const entity = computed(() => {
-  if (!rawEntity.value) return {}
+  if (!rawEntity.value) {
+    return {}
+  }
 
   const result = {
     _id: rawEntity.value._id,
@@ -54,7 +56,9 @@ const thumbnailEntityId = computed(() => rawEntity.value?.photo?.length ? rawEnt
 const { url: thumbnailUrl } = useEntityThumbnail(thumbnailEntityId, 200)
 
 const properties = computed(() => {
-  if (!entity.value || !entity?.value?.props) return []
+  if (!entity.value || !entity?.value?.props) {
+    return []
+  }
 
   const propsObject = {}
 
@@ -254,7 +258,9 @@ async function loadEntity () {
 
   rawEntity.value = await apiGetEntity(entityId.value)
 
-  if (!rawEntity.value) return showError({ statusCode: 404, statusMessage: t('error404') })
+  if (!rawEntity.value) {
+    return showError({ statusCode: 404, statusMessage: t('error404') })
+  }
 
   if (typeId.value && !entityTypes.value[typeId.value]) {
     entityTypeStore.get(typeId.value)

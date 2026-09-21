@@ -37,9 +37,13 @@ const isAvailable = computed(() => isValidFormat.value && availability.value ===
 const inputStatus = computed(() => availability.value && availability.value !== 'available' ? 'error' : undefined)
 
 const statusMessage = computed(() => {
-  if (isChecking.value) return t('checking')
+  if (isChecking.value) {
+    return t('checking')
+  }
   if (!availability.value) return
-  if (availability.value === 'available') return t('available')
+  if (availability.value === 'available') {
+    return t('available')
+  }
 
   return t(`error-${availability.value}`)
 })

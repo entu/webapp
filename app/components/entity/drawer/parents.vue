@@ -28,11 +28,17 @@ const entityName = computed(() => getValue(rawEntity.value?.name))
 const entityTypeId = computed(() => rawEntity.value?._type?.at(0)?.reference)
 const parentQuery = computed(() => {
   const base = `_expander.reference=${userId.value}`
-  if (!entityTypeId.value) return base
+  if (!entityTypeId.value) {
+    return base
+  }
 
   const typeEntry = addFromEntities.value?.find((x) => x.value === entityTypeId.value)
-  if (!typeEntry?.addFrom?.length) return base
-  if (typeEntry.addFrom.length === 1) return `${base}&_type.reference=${typeEntry.addFrom.at(0)}`
+  if (!typeEntry?.addFrom?.length) {
+    return base
+  }
+  if (typeEntry.addFrom.length === 1) {
+    return `${base}&_type.reference=${typeEntry.addFrom.at(0)}`
+  }
   return `${base}&_type.reference.in=${typeEntry.addFrom.join(',')}`
 })
 const parents = computed(() => {

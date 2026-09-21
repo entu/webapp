@@ -39,12 +39,16 @@ const foldMap = computed(() => {
 
 // Split the title at the first folded-query occurrence so the match renders bold.
 const segments = computed(() => {
-  if (!props.foldedQuery) return [{ text: props.title }]
+  if (!props.foldedQuery) {
+    return [{ text: props.title }]
+  }
 
   const { chars, map, folded } = foldMap.value
   const at = folded.indexOf(props.foldedQuery)
 
-  if (at < 0) return [{ text: props.title }]
+  if (at < 0) {
+    return [{ text: props.title }]
+  }
 
   const start = map.at(at)
   const end = map.at(at + props.foldedQuery.length - 1) + 1

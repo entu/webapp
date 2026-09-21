@@ -63,7 +63,9 @@ export const usePaletteStore = defineStore('palette', () => {
     }
 
     if (typeOptions.value.length > 0) return
-    if (typeOptionsPromise) return typeOptionsPromise
+    if (typeOptionsPromise) {
+      return typeOptionsPromise
+    }
 
     typeOptionsPromise = fetchTypeOptions().finally(() => {
       typeOptionsPromise = null
@@ -99,8 +101,12 @@ export const usePaletteStore = defineStore('palette', () => {
   }
 
   async function getProperties (typeId) {
-    if (!typeId) return []
-    if (propertyCache[typeId]) return propertyCache[typeId]
+    if (!typeId) {
+      return []
+    }
+    if (propertyCache[typeId]) {
+      return propertyCache[typeId]
+    }
 
     try {
       const { entities } = await apiGetEntities({

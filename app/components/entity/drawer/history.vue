@@ -125,8 +125,12 @@ async function loadHistory () {
   }
 
   groups.value = Object.values(buckets).sort((a, b) => {
-    if (!a.at) return 1
-    if (!b.at) return -1
+    if (!a.at) {
+      return 1
+    }
+    if (!b.at) {
+      return -1
+    }
     return new Date(b.at) - new Date(a.at)
   }).map((g) => ({
     ...g,
@@ -147,7 +151,9 @@ function minuteBucket (at) {
 }
 
 function formatValue (val, decimals) {
-  if (val === null || val === undefined) return null
+  if (val === null || val === undefined) {
+    return null
+  }
   // reference + datetime (e.g. auth log-in events)
   if (val.reference !== undefined && val.datetime !== undefined) {
     const refId = String(val.reference)
@@ -165,15 +171,25 @@ function formatValue (val, decimals) {
     return { text: val.filename, href: val._id ? `/${accountId.value}/file/${val._id}` : null, suffix, language: val.language }
   }
   // boolean
-  if (val.boolean !== undefined && val.boolean !== null) return { text: val.boolean ? '✓' : '✗', language: val.language }
+  if (val.boolean !== undefined && val.boolean !== null) {
+    return { text: val.boolean ? '✓' : '✗', language: val.language }
+  }
   // datetime
-  if (val.datetime !== undefined && val.datetime !== null) return { text: d(new Date(val.datetime), 'datetime'), language: val.language }
+  if (val.datetime !== undefined && val.datetime !== null) {
+    return { text: d(new Date(val.datetime), 'datetime'), language: val.language }
+  }
   // date
-  if (val.date !== undefined && val.date !== null) return { text: d(new Date(val.date), 'date'), language: val.language }
+  if (val.date !== undefined && val.date !== null) {
+    return { text: d(new Date(val.date), 'date'), language: val.language }
+  }
   // number
-  if (val.number !== undefined && val.number !== null) return { text: val.number.toLocaleString(locale.value, { minimumFractionDigits: decimals, maximumFractionDigits: decimals }), language: val.language }
+  if (val.number !== undefined && val.number !== null) {
+    return { text: val.number.toLocaleString(locale.value, { minimumFractionDigits: decimals, maximumFractionDigits: decimals }), language: val.language }
+  }
   // plain string
-  if (val.string !== undefined && val.string !== null) return { text: String(val.string), language: val.language }
+  if (val.string !== undefined && val.string !== null) {
+    return { text: String(val.string), language: val.language }
+  }
   return null
 }
 </script>

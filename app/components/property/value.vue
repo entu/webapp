@@ -18,10 +18,14 @@ const PREVIEWABLE_EXTENSIONS = new Set([
 ])
 
 function isPreviewableExtension (filename) {
-  if (!filename) return false
+  if (!filename) {
+    return false
+  }
 
   const extension = filename.split('.').pop()?.toLowerCase()
-  if (!extension) return false
+  if (!extension) {
+    return false
+  }
 
   return PREVIEWABLE_EXTENSIONS.has(extension)
 }
@@ -29,7 +33,9 @@ function isPreviewableExtension (filename) {
 const isPreviewableFile = computed(() => {
   const filetype = props.value?.filetype
 
-  if (filetype) return filetype.startsWith('image/') || filetype === 'application/pdf'
+  if (filetype) {
+    return filetype.startsWith('image/') || filetype === 'application/pdf'
+  }
 
   return isPreviewableExtension(props.value?.filename)
 })
@@ -38,7 +44,9 @@ const { url: thumbnailUrl, load: loadThumbnail } = usePropertyThumbnail(() => pr
 const { url: thumbnailIconUrl, load: loadThumbnailIcon } = usePropertyThumbnail(() => props.value?._id, 50)
 
 watch(isPreviewableFile, (previewable) => {
-  if (previewable) loadThumbnailIcon()
+  if (previewable) {
+    loadThumbnailIcon()
+  }
 }, { immediate: true })
 </script>
 

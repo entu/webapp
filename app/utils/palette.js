@@ -16,10 +16,18 @@ export function paletteFold (text = '') {
 
 // 3 = prefix, 2 = word-prefix, 1 = substring, 0 = no match; both arguments pre-folded.
 export function paletteMatchQuality (foldedText, foldedQuery) {
-  if (!foldedQuery) return 0
-  if (foldedText.startsWith(foldedQuery)) return 3
-  if (foldedText.split(/[^\p{L}\p{N}]+/u).some((word) => word.startsWith(foldedQuery))) return 2
-  if (foldedText.includes(foldedQuery)) return 1
+  if (!foldedQuery) {
+    return 0
+  }
+  if (foldedText.startsWith(foldedQuery)) {
+    return 3
+  }
+  if (foldedText.split(/[^\p{L}\p{N}]+/u).some((word) => word.startsWith(foldedQuery))) {
+    return 2
+  }
+  if (foldedText.includes(foldedQuery)) {
+    return 1
+  }
 
   return 0
 }

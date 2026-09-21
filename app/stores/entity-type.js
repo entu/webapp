@@ -7,7 +7,9 @@ export const useEntityTypeStore = defineStore('entityType', () => {
 
   async function get (_id) {
     if (entityTypes.value[_id]) return
-    if (pending[_id]) return pending[_id]
+    if (pending[_id]) {
+      return pending[_id]
+    }
 
     pending[_id] = fetchType(_id).finally(() => {
       delete pending[_id]

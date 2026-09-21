@@ -76,16 +76,10 @@ watch(() => route.query, () => {
     const field = fieldArray.join('.')
     const fieldType = getPropertyType(field)
 
-    if (operator === 'exists') {
+    if (operator === 'exists' || fieldType === 'boolean') {
       value = value.toLowerCase() === 'true'
     }
-    else if (fieldType === 'boolean') {
-      value = value.toLowerCase() === 'true'
-    }
-    else if (fieldType === 'number' || fieldType === 'filesize') {
-      value = Number(value)
-    }
-    else if (fieldType === 'date' || fieldType === 'datetime') {
+    else if (['number', 'filesize', 'date', 'datetime'].includes(fieldType)) {
       value = Number(value)
     }
 
@@ -193,13 +187,19 @@ function removeCustomFilter (index) {
 }
 
 function getPropertyType (fieldName) {
-  if (!fieldName) return 'string'
+  if (!fieldName) {
+    return 'string'
+  }
 
   const fieldArray = fieldName.split('.').filter(Boolean)
   const lastField = fieldArray.at(-1)
 
-  if (fieldArray.length === 1) return 'string'
-  if (!['boolean', 'date', 'datetime', 'filesize', 'number', 'reference'].includes(lastField)) return 'string'
+  if (fieldArray.length === 1) {
+    return 'string'
+  }
+  if (!['boolean', 'date', 'datetime', 'filesize', 'number', 'reference'].includes(lastField)) {
+    return 'string'
+  }
 
   return lastField
 }

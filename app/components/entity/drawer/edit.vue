@@ -98,7 +98,9 @@ const entity = computed(() => {
 })
 
 const properties = computed(() => {
-  if (!entity.value || !entity?.value?.props) return []
+  if (!entity.value || !entity?.value?.props) {
+    return []
+  }
 
   const propsObject = {}
 

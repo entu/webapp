@@ -20,7 +20,9 @@ const usedTokens = computed(() => Math.max(0, usage.value.total - usage.value.ca
 const usedPercent = computed(() => {
   const { total } = usage.value
 
-  if (!total) return 0
+  if (!total) {
+    return 0
+  }
 
   return Math.min(100, Math.round((usedTokens.value / total) * 100))
 })

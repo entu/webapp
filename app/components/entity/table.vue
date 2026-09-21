@@ -33,7 +33,9 @@ const {
 })
 
 const tableColumnsWithTypes = computed(() => {
-  if (!entitiesList.value.length) return [{ name: 'name', type: 'string' }]
+  if (!entitiesList.value.length) {
+    return [{ name: 'name', type: 'string' }]
+  }
 
   const columnsWithTypes = []
 

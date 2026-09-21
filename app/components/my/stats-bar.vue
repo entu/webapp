@@ -16,8 +16,12 @@ const props = defineProps({
 const usagePercent = computed(() => {
   const total = props.usage + props.deleted
 
-  if (!props.usage) return 0
-  if (!props.limit || props.usage > props.limit) return Math.round(props.usage * 100 / total)
+  if (!props.usage) {
+    return 0
+  }
+  if (!props.limit || props.usage > props.limit) {
+    return Math.round(props.usage * 100 / total)
+  }
 
   return Math.round(props.usage * 100 / props.limit)
 })
@@ -25,8 +29,12 @@ const usagePercent = computed(() => {
 const deletedPercent = computed(() => {
   const total = props.usage + props.deleted
 
-  if (!props.deleted) return 0
-  if (!props.limit || props.deleted > props.limit) return Math.round(props.deleted * 100 / total)
+  if (!props.deleted) {
+    return 0
+  }
+  if (!props.limit || props.deleted > props.limit) {
+    return Math.round(props.deleted * 100 / total)
+  }
 
   return Math.round(props.deleted * 100 / props.limit)
 })
@@ -42,7 +50,9 @@ const limitPercent = computed(() => {
 })
 
 const overLimit = computed(() => {
-  if (!props.limit) return 0
+  if (!props.limit) {
+    return 0
+  }
 
   const over = props.usage + props.deleted - props.limit
 

@@ -28,7 +28,9 @@ const entityName = computed(() => getValue(rawEntity.value?.name))
 const selectedCount = computed(() => availableProperties.value.length - ignoredProperties.value.length)
 
 const availableProperties = computed(() => {
-  if (!rawEntity.value) return []
+  if (!rawEntity.value) {
+    return []
+  }
 
   const result = []
 

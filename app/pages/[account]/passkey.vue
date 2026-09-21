@@ -72,11 +72,21 @@ async function registerPasskey () {
 
 function getDeviceName () {
   const ua = navigator.userAgent
-  if (ua.includes('iPhone')) return 'iPhone'
-  if (ua.includes('iPad')) return 'iPad'
-  if (ua.includes('Mac')) return 'Mac'
-  if (ua.includes('Android')) return 'Android'
-  if (ua.includes('Windows')) return 'Windows PC'
+  if (ua.includes('iPhone')) {
+    return 'iPhone'
+  }
+  if (ua.includes('iPad')) {
+    return 'iPad'
+  }
+  if (ua.includes('Mac')) {
+    return 'Mac'
+  }
+  if (ua.includes('Android')) {
+    return 'Android'
+  }
+  if (ua.includes('Windows')) {
+    return 'Windows PC'
+  }
 
   return 'Unknown Device'
 }
