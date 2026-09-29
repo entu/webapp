@@ -1,3 +1,6 @@
+## 2026-09-29
+- **More powerful formulas**: New operators for text (`REGEX`, `UPPER`, `LOWER`), logic (`AND`, `OR`, `NOT`), lists (`UNIQUE`, `SORT`), numbers (`NUMBER`, `FLOOR`, `CEIL`) and dates (`DATE`, `DATETIME`). Multilingual formula properties now compute a separate result for each language.
+
 ## 2026-08-26
 - **Barcode scanning in ESTER and Discogs import**: The ESTER and Discogs import plugins can now scan barcodes with the camera directly from the search field — ISBN codes on books in ESTER, EAN/UPC codes on records and CDs in Discogs.
 
