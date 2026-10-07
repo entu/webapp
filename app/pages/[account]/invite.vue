@@ -12,6 +12,9 @@ const db = route.params.account
 
 const authProviderGroups = [
   [
+    { value: 'passkey', icon: 'passkey' }
+  ],
+  [
     { value: 'apple', icon: 'apple' },
     { value: 'google', icon: 'google' },
     { value: 'e-mail', icon: 'e-mail' }
@@ -90,6 +93,7 @@ onMounted(async () => {
     language: Eesti keel
     title: You have been invited to join Entu database {db}
     description: Sign in with one of the options above to accept your invitation.
+    auth-passkey: Passkey
     auth-e-mail: E-mail
     auth-google: Google
     auth-apple: Apple
@@ -100,6 +104,7 @@ onMounted(async () => {
     language: English
     title: Sind on kutsutud liituma Entu andmebaasiga {db}
     description: Kutse vastuvõtmiseks logi sisse ülaltoodud valikuga.
+    auth-passkey: Turvavõti
     auth-e-mail: E-post
     auth-google: Google
     auth-apple: Apple

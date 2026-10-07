@@ -1,12 +1,13 @@
 <script setup>
+import * as Sentry from '@sentry/nuxt'
 import { NSpin, NCard } from 'naive-ui'
 import { startAuthentication, browserSupportsWebAuthn, platformAuthenticatorIsAvailable } from '@simplewebauthn/browser'
 
 definePageMeta({ layout: 'blank' })
 
+const runtimeConfig = useRuntimeConfig()
+const route = useRoute()
 const { t } = useI18n()
-const { setToken } = useUser()
-const { accounts } = useAccount()
 
 const canUsePasskey = ref(false)
 const isAuthenticating = ref(false)
@@ -15,7 +16,12 @@ const authError = ref(false)
 onMounted(async () => {
   useHead({ title: t('title') })
 
-  useAnalytics('auth_passkey')
+  // Only the API sends users here, with a login state - without one there is no login to complete
+  if (!route.query.state) {
+    await navigateTo({ path: '/' })
+
+    return
+  }
 
   // Check if WebAuthn is supported and available
   if (!browserSupportsWebAuthn()) return
@@ -46,42 +52,27 @@ async function authenticateWithPasskey () {
     // startAuthentication handles WebAuthn API calls and base64url conversions
     const credential = await startAuthentication(options)
 
-    // Complete authentication
-    const result = await apiRequest('auth/passkey', {
+    // Verify the passkey and get a code for the API callback, as oauth.ee hands back for other providers
+    const { code } = await apiRequest('auth/passkey', {
       ...credential,
-      challengeToken: options.challengeToken
+      challengeToken: options.challengeToken,
+      state: route.query.state
     }, {}, 'POST')
 
-    // Store authentication data
-    if (result.accounts?.length > 0) {
-      accounts.value = result.accounts
-    }
+    const url = new URL(`${runtimeConfig.public.apiUrl.replace(/\/$/, '')}/auth/callback`)
 
-    if (result.token) {
-      setToken(result)
-    }
+    url.searchParams.set('code', code)
+    url.searchParams.set('state', route.query.state)
 
-    // Navigate back to the saved page, or to overview (redirects to the single db when there is only one)
-    if (result.accounts?.length > 0) {
-      const nextPage = useLocalStorage('next', { path: '/' })
-
-      if (nextPage.value.path !== '/') {
-        const to = { path: nextPage.value?.path || '/', query: nextPage.value?.query }
-        nextPage.value = {}
-
-        await navigateTo(to)
-      }
-      else {
-        await navigateTo({ path: '/' })
-      }
-    }
+    await navigateTo(url.toString(), { external: true })
   }
   catch (error) {
-    console.error('Passkey authentication failed:', error)
+    // A cancelled or timed-out passkey prompt is expected, everything else goes to error tracking.
+    if (error?.name !== 'NotAllowedError') {
+      Sentry.captureException(error)
+    }
 
     authError.value = true
-  }
-  finally {
     isAuthenticating.value = false
   }
 }
