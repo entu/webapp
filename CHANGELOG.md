@@ -1,5 +1,5 @@
 ## 2026-10-07
-- **Passkeys work everywhere**: One passkey now signs you in to every database you belong to, accepts invitations, and can create a new database — the same as the other sign-in methods. Apps that use Entu for sign-in can offer passkeys too.
+- **Passkeys work everywhere**: One passkey now signs you in to every database you belong to, and you can create a new one wherever you sign up, accept an invitation or add a login method — the same as the other sign-in methods. Adding a login method to yourself keeps you signed in, an expired or already used invitation now shows a clear message, and apps that use Entu for sign-in can offer passkeys too.
 
 ## 2026-09-29
 - **More powerful formulas**: New operators for text (`REGEX`, `UPPER`, `LOWER`), logic (`AND`, `OR`, `NOT`), lists (`UNIQUE`, `SORT`), numbers (`NUMBER`, `FLOOR`, `CEIL`) and dates (`DATE`, `DATETIME`). Multilingual formula properties now compute a separate result for each language.
