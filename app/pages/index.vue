@@ -7,21 +7,7 @@ const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 const { accounts } = useAccount()
 
-const authProviderGroups = [
-  [
-    { value: 'passkey', icon: 'passkey' }
-  ],
-  [
-    { value: 'apple', icon: 'apple' },
-    { value: 'google', icon: 'google' },
-    { value: 'e-mail', icon: 'e-mail' }
-  ],
-  [
-    { value: 'smart-id', icon: 'smart-id' },
-    { value: 'mobile-id', icon: 'mobile-id' },
-    { value: 'id-card', icon: 'id-card' }
-  ]
-]
+const providerGroups = authProviderGroups()
 
 const isRedirecting = ref(false)
 const dbStats = ref([])
@@ -213,19 +199,19 @@ onMounted(async () => {
     <div class="mb-8 flex w-full flex-col gap-8 px-4 sm:mx-auto sm:w-72">
       <div class="flex flex-col gap-3">
         <n-button-group
-          v-for="(group, index) in authProviderGroups"
+          v-for="(group, index) in providerGroups"
           :key="index"
           class="flex! w-full flex-col"
           vertical
         >
           <my-button
             v-for="provider in group"
-            :key="provider.value"
+            :key="provider.id"
             class="w-full justify-start! px-6!"
             size="large"
             :icon="provider.icon"
-            :label="t(`auth-${provider.value}`)"
-            @click="navigateTo(`/auth/${provider.value}`)"
+            :label="t(provider.label)"
+            @click="navigateTo(`/auth/${provider.path}`)"
           />
         </n-button-group>
       </div>
@@ -266,13 +252,6 @@ onMounted(async () => {
     language: Eesti keel
     signInTitle: Sign in to Entu
     signInDescription: Choose how you want to sign in. You will be taken to your databases.
-    auth-passkey: Passkey
-    auth-e-mail: E-mail
-    auth-google: Google
-    auth-apple: Apple
-    auth-smart-id: Smart-ID
-    auth-mobile-id: Mobile-ID
-    auth-id-card: ID-Card
     new: Create New Database
     selectTitle: Select a database
     selectDescription: You have access to multiple databases. Choose one to continue.
@@ -281,13 +260,6 @@ onMounted(async () => {
     language: English
     signInTitle: Sisene Entusse
     signInDescription: Vali, kuidas soovid sisse logida. Seejärel jõuad oma andmebaasidesse.
-    auth-passkey: Turvavõti
-    auth-e-mail: E-post
-    auth-google: Google
-    auth-apple: Apple
-    auth-smart-id: Smart-ID
-    auth-mobile-id: Mobiil-ID
-    auth-id-card: ID-kaart
     new: Loo uus andmebaas
     selectTitle: Vali andmebaas
     selectDescription: Sul on ligipääs mitmele andmebaasile. Vali üks jätkamiseks.

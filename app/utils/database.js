@@ -1,7 +1,7 @@
+// Creates a database owned by the token's sign-in, then refreshes the token so it includes the new database
 export async function setupNewDatabase (token, database) {
   const runtimeConfig = useRuntimeConfig()
-  const { setToken, user } = useUser()
-  const { accounts } = useAccount()
+  const { setToken } = useUser()
 
   const { db } = await $fetch(`${runtimeConfig.public.apiUrl}/new`, {
     method: 'PUT',
@@ -13,12 +13,7 @@ export async function setupNewDatabase (token, database) {
     headers: { Authorization: `Bearer ${token}` }
   })
 
-  accounts.value = authResponse.accounts || []
   setToken(authResponse)
-
-  if (authResponse.user) {
-    user.value = authResponse.user
-  }
 
   return db
 }

@@ -1,8 +1,7 @@
 export function useUser () {
-  const { account } = useAccount()
+  const { account, accounts } = useAccount()
   const token = useLocalStorage('token')
   const tokenExpiry = useLocalStorage('token-expiry', '')
-  const user = useLocalStorage('user', {})
   const menuCollapsed = useLocalStorage('menu-collapsed', false)
   const listWidth = useLocalStorage('list-width', 0.25)
   const showTable = useLocalStorage('show-table', false)
@@ -11,9 +10,11 @@ export function useUser () {
   const userId = computed(() => account.value?.user?._id)
   const userName = computed(() => account.value?.user?.name)
 
+  // Stores the token and databases of a sign-in or refresh response, so both always come from the same response
   function setToken (authResponse) {
     token.value = authResponse?.token
     tokenExpiry.value = authResponse?.expires || ''
+    accounts.value = authResponse?.accounts || []
   }
 
   function logOut () {
@@ -38,7 +39,6 @@ export function useUser () {
     tablePageSize,
     token,
     tokenExpiry,
-    user,
     userId,
     userName
   }

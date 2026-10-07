@@ -9,7 +9,7 @@ defineProps({
   showLang: { type: Boolean, default: true }
 })
 
-const { account, accounts } = useAccount()
+const { account, accountId, accounts } = useAccount()
 const { menuCollapsed, token, userId, userName } = useUser()
 
 const menuStore = useMenuStore()
@@ -159,76 +159,23 @@ const accountMenu = computed(() => {
 })
 
 const authMenu = computed(() => {
-  const providers = [
+  // Inside a database a new user can also create a passkey, as the database may add users automatically
+  const groups = authProviderGroups(accountId.value ? ['use', 'create'] : ['use'])
+
+  const providers = groups.flatMap((group, index) => [
     {
-      name: '            4',
+      key: `auth-divider-${index}`,
       type: 'divider'
     },
-    {
-      key: 'auth-passkey',
-      icon: () => h(MyIcon, { icon: 'passkey' }),
+    ...group.map((provider) => ({
+      key: `auth-${provider.id}`,
+      icon: () => h(MyIcon, { icon: provider.icon }),
       label: () => h(NuxtLink,
-        { to: { path: '/auth/passkey' } },
-        { default: () => t('passkey') }
+        { to: { path: `/auth/${provider.path}` } },
+        { default: () => t(provider.label) }
       )
-    },
-    {
-      name: '            5',
-      type: 'divider'
-    },
-    {
-      key: 'auth-apple',
-      icon: () => h(MyIcon, { icon: 'apple' }),
-      label: () => h(NuxtLink,
-        { to: { path: '/auth/apple' } },
-        { default: () => 'Apple' }
-      )
-    },
-    {
-      key: 'auth-google',
-      icon: () => h(MyIcon, { icon: 'google' }),
-      label: () => h(NuxtLink,
-        { to: { path: '/auth/google' } },
-        { default: () => 'Google' }
-      )
-    },
-    {
-      key: 'auth-email',
-      icon: () => h(MyIcon, { icon: 'e-mail' }),
-      label: () => h(NuxtLink,
-        { to: { path: '/auth/e-mail' } },
-        { default: () => t('email') }
-      )
-    },
-    {
-      name: '            6',
-      type: 'divider'
-    },
-    {
-      key: 'auth-sid',
-      icon: () => h(MyIcon, { icon: 'smart-id' }),
-      label: () => h(NuxtLink,
-        { to: { path: '/auth/smart-id' } },
-        { default: () => t('sid') }
-      )
-    },
-    {
-      key: 'auth-mid',
-      icon: () => h(MyIcon, { icon: 'mobile-id' }),
-      label: () => h(NuxtLink,
-        { to: { path: '/auth/mobile-id' } },
-        { default: () => t('mid') }
-      )
-    },
-    {
-      key: 'auth-idc',
-      icon: () => h(MyIcon, { icon: 'id-card' }),
-      label: () => h(NuxtLink,
-        { to: { path: '/auth/id-card' } },
-        { default: () => t('idc') }
-      )
-    }
-  ]
+    }))
+  ])
 
   return [
     {
@@ -407,20 +354,10 @@ function menuSorter (a, b) {
     language: Eesti keel
     signIn: Sign In
     signOut: Sign Out
-    passkey: Passkey
-    email: E-mail
-    mid: Mobile-ID
-    sid: Smart-ID
-    idc: ID-Card
     userEntity: User
   et:
     language: English
     signIn: Sisene
     signOut: Välju
-    passkey: Turvavõti
-    email: E-post
-    mid: Mobiil-ID
-    sid: Smart-ID
-    idc: ID-kaart
     userEntity: Kasutaja
 </i18n>

@@ -452,19 +452,11 @@ const { copy } = useClipboard()
         @click="updateValue({ ...value, string: null })"
       />
 
-      <my-button
-        v-else-if="type === 'string' && props.property === 'entu_passkey' && !value._id && isOwnEntity"
-        icon="add"
-        :label="t('registerPasskey')"
-        :readonly="disabled"
-        @click="navigateTo(`/${accountId}/passkey`)"
-      />
-
       <span
-        v-else-if="type === 'string' && props.property === 'entu_passkey' && !value._id && !isOwnEntity"
+        v-else-if="type === 'string' && props.property === 'entu_passkey' && !value._id"
         class="mt-2 text-sm text-gray-500"
       >
-        {{ t('passkeyOwnOnly') }}
+        {{ t('passkeyAddHint') }}
       </span>
 
       <my-button
@@ -670,8 +662,7 @@ const { copy } = useClipboard()
     generateApiKey: Generate API Key
     deleteApiKey: Delete API Key
     deletePasskey: Delete Passkey
-    registerPasskey: Register Passkey
-    passkeyOwnOnly: Only user can create their own passkey
+    passkeyAddHint: A passkey is added with Add Login Method or an invite
     sendInvite: Send Invite
     cancelInvite: Cancel Invite
     invitePending: 'Invite sent to {email}'
@@ -681,9 +672,8 @@ const { copy } = useClipboard()
     counter: Genereeri
     generateApiKey: Loo API võti
     deleteApiKey: Kustuta API võti
-    deletePasskey: Kustuta turvavõti
-    registerPasskey: Registreeri turvavõti
-    passkeyOwnOnly: Turvavõtit saab luua ainult kasutaja ise
+    deletePasskey: Kustuta pääsuvõti
+    passkeyAddHint: Pääsuvõti lisatakse valikuga Lisa sisselogimisviis või kutsega
     sendInvite: Saada kutse
     cancelInvite: Tühista kutse
     invitePending: 'Kutse saadetud aadressile {email}'

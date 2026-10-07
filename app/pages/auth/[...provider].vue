@@ -8,13 +8,21 @@ const { t, locale } = useI18n()
 onMounted(async () => {
   useHead({ title: t('title') })
 
-  useAnalytics(`auth_${route.params.provider}`)
+  const provider = authProviderByPath(route.params.provider)
+
+  if (!provider) {
+    await navigateTo('/')
+
+    return
+  }
+
+  useAnalytics(`auth_${provider.id}`)
 
   const callbackUrl = route.query.invite
     ? `${window.location.origin}/auth/callback?invite=${encodeURIComponent(route.query.invite)}&key=`
     : `${window.location.origin}/auth/callback?key=`
 
-  await navigateTo(`${runtimeConfig.public.apiUrl.replace(/\/$/, '')}/auth/${route.params.provider}?next=${encodeURIComponent(callbackUrl)}&lang=${locale.value}`, { external: true })
+  await navigateTo(`${runtimeConfig.public.apiUrl.replace(/\/$/, '')}/auth/${provider.path}?next=${encodeURIComponent(callbackUrl)}&lang=${locale.value}`, { external: true })
 })
 </script>
 

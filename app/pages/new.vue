@@ -8,18 +8,8 @@ const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 const { token, tokenExpiry } = useUser()
 
-const authProviderGroups = [
-  [
-    { value: 'apple', icon: 'apple' },
-    { value: 'google', icon: 'google' },
-    { value: 'e-mail', icon: 'e-mail' }
-  ],
-  [
-    { value: 'smart-id', icon: 'smart-id' },
-    { value: 'mobile-id', icon: 'mobile-id' },
-    { value: 'id-card', icon: 'id-card' }
-  ]
-]
+// A new user has no passkey yet, so signup offers only creating one
+const providerGroups = authProviderGroups(['create'])
 
 const databaseName = ref('')
 const availability = ref()
@@ -112,7 +102,7 @@ function signInWith (provider) {
   if (!isAvailable.value) return
 
   sessionStorage.setItem('new-database', databaseName.value)
-  navigateTo(`/auth/${provider}`)
+  navigateTo(`/auth/${provider.path}`)
 }
 
 function setLanguage () {
@@ -226,21 +216,21 @@ onMounted(() => {
       >
         <div class="flex flex-col gap-6">
           <div
-            v-for="(group, index) in authProviderGroups"
+            v-for="(group, index) in providerGroups"
             :key="index"
           >
             <div
               v-for="provider in group"
-              :key="provider.value"
+              :key="provider.id"
               class="flex items-center gap-2 border-b border-b-gray-200 py-2 last-of-type:border-b-0"
               :class="{
                 'cursor-pointer': isAvailable,
                 'pointer-events-none opacity-40': !isAvailable,
               }"
-              @click="signInWith(provider.value)"
+              @click="signInWith(provider)"
             >
               <my-icon :icon="provider.icon" />
-              {{ t(`auth-${provider.value}`) }}
+              {{ t(provider.label) }}
             </div>
           </div>
         </div>
@@ -273,12 +263,6 @@ onMounted(() => {
     create: Create Database
     signInTitle: Sign in to create your database
     signInInfo: Choose a database name above, then sign in with one of these options. Your database is created right after you sign in.
-    auth-e-mail: E-mail
-    auth-google: Google
-    auth-apple: Apple
-    auth-smart-id: Smart-ID
-    auth-mobile-id: Mobile-ID
-    auth-id-card: ID-Card
     error: Error
   et:
     language: English
@@ -295,11 +279,5 @@ onMounted(() => {
     create: Loo andmebaas
     signInTitle: Andmebaasi loomiseks logi sisse
     signInInfo: Vali üleval andmebaasi nimi ja logi seejärel sisse ühega neist valikutest. Sinu andmebaas luuakse kohe pärast sisselogimist.
-    auth-e-mail: E-post
-    auth-google: Google
-    auth-apple: Apple
-    auth-smart-id: Smart-ID
-    auth-mobile-id: Mobiil-ID
-    auth-id-card: ID-kaart
     error: Viga
 </i18n>

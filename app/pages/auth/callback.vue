@@ -1,86 +1,68 @@
 <script setup>
+import { NAlert, NSpin } from 'naive-ui'
+
+definePageMeta({ layout: 'blank' })
+
 const route = useRoute()
 const { t } = useI18n()
-const { setToken, user } = useUser()
-const { accounts } = useAccount()
 
-definePageMeta({ layout: 'spinner' })
+const result = ref()
 
 onMounted(async () => {
   useHead({ title: t('title') })
 
-  const nextPage = useLocalStorage('next', { path: '/' })
-  const invite = route.query.invite
-  const inviteDb = invite ? JSON.parse(atob(invite.split('.').at(1).replace(/-/g, '+').replace(/_/g, '/')))?.db : null
-  const authAccount = inviteDb || nextPage.value?.path?.split('/').filter((x) => x !== 'new').at(1)
-  let newUser = {}
+  result.value = await completeSignIn(route.query.key, route.query.invite)
 
-  const authParams = authAccount ? { db: authAccount } : {}
+  if (result.value.error) return
 
-  if (invite) {
-    authParams.invite = invite
-  }
-
-  const authResponse = await apiRequest('auth', authParams, { Authorization: `Bearer ${route.query.key}` })
-
-  if (authResponse.accounts?.length > 0) {
-    accounts.value = authResponse.accounts
-
-    newUser = authResponse.accounts.find((x) => x._id === authAccount)?.user || {}
-  }
-  else {
-    accounts.value = []
-  }
-
-  setToken(authResponse)
-
-  if (authResponse.user) {
-    user.value = authResponse.user
-  }
-
-  const newDatabase = !invite && sessionStorage.getItem('new-database')
-
-  if (newDatabase) {
-    try {
-      const db = await setupNewDatabase(authResponse.token, newDatabase)
-
-      sessionStorage.removeItem('new-database')
-      nextPage.value = {}
-
-      await navigateTo(`/${db}`)
-    }
-    catch (e) {
-      sessionStorage.setItem('new-database-error', e.data?.statusMessage || e.message)
-      nextPage.value = {}
-
-      await navigateTo('/new')
-    }
-  }
-  else if (newUser.new) {
-    await navigateTo({ path: `/${authAccount}/${newUser?._id}`, hash: 'edit' })
-  }
-  else if (!invite && nextPage.value.path !== '/') {
-    const to = { path: nextPage.value?.path || '/', query: nextPage.value?.query }
-    nextPage.value = {}
-
-    await navigateTo(to)
-  }
-  else if (accounts.value.length > 0) {
-    await navigateTo({ path: '/' })
-  }
-  else {
-    await navigateTo({ path: '/new' })
-  }
+  await navigateTo(result.value.to)
 })
 </script>
 
 <template>
-  <div />
+  <div
+    v-if="result?.error"
+    class="flex min-h-full items-center justify-center p-4"
+  >
+    <div class="flex w-full max-w-sm flex-col gap-6">
+      <n-alert
+        type="error"
+        :title="t('errorTitle')"
+      >
+        {{ t(`error-${result.error}`) }}
+      </n-alert>
+
+      <my-button
+        block
+        size="large"
+        type="primary"
+        :label="t('continue')"
+        @click="navigateTo(result.to || '/')"
+      />
+    </div>
+  </div>
+
+  <n-spin
+    v-else
+    class="size-full"
+    show
+    :delay="200"
+  />
 </template>
 
 <i18n lang="yaml">
   en:
     title: Sign In
+    errorTitle: Sign-in failed
+    error-signIn: Signing in did not succeed. Please try again.
+    error-invite: This invitation is invalid, has expired or has already been used. Ask for a new invitation.
+    error-conflict: You signed in with a login method that already belongs to another person in this database, so the invitation could not be accepted. Use a different login method.
+    continue: Continue
   et:
     title: Sisene
+    errorTitle: Sisselogimine ebaõnnestus
+    error-signIn: Sisselogimine ei õnnestunud. Palun proovi uuesti.
+    error-invite: See kutse on vigane, aegunud või juba kasutatud. Küsi uus kutse.
+    error-conflict: Sa logisid sisse viisiga, mis kuulub selles andmebaasis juba teisele isikule, seega ei saanud kutset vastu võtta. Kasuta teist sisselogimisviisi.
+    continue: Jätka
 </i18n>

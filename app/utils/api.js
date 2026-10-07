@@ -22,6 +22,7 @@ async function ensureFreshToken () {
     const base = url.pathname.replace(/\/$/, '')
     url.pathname = `${base}/auth/refresh`
 
+    // setToken stores the refreshed databases too, so a database gained or lost since sign-in shows up
     refreshPromise = $fetch(url.toString(), { headers: { Authorization: `Bearer ${token.value}` } })
       .then((result) => setToken(result))
       .catch(() => logOut())

@@ -10,21 +10,8 @@ const { locale, setLocale } = useI18n({ useScope: 'global' })
 const token = route.query.token
 const db = route.params.account
 
-const authProviderGroups = [
-  [
-    { value: 'passkey', icon: 'passkey' }
-  ],
-  [
-    { value: 'apple', icon: 'apple' },
-    { value: 'google', icon: 'google' },
-    { value: 'e-mail', icon: 'e-mail' }
-  ],
-  [
-    { value: 'smart-id', icon: 'smart-id' },
-    { value: 'mobile-id', icon: 'mobile-id' },
-    { value: 'id-card', icon: 'id-card' }
-  ]
-]
+// The invited person may already have a passkey elsewhere in Entu, or create one now
+const providerGroups = authProviderGroups(['use', 'create'])
 
 function setLanguage () {
   setLocale(locale.value === 'en' ? 'et' : 'en')
@@ -62,17 +49,17 @@ onMounted(async () => {
       <n-card :title="t('title', { db })">
         <div class="flex flex-col gap-6">
           <div
-            v-for="(group, index) in authProviderGroups"
+            v-for="(group, index) in providerGroups"
             :key="index"
           >
             <nuxt-link
               v-for="provider in group"
-              :key="provider.value"
+              :key="provider.id"
               class="flex items-center gap-2 border-b py-2 last-of-type:border-b-0"
-              :to="{ path: `/auth/${provider.value}`, query: { invite: token } }"
+              :to="{ path: `/auth/${provider.path}`, query: { invite: token } }"
             >
               <my-icon :icon="provider.icon" />
-              {{ t(`auth-${provider.value}`) }}
+              {{ t(provider.label) }}
             </nuxt-link>
           </div>
         </div>
@@ -93,22 +80,8 @@ onMounted(async () => {
     language: Eesti keel
     title: You have been invited to join Entu database {db}
     description: Sign in with one of the options above to accept your invitation.
-    auth-passkey: Passkey
-    auth-e-mail: E-mail
-    auth-google: Google
-    auth-apple: Apple
-    auth-smart-id: Smart-ID
-    auth-mobile-id: Mobile-ID
-    auth-id-card: ID-Card
   et:
     language: English
     title: Sind on kutsutud liituma Entu andmebaasiga {db}
     description: Kutse vastuvõtmiseks logi sisse ülaltoodud valikuga.
-    auth-passkey: Turvavõti
-    auth-e-mail: E-post
-    auth-google: Google
-    auth-apple: Apple
-    auth-smart-id: Smart-ID
-    auth-mobile-id: Mobiil-ID
-    auth-id-card: ID-kaart
 </i18n>
