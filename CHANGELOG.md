@@ -1,3 +1,6 @@
+## 2026-10-09
+- **Passkeys listed with other login methods**: A person's passkeys now appear in the same login methods field as their other sign-in methods, with the passkey icon and device name, instead of a separate passkeys field.
+
 ## 2026-10-07
 - **Passkeys work everywhere**: One passkey now signs you in to every database you belong to, and you can create a new one wherever you sign up, accept an invitation or add a login method — the same as the other sign-in methods. Adding a login method to yourself keeps you signed in, an expired or already used invitation now shows a clear message, and apps that use Entu for sign-in can offer passkeys too.
 

@@ -296,9 +296,10 @@ async function addValue (properties) {
   }
   else if (props.property === 'entu_user') {
     newValue.invite = property.invite
-    newValue.email = property.email
+    newValue.string = property.string
 
-    if (isOwnEntity.value && property.invite) {
+    // The real token comes back only on your own person, where it opens the invite page to add a login method
+    if (isOwnEntity.value && typeof property.invite === 'string') {
       await navigateTo({ path: `/${accountId.value}/invite`, query: { token: property.invite } })
     }
   }
@@ -444,23 +445,7 @@ const { copy } = useClipboard()
       />
 
       <my-button
-        v-if="type === 'string' && props.property === 'entu_passkey' && value._id"
-        icon="delete"
-        :label="t('deletePasskey')"
-        :loading="loadingInputs.includes(value._id)"
-        :readonly="disabled"
-        @click="updateValue({ ...value, string: null })"
-      />
-
-      <span
-        v-else-if="type === 'string' && props.property === 'entu_passkey' && !value._id"
-        class="mt-2 text-sm text-gray-500"
-      >
-        {{ t('passkeyAddHint') }}
-      </span>
-
-      <my-button
-        v-else-if="type === 'string' && props.property === 'entu_api_key' && value._id && value.string === '***'"
+        v-if="type === 'string' && props.property === 'entu_api_key' && value._id && value.string === '***'"
         icon="delete"
         :label="t('deleteApiKey')"
         :loading="loadingInputs.includes(value._id)"
@@ -490,9 +475,9 @@ const { copy } = useClipboard()
         @click="updateValue({ ...value, string: 'generate' })"
       />
 
-      <template v-else-if="type === 'string' && props.property === 'entu_user' && value._id && value.invite && value.email">
+      <template v-else-if="type === 'string' && props.property === 'entu_user' && value._id && value.invite && value.string">
         <span class="text-sm text-gray-500">
-          {{ t('invitePending', { email: value.email }) }}
+          {{ t('invitePending', { email: value.string }) }}
         </span>
         <my-button
           icon="delete"
@@ -509,7 +494,7 @@ const { copy } = useClipboard()
             v-if="value.provider"
             :icon="value.provider"
           />
-          <span class="truncate text-sm">{{ value.string || value.email }}</span>
+          <span class="truncate text-sm">{{ value.string }}</span>
         </div>
         <my-button
           icon="delete"
@@ -661,8 +646,6 @@ const { copy } = useClipboard()
     counter: Generate
     generateApiKey: Generate API Key
     deleteApiKey: Delete API Key
-    deletePasskey: Delete Passkey
-    passkeyAddHint: A passkey is added with Add Login Method or an invite
     sendInvite: Send Invite
     cancelInvite: Cancel Invite
     invitePending: 'Invite sent to {email}'
@@ -672,8 +655,6 @@ const { copy } = useClipboard()
     counter: Genereeri
     generateApiKey: Loo API võti
     deleteApiKey: Kustuta API võti
-    deletePasskey: Kustuta pääsuvõti
-    passkeyAddHint: Pääsuvõti lisatakse valikuga Lisa sisselogimisviis või kutsega
     sendInvite: Saada kutse
     cancelInvite: Tühista kutse
     invitePending: 'Kutse saadetud aadressile {email}'

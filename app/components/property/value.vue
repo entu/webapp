@@ -149,13 +149,13 @@ watch(isPreviewableFile, (previewable) => {
   <template v-else-if="value.provider !== undefined">
     <div class="flex items-center gap-2">
       <my-icon :icon="value.provider" />
-      <span>{{ value.email || value.string }}</span>
+      <span>{{ value.string }}</span>
     </div>
   </template>
 
-  <template v-else-if="value.invite !== undefined && value.email">
+  <template v-else-if="value.invite && value.string">
     <span class="text-sm text-gray-500">
-      {{ t('invitePending', { email: value.email }) }}
+      {{ t('invitePending', { email: value.string }) }}
     </span>
   </template>
 
