@@ -248,7 +248,7 @@ onMounted(() => {
 <i18n lang="yaml">
   en:
     title: Create a new Entu database
-    description: Choose a permanent name for your database. It will be ready to use right away.
+    description: Set up your own database in three short steps. No payment details are needed to get started.
     databaseName: Database name
     databaseInfo: Name can contain only letters, numbers and underscores, must start with a letter and be 4–12 characters long.
     databasePermanent: Pick a short name for your database. It becomes part of the database's web address and cannot be changed later.
@@ -268,7 +268,7 @@ onMounted(() => {
     error: Error
   et:
     title: Loo uus Entu andmebaas
-    description: Vali oma andmebaasile püsiv nimi. See on kohe kasutamiseks valmis.
+    description: Loo oma andmebaas kolme lühikese sammuga. Alustamiseks pole makseandmeid vaja.
     databaseName: Andmebaasi nimi
     databaseInfo: Nimi võib sisaldada ainult tähti, numbreid ja allkriipse, peab algama tähega ning olema 4–12 tähemärki pikk.
     databasePermanent: Vali andmebaasile lühike nimi. Sellest saab osa andmebaasi veebiaadressist ja seda ei saa hiljem muuta.
