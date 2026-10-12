@@ -38,7 +38,7 @@ export async function completeSignIn (key, invite) {
     return { error: invite && error?.statusCode === 400 ? 'invite' : 'signIn' }
   }
 
-  await signalPasskeyUserDetails(signal, authResponse.user)
+  await signalPasskeyUserDetails(signal, authResponse.rename)
 
   if (keepSession) {
     const to = `/${pendingInvite.db}/${pendingInvite.entityId}`

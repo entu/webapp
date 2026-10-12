@@ -44,7 +44,7 @@ export function usePasskey () {
 
       storeSignal(optionsJSON.rpId, credential.response?.userHandle)
 
-      const { code } = await passkeyApi('auth/passkey', { ...credential, challengeToken, state: route.query.state })
+      const { code } = await passkeyApi('auth/passkey', { ...credential, challengeToken, rename: canRenamePasskey(), state: route.query.state })
         .catch((error) => {
           signalUnknownCredential(error, optionsJSON.rpId, credential.id)
 
@@ -71,7 +71,7 @@ export function usePasskey () {
 
       storeSignal(optionsJSON.rp?.id, optionsJSON.user?.id)
 
-      const { code } = await passkeyApi('auth/passkey/register', { ...credential, challengeToken, deviceName: guessDeviceName(), state: route.query.state })
+      const { code } = await passkeyApi('auth/passkey/register', { ...credential, challengeToken, deviceName: guessDeviceName(), rename: canRenamePasskey(), state: route.query.state })
 
       await goToCallback(code)
     }
@@ -129,17 +129,21 @@ export function takePasskeySignal () {
   }
 }
 
-// Gives the passkey manager the person name a passkey now signs in as, so its passkey list shows more than "Entu"
-export async function signalPasskeyUserDetails (signal, user) {
-  if (user?.provider !== 'passkey' || !user.name || !signal?.rpId || !signal?.userId) return
-  if (typeof globalThis.PublicKeyCredential?.signalCurrentUserDetails !== 'function') return
+// Renames the passkey in the password manager to the name the API asked for - it asks once, and again only when the name changes
+export async function signalPasskeyUserDetails (signal, name) {
+  if (!name || !signal?.rpId || !signal?.userId || !canRenamePasskey()) return
 
   try {
-    await PublicKeyCredential.signalCurrentUserDetails({ rpId: signal.rpId, userId: signal.userId, name: user.name, displayName: user.name })
+    await PublicKeyCredential.signalCurrentUserDetails({ rpId: signal.rpId, userId: signal.userId, name, displayName: name })
   }
   catch {
     // The Signal API is a hint to the passkey manager - a refusal changes nothing for the sign-in
   }
+}
+
+// True when this browser can rename a passkey in its password manager, so the API may ask it to
+function canRenamePasskey () {
+  return typeof globalThis.PublicKeyCredential?.signalCurrentUserDetails === 'function'
 }
 
 // Tells the passkey manager a passkey Entu no longer knows, so it can hide or remove it
