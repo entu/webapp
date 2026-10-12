@@ -53,7 +53,7 @@ onMounted(async () => {
             </p>
           </n-card>
 
-          <div class="space-y-4 text-center">
+          <div class="flex flex-col gap-4 text-center">
             <my-button
               block
               size="large"
