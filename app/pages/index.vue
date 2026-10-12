@@ -73,7 +73,14 @@ onMounted(async () => {
     v-if="accounts?.length"
     class="flex min-h-full flex-col"
   >
-    <div class="flex w-full justify-end px-4 pt-4">
+    <div class="flex w-full justify-between px-4 pt-4">
+      <nuxt-link
+        class="text-xs font-bold text-red-600 uppercase"
+        to="/auth/exit"
+      >
+        {{ t('signOut') }}
+      </nuxt-link>
+
       <span
         class="cursor-pointer text-xs font-bold text-gray-500 uppercase"
         @click="setLanguage()"
@@ -190,6 +197,7 @@ onMounted(async () => {
 <i18n lang="yaml">
   en:
     language: Eesti keel
+    signOut: Sign Out
     signInTitle: Sign in to Entu
     signInDescription: Choose how you want to sign in. You will be taken to your databases.
     new: Create New Database
@@ -198,6 +206,7 @@ onMounted(async () => {
     loadError: Could not load stats
   et:
     language: English
+    signOut: Välju
     signInTitle: Sisene Entusse
     signInDescription: Vali, kuidas soovid sisse logida. Seejärel jõuad oma andmebaasidesse.
     new: Loo uus andmebaas

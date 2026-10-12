@@ -8,8 +8,7 @@ const { t } = useI18n()
 const { checkSupport, hasError, isCancelled, isSupported, isWorking, register, signIn } = usePasskey()
 
 const buttonGroups = computed(() => [[
-  { id: 'create', icon: 'passkey', label: t('registerButton'), onClick: register },
-  { id: 'existing', icon: 'passkey', label: t('existingButton'), onClick: signIn }
+  { id: 'create', icon: 'passkey', label: t('registerButton'), onClick: register }
 ]])
 
 onMounted(async () => {
@@ -48,6 +47,16 @@ onMounted(async () => {
 
     <template v-else>
       <my-auth-buttons :groups="buttonGroups" />
+
+      <!-- The secondary choice, styled like the sign-in page's Create New Database -->
+      <my-button
+        block
+        ghost
+        icon="passkey"
+        size="large"
+        :label="t('existingButton')"
+        @click="signIn"
+      />
 
       <p
         v-if="hasError && !isCancelled"
