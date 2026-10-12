@@ -37,10 +37,10 @@ export function usePasskey () {
 
     try {
       const { challengeToken, ...optionsJSON } = await passkeyApi('auth/passkey/options')
-
-      isWorking.value = true
-
       const credential = await startAuthentication({ optionsJSON })
+
+      // The page stays visible behind the browser's passkey prompt; only the sign-in after it shows the spinner
+      isWorking.value = true
 
       storeSignal(optionsJSON.rpId, credential.response?.userHandle)
 
@@ -64,10 +64,10 @@ export function usePasskey () {
 
     try {
       const { challengeToken, ...optionsJSON } = await passkeyApi('auth/passkey/register/options')
-
-      isWorking.value = true
-
       const credential = await startRegistration({ optionsJSON })
+
+      // The page stays visible behind the browser's passkey prompt; only the sign-in after it shows the spinner
+      isWorking.value = true
 
       storeSignal(optionsJSON.rp?.id, optionsJSON.user?.id)
 
