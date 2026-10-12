@@ -37,7 +37,7 @@ function setLanguage () {
       </a>
     </div>
 
-    <div class="flex flex-col items-center gap-1 px-4 pb-6 text-center">
+    <div class="flex flex-col items-center gap-1 px-4 pb-18 text-center">
       <div class="text-xl font-semibold">
         {{ title }}
       </div>

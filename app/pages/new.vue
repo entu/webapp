@@ -216,6 +216,14 @@ onMounted(() => {
   </my-auth-layout>
 </template>
 
+<style scoped>
+.n-steps :deep(.n-step-content-header__title) {
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+</style>
+
 <i18n lang="yaml">
   en:
     title: Create a new Entu database
