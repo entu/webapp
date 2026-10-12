@@ -1,15 +1,19 @@
 <script setup>
-import { NAlert, NCard, NInput } from 'naive-ui'
+import { NAlert, NInput, NStep, NSteps } from 'naive-ui'
 
 definePageMeta({ layout: 'blank' })
 
 const runtimeConfig = useRuntimeConfig()
 const { t } = useI18n()
-const { locale, setLocale } = useI18n({ useScope: 'global' })
 const { token, tokenExpiry } = useUser()
 
 // A new user usually has no passkey yet, so signup goes to the passkey page that creates one first
-const providerGroups = authProviderGroups('create')
+const buttonGroups = computed(() => authProviderGroups('create').map((group) => group.map((provider) => ({
+  id: provider.id,
+  icon: provider.icon,
+  label: t(provider.label),
+  onClick: () => signInWith(provider)
+}))))
 
 const databaseName = ref('')
 const availability = ref()
@@ -30,10 +34,8 @@ const statusMessage = computed(() => {
   if (isChecking.value) {
     return t('checking')
   }
-  if (!availability.value) return
-  if (availability.value === 'available') {
-    return t('available')
-  }
+  // A free name needs no message - the next step opening says it
+  if (!availability.value || availability.value === 'available') return
 
   return t(`error-${availability.value}`)
 })
@@ -105,13 +107,11 @@ function signInWith (provider) {
   navigateTo(`/auth/${provider.path}`)
 }
 
-function setLanguage () {
+// Keeps the typed name across the language switch's reload
+function keepName () {
   if (databaseName.value) {
     sessionStorage.setItem('new-database', databaseName.value)
   }
-
-  setLocale(locale.value === 'en' ? 'et' : 'en')
-  reloadNuxtApp()
 }
 
 onMounted(() => {
@@ -134,150 +134,119 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex min-h-full flex-col">
-    <div class="flex w-full flex-col items-center">
-      <div class="flex w-full justify-end px-4 pt-4">
-        <span
-          class="cursor-pointer text-xs font-bold text-gray-500 uppercase"
-          @click="setLanguage()"
-        >
-          {{ t('language') }}
-        </span>
-      </div>
+  <my-auth-layout
+    :description="t('description')"
+    :title="t('title')"
+    @language="keepName()"
+  >
+    <n-steps
+      vertical
+      :current="isAvailable ? 2 : 1"
+      :status="error ? 'error' : 'process'"
+    >
+      <n-step :title="t('stepName')">
+        <div class="flex flex-col gap-2 pt-2">
+          <p class="text-sm text-gray-500">
+            {{ t('databasePermanent') }}
+          </p>
 
-      <div class="py-4">
-        <a href="/">
-          <img
-            class="size-24"
-            src="/logo.png"
+          <n-input
+            v-model:value="databaseName"
+            autofocus
+            round
+            size="large"
+            :placeholder="t('databaseName')"
+            :status="inputStatus"
+            @input="validateName()"
+          />
+
+          <p
+            v-if="statusMessage"
+            class="text-sm"
+            :class="{ 'text-red-600': inputStatus === 'error', 'text-gray-500': isChecking }"
           >
-        </a>
-      </div>
-    </div>
+            {{ statusMessage }}
+          </p>
 
-    <div class="flex flex-col items-center gap-1 px-4 pb-6 text-center">
-      <div class="text-xl font-semibold">
-        {{ t('title') }}
-      </div>
-      <div class="text-sm text-gray-500">
-        {{ t('description') }}
-      </div>
-    </div>
-
-    <div class="mb-8 flex w-full flex-col gap-8 px-4 sm:mx-auto sm:w-96">
-      <n-card>
-        <n-input
-          v-model:value="databaseName"
-          autofocus
-          :placeholder="t('databaseName')"
-          :status="inputStatus"
-          @input="validateName()"
-        />
-
-        <p
-          v-if="statusMessage"
-          class="mt-2 text-sm"
-          :class="{ 'text-red-600': inputStatus === 'error', 'text-gray-500': isChecking, 'text-green-600': isAvailable }"
-        >
-          {{ statusMessage }}
-        </p>
-
-        <template #footer>
           <my-markdown
-            class="mt-1 text-sm"
+            v-if="!isAvailable"
+            class="text-sm text-gray-500"
             :source="t('databaseInfo')"
           />
-        </template>
-      </n-card>
-
-      <n-alert
-        v-if="error"
-        type="error"
-        :title="t('error')"
-      >
-        {{ error }}
-      </n-alert>
-
-      <my-button
-        v-if="isSignedIn"
-        secondary
-        size="large"
-        strong
-        type="success"
-        :disabled="!isAvailable"
-        :label="t('create')"
-        :loading="isCreating"
-        @click="createDatabase()"
-      />
-
-      <n-card
-        v-else
-        :title="t('signInTitle')"
-      >
-        <div class="flex flex-col gap-6">
-          <div
-            v-for="(group, index) in providerGroups"
-            :key="index"
-          >
-            <div
-              v-for="provider in group"
-              :key="provider.id"
-              class="flex items-center gap-2 border-b border-b-gray-200 py-2 last-of-type:border-b-0"
-              :class="{
-                'cursor-pointer': isAvailable,
-                'pointer-events-none opacity-40': !isAvailable,
-              }"
-              @click="signInWith(provider)"
-            >
-              <my-icon :icon="provider.icon" />
-              {{ t(provider.label) }}
-            </div>
-          </div>
         </div>
+      </n-step>
 
-        <template #footer>
-          <p class="mt-1 text-sm text-gray-500">
-            {{ t('signInInfo') }}
-          </p>
-        </template>
-      </n-card>
-    </div>
+      <n-step :title="isSignedIn ? t('create') : t('stepSignIn')">
+        <!-- Only a valid, free name opens this step; an error still shows here -->
+        <div
+          v-if="error || isAvailable"
+          class="flex flex-col gap-3 pt-2"
+        >
+          <n-alert
+            v-if="error"
+            type="error"
+            :title="t('error')"
+          >
+            {{ error }}
+          </n-alert>
 
-    <my-footer class="mt-auto mb-4" />
-  </div>
+          <template v-if="isAvailable">
+            <my-button
+              v-if="isSignedIn"
+              block
+              size="large"
+              strong
+              type="success"
+              :label="t('create')"
+              :loading="isCreating"
+              @click="createDatabase()"
+            />
+
+            <template v-else>
+              <p class="text-sm text-gray-500">
+                {{ t('signInInfo') }}
+              </p>
+
+              <my-auth-buttons :groups="buttonGroups" />
+            </template>
+          </template>
+        </div>
+      </n-step>
+    </n-steps>
+  </my-auth-layout>
 </template>
 
 <i18n lang="yaml">
   en:
-    language: Eesti keel
     title: Create a new Entu database
     description: Choose a permanent name for your database. It will be ready to use right away.
     databaseName: Database name
-    databaseInfo: Database name can contain only letters, numbers and underscores, must start with a letter, be 4–12 characters long, and cannot be changed later.
+    databaseInfo: Name can contain only letters, numbers and underscores, must start with a letter and be 4–12 characters long.
+    databasePermanent: Name cannot be changed later.
     checking: Checking availability…
-    available: This name is available
     error-format: This name contains invalid characters
     error-length: The name must be 4–12 characters long
     error-reserved: This name is reserved
     error-taken: This name is already taken
     create: Create Database
-    signInTitle: Sign in to create your database
-    signInInfo: Choose a database name above, then sign in with one of these options. Your database is created right after you sign in.
+    stepName: Choose a name
+    stepSignIn: Sign in
+    signInInfo: Your database is created right after you sign in.
     error: Error
   et:
-    language: English
     title: Loo uus Entu andmebaas
     description: Vali oma andmebaasile püsiv nimi. See on kohe kasutamiseks valmis.
     databaseName: Andmebaasi nimi
-    databaseInfo: Andmebaasi nimi võib sisaldada ainult tähti, numbreid ja allkriipse, peab algama tähega, olema 4–12 tähemärki pikk ning seda ei saa hiljem muuta.
+    databaseInfo: Nimi võib sisaldada ainult tähti, numbreid ja allkriipse, peab algama tähega ning olema 4–12 tähemärki pikk.
+    databasePermanent: Nime ei saa hiljem muuta.
     checking: Kontrollime saadavust…
-    available: See nimi on vaba
     error-format: Nimi sisaldab keelatud tähemärke
     error-length: Nimi peab olema 4–12 tähemärki pikk
     error-reserved: See nimi on reserveeritud
     error-taken: See nimi on juba kasutusel
     create: Loo andmebaas
-    signInTitle: Andmebaasi loomiseks logi sisse
-    signInInfo: Vali üleval andmebaasi nimi ja logi seejärel sisse ühega neist valikutest. Sinu andmebaas luuakse kohe pärast sisselogimist.
+    stepName: Vali nimi
+    stepSignIn: Logi sisse
+    signInInfo: Sinu andmebaas luuakse kohe pärast sisselogimist.
     error: Viga
 </i18n>

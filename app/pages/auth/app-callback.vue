@@ -1,6 +1,4 @@
 <script setup>
-import { NCard } from 'naive-ui'
-
 const { t } = useI18n()
 
 // TODO: replace placeholder App Store URL once the Entu iOS app is published
@@ -14,32 +12,21 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex min-h-full items-center justify-center p-4">
-    <div class="w-full max-w-fit space-y-6">
-      <div class="text-center">
-        <h1 class="text-2xl font-bold text-gray-900">
-          {{ t('authAppCallback.title') }}
-        </h1>
-      </div>
-
-      <n-card>
-        <p class="max-w-sm text-sm text-gray-700">
-          {{ t('authAppCallback.description') }}
-        </p>
-      </n-card>
-
-      <my-button
-        block
-        rel="noopener noreferrer"
-        size="large"
-        tag="a"
-        target="_blank"
-        type="primary"
-        :href="appStoreUrl"
-        :label="t('authAppCallback.downloadButton')"
-      />
-    </div>
-  </div>
+  <my-auth-layout
+    :description="t('authAppCallback.description')"
+    :title="t('authAppCallback.title')"
+  >
+    <my-button
+      block
+      rel="noopener noreferrer"
+      size="large"
+      tag="a"
+      target="_blank"
+      type="primary"
+      :href="appStoreUrl"
+      :label="t('authAppCallback.downloadButton')"
+    />
+  </my-auth-layout>
 </template>
 
 <i18n lang="yaml">

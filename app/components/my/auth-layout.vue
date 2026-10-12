@@ -4,10 +4,14 @@ defineProps({
   description: { type: String, default: undefined }
 })
 
+// `language` fires just before the page reloads in the other language, so a page can keep what was typed
+const emit = defineEmits(['language'])
+
 const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 
 function setLanguage () {
+  emit('language')
   setLocale(locale.value === 'en' ? 'et' : 'en')
   reloadNuxtApp()
 }
@@ -39,13 +43,13 @@ function setLanguage () {
       </div>
       <div
         v-if="description"
-        class="max-w-72 text-sm text-gray-500"
+        class="max-w-80 text-sm text-gray-500"
       >
         {{ description }}
       </div>
     </div>
 
-    <div class="mb-8 flex w-full flex-col gap-8 px-4 sm:mx-auto sm:w-72">
+    <div class="mb-8 flex w-full flex-col gap-8 px-4 sm:mx-auto sm:w-80">
       <slot />
     </div>
 

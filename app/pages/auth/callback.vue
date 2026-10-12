@@ -1,5 +1,5 @@
 <script setup>
-import { NAlert, NSpin } from 'naive-ui'
+import { NSpin } from 'naive-ui'
 
 definePageMeta({ layout: 'blank' })
 
@@ -20,27 +20,19 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div
+  <my-auth-layout
     v-if="result?.error"
-    class="flex min-h-full items-center justify-center p-4"
+    :description="t(`error-${result.error}`)"
+    :title="t('errorTitle')"
   >
-    <div class="flex w-full max-w-sm flex-col gap-6">
-      <n-alert
-        type="error"
-        :title="t('errorTitle')"
-      >
-        {{ t(`error-${result.error}`) }}
-      </n-alert>
-
-      <my-button
-        block
-        size="large"
-        type="primary"
-        :label="t('continue')"
-        @click="navigateTo(result.to || '/')"
-      />
-    </div>
-  </div>
+    <my-button
+      block
+      size="large"
+      type="primary"
+      :label="t('continue')"
+      @click="navigateTo(result.to || '/')"
+    />
+  </my-auth-layout>
 
   <n-spin
     v-else
