@@ -1,7 +1,9 @@
 <script setup>
 defineProps({
   title: { type: String, required: true },
-  description: { type: String, default: undefined }
+  description: { type: String, default: undefined },
+  // A multi-column page (sign-up) gets up to three columns' width from the mobile breakpoint up
+  wide: { type: Boolean, default: false }
 })
 
 // `language` fires just before the page reloads in the other language, so a page can keep what was typed
@@ -49,7 +51,10 @@ function setLanguage () {
       </div>
     </div>
 
-    <div class="mb-8 flex w-full flex-col gap-8 px-4 sm:mx-auto sm:w-80">
+    <div
+      class="mb-8 flex w-full flex-col gap-8 px-4 sm:mx-auto sm:w-80"
+      :class="{ 'md:w-full md:max-w-264': wide }"
+    >
       <slot />
     </div>
 

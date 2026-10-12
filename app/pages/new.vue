@@ -1,10 +1,12 @@
 <script setup>
-import { NAlert, NInput, NStep, NSteps } from 'naive-ui'
+import { NAlert, NInput, NStep, NSteps, useThemeVars } from 'naive-ui'
 
 definePageMeta({ layout: 'blank' })
 
 const runtimeConfig = useRuntimeConfig()
 const { t } = useI18n()
+const themeVars = useThemeVars()
+const { isMobile } = useIsMobile()
 const { token, tokenExpiry } = useUser()
 
 // A new user usually has no passkey yet, so signup goes to the passkey page that creates one first
@@ -135,18 +137,20 @@ onMounted(() => {
 
 <template>
   <my-auth-layout
+    wide
     :description="t('description')"
     :title="t('title')"
     @language="keepName()"
   >
+    <!-- Each step's content sits under its title - in a column on desktop, stacked on a phone -->
     <n-steps
-      vertical
       :current="isAvailable ? 2 : 1"
       :status="error ? 'error' : 'process'"
+      :vertical="isMobile"
     >
       <n-step :title="t('stepName')">
-        <div class="flex flex-col gap-2 pt-2">
-          <p class="text-sm text-gray-500">
+        <div class="flex flex-col gap-2 md:pr-12">
+          <p class="mb-4 text-sm text-gray-500">
             {{ t('databasePermanent') }}
           </p>
 
@@ -176,12 +180,9 @@ onMounted(() => {
         </div>
       </n-step>
 
+      <!-- Always shown; the buttons work only once the name is valid and free -->
       <n-step :title="isSignedIn ? t('create') : t('stepSignIn')">
-        <!-- Only a valid, free name opens this step; an error still shows here -->
-        <div
-          v-if="error || isAvailable"
-          class="flex flex-col gap-3 pt-2"
-        >
+        <div class="flex flex-col gap-3 md:pr-12">
           <n-alert
             v-if="error"
             type="error"
@@ -190,27 +191,41 @@ onMounted(() => {
             {{ error }}
           </n-alert>
 
-          <template v-if="isAvailable">
+          <template v-if="isSignedIn">
+            <p class="mb-3 text-sm text-gray-500">
+              {{ t('createInfo') }}
+            </p>
+
             <my-button
-              v-if="isSignedIn"
               block
               size="large"
               strong
               type="success"
+              :disabled="!isAvailable"
               :label="t('create')"
               :loading="isCreating"
               @click="createDatabase()"
             />
+          </template>
 
-            <template v-else>
-              <p class="text-sm text-gray-500">
-                {{ t('signInInfo') }}
-              </p>
+          <template v-else>
+            <p class="mb-3 text-sm text-gray-500">
+              {{ t('signInInfo') }}
+            </p>
 
-              <my-auth-buttons :groups="buttonGroups" />
-            </template>
+            <my-auth-buttons
+              :disabled="!isAvailable"
+              :groups="buttonGroups"
+            />
           </template>
         </div>
+      </n-step>
+
+      <!-- What happens after signing in - this step never becomes active here, the new database opens instead -->
+      <n-step :title="t('stepStart')">
+        <p class="text-sm text-gray-500 md:pr-12">
+          {{ isSignedIn ? t('startInfoSignedIn') : t('startInfo') }}
+        </p>
       </n-step>
     </n-steps>
   </my-auth-layout>
@@ -222,6 +237,11 @@ onMounted(() => {
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+/* Naive greys out waiting and finished step titles; every step keeps the active title's color, an error stays red */
+.n-steps :deep(.n-step:not(.n-step--error-status) .n-step-content-header__title) {
+  color: v-bind('themeVars.textColor1');
+}
 </style>
 
 <i18n lang="yaml">
@@ -230,31 +250,39 @@ onMounted(() => {
     description: Choose a permanent name for your database. It will be ready to use right away.
     databaseName: Database name
     databaseInfo: Name can contain only letters, numbers and underscores, must start with a letter and be 4–12 characters long.
-    databasePermanent: Name cannot be changed later.
+    databasePermanent: Pick a short name for your database. It becomes part of the database's web address and cannot be changed later.
     checking: Checking availability…
     error-format: This name contains invalid characters
     error-length: The name must be 4–12 characters long
     error-reserved: This name is reserved
     error-taken: This name is already taken
     create: Create Database
-    stepName: Choose a name
+    stepName: Database name
     stepSignIn: Sign in
-    signInInfo: Your database is created right after you sign in.
+    stepStart: Start using
+    createInfo: You are already signed in, so the database is created with your current sign-in and you become its owner.
+    signInInfo: Choose how you want to sign in. You can add more sign-in methods later in your own person entity.
+    startInfo: Your new database opens ready to use right after you sign in, so you can add your first entries at once.
+    startInfoSignedIn: Your new database opens ready to use as soon as it is created, so you can add your first entries at once.
     error: Error
   et:
     title: Loo uus Entu andmebaas
     description: Vali oma andmebaasile püsiv nimi. See on kohe kasutamiseks valmis.
     databaseName: Andmebaasi nimi
     databaseInfo: Nimi võib sisaldada ainult tähti, numbreid ja allkriipse, peab algama tähega ning olema 4–12 tähemärki pikk.
-    databasePermanent: Nime ei saa hiljem muuta.
+    databasePermanent: Vali andmebaasile lühike nimi. Sellest saab osa andmebaasi veebiaadressist ja seda ei saa hiljem muuta.
     checking: Kontrollime saadavust…
     error-format: Nimi sisaldab keelatud tähemärke
     error-length: Nimi peab olema 4–12 tähemärki pikk
     error-reserved: See nimi on reserveeritud
     error-taken: See nimi on juba kasutusel
     create: Loo andmebaas
-    stepName: Vali nimi
+    stepName: Andmebaasi nimi
     stepSignIn: Logi sisse
-    signInInfo: Sinu andmebaas luuakse kohe pärast sisselogimist.
+    stepStart: Alusta
+    createInfo: Oled juba sisse logitud, seega luuakse andmebaas sinu praeguse sisselogimisega ja sinust saab selle omanik.
+    signInInfo: Vali, kuidas soovid sisse logida. Teisi sisselogimisviise saad hiljem lisada oma isikuobjektil.
+    startInfo: Sinu uus andmebaas avaneb kohe pärast sisselogimist kasutusvalmis kujul ja saad esimesed objektid lisada.
+    startInfoSignedIn: Sinu uus andmebaas avaneb kohe pärast loomist kasutusvalmis kujul ja saad esimesed objektid lisada.
     error: Viga
 </i18n>
