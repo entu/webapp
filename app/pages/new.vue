@@ -145,7 +145,7 @@ onMounted(() => {
     <!-- Each step's content sits under its title - in a column on desktop, stacked on a phone -->
     <n-steps
       :current="isAvailable ? 2 : 1"
-      :status="error ? 'error' : 'process'"
+      :status="error || inputStatus === 'error' ? 'error' : 'process'"
       :vertical="isMobile"
     >
       <n-step :title="t('stepName')">
@@ -157,6 +157,7 @@ onMounted(() => {
           <n-input
             v-model:value="databaseName"
             autofocus
+            class="mb-4"
             round
             size="large"
             :placeholder="t('databaseName')"
