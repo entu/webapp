@@ -14,7 +14,7 @@ const localeValues = computed(() => props.values.filter((x) => !x.language || x.
   <div
     v-for="v in localeValues"
     :key="v._id"
-    class="my-1"
+    class="my-0.5"
   >
     <property-value
       :decimals="decimals"

@@ -1,3 +1,8 @@
+## 2026-10-12
+- **New entity page look**: The entity page now matches the Entu app — a colored header taken from the entity's photo, with the title, type, parent entities and sharing status at the top, quieter property labels, and child and referring entities in tabs, one per entity type.
+- **Formula columns in child tables**: Formula properties shown as table columns now display their numbers, dates and checkmarks, and a value of 0 is no longer shown as empty.
+- **Sorting fixes**: Sorting by a formula or counter property in tables and the command palette now works, and sorting the main table by a reference column orders by name instead of by ID.
+
 ## 2026-10-09
 - **Passkeys listed with other login methods**: A person's passkeys now appear in the same login methods field as their other sign-in methods, with the passkey icon and device name, instead of a separate passkeys field.
 

@@ -76,7 +76,7 @@ const entityActionRows = computed(() => {
   const actionTable = [
     ['edit', 'edit', 'editor'],
     ['duplicate', 'copy', 'owner'],
-    ['parents', 'tree-view', 'editor'],
+    ['parents', 'folder-parent', 'editor'],
     ['rights', 'user-multiple', 'owner'],
     ['history', 'history', 'editor']
   ]

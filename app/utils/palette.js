@@ -42,6 +42,18 @@ export function paletteSearchField (type) {
   return propertySearchField(type)
 }
 
+// Fields to sort a property on; a formula result is a number or a string, and a counter sorts by its number.
+export function paletteSortFields (type) {
+  if (type === 'formula') {
+    return ['number', 'string']
+  }
+  if (type === 'counter') {
+    return ['number']
+  }
+
+  return [paletteSearchField(type)]
+}
+
 // Ordered datatypes cycle is/before/after; everything else is/is not/contains.
 export function paletteConditionCycle (type) {
   return ['number', 'counter', 'date', 'datetime'].includes(type)
@@ -91,7 +103,10 @@ export function paletteQueryPairs (queryState) {
   }
 
   if (queryState.sort) {
-    pairs.push(['sort', `${queryState.sort.descending ? '-' : ''}${queryState.sort.property.name}.${paletteSearchField(queryState.sort.property.type)}`])
+    const prefix = queryState.sort.descending ? '-' : ''
+    const { name, type } = queryState.sort.property
+
+    pairs.push(['sort', paletteSortFields(type).map((x) => `${prefix}${name}.${x}`).join(',')])
   }
 
   return pairs

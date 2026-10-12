@@ -40,6 +40,7 @@ const addChildOptions = computed(() => getAddChildOptions(addFromEntities.value,
         v-if="right.editor"
         icon="edit"
         :label="showLabel ? t('edit') : undefined"
+        :tooltip="showLabel ? undefined : t('edit')"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#edit` }, { replace: true })"
       />
 
@@ -47,13 +48,15 @@ const addChildOptions = computed(() => getAddChildOptions(addFromEntities.value,
         v-if="right.owner"
         icon="copy"
         :label="showLabel ? t('duplicate') : undefined"
+        :tooltip="showLabel ? undefined : t('duplicate')"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#duplicate` }, { replace: true })"
       />
 
       <my-button
         v-if="right.editor"
-        icon="tree-view"
+        icon="folder-parent"
         :label="showLabel ? t('parents') : undefined"
+        :tooltip="showLabel ? undefined : t('parents')"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#parents` }, { replace: true })"
       />
 
@@ -61,6 +64,7 @@ const addChildOptions = computed(() => getAddChildOptions(addFromEntities.value,
         v-if="right.owner"
         icon="user-multiple"
         :label="showLabel ? t('rights') : undefined"
+        :tooltip="showLabel ? undefined : t('rights')"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#rights` }, { replace: true })"
       />
     </n-button-group>
@@ -73,6 +77,7 @@ const addChildOptions = computed(() => getAddChildOptions(addFromEntities.value,
         v-if="right.editor"
         icon="history"
         :label="showLabel ? t('history') : undefined"
+        :tooltip="showLabel ? undefined : t('history')"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#history` }, { replace: true })"
       />
     </n-button-group>

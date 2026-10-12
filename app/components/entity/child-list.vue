@@ -1,17 +1,17 @@
 <script setup>
-import { NPagination, NPopover } from 'naive-ui'
+import { NPopover } from 'naive-ui'
 import { NuxtLink } from '#components'
 
 const props = defineProps({
   entityId: { type: String, required: true },
   typeId: { type: String, required: true },
-  referenceField: { type: String, required: true }
+  referenceField: { type: String, required: true },
+  pageSize: { type: Number, default: 25 }
 })
 
 const route = useRoute()
 const { locale, d, t } = useI18n()
 const { accountId } = useAccount()
-const { tablePageSize } = useUser()
 const { isMobile } = useIsMobile()
 
 const rawEntities = ref()
@@ -22,9 +22,11 @@ const rawColumns = ref([{
   decimals: undefined
 }])
 const isLoading = ref(false)
-const total = ref(0)
-const page = ref(1)
 const sorter = ref()
+
+// Paging state is shared with the parent so the pager can sit on the tab row.
+const page = defineModel('page', { type: Number, default: 1 })
+const total = defineModel('total', { type: Number, default: 0 })
 
 // Tracks the latest fetch so a slow earlier page/sort response can't overwrite
 // a newer one (the instance is reused as entityId/typeId change).
@@ -72,42 +74,40 @@ async function getTypes () {
   }
 }
 
-async function getEntities (setPage, setPageSize, setSorter) {
+// Toggles or switches the sort column, then reloads from the first page.
+function onSort (column) {
+  sorter.value = {
+    column,
+    order: sorter.value?.column === column && sorter.value.order === 'ascending' ? 'descending' : 'ascending'
+  }
+
+  if (page.value === 1) {
+    getEntities()
+  }
+  else {
+    page.value = 1
+  }
+}
+
+async function getEntities () {
   isLoading.value = true
 
   const currentRequest = ++requestId
 
-  if (setPage) {
-    page.value = setPage
-  }
-  if (setPageSize) {
-    tablePageSize.value = setPageSize
-  }
-  if (setSorter) {
-    if (sorter.value.column === setSorter) {
-      sorter.value = {
-        column: setSorter,
-        order: sorter.value.order === 'ascending' ? 'descending' : 'ascending'
-      }
-    }
-    else {
-      sorter.value = {
-        column: setSorter,
-        order: 'ascending'
-      }
-    }
-  }
-  else if (!sorter.value) {
+  if (!sorter.value) {
     sorter.value = {
       column: rawColumns.value.at(0).name,
       order: 'ascending'
     }
   }
 
-  let field = rawColumns.value.find((c) => c.name === sorter.value.column)?.type
+  let field = columnType(rawColumns.value.find((c) => c.name === sorter.value.column))
 
   if (['text', 'reference'].includes(field)) {
     field = 'string'
+  }
+  if (field === 'counter') {
+    field = 'number'
   }
 
   const { entities, count } = await apiGetEntities({
@@ -122,8 +122,8 @@ async function getEntities (setPage, setPageSize, setSorter) {
       ...rawColumns.value.map((c) => c.name)
     ].join(','),
     sort: `${sorter.value.order === 'descending' ? '-' : ''}${sorter.value.column}.${field}`,
-    limit: tablePageSize.value,
-    skip: tablePageSize.value * (page.value - 1)
+    limit: props.pageSize,
+    skip: props.pageSize * (page.value - 1)
   })
 
   if (currentRequest !== requestId) return
@@ -134,12 +134,34 @@ async function getEntities (setPage, setPageSize, setSorter) {
   isLoading.value = false
 }
 
-function renderColumn (value, type, decimals) {
-  if (type === 'number' && getValue(value, 'number')) {
+// Formula values hold their result in whichever field fits, so they render by the shape of the value.
+function valueType (value, type) {
+  if (type !== 'formula') {
+    return type
+  }
+
+  return ['number', 'boolean', 'datetime', 'date'].find((x) => getValue(value, x) !== undefined) || 'string'
+}
+
+// Column type to align and sort by; formula columns take the shape of their first loaded value.
+function columnType (column) {
+  if (column?.type !== 'formula') {
+    return column?.type
+  }
+
+  const row = rawEntities.value?.find((x) => x[column.name]?.length)
+
+  return row ? valueType(row[column.name], column.type) : 'string'
+}
+
+function renderColumn (value, declaredType, decimals) {
+  const type = valueType(value, declaredType)
+
+  if (type === 'number' && getValue(value, 'number') !== undefined) {
     return getValue(value, 'number').toLocaleString(locale.value, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })
   }
 
-  if (type === 'boolean' && getValue(value, 'boolean')) return
+  if (type === 'boolean') return
 
   if (type === 'datetime' && getValue(value, 'datetime')) {
     return d(getValue(value, 'datetime'), 'datetime')
@@ -153,7 +175,7 @@ function renderColumn (value, type, decimals) {
     return getValue(value) || getValue(value, 'reference')
   }
 
-  if (type === 'text') {
+  if (['text', 'counter'].includes(type)) {
     return getValue(value)
   }
 
@@ -171,6 +193,17 @@ const visibleColumns = computed(() => {
     return [nameColumn]
   }
   return rawColumns.value
+})
+
+watch(page, () => getEntities())
+
+watch(() => props.pageSize, () => {
+  if (page.value === 1) {
+    getEntities()
+  }
+  else {
+    page.value = 1
+  }
 })
 
 onMounted(async () => {
@@ -191,13 +224,13 @@ onMounted(async () => {
               v-for="column in visibleColumns"
               :key="column.name"
               class="cursor-pointer p-3 text-left hover:bg-gray-50"
-              @click="getEntities(1, undefined, column.name)"
+              @click="onSort(column.name)"
             >
               <div
                 class="flex items-center gap-2"
                 :class="{
-                  'justify-center': column.type === 'boolean',
-                  'justify-end': column.type === 'number',
+                  'justify-center': columnType(column) === 'boolean',
+                  'justify-end': columnType(column) === 'number',
                 }"
               >
                 {{ column.label }}
@@ -239,13 +272,13 @@ onMounted(async () => {
             <td
               v-for="column in visibleColumns"
               :key="column.name"
-              :class="{ 'text-right': column.type === 'number' }"
+              :class="{ 'text-right': columnType(column) === 'number' }"
             >
               <nuxt-link
                 class="flex size-full items-center px-3 py-2"
                 :class="{
-                  'justify-center': column.type === 'boolean',
-                  'justify-end': column.type === 'number',
+                  'justify-center': columnType(column) === 'boolean',
+                  'justify-end': columnType(column) === 'number',
                 }"
                 :to="{ path: `/${accountId}/${row._id}`, query: route.query }"
               >
@@ -256,7 +289,7 @@ onMounted(async () => {
                 </span>
 
                 <my-icon
-                  v-if="column.type === 'boolean' && getValue(row[column.name], 'boolean')"
+                  v-if="valueType(row[column.name], column.type) === 'boolean' && getValue(row[column.name], 'boolean')"
                   icon="checkmark"
                 />
               </nuxt-link>
@@ -315,21 +348,6 @@ onMounted(async () => {
           </tr>
         </tbody>
       </table>
-    </div>
-
-    <div
-      v-if="total >= 10"
-      class="mt-2 flex w-full justify-end"
-    >
-      <n-pagination
-        v-model:page="page"
-        show-size-picker
-        :item-count="total"
-        :page-size="tablePageSize"
-        :page-sizes="[10, 25, 100, 250]"
-        @update:page="getEntities($event)"
-        @update:page-size="getEntities(1, $event)"
-      />
     </div>
   </div>
 </template>

@@ -1,19 +1,19 @@
 <script setup>
-import { NCollapse, NCollapseItem, NSpin } from 'naive-ui'
+import { NButton, NSelect, NSpin, NTab, NTabs } from 'naive-ui'
 
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 
 const { accountId } = useAccount()
-const { userId } = useUser()
+const { userId, tablePageSize } = useUser()
 
 const entityTypeStore = useEntityTypeStore()
 const { entityTypes } = storeToRefs(entityTypeStore)
 
 const contentRef = useTemplateRef('contentRef')
 const { width: contentWidth } = useElementSize(contentRef)
-const isNarrow = computed(() => contentWidth.value < 600)
+const isNarrow = computed(() => contentWidth.value < 500)
 
 const { rawEntity, right, typeId } = useEntity()
 
@@ -53,7 +53,7 @@ const entity = computed(() => {
 })
 
 const thumbnailEntityId = computed(() => rawEntity.value?.photo?.length ? rawEntity.value._id : undefined)
-const { url: thumbnailUrl } = useEntityThumbnail(thumbnailEntityId, 200)
+const { url: thumbnailUrl } = useEntityThumbnail(thumbnailEntityId, 400)
 
 const properties = computed(() => {
   if (!entity.value || !entity?.value?.props) {
@@ -97,19 +97,35 @@ const properties = computed(() => {
 const childs = computed(() => [
   ...rawChilds.value.map((x) => ({
     _id: x._id,
+    key: `child-${x._id}`,
     type: 'child',
     label: getValue(x.label_plural) || getValue(x.label) || getValue(x.name),
-    count: t('childsCount', x._count),
+    count: x._count,
     referenceField: '_parent.reference'
   })),
   ...rawReferences.value.map((x) => ({
     _id: x._id,
+    key: `reference-${x._id}`,
     type: 'reference',
     label: getValue(x.label_plural) || getValue(x.label) || getValue(x.name),
-    count: t('referrersCount', x._count),
+    count: x._count,
     referenceField: '_reference.reference'
   }))
 ].sort((a, b) => `${a.type} - ${a.label}`.localeCompare(`${b.type} - ${b.label}`)))
+
+const selectedChildKey = ref()
+const selectedChild = computed(() => childs.value.find((x) => x.key === selectedChildKey.value) || childs.value.at(0))
+const childPage = ref(1)
+const childTotal = ref(0)
+const childPages = computed(() => Math.max(1, Math.ceil(childTotal.value / tablePageSize.value)))
+const pageSizeOptions = computed(() => [10, 25, 100, 250].map((x) => ({ label: t('pageSize', { n: x }), value: x })))
+
+// Switching the child type starts its table from the first page.
+function onChildTabChange (key) {
+  selectedChildKey.value = key
+  childPage.value = 1
+  childTotal.value = 0
+}
 
 const drawerType = computed(() => userId.value ? route.hash.replace('#', '').split('-').at(0) : undefined)
 
@@ -350,98 +366,106 @@ onUnmounted(() => {
       <div
         v-if="rawEntity"
         ref="contentRef"
-        class="flex flex-col overflow-hidden overflow-y-auto px-2 pb-20 print:pb-0"
+        class="flex flex-col overflow-hidden overflow-y-auto pb-20 print:pb-0"
       >
+        <entity-header
+          :entity="entity"
+          :narrow="isNarrow"
+          :parents="rawEntity._parent"
+          :photos="rawEntity.photo"
+          :right="right"
+          :thumbnail="thumbnailUrl"
+        />
+
         <div
-          v-if="rawEntity?._parent"
-          class="border-b border-gray-300 py-4"
+          :class="{
+            'px-4': isNarrow,
+            'px-7': !isNarrow,
+          }"
         >
-          <entity-parent-list :parents="rawEntity._parent" />
-        </div>
-
-        <div class="pt-5">
-          <h1
-            class="mb-4 text-center text-2xl font-bold text-brand md:pl-5 md:text-left"
-            @click="$event.altKey && navigateTo({ path: route.path, query: route.query, hash: '#debug' }, { replace: true })"
+          <template
+            v-for="pg in properties"
+            :key="pg.name"
           >
-            {{ entity.name?.trim() || entity._id }}
-          </h1>
-
-          <!-- Narrow: thumbnail + type + sharing centered between title and properties -->
-          <div
-            v-if="isNarrow && (userId || thumbnailUrl)"
-            class="mb-5 flex flex-col items-center gap-3"
-          >
-            <entity-meta-info
-              narrow
-              :entity="entity"
-              :photos="rawEntity.photo"
-              :right="right"
-              :thumbnail="thumbnailUrl"
-            />
-          </div>
-
-          <!-- Wide: properties + thumbnail side by side -->
-          <div :class="{ 'flex flex-row gap-5 pr-5': !isNarrow }">
-            <div class="grow">
-              <template
-                v-for="pg in properties"
-                :key="pg.name"
-              >
-                <h2
-                  v-if="pg.name"
-                  class="px-1 pt-6 text-center font-bold text-gray-500 uppercase"
-                >
-                  {{ pg.name }}
-                </h2>
-
-                <property-list
-                  v-if="pg.children && pg.children.some(x => x.mandatory || x.values)"
-                  class="md:pl-5"
-                  :entity-sharing="entity._sharing"
-                  :properties="pg.children"
-                />
-              </template>
-            </div>
-
-            <!-- Wide: thumbnail + type + sharing in right column -->
-            <div
-              v-if="!isNarrow && (userId || thumbnailUrl)"
-              class="flex min-w-32 flex-col gap-3"
+            <h2
+              v-if="pg.name"
+              class="pt-6 pb-1.5 font-semibold tracking-wider text-gray-400 uppercase md:pl-39"
             >
-              <entity-meta-info
-                :entity="entity"
-                :narrow="false"
-                :photos="rawEntity.photo"
-                :right="right"
-                :thumbnail="thumbnailUrl"
-              />
-            </div>
-          </div>
-        </div>
+              {{ pg.name }}
+            </h2>
 
-        <n-collapse
-          class="mt-8 md:pr-5"
-          :default-expanded-names="[0]"
-        >
-          <n-collapse-item
-            v-for="child, idx in childs"
-            :key="child._id"
-            :name="idx"
-            :title="child.label"
+            <property-list
+              v-if="pg.children && pg.children.some(x => x.mandatory || x.values)"
+              :entity-sharing="entity._sharing"
+              :properties="pg.children"
+            />
+          </template>
+
+          <div
+            v-if="selectedChild"
+            class="mt-10"
           >
-            <template #header-extra>
-              <span class="text-gray-400">{{ child.count }}</span>
-            </template>
+            <n-tabs
+              class="mb-2 [&_.n-tabs-nav]:flex-wrap [&_.n-tabs-nav]:justify-between [&_.n-tabs-nav]:gap-y-2 [&_.n-tabs-nav\_\_suffix]:ml-auto [&_.n-tabs-rail]:max-w-full [&_.n-tabs-rail]:overflow-x-auto [&_.n-tabs-tab]:px-4!"
+              type="segment"
+              :class="{ '[&_.n-tabs-rail]:w-fit! [&_.n-tabs-tab-wrapper]:flex-none!': !isNarrow }"
+              :theme-overrides="{ tabBorderRadius: '9999px' }"
+              :value="selectedChild.key"
+              @update:value="onChildTabChange($event)"
+            >
+              <n-tab
+                v-for="child in childs"
+                :key="child.key"
+                :name="child.key"
+              >
+                {{ child.label }}
+                <span class="ml-1.5 text-gray-400">{{ child.count }}</span>
+              </n-tab>
+
+              <template #suffix>
+                <div
+                  v-if="childTotal > 10"
+                  class="flex items-center gap-2"
+                >
+                  <n-button
+                    quaternary
+                    :disabled="childPage <= 1"
+                    @click="childPage--"
+                  >
+                    <my-icon icon="arrow-left" />
+                  </n-button>
+                  <span class="text-sm whitespace-nowrap text-gray-500 tabular-nums">
+                    {{ childPage }} / {{ childPages }}
+                  </span>
+                  <n-button
+                    quaternary
+                    :disabled="childPage >= childPages"
+                    @click="childPage++"
+                  >
+                    <my-icon icon="arrow-right" />
+                  </n-button>
+                  <n-select
+                    v-model:value="tablePageSize"
+                    class="w-24"
+                    :consistent-menu-width="false"
+                    :options="pageSizeOptions"
+                  />
+                </div>
+              </template>
+            </n-tabs>
 
             <entity-child-list
-              class="w-full md:pl-5"
+              :key="selectedChild.key"
+              v-model:page="childPage"
+              v-model:total="childTotal"
+              class="w-full"
               :entity-id="entityId"
-              :reference-field="child.referenceField"
-              :type-id="child._id"
+              :page-size="tablePageSize"
+              :reference-field="selectedChild.referenceField"
+              :type-id="selectedChild._id"
             />
-          </n-collapse-item>
-        </n-collapse>
+          </div>
+        </div>
       </div>
     </transition>
 
@@ -514,11 +538,9 @@ onUnmounted(() => {
 
 <i18n lang="yaml">
   en:
-    childsCount: 'no childs | {n} child | {n} childs'
-    referrersCount: 'no referrers | {n} referrer | {n} referrers'
     error404: Entity not found or you do not have access to it
+    pageSize: '{n} / page'
   et:
-    childsCount: 'alamobjekte pole | {n} alamobjekt | {n} alamobjekti'
-    referrersCount: 'viitajaid pole | {n} viitaja | {n} viitajat'
+    pageSize: '{n} / lk'
     error404: Objekti ei leitud või sul puudub ligipääs sellele
 </i18n>

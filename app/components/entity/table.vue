@@ -109,7 +109,10 @@ function handleSort (column) {
   sortDirection.value = newSortDirection
 
   // Find the column type to build proper sort parameter
-  const propertyType = tableColumnsWithTypes.value.find((col) => col.name === column)?.type || 'string'
+  const columnType = tableColumnsWithTypes.value.find((col) => col.name === column)?.type || 'string'
+
+  // References sort by their display name, not by id.
+  const propertyType = columnType === 'reference' ? 'string' : columnType
 
   // Build sort parameter for API with property type
   const sortParam = `${newSortDirection === 'desc' ? '-' : ''}${column}.${propertyType}`

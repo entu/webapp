@@ -1,6 +1,12 @@
 <script setup>
 import { NInputGroup, NInput } from 'naive-ui'
 
+// In the list/detail split the toolbar is shown in two parts: the search above the list, the buttons above the detail.
+const props = defineProps({
+  onColor: { type: Boolean, default: false },
+  part: { type: String, default: 'all', validator: (value) => ['all', 'search', 'actions'].includes(value) }
+})
+
 const route = useRoute()
 const { t } = useI18n()
 const { listWidth, showTable, userId } = useUser()
@@ -28,6 +34,9 @@ watch(() => route.query.q, (newValue) => {
 })
 
 watchDebounced(searchText, async (value) => {
+  // The split shows two toolbar parts, so skip the echo of a search the other part already applied.
+  if ((value || '') === (route.query.q || '')) return
+
   useAnalytics('search', { q: value })
 
   const query = { ...route.query }
@@ -116,7 +125,7 @@ const { activeMenu } = storeToRefs(menuStore)
 
 const addByActiveMenuOptions = computed(() => activeMenu.value?.addFrom || [])
 
-const searchWidth = computed(() => !showTable.value && !isMobile.value ? { width: `${listWidth.value * 100}%` } : undefined)
+const searchWidth = computed(() => props.part === 'all' && !showTable.value && !isMobile.value ? { width: `${listWidth.value * 100}%` } : undefined)
 
 watch(windowWidth, (newWidth) => {
   if (isOverflowing.value && newWidth <= minWidthForLabels.value) return
@@ -153,8 +162,12 @@ onUnmounted(() => {
     :class="{ 'opacity-0': isMeasuring }"
   >
     <div
-      v-if="userId && !(isMobile && route.params.entityId)"
-      class="w-64 pr-2"
+      v-if="part !== 'actions' && userId && !(isMobile && route.params.entityId)"
+      class="shrink-0"
+      :class="{
+        'w-64 pr-2': part === 'all',
+        'w-full': part === 'search',
+      }"
       :style="searchWidth"
     >
       <n-input-group>
@@ -188,34 +201,43 @@ onUnmounted(() => {
       />
     </div>
 
-    <div class="grow">
-      <entity-toolbar-add
-        :options="addByActiveMenuOptions"
+    <template v-if="part !== 'search'">
+      <div
+        class="grow"
+        :class="{ '[&_.n-button]:bg-white/40! [&_.n-button]:text-black! [&_.n-button:hover]:bg-white/50!': onColor }"
+      >
+        <entity-toolbar-add
+          :options="addByActiveMenuOptions"
+          :show-label="!isOverflowing"
+        />
+      </div>
+
+      <entity-actions
+        v-if="!showTable"
+        :class="{ '[&_.n-button]:bg-white/40! [&_.n-button]:text-black! [&_.n-button:hover]:bg-white/50!': onColor }"
         :show-label="!isOverflowing"
       />
-    </div>
 
-    <entity-actions
-      v-if="!showTable"
-      :show-label="!isOverflowing"
-    />
+      <my-button
+        v-if="!isMobile && userId && isQuery && !route.params.entityId"
+        circle
+        :icon="showTable ? 'list' : 'table'"
+        :title="showTable ? t('listView') : t('tableView')"
+        @click="toggleView()"
+      />
 
-    <my-button
-      v-if="!isMobile && userId && isQuery && !route.params.entityId"
-      circle
-      :icon="showTable ? 'list' : 'table'"
-      :title="showTable ? t('listView') : t('tableView')"
-      @click="toggleView()"
-    />
-
-    <my-button
-      v-if="userId"
-      circle
-      class="bg-brand! text-white! hover:bg-brand-hover!"
-      icon="sparkles"
-      :title="t('entuAi')"
-      @click="toggleChat()"
-    />
+      <div
+        v-if="userId"
+        :class="{ '[&_.n-button]:bg-white/40! [&_.n-button]:text-black! [&_.n-button:hover]:bg-white/50!': onColor }"
+      >
+        <my-button
+          circle
+          icon="sparkles"
+          :tooltip="t('entuAi')"
+          @click="toggleChat()"
+        />
+      </div>
+    </template>
   </div>
 </template>
 

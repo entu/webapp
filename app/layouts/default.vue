@@ -32,6 +32,11 @@ const entityDrawerWidth = ref(Math.round(window.innerWidth * 0.6))
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
+// The open entity's header color continues behind the toolbar, except in table view where the entity opens in a drawer.
+const { headerGradient } = useEntity()
+
+const toolbarGradient = computed(() => route.params.entityId && (!(isQuery.value && showTable.value) || isMobile.value) ? headerGradient.value : undefined)
+
 let updateNotification
 nuxtApp.hooks.hook('app:manifest:update', (a) => {
   if (updateNotification) return
@@ -104,23 +109,36 @@ useEventListener(window, 'keydown', onPaletteKey)
         v-if="accountId"
         class="flex grow flex-col overflow-hidden"
       >
-        <layout-toolbar class="m-2 shrink-0 print:hidden!" />
+        <div
+          v-if="!isQuery || showTable"
+          class="shrink-0 print:hidden"
+          :style="{ backgroundImage: toolbarGradient }"
+        >
+          <layout-toolbar
+            class="m-2"
+            :on-color="!!toolbarGradient"
+          />
+        </div>
 
         <div
           v-if="isQuery && showTable"
-          class="relative mb-2 min-h-0 grow"
+          class="relative min-h-0 grow"
         >
-          <entity-table class="absolute inset-x-2 inset-y-0" />
+          <entity-table class="absolute inset-0" />
 
           <my-drawer
             v-if="route.params.entityId"
             v-model:width="entityDrawerWidth"
             show
+            :header-style="headerGradient ? { backgroundImage: headerGradient, borderBottom: 0 } : undefined"
             @close="onDrawerClose"
           >
             <template #header>
               <div class="flex grow justify-end">
-                <entity-actions :show-label="entityDrawerWidth >= 720" />
+                <entity-actions
+                  :class="{ '[&_.n-button]:bg-white/40! [&_.n-button]:text-black! [&_.n-button:hover]:bg-white/50!': headerGradient }"
+                  :show-label="entityDrawerWidth >= 720"
+                />
               </div>
             </template>
 
@@ -137,19 +155,26 @@ useEventListener(window, 'keydown', onPaletteKey)
 
         <div
           v-else-if="isQuery"
-          class="relative mb-2 min-h-0 grow"
+          class="relative min-h-0 grow"
         >
           <n-split
             v-model:size="listWidth"
             class="absolute inset-0"
             direction="horizontal"
-            pane1-class="print:hidden"
-            pane2-class="py-2 grow overflow-y-auto"
+            pane1-class="flex flex-col print:hidden"
+            pane2-class="flex min-w-0 grow flex-col"
             :max="0.5"
             :min="0.25"
+            :resize-trigger-size="2"
           >
             <template #1>
-              <entity-list />
+              <layout-toolbar
+                class="m-2 shrink-0"
+                part="search"
+              />
+              <div class="min-h-0 grow">
+                <entity-list />
+              </div>
             </template>
 
             <template #resize-trigger>
@@ -159,14 +184,30 @@ useEventListener(window, 'keydown', onPaletteKey)
             </template>
 
             <template #2>
-              <slot />
+              <div
+                class="shrink-0 print:hidden"
+                :style="{ backgroundImage: toolbarGradient }"
+              >
+                <layout-toolbar
+                  class="m-2"
+                  part="actions"
+                  :on-color="!!toolbarGradient"
+                />
+              </div>
+              <div
+                class="min-h-0 grow overflow-y-auto"
+                :class="{ 'py-2': !route.params.entityId }"
+              >
+                <slot />
+              </div>
             </template>
           </n-split>
         </div>
 
         <div
           v-else
-          class="grow overflow-y-auto py-2"
+          class="grow overflow-y-auto"
+          :class="{ 'py-2': !route.params.entityId }"
         >
           <slot />
         </div>
@@ -223,11 +264,15 @@ useEventListener(window, 'keydown', onPaletteKey)
             v-if="accountId"
             class="flex h-full flex-col overflow-hidden"
           >
-            <layout-toolbar class="shrink-0 p-2" />
+            <layout-toolbar
+              class="shrink-0 p-2"
+              :on-color="!!toolbarGradient"
+              :style="{ backgroundImage: toolbarGradient }"
+            />
 
             <div
               v-if="route.params.entityId"
-              class="grow overflow-y-auto py-2"
+              class="grow overflow-y-auto pb-2"
             >
               <slot />
             </div>

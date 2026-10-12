@@ -23,11 +23,20 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
     <div
       v-for="property in visibleProperties"
       :key="property.name"
-      class="grid grid-cols-1 gap-0 pt-3 first-of-type:pt-0 md:grid-cols-3 md:items-center md:gap-4 md:border-t md:border-gray-100 md:pt-0 md:first-of-type:border-t-0"
+      class="grid grid-cols-1"
+      :class="{
+        'gap-0 pt-3 first-of-type:pt-0 md:grid-cols-3 md:items-center md:gap-4 md:border-t md:border-gray-100 md:pt-0 md:first-of-type:border-t-0': edit,
+        'border-t border-gray-200 py-1 first-of-type:border-t-0 md:grid-cols-[140px_1fr] md:gap-4': !edit,
+      }"
     >
       <div
-        class="flex justify-start gap-2 pt-1 pb-0 font-medium text-brand md:justify-end md:py-2 md:text-right"
-        :class="{ 'text-red-700': property.mandatory && (edit || !property.values) }"
+        class="flex justify-start md:justify-end md:text-right"
+        :class="{
+          'gap-2 pt-1 pb-0 font-medium text-brand md:py-2': edit,
+          'items-center gap-1 pt-1 md:pt-0.5': !edit,
+          'text-gray-400': !edit && (!property.mandatory || property.values),
+          'text-red-700': property.mandatory && (edit || !property.values),
+        }"
       >
         <span
           v-if="property.values && property.values.length > 1"
@@ -43,8 +52,12 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
         </span>
 
         <div
-          class="mt-1.5 flex w-2.5 flex-col gap-0.5"
-          :class="{ '-my-0.5!': userId && entitySharing && property.description && property.sharing }"
+          class="flex"
+          :class="{
+            'mt-1.5 w-2.5 flex-col gap-0.5': edit,
+            '-my-0.5!': edit && userId && entitySharing && property.description && property.sharing,
+            'gap-1 opacity-60 hover:opacity-100': !edit,
+          }"
         >
           <template v-if="userId && entitySharing && property.sharing">
             <n-popover
@@ -119,7 +132,12 @@ const visibleProperties = computed(() => props.edit ? props.properties : props.p
         </div>
       </div>
 
-      <div class="pt-0 pb-1 md:col-span-2 md:py-1">
+      <div
+        :class="{
+          'pt-0 pb-1 md:col-span-2 md:py-1': edit,
+          'text-gray-900': !edit,
+        }"
+      >
         <property-edit
           v-if="edit"
           v-model:entity-id="entityId"

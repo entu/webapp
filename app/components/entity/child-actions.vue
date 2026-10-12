@@ -42,7 +42,7 @@ function dropdownOptions () {
     options.push({ label: t('duplicate'), key: 'duplicate', icon: () => h(MyIcon, { icon: 'copy' }) })
   }
   if (isEditor.value) {
-    options.push({ label: t('parents'), key: 'parents', icon: () => h(MyIcon, { icon: 'tree-view' }) })
+    options.push({ label: t('parents'), key: 'parents', icon: () => h(MyIcon, { icon: 'folder-parent' }) })
   }
   if (isOwner.value) {
     options.push({ label: t('rights'), key: 'rights', icon: () => h(MyIcon, { icon: 'sharing-private' }) })
@@ -89,7 +89,7 @@ function onDropdownSelect (key) {
 
           <my-button
             v-if="isEditor"
-            icon="tree-view"
+            icon="folder-parent"
             size="small"
             :title="t('parents')"
             @click.stop="showParentsDrawer = true"

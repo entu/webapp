@@ -46,7 +46,7 @@ async function loadImages () {
 
 <template>
   <div
-    class="flex size-32 cursor-pointer items-center justify-center rounded-md bg-cover bg-center"
+    class="flex cursor-pointer items-center justify-center bg-cover bg-center"
     :style="`background-image:url(${thumbnail})`"
     v-bind="$attrs"
     @click="loadImages()"

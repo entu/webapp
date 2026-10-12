@@ -14,6 +14,9 @@ export function useEntity () {
 
   const rawEntity = useState('entity.raw', () => null)
 
+  // The open entity's header gradient, shared so the layout can paint it behind the toolbar.
+  const headerGradient = useState('entity.headerGradient', () => null)
+
   const entityId = computed(() => rawEntity.value?._id)
   const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
   const typeName = computed(() => getValue(rawEntity.value?._type, 'string'))
@@ -27,6 +30,7 @@ export function useEntity () {
 
   return {
     entityId,
+    headerGradient,
     rawEntity,
     right,
     typeId,

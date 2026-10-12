@@ -34,6 +34,7 @@ const label = computed(() => {
     v-if="userId && options.length === 1"
     :icon="icon"
     :label="showLabel ? label : undefined"
+    :tooltip="showLabel ? undefined : label"
     @click="navigateTo({ path: route.path, query: route.query, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}` }, { replace: true })"
   />
 
@@ -47,10 +48,14 @@ const label = computed(() => {
       <my-button
         :icon="icon"
         :label="showLabel ? label : undefined"
+        :title="showLabel ? undefined : label"
       />
     </template>
 
     <div class="flex w-full flex-col">
+      <div class="px-4 pt-3 pb-1 text-xs font-semibold tracking-wider text-gray-400 uppercase">
+        {{ isChild ? t('addChildTitle') : t('addTitle') }}
+      </div>
       <div
         v-for="o in options"
         :key="o.value"
@@ -73,9 +78,13 @@ const label = computed(() => {
     addOne: New {type}
     addChild: Add ...
     addOneChild: Add {type}
+    addTitle: New
+    addChildTitle: Add
   et:
     add: Uus ...
     addOne: Uus {type}
     addChild: Lisa ...
     addOneChild: Lisa {type}
+    addTitle: Uus
+    addChildTitle: Lisa
 </i18n>

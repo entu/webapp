@@ -16,7 +16,8 @@ const drawerDefaultWidth = computed(() => isMobile.value ? windowWidth.value : w
 const emit = defineEmits(['close'])
 
 defineProps({
-  title: { type: String, default: '' }
+  title: { type: String, default: '' },
+  headerStyle: { type: Object, default: undefined }
 })
 
 const closeRef = useTemplateRef('closeRef')
@@ -55,6 +56,7 @@ onKeyStroke('Escape', close)
     <n-drawer-content
       body-content-class="p-0!"
       header-class="w-full p-2!"
+      :header-style="headerStyle"
     >
       <template #header>
         <div class="flex w-full items-center justify-between gap-2">
