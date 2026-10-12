@@ -1,5 +1,5 @@
 <script setup>
-import { NButtonGroup, NSpin } from 'naive-ui'
+import { NSpin } from 'naive-ui'
 
 definePageMeta({ layout: 'blank' })
 
@@ -44,6 +44,10 @@ function loadAllStats () {
         item.loading = false
       })
   }
+}
+
+function providerRoute (provider) {
+  return `/auth/${provider.path}`
 }
 
 function setLanguage () {
@@ -165,87 +169,23 @@ onMounted(async () => {
     <my-footer class="shrink-0 py-4" />
   </div>
 
-  <div
+  <my-sign-in
     v-else
-    class="flex min-h-full flex-col"
+    :description="t('signInDescription')"
+    :provider-groups="providerGroups"
+    :provider-route="providerRoute"
+    :title="t('signInTitle')"
   >
-    <div class="flex w-full justify-end px-4 pt-4">
-      <span
-        class="cursor-pointer text-xs font-bold text-gray-500 uppercase"
-        @click="setLanguage()"
-      >
-        {{ t('language') }}
-      </span>
-    </div>
-
-    <div class="flex justify-center py-4">
-      <a href="/">
-        <img
-          class="size-24"
-          src="/logo.png"
-        >
-      </a>
-    </div>
-
-    <div class="flex flex-col items-center gap-1 px-4 pb-6 text-center">
-      <div class="text-xl font-semibold">
-        {{ t('signInTitle') }}
-      </div>
-      <div class="max-w-72 text-sm text-gray-500">
-        {{ t('signInDescription') }}
-      </div>
-    </div>
-
-    <div class="mb-8 flex w-full flex-col gap-8 px-4 sm:mx-auto sm:w-72">
-      <div class="flex flex-col gap-3">
-        <n-button-group
-          v-for="(group, index) in providerGroups"
-          :key="index"
-          class="flex! w-full flex-col"
-          vertical
-        >
-          <my-button
-            v-for="provider in group"
-            :key="provider.id"
-            class="w-full justify-start! px-6!"
-            size="large"
-            :icon="provider.icon"
-            :label="t(provider.label)"
-            @click="navigateTo(`/auth/${provider.path}`)"
-          />
-        </n-button-group>
-      </div>
-
-      <my-button
-        block
-        ghost
-        icon="add"
-        size="large"
-        :label="t('new')"
-        @click="navigateTo('/new')"
-      />
-    </div>
-
-    <my-footer class="mt-auto mb-4" />
-  </div>
+    <my-button
+      block
+      ghost
+      icon="add"
+      size="large"
+      :label="t('new')"
+      @click="navigateTo('/new')"
+    />
+  </my-sign-in>
 </template>
-
-<style scoped>
-/* Group corners match a standalone button's visible radius (half of the 2.5rem button height) */
-.n-button-group :deep(.n-button) {
-  border-radius: 0;
-}
-
-.n-button-group :deep(.n-button:first-child) {
-  border-top-left-radius: 1.25rem;
-  border-top-right-radius: 1.25rem;
-}
-
-.n-button-group :deep(.n-button:last-child) {
-  border-bottom-left-radius: 1.25rem;
-  border-bottom-right-radius: 1.25rem;
-}
-</style>
 
 <i18n lang="yaml">
   en:

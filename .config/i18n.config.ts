@@ -15,7 +15,6 @@ export default defineI18nConfig(() => ({
   messages: {
     en: {
       'auth-passkey': 'Passkey',
-      'auth-passkey-create': 'New passkey',
       'auth-apple': 'Apple',
       'auth-google': 'Google',
       'auth-e-mail': 'E-mail',
@@ -25,7 +24,6 @@ export default defineI18nConfig(() => ({
     },
     et: {
       'auth-passkey': 'Pääsuvõti',
-      'auth-passkey-create': 'Uus pääsuvõti',
       'auth-apple': 'Apple',
       'auth-google': 'Google',
       'auth-e-mail': 'E-post',

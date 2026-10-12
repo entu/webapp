@@ -5,7 +5,7 @@ definePageMeta({ layout: 'blank' })
 
 const route = useRoute()
 const { t } = useI18n()
-const { checkSupport, hasError, isSupported, isWorking, register } = usePasskey()
+const { checkSupport, hasError, isCancelled, isSupported, isWorking, register, signIn } = usePasskey()
 
 onMounted(async () => {
   useHead({ title: t('title') })
@@ -17,6 +17,7 @@ onMounted(async () => {
     return
   }
 
+  // The user picks a new or an existing passkey here, so nothing starts before a click
   await checkSupport()
 })
 </script>
@@ -61,11 +62,19 @@ onMounted(async () => {
               @click="register"
             />
 
+            <my-button
+              block
+              ghost
+              size="large"
+              :label="t('existingButton')"
+              @click="signIn"
+            />
+
             <p
-              v-if="hasError"
+              v-if="hasError && !isCancelled"
               class="text-sm text-red-800"
             >
-              {{ t('registerError') }}
+              {{ t('error') }}
             </p>
           </div>
         </template>
@@ -76,15 +85,17 @@ onMounted(async () => {
 
 <i18n lang="yaml">
   en:
-    title: Create a Passkey
+    title: Continue with Passkey
     notSupported: Passkeys are not supported on this device
     description: Passkeys let you sign in to Entu securely using your fingerprint, face recognition, or device PIN. No passwords needed - just use your device's built-in security.
-    registerButton: Create Passkey
-    registerError: Creating the passkey failed. Please try again.
+    registerButton: Create a New Passkey
+    existingButton: Use an Existing Passkey
+    error: The passkey did not work. Please try again.
   et:
-    title: Loo pääsuvõti
+    title: Jätka pääsuvõtmega
     notSupported: Pääsuvõti ei ole sellel seadmel toetatud
     description: Pääsuvõti võimaldab sul Entusse turvaliselt sisse logida sõrmejälje, näotuvastuse või seadme PIN-koodiga. Paroolid pole vajalikud - kasuta lihtsalt oma seadme sisseehitatud turvalisust.
-    registerButton: Loo pääsuvõti
-    registerError: Pääsuvõtme loomine ebaõnnestus. Palun proovi uuesti.
+    registerButton: Loo uus pääsuvõti
+    existingButton: Kasuta olemasolevat pääsuvõtit
+    error: Pääsuvõti ei töötanud. Palun proovi uuesti.
 </i18n>

@@ -2,7 +2,7 @@
 const providerGroups = [
   [
     { id: 'passkey', icon: 'passkey', label: 'auth-passkey', path: 'passkey', passkey: 'use' },
-    { id: 'passkey-create', icon: 'passkey', label: 'auth-passkey-create', path: 'passkey/register', passkey: 'create' }
+    { id: 'passkey-register', icon: 'passkey', label: 'auth-passkey', path: 'passkey/register', passkey: 'create' }
   ],
   [
     { id: 'apple', icon: 'apple', label: 'auth-apple', path: 'apple' },
@@ -16,10 +16,10 @@ const providerGroups = [
   ]
 ]
 
-// The sign-in groups a page offers; `passkeys` lists the passkey actions it shows - 'use' an existing one, 'create' a new one
-export function authProviderGroups (passkeys = ['use']) {
+// The sign-in groups a page offers; its one Passkey entry goes to the sign-in page ('use') or the creation page ('create'), which also offers an existing passkey
+export function authProviderGroups (passkey = 'use') {
   return providerGroups
-    .map((group) => group.filter((provider) => !provider.passkey || passkeys.includes(provider.passkey)))
+    .map((group) => group.filter((provider) => !provider.passkey || provider.passkey === passkey))
     .filter((group) => group.length > 0)
 }
 

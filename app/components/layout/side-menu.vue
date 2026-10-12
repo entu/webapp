@@ -160,7 +160,7 @@ const accountMenu = computed(() => {
 
 const authMenu = computed(() => {
   // Inside a database a new user can also create a passkey, as the database may add users automatically
-  const groups = authProviderGroups(accountId.value ? ['use', 'create'] : ['use'])
+  const groups = authProviderGroups(accountId.value ? 'create' : 'use')
 
   const providers = groups.flatMap((group, index) => [
     {

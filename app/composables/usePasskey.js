@@ -11,6 +11,7 @@ export function usePasskey () {
   const isSupported = ref(false)
   const isWorking = ref(false)
   const hasError = ref(false)
+  const isCancelled = ref(false)
 
   // Checks this device can use a passkey; false also when the check itself fails
   async function checkSupport () {
@@ -89,9 +90,11 @@ export function usePasskey () {
     await navigateTo(url.toString(), { external: true })
   }
 
-  // Shows the error state and reports anything but a cancelled or timed-out passkey prompt
+  // Shows the error state and reports anything but a cancelled, blocked or timed-out passkey prompt
   function fail (error) {
-    if (error?.name !== 'NotAllowedError') {
+    isCancelled.value = error?.name === 'NotAllowedError'
+
+    if (!isCancelled.value) {
       Sentry.captureException(error)
     }
 
@@ -104,6 +107,7 @@ export function usePasskey () {
   return {
     checkSupport,
     hasError,
+    isCancelled,
     isSupported,
     isWorking,
     register,

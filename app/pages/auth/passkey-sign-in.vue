@@ -93,7 +93,7 @@ onMounted(async () => {
     errorTitle: 'If you have not set up Passkey, then:'
     step1: Sign in using another authentication method
     step2: Open your person object (at the bottom of the left menu)
-    step3: Edit the person object, choose Add Login Method and then New passkey
+    step3: Edit the person object, choose Add Login Method, then Passkey and Create a New Passkey
   et:
     title: Logi sisse pääsuvõtmega
     notSupported: Pääsuvõti ei ole sellel seadmel toetatud
@@ -102,5 +102,5 @@ onMounted(async () => {
     errorTitle: 'Kui sa ei ole pääsuvõtit seadistanud, siis:'
     step1: Logi sisse kasutades muud autentimismeetodit
     step2: Ava oma isikuobjekt (all vasakpoolses menüüs)
-    step3: Muuda isikuobjekti, vali Lisa sisselogimisviis ja seejärel Uus pääsuvõti
+    step3: Muuda isikuobjekti, vali Lisa sisselogimisviis, seejärel Pääsuvõti ja Loo uus pääsuvõti
 </i18n>

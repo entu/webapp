@@ -8,8 +8,8 @@ const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 const { token, tokenExpiry } = useUser()
 
-// A new user has no passkey yet, so signup offers only creating one
-const providerGroups = authProviderGroups(['create'])
+// A new user usually has no passkey yet, so signup goes to the passkey page that creates one first
+const providerGroups = authProviderGroups('create')
 
 const databaseName = ref('')
 const availability = ref()
