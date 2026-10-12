@@ -13,7 +13,7 @@ defineProps({
     <n-button-group
       v-for="(group, index) in groups"
       :key="index"
-      class="flex! w-full flex-col"
+      class="flex! w-full flex-col gap-0.5"
       vertical
     >
       <my-button
