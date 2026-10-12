@@ -9,6 +9,25 @@ export function getAddChildOptions (addFromEntities, entityId, typeId, typeName)
   return [...result].sort((a, b) => a.label.localeCompare(b.label))
 }
 
+// Sets the open entity's header gradient, the single source for the header band and the toolbars: its id color at once, then its cover color once derived.
+export function useEntityGradient (entityId, thumbnailUrl) {
+  const { headerGradient } = useEntity()
+
+  watch(() => [toValue(entityId), toValue(thumbnailUrl)], async ([id, url]) => {
+    const cached = getCachedCoverColor(id)
+
+    headerGradient.value = cached ? coverGradient(cached) : derivedGradient(id)
+
+    if (cached || !url) return
+
+    const rgb = await getCoverColor(id, url)
+
+    if (!rgb || id !== toValue(entityId)) return
+
+    headerGradient.value = coverGradient(rgb)
+  }, { immediate: true })
+}
+
 export function useEntity () {
   const { userId } = useUser()
 

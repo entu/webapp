@@ -14,19 +14,8 @@ const props = defineProps({
   narrow: { type: Boolean, default: false }
 })
 
+// Shared with the toolbars, so the band and the toolbar above it always change color together.
 const { headerGradient } = useEntity()
-
-const coverRgb = ref()
-
-const gradient = computed(() => coverRgb.value ? coverGradient(coverRgb.value) : derivedGradient(props.entity._id))
-
-watch(gradient, (value) => {
-  headerGradient.value = value
-}, { immediate: true })
-
-onUnmounted(() => {
-  headerGradient.value = null
-})
 
 const sharing = computed(() => {
   if (props.entity._sharing === 'public') {
@@ -66,19 +55,6 @@ const indentClass = computed(() => ({
 }))
 
 const parentList = computed(() => props.parents?.filter((x) => x.reference) || [])
-
-// Paints the cached cover color at once, otherwise derives it from the thumbnail and ignores a result for a previous entity.
-watch(() => [props.entity._id, props.thumbnail], async ([id, url]) => {
-  coverRgb.value = getCachedCoverColor(id)
-
-  if (coverRgb.value || !url) return
-
-  const rgb = await getCoverColor(id, url)
-
-  if (id !== props.entity._id) return
-
-  coverRgb.value = rgb
-}, { immediate: true })
 </script>
 
 <template>
@@ -89,7 +65,7 @@ watch(() => [props.entity._id, props.thumbnail], async ([id, url]) => {
         'min-h-24 px-4 pt-4 pb-3': narrow,
         'min-h-28 px-7 pt-4 pb-3.5': !narrow,
       }"
-      :style="{ backgroundImage: gradient }"
+      :style="{ backgroundImage: headerGradient }"
     >
       <div
         class="flex flex-col items-start gap-2"

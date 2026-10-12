@@ -2,14 +2,14 @@
 import { NInputGroup, NInput } from 'naive-ui'
 
 // In the list/detail split the toolbar is shown in two parts: the search above the list, the buttons above the detail.
-const props = defineProps({
-  onColor: { type: Boolean, default: false },
+defineProps({
+  gradient: { type: String, default: undefined },
   part: { type: String, default: 'all', validator: (value) => ['all', 'search', 'actions'].includes(value) }
 })
 
 const route = useRoute()
 const { t } = useI18n()
-const { listWidth, showTable, userId } = useUser()
+const { showTable, userId } = useUser()
 const { right } = useEntity()
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
@@ -125,8 +125,6 @@ const { activeMenu } = storeToRefs(menuStore)
 
 const addByActiveMenuOptions = computed(() => activeMenu.value?.addFrom || [])
 
-const searchWidth = computed(() => props.part === 'all' && !showTable.value && !isMobile.value ? { width: `${listWidth.value * 100}%` } : undefined)
-
 watch(windowWidth, (newWidth) => {
   if (isOverflowing.value && newWidth <= minWidthForLabels.value) return
 
@@ -134,10 +132,6 @@ watch(windowWidth, (newWidth) => {
 })
 
 watch(right, () => {
-  checkOverflow()
-})
-
-watch(listWidth, () => {
   checkOverflow()
 })
 
@@ -157,87 +151,86 @@ onUnmounted(() => {
 
 <template>
   <div
-    ref="toolbarRef"
-    class="flex items-center gap-2 print:hidden"
-    :class="{ 'opacity-0': isMeasuring }"
+    class="p-2 print:hidden"
+    :style="{ backgroundImage: gradient }"
   >
     <div
-      v-if="part !== 'actions' && userId && !(isMobile && route.params.entityId)"
-      class="shrink-0"
+      ref="toolbarRef"
+      class="flex items-center gap-2"
       :class="{
-        'w-64 pr-2': part === 'all',
-        'w-full': part === 'search',
+        'opacity-0': isMeasuring,
+        'on-color': gradient,
       }"
-      :style="searchWidth"
     >
-      <n-input-group>
-        <n-input
-          v-model:value="searchText"
-          round
-          :placeholder="t('search')"
-        >
-          <template #prefix>
-            <my-icon
-              class="text-gray-400"
-              icon="search"
-            />
-          </template>
-
-          <template #suffix>
-            <span
-              v-if="!isMobile"
-              class="cursor-pointer text-xs font-medium whitespace-nowrap text-gray-500"
-              @click="paletteStore.open(searchText)"
-            >{{ paletteKeyHint }}</span>
-          </template>
-        </n-input>
-      </n-input-group>
-
-      <!-- Advanced Search Modal -->
-      <entity-search-modal
-        v-if="userId"
-        v-model:show="showSearchModal"
-        @search="handleAdvancedSearch"
-      />
-    </div>
-
-    <template v-if="part !== 'search'">
       <div
-        class="grow"
-        :class="{ '[&_.n-button]:bg-white/40! [&_.n-button]:text-black! [&_.n-button:hover]:bg-white/50!': onColor }"
+        v-if="part !== 'actions' && userId && !(isMobile && route.params.entityId)"
+        class="shrink-0"
+        :class="{
+          'w-64 pr-2': part === 'all',
+          'w-full': part === 'search',
+        }"
       >
-        <entity-toolbar-add
-          :options="addByActiveMenuOptions"
-          :show-label="!isOverflowing"
+        <n-input-group>
+          <n-input
+            v-model:value="searchText"
+            round
+            :placeholder="t('search')"
+          >
+            <template #prefix>
+              <my-icon
+                class="text-gray-400"
+                icon="search"
+              />
+            </template>
+
+            <template #suffix>
+              <span
+                v-if="!isMobile"
+                class="cursor-pointer text-xs font-medium whitespace-nowrap text-gray-500"
+                @click="paletteStore.open(searchText)"
+              >{{ paletteKeyHint }}</span>
+            </template>
+          </n-input>
+        </n-input-group>
+
+        <!-- Advanced Search Modal -->
+        <entity-search-modal
+          v-if="userId"
+          v-model:show="showSearchModal"
+          @search="handleAdvancedSearch"
         />
       </div>
 
-      <entity-actions
-        v-if="!showTable"
-        :class="{ '[&_.n-button]:bg-white/40! [&_.n-button]:text-black! [&_.n-button:hover]:bg-white/50!': onColor }"
-        :show-label="!isOverflowing"
-      />
+      <template v-if="part !== 'search'">
+        <div class="grow">
+          <entity-toolbar-add
+            :options="addByActiveMenuOptions"
+            :show-label="!isOverflowing"
+          />
+        </div>
 
-      <my-button
-        v-if="!isMobile && userId && isQuery && !route.params.entityId"
-        circle
-        :icon="showTable ? 'list' : 'table'"
-        :title="showTable ? t('listView') : t('tableView')"
-        @click="toggleView()"
-      />
+        <entity-actions
+          v-if="!showTable"
+          :show-label="!isOverflowing"
+        />
 
-      <div
-        v-if="userId"
-        :class="{ '[&_.n-button]:bg-white/40! [&_.n-button]:text-black! [&_.n-button:hover]:bg-white/50!': onColor }"
-      >
         <my-button
+          v-if="!isMobile && userId && isQuery && !route.params.entityId"
+          circle
+          :icon="showTable ? 'list' : 'table'"
+          :title="showTable ? t('listView') : t('tableView')"
+          @click="toggleView()"
+        />
+
+        <my-button
+          v-if="userId"
           circle
           icon="sparkles"
           :tooltip="t('entuAi')"
           @click="toggleChat()"
         />
-      </div>
-    </template>
+      </template>
+    </div>
   </div>
 </template>
 

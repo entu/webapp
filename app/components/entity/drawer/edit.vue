@@ -225,14 +225,13 @@ async function onClose () {
             {{ pg.name }}
           </h2>
 
-          <property-list
+          <property-form
             v-model:entity-id="entityId"
             v-model:entity-parent-id="entityParentId"
             v-model:entity-type-id="entityTypeId"
             v-model:is-updating="isUpdating"
-            v-model:properties="pg.children"
-            edit
             :entity-sharing="entity._sharing"
+            :properties="pg.children"
           />
         </div>
       </n-tab-pane>

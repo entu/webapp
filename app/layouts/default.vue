@@ -83,7 +83,7 @@ useEventListener(window, 'keydown', onPaletteKey)
 
 <template>
   <div class="h-full">
-    <!-- Desktop layout (≥ 768px): unchanged -->
+    <!-- Desktop layout (≥ 768px) -->
     <n-layout
       v-if="!isMobile"
       class="size-full"
@@ -109,16 +109,11 @@ useEventListener(window, 'keydown', onPaletteKey)
         v-if="accountId"
         class="flex grow flex-col overflow-hidden"
       >
-        <div
+        <layout-toolbar
           v-if="!isQuery || showTable"
-          class="shrink-0 print:hidden"
-          :style="{ backgroundImage: toolbarGradient }"
-        >
-          <layout-toolbar
-            class="m-2"
-            :on-color="!!toolbarGradient"
-          />
-        </div>
+          class="shrink-0"
+          :gradient="toolbarGradient"
+        />
 
         <div
           v-if="isQuery && showTable"
@@ -136,7 +131,7 @@ useEventListener(window, 'keydown', onPaletteKey)
             <template #header>
               <div class="flex grow justify-end">
                 <entity-actions
-                  :class="{ '[&_.n-button]:bg-white/40! [&_.n-button]:text-black! [&_.n-button:hover]:bg-white/50!': headerGradient }"
+                  :class="{ 'on-color': headerGradient }"
                   :show-label="entityDrawerWidth >= 720"
                 />
               </div>
@@ -169,7 +164,7 @@ useEventListener(window, 'keydown', onPaletteKey)
           >
             <template #1>
               <layout-toolbar
-                class="m-2 shrink-0"
+                class="shrink-0"
                 part="search"
               />
               <div class="min-h-0 grow">
@@ -184,16 +179,11 @@ useEventListener(window, 'keydown', onPaletteKey)
             </template>
 
             <template #2>
-              <div
-                class="shrink-0 print:hidden"
-                :style="{ backgroundImage: toolbarGradient }"
-              >
-                <layout-toolbar
-                  class="m-2"
-                  part="actions"
-                  :on-color="!!toolbarGradient"
-                />
-              </div>
+              <layout-toolbar
+                class="shrink-0"
+                part="actions"
+                :gradient="toolbarGradient"
+              />
               <div
                 class="min-h-0 grow overflow-y-auto"
                 :class="{ 'py-2': !route.params.entityId }"
@@ -265,9 +255,8 @@ useEventListener(window, 'keydown', onPaletteKey)
             class="flex h-full flex-col overflow-hidden"
           >
             <layout-toolbar
-              class="shrink-0 p-2"
-              :on-color="!!toolbarGradient"
-              :style="{ backgroundImage: toolbarGradient }"
+              class="shrink-0"
+              :gradient="toolbarGradient"
             />
 
             <div

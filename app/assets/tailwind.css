@@ -28,6 +28,15 @@ body,
   @apply text-sky-800;
 }
 
+/* Buttons on an entity's header color: translucent white with black text (important beats naive-ui's inline colors). */
+.on-color .n-button {
+  @apply bg-white/40! text-black!;
+}
+
+.on-color .n-button:hover {
+  @apply bg-white/50!;
+}
+
 a.link {
   @apply hover:underline;
 }
