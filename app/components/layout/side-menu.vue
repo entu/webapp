@@ -9,7 +9,7 @@ defineProps({
   showLang: { type: Boolean, default: true }
 })
 
-const { account, accountId, accounts } = useAccount()
+const { account, accounts } = useAccount()
 const { menuCollapsed, token, userId, userName } = useUser()
 
 const menuStore = useMenuStore()
@@ -159,8 +159,7 @@ const accountMenu = computed(() => {
 })
 
 const authMenu = computed(() => {
-  // Inside a database a new user can also create a passkey, as the database may add users automatically
-  const groups = authProviderGroups(accountId.value ? 'create' : 'use')
+  const groups = authProviderGroups()
 
   const providers = groups.flatMap((group, index) => [
     {

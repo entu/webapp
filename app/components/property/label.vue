@@ -1,8 +1,6 @@
 <script setup>
 const props = defineProps({
-  property: { type: Object, required: true },
-  entitySharing: { type: String, default: undefined },
-  stacked: { type: Boolean, default: false }
+  property: { type: Object, required: true }
 })
 
 const label = computed(() => props.property.values?.length > 1
@@ -11,14 +9,7 @@ const label = computed(() => props.property.values?.length > 1
 </script>
 
 <template>
-  <div class="flex justify-start md:justify-end md:text-right">
+  <div class="flex">
     <span class="truncate">{{ label }}</span>
-
-    <property-hints
-      v-if="stacked"
-      class="mt-1.5 w-2.5 flex-col gap-0.5 has-[>:nth-child(2)]:-my-0.5!"
-      :entity-sharing="entitySharing"
-      :property="property"
-    />
   </div>
 </template>
