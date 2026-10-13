@@ -1,5 +1,6 @@
 ## 2026-10-13
 - **Dark mode**: Entu now follows your system's dark mode, with a dark slate look and a glassy side menu.
+- **Tags on the entity page**: References, files, sign-in methods, the entity type, parents and sharing status now show as tags, like in the Entu app.
 
 ## 2026-10-12
 - **New entity page look**: The entity page now matches the Entu app — a colored header taken from the entity's photo, with the title, type, parent entities and sharing status at the top, quieter property labels, and child and referring entities in tabs, one per entity type.

@@ -6,44 +6,19 @@ const props = defineProps({
   value: { type: Object, required: true },
   decimals: { type: Number, default: undefined },
   isMarkdown: { type: Boolean, default: false },
-  isName: { type: Boolean, default: false }
+  isName: { type: Boolean, default: false },
+  isTag: { type: Boolean, default: false }
 })
 
 const route = useRoute()
 const { locale, d, n, t } = useI18n()
 const { accountId } = useAccount()
 
-const PREVIEWABLE_EXTENSIONS = new Set([
-  'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff', 'tif', 'avif', 'heic', 'heif', 'pdf'
-])
-
-function isPreviewableExtension (filename) {
-  if (!filename) {
-    return false
-  }
-
-  const extension = filename.split('.').pop()?.toLowerCase()
-  if (!extension) {
-    return false
-  }
-
-  return PREVIEWABLE_EXTENSIONS.has(extension)
-}
-
-const isPreviewableFile = computed(() => {
-  const filetype = props.value?.filetype
-
-  if (filetype) {
-    return filetype.startsWith('image/') || filetype === 'application/pdf'
-  }
-
-  return isPreviewableExtension(props.value?.filename)
-})
-
 const { url: thumbnailUrl, load: loadThumbnail } = usePropertyThumbnail(() => props.value?._id, 400)
 const { url: thumbnailIconUrl, load: loadThumbnailIcon } = usePropertyThumbnail(() => props.value?._id, 50)
 
-watch(isPreviewableFile, (previewable) => {
+// Tags load their own thumbnails, so only the plain table value loads one here.
+watch(() => !props.isTag && isPreviewableFile(props.value), (previewable) => {
   if (previewable) {
     loadThumbnailIcon()
   }
@@ -58,6 +33,23 @@ watch(isPreviewableFile, (previewable) => {
     >
       {{ value.string }}
     </nuxt-link>
+  </template>
+
+  <template v-else-if="value.reference !== undefined && isTag">
+    <property-reference-tag
+      :entity-id="value.reference"
+      :name="value.string"
+    />
+    <span
+      v-if="value.datetime !== undefined"
+      class="ml-4 text-slate-600 dark:text-slate-300"
+    >
+      {{ d(value.datetime, 'datetime') }}
+    </span>
+  </template>
+
+  <template v-else-if="value.filename !== undefined && isTag">
+    <property-file-tag :value="value" />
   </template>
 
   <template v-else-if="value.reference !== undefined && value.datetime !== undefined">
@@ -84,7 +76,7 @@ watch(isPreviewableFile, (previewable) => {
   <template v-else-if="value.filename !== undefined">
     <span class="flex items-center gap-2 leading-tight">
       <n-popover
-        v-if="isPreviewableFile && thumbnailIconUrl"
+        v-if="thumbnailIconUrl"
         class="rounded-md bg-surface p-1 shadow-lg"
         placement="top"
         raw
@@ -144,6 +136,12 @@ watch(isPreviewableFile, (previewable) => {
 
   <template v-else-if="value.date !== undefined">
     {{ d(value.date, 'date') }}
+  </template>
+
+  <template v-else-if="value.provider !== undefined && isTag">
+    <my-tag :icon="value.provider">
+      {{ value.string }}
+    </my-tag>
   </template>
 
   <template v-else-if="value.provider !== undefined">

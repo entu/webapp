@@ -21,7 +21,7 @@ const sharing = computed(() => {
   if (props.entity._sharing === 'public') {
     return {
       icon: 'sharing-public',
-      class: 'bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400',
+      class: 'bg-orange-50! text-orange-600! dark:bg-orange-950! dark:text-orange-400!',
       label: t('sharingPublic'),
       description: t('sharingPublicDescription')
     }
@@ -30,7 +30,7 @@ const sharing = computed(() => {
   if (props.entity._sharing === 'domain') {
     return {
       icon: 'sharing-domain',
-      class: 'bg-yellow-50 text-yellow-600 dark:bg-yellow-950 dark:text-yellow-400',
+      class: 'bg-yellow-50! text-yellow-600! dark:bg-yellow-950! dark:text-yellow-400!',
       label: t('sharingDomain'),
       description: t('sharingDomainDescription')
     }
@@ -38,7 +38,7 @@ const sharing = computed(() => {
 
   return {
     icon: 'sharing-private',
-    class: 'bg-green-50 text-green-600 dark:bg-green-950 dark:text-green-400',
+    class: 'bg-green-50! text-green-600! dark:bg-green-950! dark:text-green-400!',
     label: t('sharingPrivate'),
     description: t('sharingPrivateDescription')
   }
@@ -68,7 +68,7 @@ const parentList = computed(() => props.parents?.filter((x) => x.reference) || [
       :style="{ backgroundImage: headerGradient }"
     >
       <div
-        class="flex flex-col items-start gap-2"
+        class="on-color flex flex-col items-start gap-2"
         :class="indentClass"
       >
         <h1
@@ -85,12 +85,12 @@ const parentList = computed(() => props.parents?.filter((x) => x.reference) || [
           :disabled="!entity.type.description"
         >
           <template #trigger>
-            <nuxt-link
-              class="rounded-full bg-white/20 px-3 py-1 text-xs font-medium text-white hover:bg-white/30"
+            <my-tag
+              small
               :to="{ path: `/${accountId}/${entity.type._id}`, query: route.query }"
             >
               {{ entity.type.label }}
-            </nuxt-link>
+            </my-tag>
           </template>
           <my-markdown
             class="text-sm"
@@ -135,18 +135,15 @@ const parentList = computed(() => props.parents?.filter((x) => x.reference) || [
         class="flex min-w-0 grow flex-wrap gap-1.5"
         :class="indentClass"
       >
-        <nuxt-link
+        <my-tag
           v-for="parent in parentList"
           :key="parent._id"
-          class="flex max-w-full items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
+          icon="folder-parent"
+          small
           :to="{ path: `/${accountId}/${parent.reference}`, query: route.query }"
         >
-          <my-icon
-            class="flex-none text-xs"
-            icon="folder-parent"
-          />
-          <span class="truncate">{{ parent.string || parent.reference }}</span>
-        </nuxt-link>
+          {{ parent.string || parent.reference }}
+        </my-tag>
       </div>
 
       <n-popover
@@ -154,17 +151,15 @@ const parentList = computed(() => props.parents?.filter((x) => x.reference) || [
         placement="bottom"
       >
         <template #trigger>
-          <nuxt-link
-            class="flex flex-none items-center gap-1 rounded-full px-3 py-1 text-xs font-medium"
-            :class="sharing.class"
-            :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : {}"
+          <my-tag
+            class="flex-none"
+            small
+            :icon="sharing.icon"
+            :tag-class="sharing.class"
+            :to="right.owner ? { path: route.path, query: route.query, hash: '#rights' } : undefined"
           >
-            <my-icon
-              class="text-xs"
-              :icon="sharing.icon"
-            />
             {{ sharing.label }}
-          </nuxt-link>
+          </my-tag>
         </template>
         <div class="text-sm">
           {{ sharing.description }}

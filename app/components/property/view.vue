@@ -17,6 +17,7 @@ const localeValues = computed(() => props.values.filter((x) => !x.language || x.
     class="my-0.5"
   >
     <property-value
+      is-tag
       :decimals="decimals"
       :is-markdown="isMarkdown"
       :value="v"

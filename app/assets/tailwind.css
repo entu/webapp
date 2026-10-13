@@ -50,11 +50,15 @@ body,
 }
 
 /* Buttons on an entity's header color: translucent white with black text (important beats naive-ui's inline colors). */
-.on-color .n-button {
+.on-color .n-button,
+.on-color .n-tag {
+  --n-border: 1px solid rgb(0 0 0 / 0.12) !important;
+
   @apply bg-white/40! text-black!;
 }
 
-.on-color .n-button:hover {
+.on-color .n-button:hover,
+.on-color a:hover .n-tag {
   @apply bg-white/50!;
 }
 

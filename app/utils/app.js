@@ -145,6 +145,17 @@ export function humanFileSize (n, bytes, si = true, dp = 2) {
   return n(Math.round(bytes * 10) / 10) + ' ' + units[u]
 }
 
+const PREVIEWABLE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'tiff', 'tif', 'avif', 'heic', 'heif', 'pdf'])
+
+// Whether the API can make a thumbnail of a file value (images and PDFs), by its type or else its extension.
+export function isPreviewableFile (value) {
+  if (value?.filetype) {
+    return value.filetype.startsWith('image/') || value.filetype === 'application/pdf'
+  }
+
+  return PREVIEWABLE_EXTENSIONS.has(value?.filename?.split('.').pop()?.toLowerCase())
+}
+
 export function cloneData (data) {
   return JSON.parse(JSON.stringify(data))
 }
