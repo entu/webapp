@@ -51,9 +51,9 @@ const entity = computed(() => {
 })
 
 const thumbnailEntityId = computed(() => rawEntity.value?.photo?.length ? rawEntity.value._id : undefined)
-const { url: thumbnailUrl } = useEntityThumbnail(thumbnailEntityId, 400)
+const { url: thumbnailUrl, color: thumbnailColor } = useEntityThumbnail(thumbnailEntityId, 400)
 
-useEntityGradient(entityId, thumbnailUrl)
+useEntityGradient(entityId, thumbnailColor)
 
 const properties = computed(() => {
   if (!entity.value || !entity?.value?.props) {

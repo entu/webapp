@@ -1,8 +1,9 @@
-// Resolves an entity's thumbnail to a signed URL via the thumbnail endpoint.
+// Resolves an entity's thumbnail to a signed URL and its dominant color via the thumbnail endpoint.
 // `entityId` and `size` may be refs, getters, or plain values; pass an empty
 // `entityId` (e.g. when the entity has no photo) to skip the request.
 export function useEntityThumbnail (entityId, size = 200) {
   const url = ref()
+  const color = ref()
 
   // Tracks the latest request so a slow response for a previous entity can't
   // overwrite the url after the watched id has already changed.
@@ -15,6 +16,7 @@ export function useEntityThumbnail (entityId, size = 200) {
     const currentRequest = ++requestId
 
     url.value = undefined
+    color.value = undefined
 
     if (!id) return
 
@@ -24,13 +26,17 @@ export function useEntityThumbnail (entityId, size = 200) {
       if (currentRequest !== requestId) return
 
       url.value = result?.url
+      color.value = result?.color
+
+      setCoverColor(id, result?.color)
     }
     catch {
       if (currentRequest !== requestId) return
 
       url.value = undefined
+      color.value = undefined
     }
   }, { immediate: true })
 
-  return { url }
+  return { url, color }
 }
