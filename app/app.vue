@@ -1,7 +1,10 @@
 <script setup>
-import { NConfigProvider, NNotificationProvider, NGlobalStyle, enUS, etEE, dateEnUS, dateEtEE } from 'naive-ui'
+import { NConfigProvider, NNotificationProvider, NGlobalStyle, darkTheme, enUS, etEE, dateEnUS, dateEtEE } from 'naive-ui'
 
 const runtimeConfig = useRuntimeConfig()
+
+// Dark mode follows the system, like the Tailwind colors in app/assets/tailwind.css.
+const isDark = usePreferredDark()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 
 const currentLocale = ref(enUS)
@@ -63,7 +66,8 @@ console.log(
     inline-theme-disabled
     :date-locale="currentDateLocale"
     :locale="currentLocale"
-    :theme-overrides="themeOverrides"
+    :theme="isDark ? darkTheme : null"
+    :theme-overrides="isDark ? darkThemeOverrides : themeOverrides"
   >
     <n-notification-provider :max="5">
       <nuxt-layout>
