@@ -200,7 +200,7 @@ onMounted(async () => {
           <th
             v-for="column in visibleColumns"
             :key="column.name"
-            class="cursor-pointer p-3 text-left hover:bg-slate-50"
+            class="cursor-pointer p-3 text-left hover:bg-slate-50 dark:hover:bg-slate-900"
             @click="onSort(column.name)"
           >
             <div
@@ -226,21 +226,22 @@ onMounted(async () => {
         <tr
           v-for="row in rawEntities"
           :key="row._id"
-          class="group border-t border-slate-200 hover:bg-slate-50"
+          class="group border-t border-slate-200 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"
         >
           <td>
             <div class="relative ml-1 size-7">
               <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query: route.query }">
                 <entity-avatar
                   class="print-as-is size-7 rounded-full object-cover"
-                  :class="nameColor(getValue(row.name), '50')"
                   :entity-id="row._id"
                   :has-photo="!!row.photo?.length"
                 >
                   <div
-                    class="print-as-is size-7 rounded-full"
-                    :class="nameColor(getValue(row.name), '50')"
-                  />
+                    class="print-as-is flex size-7 items-center justify-center rounded-full text-xs font-bold text-white uppercase"
+                    :style="{ backgroundColor: derivedColor(row._id) }"
+                  >
+                    {{ `${getValue(row.name) || ''}`.at(0) }}
+                  </div>
                 </entity-avatar>
               </nuxt-link>
             </div>
@@ -282,37 +283,37 @@ onMounted(async () => {
                 <template #trigger>
                   <my-icon
                     v-if="renderColumn(row._sharing, 'string') === 'public'"
-                    class="text-slate-500 group-hover:text-orange-600"
+                    class="text-slate-600 group-hover:text-orange-600 dark:text-slate-300 dark:group-hover:text-orange-400"
                     icon="sharing-public"
                   />
                   <my-icon
                     v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
-                    class="text-slate-500 group-hover:text-yellow-600"
+                    class="text-slate-600 group-hover:text-yellow-600 dark:text-slate-300 dark:group-hover:text-yellow-400"
                     icon="sharing-domain"
                   />
                   <my-icon
                     v-else
-                    class="text-slate-500 group-hover:text-green-600"
+                    class="text-slate-600 group-hover:text-green-600 dark:text-slate-300 dark:group-hover:text-green-400"
                     icon="sharing-private"
                   />
                 </template>
 
                 <span
                   v-if="renderColumn(row._sharing, 'string') === 'public'"
-                  class="text-sm text-orange-600"
+                  class="text-sm text-orange-600 dark:text-orange-400"
                 >{{ t('sharingPublic') }}</span>
                 <span
                   v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
-                  class="text-sm text-yellow-600"
+                  class="text-sm text-yellow-600 dark:text-yellow-400"
                 >{{ t('sharingDomain') }}</span>
                 <span
                   v-else
-                  class="text-sm text-green-600"
+                  class="text-sm text-green-600 dark:text-green-400"
                 >{{ t('sharingPrivate') }}</span>
               </n-popover>
             </div>
 
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center bg-transparent pr-1 pl-4 group-hover:bg-slate-50">
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center bg-transparent pr-1 pl-4 group-hover:bg-slate-50 dark:group-hover:bg-slate-900">
               <entity-child-actions
                 class="pointer-events-auto"
                 :editor="row._editor"

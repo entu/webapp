@@ -21,7 +21,7 @@ const sharing = computed(() => {
   if (props.entity._sharing === 'public') {
     return {
       icon: 'sharing-public',
-      class: 'bg-orange-500/15 text-orange-700',
+      class: 'bg-orange-50 text-orange-600 dark:bg-orange-950 dark:text-orange-400',
       label: t('sharingPublic'),
       description: t('sharingPublicDescription')
     }
@@ -30,7 +30,7 @@ const sharing = computed(() => {
   if (props.entity._sharing === 'domain') {
     return {
       icon: 'sharing-domain',
-      class: 'bg-yellow-400/20 text-yellow-700',
+      class: 'bg-yellow-50 text-yellow-600 dark:bg-yellow-950 dark:text-yellow-400',
       label: t('sharingDomain'),
       description: t('sharingDomainDescription')
     }
@@ -38,7 +38,7 @@ const sharing = computed(() => {
 
   return {
     icon: 'sharing-private',
-    class: 'bg-green-500/15 text-green-700',
+    class: 'bg-green-50 text-green-600 dark:bg-green-950 dark:text-green-400',
     label: t('sharingPrivate'),
     description: t('sharingPrivateDescription')
   }
@@ -138,7 +138,7 @@ const parentList = computed(() => props.parents?.filter((x) => x.reference) || [
         <nuxt-link
           v-for="parent in parentList"
           :key="parent._id"
-          class="flex max-w-full items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200"
+          class="flex max-w-full items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-900 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
           :to="{ path: `/${accountId}/${parent.reference}`, query: route.query }"
         >
           <my-icon

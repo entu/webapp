@@ -20,11 +20,11 @@ const sharing = computed(() => {
   }
 
   if (entity === 'public' && property === 'public') {
-    return { icon: 'sharing-public', class: 'text-orange-400', text: t('publicProperty') }
+    return { icon: 'sharing-public', class: 'text-orange-600 dark:text-orange-400', text: t('publicProperty') }
   }
 
   if ((entity === 'public' && property === 'domain') || (entity === 'domain' && ['domain', 'public'].includes(property))) {
-    return { icon: 'sharing-domain', class: 'text-yellow-600', text: t('domainProperty') }
+    return { icon: 'sharing-domain', class: 'text-yellow-600 dark:text-yellow-400', text: t('domainProperty') }
   }
 
   return false
@@ -72,7 +72,7 @@ const label = computed(() => props.property.values?.length > 1
       >
         <template #trigger>
           <my-icon
-            class="cursor-help text-sm text-blue-600"
+            class="cursor-help text-sm text-blue-900 dark:text-blue-300"
             icon="info"
           />
         </template>

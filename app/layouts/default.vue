@@ -33,19 +33,50 @@ const entityDrawerWidth = ref(Math.round(window.innerWidth * 0.6))
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
 // The open entity's header color continues behind the toolbar, except in table view where the entity opens in a drawer.
-const { headerGradient } = useEntity()
+const { headerGradient, headerTint } = useEntity()
 
 const toolbarGradient = computed(() => route.params.entityId && (!(isQuery.value && showTable.value) || isMobile.value) ? headerGradient.value : undefined)
 
-// Without the list the toolbar spans the content, so its color also runs behind the side menu, down to the header band's usual bottom.
-const menuStripStyle = computed(() => !isQuery.value && toolbarGradient.value
-  ? {
-    backgroundImage: toolbarGradient.value,
+// Toolbar plus the entity title band, the height the entity color runs behind the side menu.
+const HEADER_HEIGHT = 162
+// How far the color dissolves below the band in list view.
+const HEADER_FADE = 16
+// Naive's default sider width plus the expanded menu's margin, and the collapsed width.
+const MENU_COLUMN_WIDTH = 272 + 8
+const MENU_COLLAPSED_WIDTH = 60
+
+// With the list shown, the list is clear glass over one white-blended color, which also fills the side menu's margins.
+const isSplit = computed(() => isQuery.value && !showTable.value)
+
+// Color behind the side menu: the band's own gradient without the list (the title floats under the menu), the white-blended tint with it.
+const menuStripStyle = computed(() => {
+  if (!toolbarGradient.value) return
+
+  if (!isSplit.value) {
+    return {
+      backgroundImage: toolbarGradient.value,
+      backgroundAttachment: 'fixed',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: `100% ${HEADER_HEIGHT}px`
+    }
+  }
+
+  // White blend on top, then the menu column ending sharply at the band, then the list's tint dissolving below it.
+  const white = 'color-mix(in srgb, var(--color-surface) 65%, transparent)'
+  const menuWidth = menuCollapsed.value ? MENU_COLLAPSED_WIDTH : MENU_COLUMN_WIDTH
+  const height = HEADER_HEIGHT + HEADER_FADE
+
+  return {
+    backgroundImage: [
+      `linear-gradient(${white}, ${white})`,
+      `linear-gradient(to bottom, ${headerTint.value} ${HEADER_HEIGHT}px, var(--color-surface) ${HEADER_HEIGHT}px)`,
+      `linear-gradient(to bottom, ${headerTint.value} ${HEADER_HEIGHT}px, transparent)`
+    ].join(', '),
     backgroundAttachment: 'fixed',
     backgroundRepeat: 'no-repeat',
-    backgroundSize: '100% 162px'
+    backgroundSize: `100% ${height}px, ${menuWidth}px ${height}px, 100% ${height}px`
   }
-  : undefined)
+})
 
 let updateNotification
 nuxtApp.hooks.hook('app:manifest:update', (a) => {
@@ -102,13 +133,16 @@ useEventListener(window, 'keydown', onPaletteKey)
     >
       <n-layout-sider
         ref="siderRef"
-        class="relative z-10 shadow-[0_1px_24px_rgb(15_23_42/0.10)] ring-1 ring-slate-300/50 backdrop-blur-2xl backdrop-saturate-150 print:hidden!"
+        class="relative z-10 shadow-[0_1px_24px_rgb(15_23_42/0.10)] ring-[0.5px] ring-slate-300/50 backdrop-blur-2xl dark:ring-slate-700/50 print:hidden!"
         collapse-mode="width"
-        collapsed-trigger-class="top-7.5! text-slate-600! bg-menu! shaddow-none! border-slate-300!"
-        trigger-class="top-5! -left-1! text-slate-600! bg-transparent! shaddow-none! border-transparent! hover:border-slate-300!"
-        :class="{ 'm-2 mr-0 rounded-2xl': !menuCollapsed }"
+        collapsed-trigger-class="top-7.5! border-0! bg-slate-900/5! text-slate-600! shadow-none! hover:bg-slate-900/10! dark:bg-white/5! dark:text-slate-300! dark:hover:bg-white/10!"
+        trigger-class="top-5! -left-1! border-0! bg-slate-900/5! text-slate-600! shadow-none! hover:bg-slate-900/10! dark:bg-white/5! dark:text-slate-300! dark:hover:bg-white/10!"
+        :class="{
+          'm-2 mr-0 rounded-2xl': !menuCollapsed,
+          'backdrop-saturate-150': !isSplit,
+        }"
         :collapsed="menuCollapsed"
-        :collapsed-width="60"
+        :collapsed-width="MENU_COLLAPSED_WIDTH"
         :show-trigger="!menuCollapsed || isHovered ? 'arrow-circle' : undefined"
         @collapse="changeMenu(true)"
         @expand="changeMenu(false)"
@@ -167,16 +201,17 @@ useEventListener(window, 'keydown', onPaletteKey)
             v-model:size="listWidth"
             class="absolute inset-0"
             direction="horizontal"
-            pane1-class="flex flex-col print:hidden"
+            pane1-class="flex flex-col backdrop-blur-2xl print:hidden"
             pane2-class="flex min-w-0 grow flex-col"
             :max="0.5"
             :min="0.25"
-            :resize-trigger-size="2"
+            :resize-trigger-size="1"
           >
             <template #1>
               <layout-toolbar
                 class="shrink-0"
                 part="search"
+                :on-color="!!toolbarGradient"
               />
               <div class="min-h-0 grow">
                 <entity-list />
@@ -185,7 +220,8 @@ useEventListener(window, 'keydown', onPaletteKey)
 
             <template #resize-trigger>
               <div class="h-full print:hidden">
-                <div class="h-full w-0.5 bg-slate-300 hover:bg-slate-400" />
+                <!-- A 1px line with a wider invisible grab area, so it stays easy to drag -->
+                <div class="relative z-20 h-full w-px bg-slate-900/10 after:absolute after:-inset-x-1 after:inset-y-0 after:content-[''] hover:bg-slate-900/25 active:bg-slate-900/25 dark:bg-white/10 dark:hover:bg-white/25 dark:active:bg-white/25" />
               </div>
             </template>
 
@@ -196,7 +232,7 @@ useEventListener(window, 'keydown', onPaletteKey)
                 :gradient="toolbarGradient"
               />
               <div
-                class="min-h-0 grow overflow-y-auto"
+                class="min-h-0 grow overflow-y-auto bg-surface"
                 :class="{ 'py-2': !route.params.entityId }"
               >
                 <slot />
@@ -207,7 +243,7 @@ useEventListener(window, 'keydown', onPaletteKey)
 
         <div
           v-else
-          class="grow overflow-y-auto"
+          class="grow overflow-y-auto bg-surface"
           :class="{ 'py-2': !route.params.entityId }"
         >
           <slot />
@@ -227,12 +263,12 @@ useEventListener(window, 'keydown', onPaletteKey)
       <div class="flex h-full flex-col">
         <!-- Mobile top bar -->
         <div
-          class="relative flex items-center border-b border-slate-300/50 bg-slate-100 px-3 pb-4 text-slate-900 print:hidden"
+          class="relative flex items-center border-b border-slate-300/50 bg-slate-100 px-3 pb-4 text-slate-900 dark:border-slate-700/50 dark:bg-slate-800 dark:text-slate-100 print:hidden"
           style="padding-top: calc(env(safe-area-inset-top) + 1rem)"
         >
           <my-icon
             v-if="route.params.entityId && isQuery"
-            class="cursor-pointer text-slate-600 hover:text-slate-900"
+            class="cursor-pointer text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
             icon="arrow-left"
             style="font-size: 1.5rem"
             @click="navigateTo({ path: `/${accountId}`, query: route.query })"
@@ -249,7 +285,7 @@ useEventListener(window, 'keydown', onPaletteKey)
           </span>
 
           <my-icon
-            class="ml-auto cursor-pointer text-slate-600 hover:text-slate-900"
+            class="ml-auto cursor-pointer text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
             icon="menu"
             style="font-size: 1.5rem"
             @click="showMobileMenu = true"
@@ -317,14 +353,14 @@ useEventListener(window, 'keydown', onPaletteKey)
           <div class="flex h-full flex-col bg-menu">
             <div class="flex items-center justify-between px-3 py-4">
               <div
-                class="cursor-pointer text-sm font-semibold text-slate-600 uppercase hover:text-slate-900"
+                class="cursor-pointer text-sm font-semibold text-slate-600 uppercase hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
                 @click="setMobileLanguage"
               >
                 {{ langLabel }}
               </div>
 
               <my-icon
-                class="cursor-pointer text-slate-600 hover:text-slate-900"
+                class="cursor-pointer text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
                 icon="menu"
                 style="font-size: 1.5rem"
                 @click="showMobileMenu = false"

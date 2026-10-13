@@ -40,7 +40,7 @@ onMounted(async () => {
 
     <p
       v-else-if="!isSupported"
-      class="text-center text-sm text-red-800"
+      class="text-center text-sm text-red-600 dark:text-red-400"
     >
       {{ t('notSupported') }}
     </p>
@@ -60,7 +60,7 @@ onMounted(async () => {
 
       <p
         v-if="hasError && !isCancelled"
-        class="text-center text-sm text-red-800"
+        class="text-center text-sm text-red-600 dark:text-red-400"
       >
         {{ t('error') }}
       </p>

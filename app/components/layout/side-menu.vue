@@ -289,7 +289,7 @@ function menuSorter (a, b) {
       class="mt-1 mr-3 mb-6 ml-2 flex items-center justify-end"
     >
       <div
-        class="cursor-pointer text-sm font-semibold text-slate-600 uppercase"
+        class="cursor-pointer text-sm font-semibold text-slate-600 uppercase dark:text-slate-300"
         @click="setLanguage()"
       >
         {{ t('language') }}

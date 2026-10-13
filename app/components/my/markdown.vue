@@ -63,7 +63,7 @@ function plainExternalLinks (html) {
 }
 
 .markdown hr {
-  @apply my-3 border-slate-200;
+  @apply my-3 border-slate-200 dark:border-slate-800;
 }
 
 .markdown table {
@@ -72,6 +72,6 @@ function plainExternalLinks (html) {
 
 .markdown th,
 .markdown td {
-  @apply border border-slate-200 px-2 py-1 text-left;
+  @apply border border-slate-200 px-2 py-1 text-left dark:border-slate-800;
 }
 </style>

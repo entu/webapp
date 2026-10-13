@@ -76,7 +76,7 @@ onMounted(async () => {
         :name="group.key"
       >
         {{ group.label }}
-        <span class="ml-1.5 text-slate-400">{{ group.count }}</span>
+        <span class="ml-1.5 text-slate-400 dark:text-slate-500">{{ group.count }}</span>
       </n-tab>
 
       <template #suffix>
@@ -91,7 +91,7 @@ onMounted(async () => {
           >
             <my-icon icon="arrow-left" />
           </n-button>
-          <span class="text-sm whitespace-nowrap text-slate-500 tabular-nums">
+          <span class="text-sm whitespace-nowrap text-slate-600 tabular-nums dark:text-slate-300">
             {{ page }} / {{ pages }}
           </span>
           <n-button

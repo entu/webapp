@@ -150,7 +150,7 @@ onMounted(() => {
     >
       <n-step :title="t('stepName')">
         <div class="flex flex-col gap-2 md:pr-12">
-          <p class="mb-4 text-sm text-slate-500">
+          <p class="mb-4 text-sm text-slate-600 dark:text-slate-300">
             {{ t('databasePermanent') }}
           </p>
 
@@ -168,14 +168,14 @@ onMounted(() => {
           <p
             v-if="statusMessage"
             class="text-sm"
-            :class="{ 'text-red-600': inputStatus === 'error', 'text-slate-500': isChecking }"
+            :class="{ 'text-red-600 dark:text-red-400': inputStatus === 'error', 'text-slate-600 dark:text-slate-300': isChecking }"
           >
             {{ statusMessage }}
           </p>
 
           <my-markdown
             v-if="!isAvailable"
-            class="text-sm text-slate-500"
+            class="text-sm text-slate-600 dark:text-slate-300"
             :source="t('databaseInfo')"
           />
         </div>
@@ -193,7 +193,7 @@ onMounted(() => {
           </n-alert>
 
           <template v-if="isSignedIn">
-            <p class="mb-3 text-sm text-slate-500">
+            <p class="mb-3 text-sm text-slate-600 dark:text-slate-300">
               {{ t('createInfo') }}
             </p>
 
@@ -210,7 +210,7 @@ onMounted(() => {
           </template>
 
           <template v-else>
-            <p class="mb-3 text-sm text-slate-500">
+            <p class="mb-3 text-sm text-slate-600 dark:text-slate-300">
               {{ t('signInInfo') }}
             </p>
 
@@ -224,7 +224,7 @@ onMounted(() => {
 
       <!-- What happens after signing in - this step never becomes active here, the new database opens instead -->
       <n-step :title="t('stepStart')">
-        <p class="text-sm text-slate-500 md:pr-12">
+        <p class="text-sm text-slate-600 md:pr-12 dark:text-slate-300">
           {{ isSignedIn ? t('startInfoSignedIn') : t('startInfo') }}
         </p>
       </n-step>

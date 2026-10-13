@@ -38,7 +38,7 @@ function showYaml (value) {
       >
         <div
           v-html="showYaml(entity)"
-          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre"
+          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre dark:bg-slate-900"
         />
       </n-collapse-item>
 
@@ -48,7 +48,7 @@ function showYaml (value) {
       >
         <div
           v-html="showYaml(properties)"
-          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre"
+          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre dark:bg-slate-900"
         />
       </n-collapse-item>
 
@@ -58,7 +58,7 @@ function showYaml (value) {
       >
         <div
           v-html="showYaml(rawEntity)"
-          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre"
+          class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre dark:bg-slate-900"
         />
       </n-collapse-item>
     </n-collapse>

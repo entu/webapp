@@ -3,7 +3,7 @@ const { t } = useI18n()
 </script>
 
 <template>
-  <div class="px-4 text-center text-sm text-slate-500">
+  <div class="px-4 text-center text-sm text-slate-600 dark:text-slate-300">
     <change-log />
 
     <span class="mx-2">&middot;</span>

@@ -4,6 +4,7 @@ import { NInputGroup, NInput } from 'naive-ui'
 // In the list/detail split the toolbar is shown in two parts: the search above the list, the buttons above the detail.
 defineProps({
   gradient: { type: String, default: undefined },
+  onColor: { type: Boolean, default: false },
   part: { type: String, default: 'all', validator: (value) => ['all', 'search', 'actions'].includes(value) }
 })
 
@@ -159,7 +160,7 @@ onUnmounted(() => {
       class="flex items-center gap-2"
       :class="{
         'opacity-0': isMeasuring,
-        'on-color': gradient,
+        'on-color': gradient || onColor,
       }"
     >
       <div
@@ -178,7 +179,7 @@ onUnmounted(() => {
           >
             <template #prefix>
               <my-icon
-                class="text-slate-400"
+                class="text-slate-400 dark:text-slate-500"
                 icon="search"
               />
             </template>
@@ -186,7 +187,7 @@ onUnmounted(() => {
             <template #suffix>
               <span
                 v-if="!isMobile"
-                class="cursor-pointer text-xs font-medium whitespace-nowrap text-slate-500"
+                class="cursor-pointer text-xs font-medium whitespace-nowrap text-slate-600 dark:text-slate-300"
                 @click="paletteStore.open(searchText)"
               >{{ paletteKeyHint }}</span>
             </template>

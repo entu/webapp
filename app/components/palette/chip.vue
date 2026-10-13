@@ -20,9 +20,9 @@ const conditionKeys = {
 }
 
 const tintClass = computed(() => ({
-  'bg-[#5856D6]/10 text-[#5856D6]': props.kind === 'sort',
-  'bg-[#0071E3]/15 text-[#0071E3] ring-1 ring-[#0071E3]/35 ring-inset': props.kind === 'draft',
-  'bg-[#0071E3]/10 text-[#0071E3]': !props.kind
+  'bg-indigo-500/10 text-indigo-500': props.kind === 'sort',
+  'bg-blue-900/15 text-blue-900 ring-1 ring-blue-900/35 ring-inset dark:bg-blue-300/15 dark:text-blue-300 dark:ring-blue-300/35': props.kind === 'draft',
+  'bg-blue-900/10 text-blue-900 dark:bg-blue-300/10 dark:text-blue-300': !props.kind
 }))
 </script>
 

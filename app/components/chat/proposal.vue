@@ -64,10 +64,10 @@ function opStatus (index) {
 
 <template>
   <div
-    class="rounded-lg border border-slate-200 bg-slate-50 p-3"
+    class="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900"
     :class="{ 'opacity-60': status === 'declined' }"
   >
-    <div class="mb-2 flex items-center justify-between gap-2 text-sm font-bold text-slate-500 uppercase">
+    <div class="mb-2 flex items-center justify-between gap-2 text-sm font-bold text-slate-600 uppercase dark:text-slate-300">
       {{ t('proposedChanges') }}
 
       <span
@@ -82,11 +82,11 @@ function opStatus (index) {
       <div
         v-for="(operation, index) in proposal.operations"
         :key="operation.tempId || index"
-        class="rounded-md bg-white p-2"
+        class="rounded-md bg-surface p-2"
       >
         <div class="flex items-start gap-2">
           <my-icon
-            class="mt-0.5 shrink-0 text-slate-500"
+            class="mt-0.5 shrink-0 text-slate-600 dark:text-slate-300"
             :icon="opIcon(operation.op)"
           />
 
@@ -96,13 +96,13 @@ function opStatus (index) {
             </div>
 
             <details class="mt-1">
-              <summary class="cursor-pointer text-xs text-slate-400 select-none">
+              <summary class="cursor-pointer text-xs text-slate-400 select-none dark:text-slate-500">
                 {{ t('details') }}
               </summary>
 
               <div
                 v-html="showYaml(operation.properties || operation.params)"
-                class="mt-1 overflow-x-auto rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre"
+                class="mt-1 overflow-x-auto rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre dark:bg-slate-900"
               />
             </details>
 
@@ -117,7 +117,7 @@ function opStatus (index) {
 
           <div
             v-if="opStatus(index) === 'applied'"
-            class="flex shrink-0 items-center gap-1 text-sm text-green-600"
+            class="flex shrink-0 items-center gap-1 text-sm text-green-600 dark:text-green-400"
           >
             <my-icon icon="checkmark" />
 
@@ -126,7 +126,7 @@ function opStatus (index) {
 
           <div
             v-else-if="opStatus(index) === 'failed'"
-            class="flex shrink-0 items-center gap-1 text-sm text-red-600"
+            class="flex shrink-0 items-center gap-1 text-sm text-red-600 dark:text-red-400"
           >
             <my-icon icon="close" />
 
@@ -135,7 +135,7 @@ function opStatus (index) {
 
           <div
             v-else-if="opStatus(index) === 'skipped'"
-            class="shrink-0 text-sm text-slate-400"
+            class="shrink-0 text-sm text-slate-400 dark:text-slate-500"
           >
             {{ t('skipped') }}
           </div>
@@ -143,7 +143,7 @@ function opStatus (index) {
 
         <div
           v-if="opStatus(index) === 'failed' && results?.error?.statusMessage"
-          class="mt-1 text-sm text-red-600"
+          class="mt-1 text-sm text-red-600 dark:text-red-400"
         >
           {{ results.error.statusMessage }}
         </div>

@@ -8,8 +8,26 @@
   --color-brand-hover: #162E35;
   --color-brand-pressed: #0F2027;
 
-  /* Side menu background — keep in sync with `menuColor` in app/utils/app.js. */
-  --color-menu: color-mix(in srgb, var(--color-slate-100) 65%, transparent);
+  /* Side menu glass — keep in sync with the `menu` color of both palettes in app/utils/app.js. */
+  --color-menu: color-mix(in srgb, var(--color-slate-200) 65%, transparent);
+
+  /* Page and panel surface: white, dark slate in dark mode (see below). */
+  --color-surface: #FFFFFF;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+/* Dark mode follows the system: Tailwind colors get explicit dark: variants in the templates, only Entu's own tokens are redefined here. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-surface: oklch(12.9% 0.042 264.695);
+    --color-menu: color-mix(in srgb, oklch(27.9% 0.041 260.031) 65%, transparent);
+    --color-brand: #3B7180;
+    --color-brand-hover: #4A8A99;
+    --color-brand-pressed: #2E5C68;
+  }
 }
 
 html,
@@ -23,12 +41,12 @@ body,
 @media screen and (max-width: 767px) {
   html,
   body {
-    background-color: var(--color-slate-100);
+    @apply bg-slate-100 dark:bg-slate-800;
   }
 }
 
 .link {
-  @apply text-sky-800;
+  @apply text-blue-900 dark:text-blue-300;
 }
 
 /* Buttons on an entity's header color: translucent white with black text (important beats naive-ui's inline colors). */

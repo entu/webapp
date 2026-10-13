@@ -14,8 +14,7 @@ const {
   isLoadingOnScroll,
   scrollIdx
 } = useEntities(listElement, {
-  fetchProps: ['photo', 'name'],
-  mapEntity: (entity) => ({ ...entity, color: nameColor(getValue(entity.name), '200!') })
+  fetchProps: ['photo', 'name']
 })
 </script>
 
@@ -37,13 +36,12 @@ const {
       >
         <entity-avatar
           class="list-item-img"
-          :class="entity.color"
           :entity-id="entity._id"
           :has-photo="!!entity.photo?.length"
         >
           <div
             class="list-item-img"
-            :class="entity.color"
+            :style="{ backgroundColor: derivedColor(entity._id) }"
           >
             {{ `${getValue(entity.name)}`.at(0) }}
           </div>
@@ -79,13 +77,13 @@ const {
 </template>
 
 <style scoped>
-@reference "tailwindcss";
+@reference "~/assets/tailwind.css";
 
 .list-item {
   @apply h-12 px-3;
   @apply flex items-center gap-3;
-  @apply hover:bg-zinc-50;
-  @apply hover:border-y border-zinc-50;
+  @apply hover:bg-slate-900/5 dark:hover:bg-white/5;
+  @apply hover:border-y border-transparent;
   @apply focus:outline-none focus-visible:outline-none;
   touch-action: manipulation;
 }
@@ -107,35 +105,36 @@ const {
 .list-item-text {
   @apply py-3;
   @apply flex-auto truncate;
-  @apply border-t border-white;
+  @apply border-t border-transparent;
 }
 
+/* Hover and selection tint the glass list like the side menu: translucent slate-900, translucent white in dark mode. */
 .list-item.active {
-  @apply bg-zinc-100 hover:bg-zinc-100;
-  @apply hover:border-y border-zinc-100;
+  @apply bg-slate-900/10 hover:bg-slate-900/10 dark:bg-white/10 dark:hover:bg-white/10;
+  @apply hover:border-y border-transparent;
 }
 
 .list-item.active  > .list-item-text {
-  @apply border-white!;
+  @apply border-transparent!;
 }
 
 .list-item.active + .list-item > .list-item-text {
-  @apply border-zinc-100!;
+  @apply border-transparent!;
 }
 
 @media (hover: hover) {
   .list-item:hover + .list-item > .list-item-text {
-    @apply border-zinc-50!;
+    @apply border-transparent!;
   }
 
   .list-item:not(:first-child):not(:hover) > .list-item-text {
-    @apply border-zinc-200;
+    @apply border-slate-900/10 dark:border-white/10;
   }
 }
 
 @media (hover: none) {
   .list-item:not(:first-child) > .list-item-text {
-    @apply border-zinc-200;
+    @apply border-slate-900/10 dark:border-white/10;
   }
 }
 </style>

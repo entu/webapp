@@ -1,3 +1,6 @@
+## 2026-10-13
+- **Dark mode**: Entu now follows your system's dark mode, with a dark slate look and a glassy side menu.
+
 ## 2026-10-12
 - **New entity page look**: The entity page now matches the Entu app — a colored header taken from the entity's photo, with the title, type, parent entities and sharing status at the top, quieter property labels, and child and referring entities in tabs, one per entity type.
 - **Formula columns in child tables**: Formula properties shown as table columns now display their numbers, dates and checkmarks, and a value of 0 is no longer shown as empty.

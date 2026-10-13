@@ -5,86 +5,120 @@ export const brandColor = '#1E434C'
 export const brandColorHover = '#162E35'
 export const brandColorPressed = '#0F2027'
 
-// Side menu glass (Tailwind slate-100 at 65%, blurred in the layout; a 6% slate-900 tint on hover and active, so it suits whatever glows through) and its dark text (slate-600, slate-900 on hover and active) — keep in sync with `--color-menu` in app/assets/tailwind.css.
-export const menuColor = 'rgba(241, 245, 249, 0.65)'
-const menuColorHover = 'rgba(15, 23, 43, 0.06)'
-const menuTextColor = '#45556C'
-const menuTextColorActive = '#0F172B'
-
-// Dashboard stat colours — mirrored exactly in the native app's
-// DashboardView stat colour extension.
-export const statColors = {
-  entities: { color: 'rgb(23,162,184)', deletedColor: 'rgba(23,162,184,.3)' },
-  properties: { color: 'rgb(255,193,7)', deletedColor: 'rgba(255,193,7,.3)' },
-  files: { color: 'rgb(40,167,69)', deletedColor: 'rgba(40,167,69,.3)' },
-  tokens: { color: 'rgb(108,117,125)', deletedColor: 'rgba(108,117,125,.3)' }
+// Light and dark palettes for the Naive UI theme: page surface, brand, the side menu glass with its text, and the focus ring (blue-900 / blue-300) — keep in sync with app/assets/tailwind.css.
+const lightPalette = {
+  surface: '#FFFFFF',
+  panel: '#FFFFFF',
+  brand: brandColor,
+  brandHover: brandColorHover,
+  brandPressed: brandColorPressed,
+  menu: 'rgba(226, 232, 240, 0.65)',
+  menuHover: 'rgba(15, 23, 43, 0.06)',
+  menuDivider: 'rgba(0, 0, 0, 0.1)',
+  menuText: '#45556C',
+  menuTextActive: '#0F172B',
+  focus: '#1C398E'
 }
 
-export const themeOverrides = {
-  common: {
-    fontFamily: 'Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif',
-    fontSize: '16px',
-    primaryColor: brandColor,
-    primaryColorHover: brandColorHover,
-    primaryColorPressed: brandColorPressed
-  },
-  Collapse: {
-    dividerColor: '#FFFFFF'
-  },
-  Drawer: {
-    borderRadius: '0',
-    resizableTriggerColorHover: brandColor
-  },
-  Input: {
-    borderFocus: `1px solid ${brandColor}`,
-    borderHover: `1px solid ${brandColor}`,
-    boxShadowFocus: '0 0 0 2px rgba(3, 117, 255, 0.2)'
-  },
-  Layout: {
-    siderColor: menuColor
-  },
-  Menu: {
-    arrowColor: menuTextColor,
-    arrowColorActive: menuTextColorActive,
-    arrowColorActiveHover: menuTextColorActive,
-    arrowColorChildActive: menuTextColorActive,
-    arrowColorChildActiveHover: menuTextColorActive,
-    arrowColorHover: menuTextColorActive,
+const darkPalette = {
+  surface: '#020618',
+  panel: '#0F172B',
+  brand: '#3B7180',
+  brandHover: '#4A8A99',
+  brandPressed: '#2E5C68',
+  menu: 'rgba(29, 41, 61, 0.65)',
+  menuHover: 'rgba(255, 255, 255, 0.06)',
+  menuDivider: 'rgba(255, 255, 255, 0.1)',
+  menuText: '#CAD5E2',
+  menuTextActive: '#F1F5F9',
+  focus: '#8EC5FF'
+}
 
-    dividerColor: 'rgba(0, 0, 0, 0.1)',
+// Dashboard stat colours as Tailwind color variables, so they follow dark mode; deleted amounts show at 30%.
+export const statColors = {
+  entities: { color: 'var(--color-cyan-600)', deletedColor: 'color-mix(in srgb, var(--color-cyan-600) 30%, transparent)' },
+  properties: { color: 'var(--color-amber-400)', deletedColor: 'color-mix(in srgb, var(--color-amber-400) 30%, transparent)' },
+  files: { color: 'var(--color-green-600)', deletedColor: 'color-mix(in srgb, var(--color-green-600) 30%, transparent)' },
+  tokens: { color: 'var(--color-slate-400)', deletedColor: 'color-mix(in srgb, var(--color-slate-400) 30%, transparent)' }
+}
 
-    itemColorActive: menuColorHover,
-    itemColorActiveCollapsed: menuColorHover,
-    itemColorActiveHover: menuColorHover,
-    itemColorHover: menuColorHover,
+export const themeOverrides = createThemeOverrides(lightPalette)
+export const darkThemeOverrides = createThemeOverrides(darkPalette)
 
-    itemIconColor: menuTextColor,
-    itemIconColorActive: menuTextColorActive,
-    itemIconColorActiveHover: menuTextColorActive,
-    itemIconColorChildActive: menuTextColorActive,
-    itemIconColorChildActiveHover: menuTextColorActive,
-    itemIconColorCollapsed: menuTextColor,
-    itemIconColorCollapsedChildActive: menuTextColorActive,
-    itemIconColorHover: menuTextColorActive,
+// Builds the Naive UI theme overrides from a palette, so light and dark mode share one structure.
+function createThemeOverrides (palette) {
+  return {
+    common: {
+      fontFamily: 'Avenir, "Helvetica Neue", Helvetica, Arial, sans-serif',
+      fontSize: '16px',
+      primaryColor: palette.brand,
+      primaryColorHover: palette.brandHover,
+      primaryColorPressed: palette.brandPressed,
+      bodyColor: palette.surface,
+      cardColor: palette.panel,
+      modalColor: palette.panel,
+      popoverColor: palette.panel
+    },
+    Collapse: {
+      dividerColor: palette.surface
+    },
+    Drawer: {
+      borderRadius: '0',
+      color: palette.surface,
+      resizableTriggerColorHover: palette.brand
+    },
+    Input: {
+      borderFocus: `1px solid ${palette.brand}`,
+      borderHover: `1px solid ${palette.brand}`,
+      boxShadowFocus: `0 0 0 2px color-mix(in srgb, ${palette.focus} 20%, transparent)`
+    },
+    Layout: {
+      color: palette.surface,
+      siderColor: palette.menu
+    },
+    Menu: {
+      arrowColor: palette.menuText,
+      arrowColorActive: palette.menuTextActive,
+      arrowColorActiveHover: palette.menuTextActive,
+      arrowColorChildActive: palette.menuTextActive,
+      arrowColorChildActiveHover: palette.menuTextActive,
+      arrowColorHover: palette.menuTextActive,
 
-    itemTextColor: menuTextColor,
-    itemTextColorActive: menuTextColorActive,
-    itemTextColorActiveHover: menuTextColorActive,
-    itemTextColorChildActive: menuTextColorActive,
-    itemTextColorChildActiveHover: menuTextColorActive,
-    itemTextColorHover: menuTextColorActive
-  },
-  Select: {
-    menuBoxShadow: '0 0 0 1px rgb(3, 117, 255)',
-    peers: {
-      InternalSelection: {
-        borderFocus: `1px solid ${brandColor}`,
-        borderHover: `1px solid ${brandColor}`
+      dividerColor: palette.menuDivider,
+
+      itemColorActive: palette.menuHover,
+      itemColorActiveCollapsed: palette.menuHover,
+      itemColorActiveHover: palette.menuHover,
+      itemColorHover: palette.menuHover,
+
+      itemIconColor: palette.menuText,
+      itemIconColorActive: palette.menuTextActive,
+      itemIconColorActiveHover: palette.menuTextActive,
+      itemIconColorChildActive: palette.menuTextActive,
+      itemIconColorChildActiveHover: palette.menuTextActive,
+      itemIconColorCollapsed: palette.menuText,
+      itemIconColorCollapsedChildActive: palette.menuTextActive,
+      itemIconColorHover: palette.menuTextActive,
+
+      itemTextColor: palette.menuText,
+      itemTextColorActive: palette.menuTextActive,
+      itemTextColorActiveHover: palette.menuTextActive,
+      itemTextColorChildActive: palette.menuTextActive,
+      itemTextColorChildActiveHover: palette.menuTextActive,
+      itemTextColorHover: palette.menuTextActive
+    },
+    Select: {
+      menuBoxShadow: `0 0 0 1px ${palette.focus}`,
+      peers: {
+        InternalSelection: {
+          borderFocus: `1px solid ${palette.brand}`,
+          borderHover: `1px solid ${palette.brand}`
+        }
       }
+    },
+    Tabs: {
+      tabBorderRadius: '0'
     }
-  },
-  Tabs: {
-    tabBorderRadius: '0'
   }
 }
 

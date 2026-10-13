@@ -42,7 +42,7 @@ onMounted(async () => {
 
     <p
       v-else-if="!isSupported"
-      class="text-center text-sm text-red-800"
+      class="text-center text-sm text-red-600 dark:text-red-400"
     >
       {{ t('notSupported') }}
     </p>
@@ -52,7 +52,7 @@ onMounted(async () => {
 
       <div
         v-if="hasError"
-        class="flex flex-col gap-2 text-sm text-slate-500"
+        class="flex flex-col gap-2 text-sm text-slate-600 dark:text-slate-300"
       >
         <p class="font-medium">
           {{ t('errorTitle') }}

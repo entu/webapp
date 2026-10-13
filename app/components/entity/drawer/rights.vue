@@ -197,7 +197,7 @@ async function onClose () {
             value="private"
             :label="t('sharingPrivate')"
           />
-          <div class="mb-6 ml-7 text-slate-500">
+          <div class="mb-6 ml-7 text-slate-600 dark:text-slate-300">
             {{ t('sharingPrivateDescription') }}
           </div>
 
@@ -207,7 +207,7 @@ async function onClose () {
             value="domain"
             :label="t('sharingDomain')"
           />
-          <div class="mb-6 ml-7 text-slate-500">
+          <div class="mb-6 ml-7 text-slate-600 dark:text-slate-300">
             {{ t('sharingDomainDescription') }}
           </div>
 
@@ -217,14 +217,14 @@ async function onClose () {
             value="public"
             :label="t('sharingPublic')"
           />
-          <div class="mb-6 ml-7 text-slate-500">
+          <div class="mb-6 ml-7 text-slate-600 dark:text-slate-300">
             {{ t('sharingPublicDescription') }}
           </div>
         </n-radio-group>
       </div>
 
       <div>
-        <n-divider class="text-slate-500!">
+        <n-divider class="text-slate-600! dark:text-slate-300!">
           {{ t('userRightsParent') }}
         </n-divider>
 
@@ -252,7 +252,7 @@ async function onClose () {
 
           <div
             v-if="inheritRights"
-            class="max-w-96 text-center text-sm text-slate-500"
+            class="max-w-96 text-center text-sm text-slate-600 dark:text-slate-300"
           >
             {{ t('inheritRightsDescription') }}
           </div>
@@ -260,7 +260,7 @@ async function onClose () {
       </div>
 
       <div>
-        <n-divider class="text-slate-500!">
+        <n-divider class="text-slate-600! dark:text-slate-300!">
           {{ t('userRightsEntity') }}
         </n-divider>
 

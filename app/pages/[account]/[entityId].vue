@@ -317,7 +317,7 @@ onUnmounted(() => {
         >
           <h2
             v-if="pg.name"
-            class="pt-6 pb-1.5 font-semibold tracking-wider text-slate-400 uppercase md:pl-39"
+            class="pt-6 pb-1.5 font-semibold tracking-wider text-slate-400 uppercase md:pl-39 dark:text-slate-500"
           >
             {{ pg.name }}
           </h2>

@@ -16,7 +16,7 @@ defineProps({
 <template>
   <n-popover
     v-if="!!tooltip"
-    class="max-w-sm bg-white! text-sm"
+    class="max-w-sm bg-surface! text-sm"
     :disabled="isMobile"
   >
     <template #trigger>
@@ -44,7 +44,7 @@ defineProps({
       </n-button>
     </template>
 
-    <div class="text-sm text-slate-900!">
+    <div class="text-sm text-slate-900! dark:text-slate-100!">
       {{ tooltip }}
     </div>
   </n-popover>

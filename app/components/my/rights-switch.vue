@@ -49,7 +49,7 @@ const rights = ref([
       <my-button
         v-for="r in rights"
         :key="r"
-        :class="{ 'bg-blue-400! text-white!': value === r }"
+        :class="{ 'bg-blue-900! text-white!': value === r }"
         :disabled="disabled"
         :icon="`rights-${r}`"
         :tooltip="t(r)"

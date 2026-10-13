@@ -16,7 +16,7 @@ const emit = defineEmits(['select'])
 const isEntity = computed(() => props.entityName !== undefined)
 
 const initial = computed(() => (props.entityName || '?').trim().charAt(0).toUpperCase() || '?')
-const avatarColor = computed(() => nameColor(props.entityName))
+const avatarColor = computed(() => derivedColor(props.entityId || ''))
 
 // Folded title with a map from each folded position back to its original character index.
 const foldMap = computed(() => {
@@ -65,8 +65,8 @@ const segments = computed(() => {
   <div
     class="flex min-h-9 cursor-pointer items-center gap-2 rounded-lg px-2.5 py-1 text-sm"
     :class="{
-      'bg-[#0071E3] text-white': selected,
-      'hover:bg-black/5': !selected,
+      'bg-blue-900 text-white': selected,
+      'hover:bg-black/5 dark:hover:bg-white/5': !selected,
     }"
     @click="emit('select')"
   >
@@ -77,8 +77,8 @@ const segments = computed(() => {
       :has-photo="hasPhoto"
     >
       <div
-        class="flex size-6 shrink-0 items-center justify-center rounded-md text-xs text-slate-600"
-        :class="[avatarColor]"
+        class="flex size-6 shrink-0 items-center justify-center rounded-md text-xs font-bold text-white"
+        :style="{ backgroundColor: avatarColor }"
       >
         {{ initial }}
       </div>
@@ -89,7 +89,7 @@ const segments = computed(() => {
       class="w-4 shrink-0 text-sm"
       :class="{
         'text-white/80': selected,
-        'text-slate-500': !selected,
+        'text-slate-600 dark:text-slate-300': !selected,
       }"
       :icon="icon"
     />
@@ -114,7 +114,7 @@ const segments = computed(() => {
       class="shrink-0 text-xs"
       :class="{
         'text-white/70': selected,
-        'text-slate-400': !selected,
+        'text-slate-400 dark:text-slate-500': !selected,
       }"
     >
       {{ detail }}
@@ -125,7 +125,7 @@ const segments = computed(() => {
       class="inline-flex h-4 shrink-0 items-center rounded border px-1 pt-1 text-xs leading-none font-medium"
       :class="{
         'border-white/40 text-white/85': selected,
-        'border-slate-300 text-slate-500': !selected,
+        'border-slate-300 text-slate-600 dark:border-slate-700 dark:text-slate-300': !selected,
       }"
     >{{ keyHint }}</span>
 

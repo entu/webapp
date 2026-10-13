@@ -76,7 +76,7 @@ function renderReferenceOption (option) {
     { class: 'flex gap-3 items-center justify-between' },
     [
       h('div', { class: 'text-ellipsis overflow-hidden' }, option.label),
-      h('div', { class: 'px-1 rounded bg-blue-50 text-xs text-slate-500' }, option.type)
+      h('div', { class: 'px-1 rounded bg-blue-50 text-xs text-slate-600 dark:bg-blue-950 dark:text-slate-300' }, option.type)
     ]
   )
 }

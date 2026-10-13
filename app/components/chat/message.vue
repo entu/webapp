@@ -67,7 +67,7 @@ const proposalStatus = computed(() => {
 
     <div
       v-if="message.error"
-      class="mt-2 max-w-full self-start whitespace-pre-wrap text-red-600"
+      class="mt-2 max-w-full self-start whitespace-pre-wrap text-red-600 dark:text-red-400"
     >
       {{ message.error }}
     </div>

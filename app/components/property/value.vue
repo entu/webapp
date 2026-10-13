@@ -67,7 +67,7 @@ watch(isPreviewableFile, (previewable) => {
     >
       {{ value.string }}
     </nuxt-link>
-    <span class="ml-4 text-slate-500">
+    <span class="ml-4 text-slate-600 dark:text-slate-300">
       {{ d(value.datetime, 'datetime') }}
     </span>
   </template>
@@ -85,7 +85,7 @@ watch(isPreviewableFile, (previewable) => {
     <span class="flex items-center gap-2 leading-tight">
       <n-popover
         v-if="isPreviewableFile && thumbnailIconUrl"
-        class="rounded-md bg-white p-1 shadow-lg"
+        class="rounded-md bg-surface p-1 shadow-lg"
         placement="top"
         raw
         trigger="hover"
@@ -93,7 +93,7 @@ watch(isPreviewableFile, (previewable) => {
       >
         <template #trigger>
           <img
-            class="size-5 shrink-0 rounded border border-slate-200 bg-slate-50 object-cover"
+            class="size-5 shrink-0 rounded border border-slate-200 bg-slate-50 object-cover dark:border-slate-800 dark:bg-slate-900"
             :alt="value.filename || value._id"
             :src="thumbnailIconUrl"
           >
@@ -101,7 +101,7 @@ watch(isPreviewableFile, (previewable) => {
 
         <img
           v-if="thumbnailUrl"
-          class="max-h-64 max-w-64 rounded border border-slate-200 bg-slate-50"
+          class="max-h-64 max-w-64 rounded border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-900"
           :alt="value.filename || value._id"
           :src="thumbnailUrl"
         >
@@ -123,7 +123,7 @@ watch(isPreviewableFile, (previewable) => {
 
       <span
         v-if="value.filesize"
-        class="text-sm text-slate-500"
+        class="text-sm text-slate-600 dark:text-slate-300"
       >
         {{ humanFileSize(n, value.filesize) }}
       </span>
@@ -154,7 +154,7 @@ watch(isPreviewableFile, (previewable) => {
   </template>
 
   <template v-else-if="value.invite && value.string">
-    <span class="text-sm text-slate-500">
+    <span class="text-sm text-slate-600 dark:text-slate-300">
       {{ t('invitePending', { email: value.string }) }}
     </span>
   </template>

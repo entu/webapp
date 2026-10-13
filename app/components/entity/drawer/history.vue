@@ -204,14 +204,14 @@ function formatValue (val, decimals) {
       <div class="relative min-h-0 flex-1 overflow-y-auto">
         <div
           v-if="isLoading"
-          class="absolute inset-0 z-10 flex items-center justify-center bg-white/60"
+          class="absolute inset-0 z-10 flex items-center justify-center bg-surface/60"
         >
           <n-spin />
         </div>
 
         <div
           v-if="!isLoading && groups.length === 0"
-          class="px-3 py-8 text-center text-sm text-slate-400 md:px-6"
+          class="px-3 py-8 text-center text-sm text-slate-400 md:px-6 dark:text-slate-500"
         >
           {{ t('empty') }}
         </div>
@@ -245,7 +245,7 @@ function formatValue (val, decimals) {
               <tr
                 v-for="(item, idx) in group.changes"
                 :key="item.type"
-                class="border-t border-slate-200 hover:bg-slate-50"
+                class="border-t border-slate-200 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900"
               >
                 <!-- editor + date: only on first row of the group, spans all rows -->
                 <td
@@ -253,12 +253,12 @@ function formatValue (val, decimals) {
                   class="px-3 py-2 align-top"
                   :rowspan="group.changes.length"
                 >
-                  <div class="font-medium text-slate-700">
+                  <div class="font-medium text-slate-900 dark:text-slate-100">
                     {{ group.userName || (group.by ? group.by.slice(-8) : t('system')) }}
                   </div>
                   <div
                     v-if="group.at"
-                    class="text-sm text-slate-400"
+                    class="text-sm text-slate-400 dark:text-slate-500"
                   >
                     {{ d(new Date(group.at), 'datetime') }}
                   </div>
@@ -266,7 +266,7 @@ function formatValue (val, decimals) {
 
                 <!-- property name -->
                 <td class="px-3 py-2 align-top whitespace-nowrap">
-                  <span class="font-medium text-slate-500">{{ item.label }}</span>
+                  <span class="font-medium text-slate-600 dark:text-slate-300">{{ item.label }}</span>
                 </td>
 
                 <!-- old values -->
@@ -278,10 +278,10 @@ function formatValue (val, decimals) {
                     :disabled="!v.at"
                   >
                     <template #trigger>
-                      <div class="flex items-center gap-1.5 text-red-700 line-through">
+                      <div class="flex items-center gap-1.5 text-red-600 line-through dark:text-red-400">
                         <span
                           v-if="v.language"
-                          class="rounded bg-red-100 px-1 text-xs font-medium uppercase"
+                          class="rounded bg-red-50 px-1 text-xs font-medium uppercase dark:bg-red-950"
                         >{{ v.language }}</span>
                         <nuxt-link
                           v-if="v.href"
@@ -310,10 +310,10 @@ function formatValue (val, decimals) {
                     :disabled="!v.at"
                   >
                     <template #trigger>
-                      <div class="flex items-center gap-1.5 text-green-700">
+                      <div class="flex items-center gap-1.5 text-green-600 dark:text-green-400">
                         <span
                           v-if="v.language"
-                          class="rounded bg-green-100 px-1 text-xs font-medium uppercase"
+                          class="rounded bg-green-50 px-1 text-xs font-medium uppercase dark:bg-green-950"
                         >{{ v.language }}</span>
                         <nuxt-link
                           v-if="v.href"
@@ -340,7 +340,7 @@ function formatValue (val, decimals) {
 
       <div
         v-if="total >= 10"
-        class="flex shrink-0 justify-end border-t border-slate-200 px-3 py-2"
+        class="flex shrink-0 justify-end border-t border-slate-200 px-3 py-2 dark:border-slate-800"
       >
         <n-pagination
           v-model:page="page"
