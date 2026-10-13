@@ -37,6 +37,16 @@ const { headerGradient } = useEntity()
 
 const toolbarGradient = computed(() => route.params.entityId && (!(isQuery.value && showTable.value) || isMobile.value) ? headerGradient.value : undefined)
 
+// Without the list the toolbar spans the content, so its color also runs behind the side menu, down to the header band's usual bottom.
+const menuStripStyle = computed(() => !isQuery.value && toolbarGradient.value
+  ? {
+    backgroundImage: toolbarGradient.value,
+    backgroundAttachment: 'fixed',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '100% 162px'
+  }
+  : undefined)
+
 let updateNotification
 nuxtApp.hooks.hook('app:manifest:update', (a) => {
   if (updateNotification) return
@@ -88,6 +98,7 @@ useEventListener(window, 'keydown', onPaletteKey)
       v-if="!isMobile"
       class="size-full"
       has-sider
+      :style="menuStripStyle"
     >
       <n-layout-sider
         ref="siderRef"
@@ -125,7 +136,7 @@ useEventListener(window, 'keydown', onPaletteKey)
             v-if="route.params.entityId"
             v-model:width="entityDrawerWidth"
             show
-            :header-style="headerGradient ? { backgroundImage: headerGradient, borderBottom: 0 } : undefined"
+            :header-style="headerGradient ? { backgroundImage: headerGradient, backgroundAttachment: 'fixed', borderBottom: 0 } : undefined"
             @close="onDrawerClose"
           >
             <template #header>

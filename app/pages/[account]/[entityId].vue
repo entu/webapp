@@ -284,7 +284,7 @@ onUnmounted(() => {
     <!-- Band in the entity's color while it loads, so the header doesn't pop in under the toolbar -->
     <div
       v-if="!rawEntity"
-      class="shrink-0 print:hidden"
+      class="shrink-0 bg-fixed print:hidden"
       :class="{
         'min-h-24': isNarrow,
         'min-h-28': !isNarrow,

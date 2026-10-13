@@ -60,7 +60,7 @@ const parentList = computed(() => props.parents?.filter((x) => x.reference) || [
 <template>
   <div>
     <div
-      class="print-as-is relative flex flex-col justify-end gap-2 [print-color-adjust:exact]"
+      class="print-as-is relative flex flex-col justify-end gap-2 bg-fixed [print-color-adjust:exact] print:bg-scroll"
       :class="{
         'min-h-24 px-4 pt-4 pb-3': narrow,
         'min-h-28 px-7 pt-4 pb-3.5': !narrow,

@@ -37,6 +37,23 @@ body,
   @apply bg-white/50!;
 }
 
+/* The search input on the same color: naive-ui reads its colors from these variables. */
+.on-color .n-input {
+  --n-color: rgb(255 255 255 / 0.4) !important;
+  --n-color-focus: var(--color-white) !important;
+  --n-text-color: var(--color-black) !important;
+  --n-caret-color: var(--color-black) !important;
+  --n-placeholder-color: rgb(0 0 0 / 0.55) !important;
+  --n-border: 1px solid transparent !important;
+  --n-border-hover: 1px solid rgb(255 255 255 / 0.6) !important;
+  --n-border-focus: 1px solid rgb(255 255 255 / 0.8) !important;
+}
+
+.on-color .n-input .n-input__prefix *,
+.on-color .n-input .n-input__suffix * {
+  @apply text-black/55!;
+}
+
 a.link {
   @apply hover:underline;
 }

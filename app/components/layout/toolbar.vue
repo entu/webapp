@@ -151,7 +151,7 @@ onUnmounted(() => {
 
 <template>
   <div
-    class="p-2 print:hidden"
+    class="bg-fixed p-2 print:hidden"
     :style="{ backgroundImage: gradient }"
   >
     <div
@@ -237,7 +237,6 @@ onUnmounted(() => {
 <style scoped>
 .n-input {
   @apply border-0;
-  @apply bg-transparent!
 }
 </style>
 
