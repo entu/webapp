@@ -53,13 +53,13 @@ const label = computed(() => {
     </template>
 
     <div class="flex w-full flex-col">
-      <div class="px-4 pt-3 pb-1 text-xs font-semibold tracking-wider text-gray-400 uppercase">
+      <div class="px-4 pt-3 pb-1 text-xs font-semibold tracking-wider text-slate-400 uppercase">
         {{ isChild ? t('addChildTitle') : t('addTitle') }}
       </div>
       <div
         v-for="o in options"
         :key="o.value"
-        class="cursor-pointer px-4 py-2 hover:bg-gray-50"
+        class="cursor-pointer px-4 py-2 hover:bg-slate-50"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#${isChild ? 'child' : 'add'}-${o.value}` }, { replace: true })"
       >
         {{ o.label.toLowerCase() }}

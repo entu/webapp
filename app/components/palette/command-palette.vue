@@ -866,7 +866,7 @@ onKeyStroke('Escape', (event) => {
         <div class="palette-panel flex max-h-[calc(100vh-8rem)] w-full max-w-140 flex-col overflow-hidden rounded-[15px] bg-white shadow-2xl">
           <div class="flex items-center gap-2 px-3.5 py-2.5">
             <my-icon
-              class="text-sm text-gray-400"
+              class="text-sm text-slate-400"
               icon="search"
             />
 
@@ -918,13 +918,13 @@ onKeyStroke('Escape', (event) => {
                   v-if="!query && stateEmpty"
                   class="absolute inset-y-0 right-0 flex items-center"
                 >
-                  <span class="inline-flex h-4 items-center rounded border border-gray-300 px-1 pt-0.5 text-xs leading-none font-medium text-gray-400">{{ paletteShortcutLabel() }}</span>
+                  <span class="inline-flex h-4 items-center rounded border border-slate-300 px-1 pt-0.5 text-xs leading-none font-medium text-slate-400">{{ paletteShortcutLabel() }}</span>
                 </span>
               </div>
             </div>
           </div>
 
-          <div class="h-px shrink-0 bg-gray-200" />
+          <div class="h-px shrink-0 bg-slate-200" />
 
           <div
             ref="listRef"
@@ -936,7 +936,7 @@ onKeyStroke('Escape', (event) => {
             >
               <div
                 v-if="section.title"
-                class="truncate px-2.5 pt-2 pb-1 text-xs font-semibold tracking-wide text-gray-400 uppercase"
+                class="truncate px-2.5 pt-2 pb-1 text-xs font-semibold tracking-wide text-slate-400 uppercase"
               >
                 {{ section.title }}
               </div>
@@ -960,15 +960,15 @@ onKeyStroke('Escape', (event) => {
 
             <div
               v-if="flatRows.length === 0"
-              class="py-4 text-center text-sm text-gray-400"
+              class="py-4 text-center text-sm text-slate-400"
             >
               {{ isEmptyState ? t('paletteNoRecents') : t('noResults') }}
             </div>
           </div>
 
-          <div class="h-px shrink-0 bg-gray-200" />
+          <div class="h-px shrink-0 bg-slate-200" />
 
-          <div class="flex items-center gap-1 px-3.5 py-2 text-xs text-gray-400">
+          <div class="flex items-center gap-1 px-3.5 py-2 text-xs text-slate-400">
             <template v-if="queryState.draft">
               <span class="palette-keycap">⌥</span>
               <span>{{ t('paletteOptionHint') }}</span>
@@ -1002,7 +1002,7 @@ onKeyStroke('Escape', (event) => {
 @reference "tailwindcss";
 
 .palette-keycap {
-  @apply inline-flex h-4 items-center rounded border border-gray-300 px-1 text-xs leading-none font-medium text-gray-500;
+  @apply inline-flex h-4 items-center rounded border border-slate-300 px-1 text-xs leading-none font-medium text-slate-500;
 }
 
 .palette-enter-active,

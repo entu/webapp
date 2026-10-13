@@ -79,7 +79,7 @@ watch(isLoading, (value) => {
       >
         <div
           v-if="!visibleMessages.length"
-          class="flex h-full flex-col items-center justify-center gap-4 text-gray-500"
+          class="flex h-full flex-col items-center justify-center gap-4 text-slate-500"
         >
           <my-icon
             class="text-4xl"
@@ -94,7 +94,7 @@ watch(isLoading, (value) => {
             <button
               v-for="example in examples"
               :key="example"
-              class="cursor-pointer rounded-full border border-gray-300 px-4 py-1 text-sm hover:bg-gray-100"
+              class="cursor-pointer rounded-full border border-slate-300 px-4 py-1 text-sm hover:bg-slate-100"
               type="button"
               @click="sendExample(example)"
             >
@@ -115,7 +115,7 @@ watch(isLoading, (value) => {
 
           <div
             v-if="isLoading"
-            class="flex items-center gap-2 text-gray-500"
+            class="flex items-center gap-2 text-slate-500"
           >
             <my-icon
               class="animate-pulse"
@@ -144,7 +144,7 @@ watch(isLoading, (value) => {
                     icon="arrow-up"
                     :class="{
                       'cursor-pointer': canSend,
-                      'text-gray-300': !canSend,
+                      'text-slate-300': !canSend,
                     }"
                     @click="send()"
                   />
@@ -164,7 +164,7 @@ watch(isLoading, (value) => {
       >
         <template #trigger>
           <div class="shrink-0">
-            <div class="h-1 w-full overflow-hidden bg-gray-200">
+            <div class="h-1 w-full overflow-hidden bg-slate-200">
               <div
                 class="h-full bg-brand transition-all"
                 :style="{ width: `${usedPercent}%` }"

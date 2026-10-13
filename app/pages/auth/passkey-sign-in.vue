@@ -52,7 +52,7 @@ onMounted(async () => {
 
       <div
         v-if="hasError"
-        class="flex flex-col gap-2 text-sm text-gray-500"
+        class="flex flex-col gap-2 text-sm text-slate-500"
       >
         <p class="font-medium">
           {{ t('errorTitle') }}

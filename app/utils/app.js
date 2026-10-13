@@ -5,6 +5,12 @@ export const brandColor = '#1E434C'
 export const brandColorHover = '#162E35'
 export const brandColorPressed = '#0F2027'
 
+// Side menu glass (Tailwind slate-100 at 65%, blurred in the layout; a 6% slate-900 tint on hover and active, so it suits whatever glows through) and its dark text (slate-600, slate-900 on hover and active) — keep in sync with `--color-menu` in app/assets/tailwind.css.
+export const menuColor = 'rgba(241, 245, 249, 0.65)'
+const menuColorHover = 'rgba(15, 23, 43, 0.06)'
+const menuTextColor = '#45556C'
+const menuTextColorActive = '#0F172B'
+
 // Dashboard stat colours — mirrored exactly in the native app's
 // DashboardView stat colour extension.
 export const statColors = {
@@ -35,38 +41,38 @@ export const themeOverrides = {
     boxShadowFocus: '0 0 0 2px rgba(3, 117, 255, 0.2)'
   },
   Layout: {
-    siderColor: brandColor
+    siderColor: menuColor
   },
   Menu: {
-    arrowColor: 'rgba(255, 255, 255, 0.7)',
-    arrowColorActive: '#FFFFFF',
-    arrowColorActiveHover: '#FFFFFF',
-    arrowColorChildActive: '#FFFFFF',
-    arrowColorChildActiveHover: '#FFFFFF',
-    arrowColorHover: 'rgba(255, 255, 255, 0.7)',
+    arrowColor: menuTextColor,
+    arrowColorActive: menuTextColorActive,
+    arrowColorActiveHover: menuTextColorActive,
+    arrowColorChildActive: menuTextColorActive,
+    arrowColorChildActiveHover: menuTextColorActive,
+    arrowColorHover: menuTextColorActive,
 
-    dividerColor: 'rgba(255, 255, 255, .2)',
+    dividerColor: 'rgba(0, 0, 0, 0.1)',
 
-    itemColorActive: 'rgba(255, 255, 255, 0.15)',
-    itemColorActiveCollapsed: 'rgba(255, 255, 255, 0.15)',
-    itemColorActiveHover: 'rgba(255, 255, 255, 0.15)',
-    itemColorHover: 'rgba(255, 255, 255, 0.15)',
+    itemColorActive: menuColorHover,
+    itemColorActiveCollapsed: menuColorHover,
+    itemColorActiveHover: menuColorHover,
+    itemColorHover: menuColorHover,
 
-    itemIconColor: 'rgba(255, 255, 255, 0.7)',
-    itemIconColorActive: '#FFFFFF',
-    itemIconColorActiveHover: '#FFFFFF',
-    itemIconColorChildActive: '#FFFFFF',
-    itemIconColorChildActiveHover: '#FFFFFF',
-    itemIconColorCollapsed: 'rgba(255, 255, 255, 0.7)',
-    itemIconColorCollapsedChildActive: '#FFFFFF',
-    itemIconColorHover: 'rgba(255, 255, 255, 0.7)',
+    itemIconColor: menuTextColor,
+    itemIconColorActive: menuTextColorActive,
+    itemIconColorActiveHover: menuTextColorActive,
+    itemIconColorChildActive: menuTextColorActive,
+    itemIconColorChildActiveHover: menuTextColorActive,
+    itemIconColorCollapsed: menuTextColor,
+    itemIconColorCollapsedChildActive: menuTextColorActive,
+    itemIconColorHover: menuTextColorActive,
 
-    itemTextColor: 'rgba(255, 255, 255, 0.7)',
-    itemTextColorActive: '#FFFFFF',
-    itemTextColorActiveHover: '#FFFFFF',
-    itemTextColorChildActive: '#FFFFFF',
-    itemTextColorChildActiveHover: 'rgba(255, 255, 255, .5)',
-    itemTextColorHover: 'rgba(255, 255, 255, 0.7)'
+    itemTextColor: menuTextColor,
+    itemTextColorActive: menuTextColorActive,
+    itemTextColorActiveHover: menuTextColorActive,
+    itemTextColorChildActive: menuTextColorActive,
+    itemTextColorChildActiveHover: menuTextColorActive,
+    itemTextColorHover: menuTextColorActive
   },
   Select: {
     menuBoxShadow: '0 0 0 1px rgb(3, 117, 255)',

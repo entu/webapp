@@ -126,18 +126,18 @@ function handleSort (column) {
   <div class="flex h-full flex-col print:hidden">
     <div
       ref="listElement"
-      class="relative grow overflow-auto border-t border-gray-200"
+      class="relative grow overflow-auto border-t border-slate-200"
     >
       <table
         v-if="entitiesList.length > 0"
         class="w-full border-collapse"
       >
-        <thead class="sticky top-0 z-10 border-b border-gray-200 bg-gray-50">
+        <thead class="sticky top-0 z-10 border-b border-slate-200 bg-slate-50">
           <tr>
             <th
               v-for="column in tableColumnsWithTypes"
               :key="column.name"
-              class="cursor-pointer border-r border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 select-none last:border-r-0 hover:bg-gray-100"
+              class="cursor-pointer border-r border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 select-none last:border-r-0 hover:bg-slate-100"
               @click="handleSort(column.name)"
             >
               <div class="flex items-center justify-between">
@@ -145,12 +145,12 @@ function handleSort (column) {
 
                 <my-icon
                   v-if="sortField === column.name"
-                  class="ml-2 size-3 text-gray-600"
+                  class="ml-2 size-3 text-slate-600"
                   :icon="sortDirection === 'desc' ? 'sort-descending' : 'sort-ascending'"
                 />
                 <my-icon
                   v-else
-                  class="ml-2 size-3 text-gray-400 opacity-0 group-hover:opacity-30"
+                  class="ml-2 size-3 text-slate-400 opacity-0 group-hover:opacity-30"
                   icon="sort-ascending"
                 />
               </div>
@@ -162,13 +162,13 @@ function handleSort (column) {
           <tr
             v-for="entity in entitiesList"
             :key="entity._id"
-            class="border-b border-gray-100 hover:bg-zinc-50"
+            class="border-b border-slate-100 hover:bg-zinc-50"
             :class="{ 'bg-zinc-100 hover:bg-zinc-100': entity._id === route.params.entityId }"
           >
             <td
               v-for="column in tableColumnsWithTypes"
               :key="`${entity._id}-${column.name}`"
-              class="max-w-xs border-r border-gray-200 px-3 py-2 text-sm last:border-r-0"
+              class="max-w-xs border-r border-slate-200 px-3 py-2 text-sm last:border-r-0"
             >
               <entity-table-cell
                 :entity-id="entity._id"
@@ -178,7 +178,7 @@ function handleSort (column) {
               />
             </td>
 
-            <td class="max-w-xs border-r border-gray-200 px-3 py-2 text-sm last:border-r-0">
+            <td class="max-w-xs border-r border-slate-200 px-3 py-2 text-sm last:border-r-0">
               <n-popover
                 class="max-w-sm"
                 placement="left"
@@ -186,17 +186,17 @@ function handleSort (column) {
                 <template #trigger>
                   <my-icon
                     v-if="getValue(entity._sharing) === 'public'"
-                    class="mt-1.5 text-gray-500 hover:text-orange-600"
+                    class="mt-1.5 text-slate-500 hover:text-orange-600"
                     icon="sharing-public"
                   />
                   <my-icon
                     v-else-if="getValue(entity._sharing) === 'domain'"
-                    class="mt-1.5 text-gray-500 hover:text-yellow-600"
+                    class="mt-1.5 text-slate-500 hover:text-yellow-600"
                     icon="sharing-domain"
                   />
                   <my-icon
                     v-else
-                    class="mt-1.5 text-gray-500 hover:text-green-600"
+                    class="mt-1.5 text-slate-500 hover:text-green-600"
                     icon="sharing-private"
                   />
                 </template>

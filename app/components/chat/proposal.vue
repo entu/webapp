@@ -64,10 +64,10 @@ function opStatus (index) {
 
 <template>
   <div
-    class="rounded-lg border border-gray-200 bg-gray-50 p-3"
+    class="rounded-lg border border-slate-200 bg-slate-50 p-3"
     :class="{ 'opacity-60': status === 'declined' }"
   >
-    <div class="mb-2 flex items-center justify-between gap-2 text-sm font-bold text-gray-500 uppercase">
+    <div class="mb-2 flex items-center justify-between gap-2 text-sm font-bold text-slate-500 uppercase">
       {{ t('proposedChanges') }}
 
       <span
@@ -86,7 +86,7 @@ function opStatus (index) {
       >
         <div class="flex items-start gap-2">
           <my-icon
-            class="mt-0.5 shrink-0 text-gray-500"
+            class="mt-0.5 shrink-0 text-slate-500"
             :icon="opIcon(operation.op)"
           />
 
@@ -96,7 +96,7 @@ function opStatus (index) {
             </div>
 
             <details class="mt-1">
-              <summary class="cursor-pointer text-xs text-gray-400 select-none">
+              <summary class="cursor-pointer text-xs text-slate-400 select-none">
                 {{ t('details') }}
               </summary>
 
@@ -135,7 +135,7 @@ function opStatus (index) {
 
           <div
             v-else-if="opStatus(index) === 'skipped'"
-            class="shrink-0 text-sm text-gray-400"
+            class="shrink-0 text-sm text-slate-400"
           >
             {{ t('skipped') }}
           </div>

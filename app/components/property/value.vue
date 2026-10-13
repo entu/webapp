@@ -67,7 +67,7 @@ watch(isPreviewableFile, (previewable) => {
     >
       {{ value.string }}
     </nuxt-link>
-    <span class="ml-4 text-gray-500">
+    <span class="ml-4 text-slate-500">
       {{ d(value.datetime, 'datetime') }}
     </span>
   </template>
@@ -93,7 +93,7 @@ watch(isPreviewableFile, (previewable) => {
       >
         <template #trigger>
           <img
-            class="size-5 shrink-0 rounded border border-gray-200 bg-gray-50 object-cover"
+            class="size-5 shrink-0 rounded border border-slate-200 bg-slate-50 object-cover"
             :alt="value.filename || value._id"
             :src="thumbnailIconUrl"
           >
@@ -101,7 +101,7 @@ watch(isPreviewableFile, (previewable) => {
 
         <img
           v-if="thumbnailUrl"
-          class="max-h-64 max-w-64 rounded border border-gray-200 bg-gray-50"
+          class="max-h-64 max-w-64 rounded border border-slate-200 bg-slate-50"
           :alt="value.filename || value._id"
           :src="thumbnailUrl"
         >
@@ -154,7 +154,7 @@ watch(isPreviewableFile, (previewable) => {
   </template>
 
   <template v-else-if="value.invite && value.string">
-    <span class="text-sm text-gray-500">
+    <span class="text-sm text-slate-500">
       {{ t('invitePending', { email: value.string }) }}
     </span>
   </template>

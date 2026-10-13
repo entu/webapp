@@ -178,7 +178,7 @@ onUnmounted(() => {
           >
             <template #prefix>
               <my-icon
-                class="text-gray-400"
+                class="text-slate-400"
                 icon="search"
               />
             </template>
@@ -186,7 +186,7 @@ onUnmounted(() => {
             <template #suffix>
               <span
                 v-if="!isMobile"
-                class="cursor-pointer text-xs font-medium whitespace-nowrap text-gray-500"
+                class="cursor-pointer text-xs font-medium whitespace-nowrap text-slate-500"
                 @click="paletteStore.open(searchText)"
               >{{ paletteKeyHint }}</span>
             </template>

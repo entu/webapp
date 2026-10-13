@@ -141,7 +141,7 @@ async function onClose () {
       <div class="py-4">
         <!-- Number of copies -->
         <div class="mb-6 px-3 md:px-6">
-          <h3 class="mb-3 font-medium text-gray-700">
+          <h3 class="mb-3 font-medium text-slate-700">
             {{ t('numberOfCopies') }}
           </h3>
           <n-input-number
@@ -153,14 +153,14 @@ async function onClose () {
           />
         </div>
 
-        <h3 class="px-3 font-medium text-gray-700 md:px-6">
+        <h3 class="px-3 font-medium text-slate-700 md:px-6">
           {{ t('propertiesToInclude') }}
         </h3>
 
         <div
           v-for="property in availableProperties"
           :key="property.name"
-          class="hover:bg-gray-50"
+          class="hover:bg-slate-50"
         >
           <div class="px-3 py-2 md:px-6">
             <n-checkbox
@@ -178,14 +178,14 @@ async function onClose () {
               <span
                 v-for="(value, index) in property.values.slice(0, 3)"
                 :key="index"
-                class="max-w-75 truncate rounded bg-gray-100 px-2 py-0.5 text-xs"
+                class="max-w-75 truncate rounded bg-slate-100 px-2 py-0.5 text-xs"
               >
                 {{ value.string || value.number || value.filename || value.date || value.datetime || value.boolean }}
               </span>
 
               <span
                 v-if="property.values.length > 3"
-                class="px-2 py-0.5 text-xs text-gray-500"
+                class="px-2 py-0.5 text-xs text-slate-500"
               >
                 {{ t('more', { count: property.values.length - 3 }) }}
               </span>

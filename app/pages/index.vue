@@ -82,7 +82,7 @@ onMounted(async () => {
       </nuxt-link>
 
       <span
-        class="cursor-pointer text-xs font-bold text-gray-500 uppercase"
+        class="cursor-pointer text-xs font-bold text-slate-500 uppercase"
         @click="setLanguage()"
       >
         {{ t('language') }}
@@ -113,7 +113,7 @@ onMounted(async () => {
         <div class="text-xl font-semibold">
           {{ t('selectTitle') }}
         </div>
-        <div class="text-sm text-gray-500">
+        <div class="text-sm text-slate-500">
           {{ t('selectDescription') }}
         </div>
       </div>
@@ -123,7 +123,7 @@ onMounted(async () => {
           <div
             v-for="{ account, stats, loading } in sortedDbStats"
             :key="account._id"
-            class="flex flex-col rounded-lg border border-gray-200 bg-white p-3"
+            class="flex flex-col rounded-lg border border-slate-200 bg-white p-3"
           >
             <div class="mb-2 truncate text-center text-lg font-medium">
               {{ account.name }}
@@ -140,13 +140,13 @@ onMounted(async () => {
               class="flex min-h-72 flex-1 items-center justify-center"
             >
               <n-spin
-                stroke="#9ca3af"
+                stroke="#90A1B9"
                 :size="14"
               />
             </div>
             <div
               v-else
-              class="py-3 text-center text-sm text-gray-400"
+              class="py-3 text-center text-sm text-slate-400"
             >
               {{ t('loadError') }}
             </div>

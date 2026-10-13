@@ -200,7 +200,7 @@ onMounted(async () => {
           <th
             v-for="column in visibleColumns"
             :key="column.name"
-            class="cursor-pointer p-3 text-left hover:bg-gray-50"
+            class="cursor-pointer p-3 text-left hover:bg-slate-50"
             @click="onSort(column.name)"
           >
             <div
@@ -226,7 +226,7 @@ onMounted(async () => {
         <tr
           v-for="row in rawEntities"
           :key="row._id"
-          class="group border-t border-gray-200 hover:bg-gray-50"
+          class="group border-t border-slate-200 hover:bg-slate-50"
         >
           <td>
             <div class="relative ml-1 size-7">
@@ -282,17 +282,17 @@ onMounted(async () => {
                 <template #trigger>
                   <my-icon
                     v-if="renderColumn(row._sharing, 'string') === 'public'"
-                    class="text-gray-500 group-hover:text-orange-600"
+                    class="text-slate-500 group-hover:text-orange-600"
                     icon="sharing-public"
                   />
                   <my-icon
                     v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
-                    class="text-gray-500 group-hover:text-yellow-600"
+                    class="text-slate-500 group-hover:text-yellow-600"
                     icon="sharing-domain"
                   />
                   <my-icon
                     v-else
-                    class="text-gray-500 group-hover:text-green-600"
+                    class="text-slate-500 group-hover:text-green-600"
                     icon="sharing-private"
                   />
                 </template>
@@ -312,7 +312,7 @@ onMounted(async () => {
               </n-popover>
             </div>
 
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center bg-transparent pr-1 pl-4 group-hover:bg-gray-50">
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center bg-transparent pr-1 pl-4 group-hover:bg-slate-50">
               <entity-child-actions
                 class="pointer-events-auto"
                 :editor="row._editor"

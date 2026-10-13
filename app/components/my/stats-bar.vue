@@ -69,21 +69,21 @@ const overLimitStr = computed(() => overLimit.value && props.isBytes ? humanFile
 <template>
   <n-popover content-class="grid grid-cols-2">
     <template #trigger>
-      <div class="cursor-help rounded p-2 hover:bg-gray-50">
+      <div class="cursor-help rounded p-2 hover:bg-slate-50">
         <div class="flex justify-between">
           <div>
             {{ label }}
           </div>
           <div
             v-if="limit"
-            class="text-gray-400"
+            class="text-slate-400"
             :class="{ 'text-red-700': limitPercent }"
           >
             {{ t('limit') }}
           </div>
         </div>
 
-        <div class="relative mb-0.5 flex h-3 w-full bg-gray-100">
+        <div class="relative mb-0.5 flex h-3 w-full bg-slate-100">
           <div
             class="h-full min-w-0.5"
             :color="color"
@@ -110,7 +110,7 @@ const overLimitStr = computed(() => overLimit.value && props.isBytes ? humanFile
           </div>
           <div
             v-if="limit"
-            class="text-gray-400"
+            class="text-slate-400"
             :class="{ 'text-red-700': limitPercent }"
           >
             {{ limitStr || '' }}
@@ -148,7 +148,7 @@ const overLimitStr = computed(() => overLimit.value && props.isBytes ? humanFile
     <template v-if="limit">
       <div class="flex items-center gap-2">
         <div
-          class="size-4 bg-gray-100"
+          class="size-4 bg-slate-100"
         />
         {{ t('limitInfo') }}
       </div>

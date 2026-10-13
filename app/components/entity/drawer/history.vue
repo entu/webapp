@@ -245,7 +245,7 @@ function formatValue (val, decimals) {
               <tr
                 v-for="(item, idx) in group.changes"
                 :key="item.type"
-                class="border-t border-gray-200 hover:bg-gray-50"
+                class="border-t border-slate-200 hover:bg-slate-50"
               >
                 <!-- editor + date: only on first row of the group, spans all rows -->
                 <td
@@ -340,7 +340,7 @@ function formatValue (val, decimals) {
 
       <div
         v-if="total >= 10"
-        class="flex shrink-0 justify-end border-t border-gray-200 px-3 py-2"
+        class="flex shrink-0 justify-end border-t border-slate-200 px-3 py-2"
       >
         <n-pagination
           v-model:page="page"

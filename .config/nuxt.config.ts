@@ -22,9 +22,9 @@ export default defineNuxtConfig({
       title: process.env.NUXT_PUBLIC_TITLE || 'Entu',
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
-        { name: 'theme-color', content: '#1E434C' },
+        { name: 'theme-color', content: '#F1F5F9' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
-        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'default' }
       ],
       link: [
         { rel: 'icon', type: 'image/png', href: '/logo.png' }

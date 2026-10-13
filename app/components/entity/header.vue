@@ -138,7 +138,7 @@ const parentList = computed(() => props.parents?.filter((x) => x.reference) || [
         <nuxt-link
           v-for="parent in parentList"
           :key="parent._id"
-          class="flex max-w-full items-center gap-1 rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200"
+          class="flex max-w-full items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 hover:bg-slate-200"
           :to="{ path: `/${accountId}/${parent.reference}`, query: route.query }"
         >
           <my-icon

@@ -36,7 +36,7 @@ const progressPercentage = computed(() => {
 
     <n-progress
       v-if="totalCount > loadedCount"
-      color="#4A6B75"
+      color="#62748E"
       status="info"
       type="line"
       :height="6"

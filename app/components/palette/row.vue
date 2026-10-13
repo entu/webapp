@@ -77,7 +77,7 @@ const segments = computed(() => {
       :has-photo="hasPhoto"
     >
       <div
-        class="flex size-6 shrink-0 items-center justify-center rounded-md text-xs text-gray-600"
+        class="flex size-6 shrink-0 items-center justify-center rounded-md text-xs text-slate-600"
         :class="[avatarColor]"
       >
         {{ initial }}
@@ -89,7 +89,7 @@ const segments = computed(() => {
       class="w-4 shrink-0 text-sm"
       :class="{
         'text-white/80': selected,
-        'text-gray-500': !selected,
+        'text-slate-500': !selected,
       }"
       :icon="icon"
     />
@@ -114,7 +114,7 @@ const segments = computed(() => {
       class="shrink-0 text-xs"
       :class="{
         'text-white/70': selected,
-        'text-gray-400': !selected,
+        'text-slate-400': !selected,
       }"
     >
       {{ detail }}
@@ -125,7 +125,7 @@ const segments = computed(() => {
       class="inline-flex h-4 shrink-0 items-center rounded border px-1 pt-1 text-xs leading-none font-medium"
       :class="{
         'border-white/40 text-white/85': selected,
-        'border-gray-300 text-gray-500': !selected,
+        'border-slate-300 text-slate-500': !selected,
       }"
     >{{ keyHint }}</span>
 

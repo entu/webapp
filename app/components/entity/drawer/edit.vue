@@ -208,7 +208,7 @@ async function onClose () {
       >
         <div
           v-if="entity.type.description"
-          class="px-3 pt-4 pb-0 text-gray-500 md:px-6"
+          class="px-3 pt-4 pb-0 text-slate-500 md:px-6"
         >
           <my-markdown :source="entity.type.description" />
         </div>
@@ -220,7 +220,7 @@ async function onClose () {
         >
           <h2
             v-if="pg.name"
-            class="px-1 pt-6 text-center font-bold text-gray-500 uppercase"
+            class="px-1 pt-6 text-center font-bold text-slate-500 uppercase"
           >
             {{ pg.name }}
           </h2>

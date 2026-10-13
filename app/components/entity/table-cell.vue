@@ -49,7 +49,7 @@ const hasMultipleValues = computed(() => localeValues.value.length > 1)
             :is-name="isName"
             :value="firstValue"
           />
-          <span class="ml-1 text-xs text-gray-500">
+          <span class="ml-1 text-xs text-slate-500">
             (+{{ localeValues.length - 1 }})
           </span>
         </div>

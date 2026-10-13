@@ -476,7 +476,7 @@ const { copy } = useClipboard()
       />
 
       <template v-else-if="type === 'string' && props.property === 'entu_user' && value._id && value.invite && value.string">
-        <span class="text-sm text-gray-500">
+        <span class="text-sm text-slate-500">
           {{ t('invitePending', { email: value.string }) }}
         </span>
         <my-button

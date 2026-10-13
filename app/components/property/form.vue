@@ -15,13 +15,13 @@ defineProps({
     <div
       v-for="property in properties"
       :key="property.name"
-      class="grid grid-cols-1 gap-0 pt-3 first-of-type:pt-0 md:grid-cols-3 md:items-center md:gap-4 md:border-t md:border-gray-100 md:pt-0 md:first-of-type:border-t-0"
+      class="grid grid-cols-1 gap-0 pt-3 first-of-type:pt-0 md:grid-cols-3 md:items-center md:gap-4 md:border-t md:border-slate-100 md:pt-0 md:first-of-type:border-t-0"
     >
       <property-label
         class="gap-2 pt-1 pb-0 font-medium md:py-2"
         stacked
         :class="{
-          'text-brand': !property.mandatory,
+          'text-slate-600': !property.mandatory,
           'text-red-700': property.mandatory,
         }"
         :entity-sharing="entitySharing"

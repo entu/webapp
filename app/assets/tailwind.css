@@ -7,6 +7,9 @@
   --color-brand: #1E434C;
   --color-brand-hover: #162E35;
   --color-brand-pressed: #0F2027;
+
+  /* Side menu background — keep in sync with `menuColor` in app/utils/app.js. */
+  --color-menu: color-mix(in srgb, var(--color-slate-100) 65%, transparent);
 }
 
 html,
@@ -20,7 +23,7 @@ body,
 @media screen and (max-width: 767px) {
   html,
   body {
-    background-color: var(--color-brand);
+    background-color: var(--color-slate-100);
   }
 }
 
@@ -44,9 +47,10 @@ body,
   --n-text-color: var(--color-black) !important;
   --n-caret-color: var(--color-black) !important;
   --n-placeholder-color: rgb(0 0 0 / 0.55) !important;
-  --n-border: 1px solid transparent !important;
-  --n-border-hover: 1px solid rgb(255 255 255 / 0.6) !important;
-  --n-border-focus: 1px solid rgb(255 255 255 / 0.8) !important;
+  --n-border: none !important;
+  --n-border-hover: none !important;
+  --n-border-focus: none !important;
+  --n-box-shadow-focus: none !important;
 }
 
 .on-color .n-input .n-input__prefix *,

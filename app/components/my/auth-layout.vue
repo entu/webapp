@@ -23,7 +23,7 @@ function setLanguage () {
   <div class="flex min-h-full flex-col">
     <div class="flex w-full justify-end px-4 pt-4">
       <span
-        class="cursor-pointer text-xs font-bold text-gray-500 uppercase"
+        class="cursor-pointer text-xs font-bold text-slate-500 uppercase"
         @click="setLanguage()"
       >
         {{ t('language') }}
@@ -45,7 +45,7 @@ function setLanguage () {
       </div>
       <div
         v-if="description"
-        class="max-w-80 text-sm text-gray-500"
+        class="max-w-80 text-sm text-slate-500"
       >
         {{ description }}
       </div>

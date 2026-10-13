@@ -102,10 +102,10 @@ useEventListener(window, 'keydown', onPaletteKey)
     >
       <n-layout-sider
         ref="siderRef"
-        class="print:hidden!"
+        class="relative z-10 shadow-[0_1px_24px_rgb(15_23_42/0.10)] ring-1 ring-slate-300/50 backdrop-blur-2xl backdrop-saturate-150 print:hidden!"
         collapse-mode="width"
-        collapsed-trigger-class="top-7.5! text-white! bg-brand! shaddow-none! border-white!"
-        trigger-class="top-5! -left-1! text-white! opacity-80! bg-transparent! shaddow-none! border-transparent! hover:border-white!"
+        collapsed-trigger-class="top-7.5! text-slate-600! bg-menu! shaddow-none! border-slate-300!"
+        trigger-class="top-5! -left-1! text-slate-600! bg-transparent! shaddow-none! border-transparent! hover:border-slate-300!"
         :class="{ 'm-2 mr-0 rounded-2xl': !menuCollapsed }"
         :collapsed="menuCollapsed"
         :collapsed-width="60"
@@ -185,7 +185,7 @@ useEventListener(window, 'keydown', onPaletteKey)
 
             <template #resize-trigger>
               <div class="h-full print:hidden">
-                <div class="h-full w-0.5 bg-gray-300 hover:bg-gray-400" />
+                <div class="h-full w-0.5 bg-slate-300 hover:bg-slate-400" />
               </div>
             </template>
 
@@ -227,12 +227,12 @@ useEventListener(window, 'keydown', onPaletteKey)
       <div class="flex h-full flex-col">
         <!-- Mobile top bar -->
         <div
-          class="relative flex items-center bg-brand px-3 pb-4 text-white print:hidden"
+          class="relative flex items-center border-b border-slate-300/50 bg-slate-100 px-3 pb-4 text-slate-900 print:hidden"
           style="padding-top: calc(env(safe-area-inset-top) + 1rem)"
         >
           <my-icon
             v-if="route.params.entityId && isQuery"
-            class="cursor-pointer text-white opacity-80 hover:opacity-100"
+            class="cursor-pointer text-slate-600 hover:text-slate-900"
             icon="arrow-left"
             style="font-size: 1.5rem"
             @click="navigateTo({ path: `/${accountId}`, query: route.query })"
@@ -249,7 +249,7 @@ useEventListener(window, 'keydown', onPaletteKey)
           </span>
 
           <my-icon
-            class="ml-auto cursor-pointer text-white opacity-80 hover:opacity-100"
+            class="ml-auto cursor-pointer text-slate-600 hover:text-slate-900"
             icon="menu"
             style="font-size: 1.5rem"
             @click="showMobileMenu = true"
@@ -314,17 +314,17 @@ useEventListener(window, 'keydown', onPaletteKey)
         :width="windowWidth"
       >
         <n-drawer-content body-content-class="p-0!">
-          <div class="flex h-full flex-col bg-brand">
+          <div class="flex h-full flex-col bg-menu">
             <div class="flex items-center justify-between px-3 py-4">
               <div
-                class="cursor-pointer text-sm text-white uppercase opacity-80 hover:opacity-100"
+                class="cursor-pointer text-sm font-semibold text-slate-600 uppercase hover:text-slate-900"
                 @click="setMobileLanguage"
               >
                 {{ langLabel }}
               </div>
 
               <my-icon
-                class="cursor-pointer text-white opacity-80 hover:opacity-100"
+                class="cursor-pointer text-slate-600 hover:text-slate-900"
                 icon="menu"
                 style="font-size: 1.5rem"
                 @click="showMobileMenu = false"
