@@ -9,13 +9,14 @@ export function getAddChildOptions (addFromEntities, entityId, typeId, typeName)
   return [...result].sort((a, b) => a.label.localeCompare(b.label))
 }
 
-// Sets the open entity's header gradient, the single source for the header band and the toolbars: its cover color from the thumbnail API when known, else its id color.
+// Sets the open entity's header color and gradient, the single source for the header and the toolbars: its cover color from the thumbnail API when known, else its id color.
 export function useEntityGradient (entityId, coverColor) {
-  const { headerGradient } = useEntity()
+  const { headerColor, headerGradient } = useEntity()
 
   watch(() => [toValue(entityId), toValue(coverColor)], ([id, color]) => {
     const cover = color || getCoverColor(id)
 
+    headerColor.value = cover || derivedColor(id)
     headerGradient.value = cover ? coverGradient(cover) : derivedGradient(id)
   }, { immediate: true })
 }
@@ -25,8 +26,9 @@ export function useEntity () {
 
   const rawEntity = useState('entity.raw', () => null)
 
-  // The open entity's header gradient, shared so the layout can paint it behind the toolbar.
+  // The open entity's header gradient and solid color, shared so the layout can paint the gradient behind the toolbar.
   const headerGradient = useState('entity.headerGradient', () => null)
+  const headerColor = useState('entity.headerColor', () => null)
 
   const entityId = computed(() => rawEntity.value?._id)
   const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
@@ -41,6 +43,7 @@ export function useEntity () {
 
   return {
     entityId,
+    headerColor,
     headerGradient,
     rawEntity,
     right,

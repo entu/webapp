@@ -15,7 +15,7 @@ const props = defineProps({
 })
 
 // Shared with the toolbars, so the band and the toolbar above it always change color together.
-const { headerGradient } = useEntity()
+const { headerColor, headerGradient } = useEntity()
 
 const sharing = computed(() => {
   if (props.entity._sharing === 'public') {
@@ -44,14 +44,14 @@ const sharing = computed(() => {
   }
 })
 
-// Same rule as the app: an entity with a photo has a cover, so title, type and parents clear it; otherwise they start at the left edge.
-const hasPhoto = computed(() => !!props.photos?.length)
+// A cover shows when the entity has a photo or its type defines a photo property (then empty), and title, type and parents clear it.
+const showsCover = computed(() => !!props.photos?.length || !!props.entity.props?.some((x) => x.name === 'photo'))
 
 // Clears the cover and, from md up, lines up with the property values column (140px label + 16px gap).
 const indentClass = computed(() => ({
-  'md:pl-39': hasPhoto.value,
-  'pl-29': hasPhoto.value && props.narrow,
-  'pl-37': hasPhoto.value && !props.narrow
+  'md:pl-39': showsCover.value,
+  'pl-29': showsCover.value && props.narrow,
+  'pl-37': showsCover.value && !props.narrow
 }))
 
 const parentList = computed(() => props.parents?.filter((x) => x.reference) || [])
@@ -100,8 +100,8 @@ const parentList = computed(() => props.parents?.filter((x) => x.reference) || [
       </div>
 
       <div
-        v-if="hasPhoto"
-        class="print-as-is absolute bottom-0 translate-y-1/3 overflow-hidden rounded-xl bg-white/20 shadow-lg ring-1 ring-white/40"
+        v-if="showsCover"
+        class="print-as-is absolute bottom-0 translate-y-1/3 overflow-hidden rounded-xl shadow-lg ring-1 ring-white/40"
         :class="{
           'left-4 size-24': narrow,
           'left-7 size-32': !narrow,
@@ -113,6 +113,13 @@ const parentList = computed(() => props.parents?.filter((x) => x.reference) || [
           :photos="photos"
           :thumbnail="thumbnail"
         />
+
+        <!-- Empty or still loading cover: the entity's color, half see-through -->
+        <div
+          v-else
+          class="print-as-is size-full backdrop-blur-md [print-color-adjust:exact]"
+          :style="{ backgroundColor: `color-mix(in srgb, ${headerColor} 50%, transparent)` }"
+        />
       </div>
     </div>
 
@@ -121,7 +128,7 @@ const parentList = computed(() => props.parents?.filter((x) => x.reference) || [
       :class="{
         'px-4': narrow,
         'px-7': !narrow,
-        'min-h-[78px]': hasPhoto,
+        'min-h-[78px]': showsCover,
       }"
     >
       <div

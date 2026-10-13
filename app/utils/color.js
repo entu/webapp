@@ -40,6 +40,11 @@ export function getCoverColor (entityId) {
   return coverColors.get(entityId)
 }
 
+// Returns the solid color derived from an id, like the native app's `Color.derived`.
+export function derivedColor (id = '') {
+  return rgbToCss(hsvToRgb(derivedHue(id), 0.62, 0.72))
+}
+
 // Returns a CSS gradient of the hue derived from an id — the same hash and stops as the native app's `derivedGradient`, run horizontally so the toolbar strip and header band join seamlessly.
 export function derivedGradient (id = '') {
   const hue = derivedHue(id)
