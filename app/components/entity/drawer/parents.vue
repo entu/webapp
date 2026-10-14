@@ -146,7 +146,7 @@ async function onClose () {
           icon="delete"
           type="error"
           :bg="false"
-          :tooltip="t('delete')"
+          :label="t('delete')"
           @click="onDeleteParent(parent._id)"
         />
       </div>

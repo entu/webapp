@@ -1,7 +1,7 @@
 <script setup>
 import { NPopover } from 'naive-ui'
 
-const { t } = useI18n()
+const { d, t } = useI18n()
 const route = useRoute()
 const { accountId } = useAccount()
 
@@ -55,6 +55,56 @@ const indentClass = computed(() => ({
 }))
 
 const parentList = computed(() => props.parents?.filter((x) => x.reference) || [])
+
+const created = computed(() => props.entity.props?.find((x) => x.name === '_created')?.values?.at(0))
+
+// The history API needs a right on the entity itself, so sharing alone shows only the creation.
+const canSeeHistory = computed(() => props.right.owner || props.right.editor || props.right.expander || props.right.viewer)
+
+// The last change, loaded the first time the popover opens: { at, name }, or null when there is none.
+const lastChange = ref()
+const isLoadingChange = ref(false)
+
+watch(() => props.entity._id, () => {
+  lastChange.value = undefined
+})
+
+// Loads the newest history entry and its author's name; history is oldest first, so it reads the count, then the last entry.
+async function loadLastChange () {
+  if (!canSeeHistory.value || lastChange.value !== undefined || isLoadingChange.value) return
+
+  const entityId = props.entity._id
+
+  isLoadingChange.value = true
+
+  try {
+    const result = await fetchLastChange(entityId)
+
+    if (entityId === props.entity._id) {
+      lastChange.value = result
+    }
+  }
+  catch {
+    lastChange.value = null
+  }
+  finally {
+    isLoadingChange.value = false
+  }
+}
+
+// Returns the entity's newest change as { at, name }, or null when it has none.
+async function fetchLastChange (entityId) {
+  const { count } = await apiGetEntityHistory(entityId, { limit: 1 })
+  if (!count) {
+    return null
+  }
+
+  const { changes } = await apiGetEntityHistory(entityId, { limit: 1, skip: count - 1 })
+  const change = changes?.at(0)
+  const author = change?.by && change.by !== 'entu' ? await apiGetEntity(change.by, ['name']) : undefined
+
+  return { at: change?.at, name: getValue(author?.name) }
+}
 </script>
 
 <template>
@@ -82,20 +132,46 @@ const parentList = computed(() => props.parents?.filter((x) => x.reference) || [
           v-if="entity.type.label"
           class="max-w-sm"
           placement="bottom"
-          :disabled="!entity.type.description"
+          :disabled="!created && !canSeeHistory"
+          @update:show="(show) => show && loadLastChange()"
         >
           <template #trigger>
             <my-tag
               small
+              :icon="created || canSeeHistory ? 'info' : undefined"
               :to="{ path: `/${accountId}/${entity.type._id}`, query: route.query }"
             >
               {{ entity.type.label }}
             </my-tag>
           </template>
-          <my-markdown
-            class="text-sm"
-            :source="entity.type.description"
-          />
+
+          <dl class="flex flex-col gap-3 text-sm">
+            <div v-if="created">
+              <dt class="pb-1 text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                {{ t('created') }}
+              </dt>
+              <dd class="flex justify-between gap-6 text-slate-900 dark:text-slate-100">
+                <span>{{ created.datetime && d(created.datetime, 'datetime') }}</span>
+                <span>{{ created.string }}</span>
+              </dd>
+            </div>
+
+            <div v-if="canSeeHistory">
+              <dt class="pb-1 text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+                {{ t('changed') }}
+              </dt>
+              <dd class="flex justify-between gap-6 text-slate-900 dark:text-slate-100">
+                <template v-if="lastChange">
+                  <span>{{ lastChange.at && d(lastChange.at, 'datetime') }}</span>
+                  <span>{{ lastChange.name }}</span>
+                </template>
+                <span
+                  v-else
+                  class="text-slate-400 dark:text-slate-500"
+                >{{ isLoadingChange ? '…' : '—' }}</span>
+              </dd>
+            </div>
+          </dl>
         </n-popover>
       </div>
 
@@ -177,6 +253,8 @@ const parentList = computed(() => props.parents?.filter((x) => x.reference) || [
     sharingDomainDescription: All signed in users can view this entity. Login is required.
     sharingPublic: Public on the web
     sharingPublicDescription: Anyone on the Internet can view the public parameters of this entity. No login required.
+    created: Created
+    changed: Changed
   et:
     sharingPrivate: Privaatne
     sharingPrivateDescription: Seda objekti saavad vaadata ainult õigustega kasutajad. Sisselogimine on vajalik.
@@ -184,4 +262,6 @@ const parentList = computed(() => props.parents?.filter((x) => x.reference) || [
     sharingDomainDescription: Kõik kasutajad saavad vaadata seda objekti. Sisselogimine on vajalik.
     sharingPublic: Objekt on avalik
     sharingPublicDescription: Igaüks Internetis saab vaadata selle objekti avalikke parameetreid. Sisselogimine pole vajalik.
+    created: Loodud
+    changed: Muudetud
 </i18n>

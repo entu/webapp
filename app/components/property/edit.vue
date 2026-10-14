@@ -461,7 +461,9 @@ const { copy } = useClipboard()
           :loading="loadingInputs.includes(value._id)"
         />
         <my-button
+          hide-label
           icon="copy"
+          :label="t('copyApiKey')"
           @click="copy(value.string)"
         />
       </template>
@@ -497,7 +499,9 @@ const { copy } = useClipboard()
           <span class="truncate text-sm">{{ value.string }}</span>
         </div>
         <my-button
+          hide-label
           icon="delete"
+          :label="t('removeLoginMethod')"
           :loading="loadingInputs.includes(value._id)"
           :readonly="disabled"
           @click="updateValue({ ...value, string: null })"
@@ -650,6 +654,8 @@ const { copy } = useClipboard()
     cancelInvite: Cancel Invite
     invitePending: 'Invite sent to {email}'
     addLoginMethod: Add Login Method
+    copyApiKey: Copy API Key
+    removeLoginMethod: Remove Login Method
   et:
     upload: Laadi üles
     counter: Genereeri
@@ -659,4 +665,6 @@ const { copy } = useClipboard()
     cancelInvite: Tühista kutse
     invitePending: 'Kutse saadetud aadressile {email}'
     addLoginMethod: Lisa sisselogimisviis
+    copyApiKey: Kopeeri API võti
+    removeLoginMethod: Eemalda sisselogimisviis
 </i18n>

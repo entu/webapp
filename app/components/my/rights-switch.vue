@@ -41,7 +41,7 @@ const rights = ref([
       type="error"
       :bg="false"
       :disabled="disabled"
-      :tooltip="t('delete')"
+      :label="t('delete')"
       @click="value = undefined; emit('update:value', undefined)"
     />
 
@@ -49,10 +49,11 @@ const rights = ref([
       <my-button
         v-for="r in rights"
         :key="r"
+        hide-label
         :class="{ 'bg-blue-900! text-white!': value === r }"
         :disabled="disabled"
         :icon="`rights-${r}`"
-        :tooltip="t(r)"
+        :label="t(r)"
         @click="value = r; emit('update:value', r)"
       />
     </n-button-group>

@@ -1,5 +1,5 @@
 <script setup>
-import { NButton, NSelect, NTab, NTabs } from 'naive-ui'
+import { NSelect, NTab, NTabs } from 'naive-ui'
 
 const props = defineProps({
   entityId: { type: String, required: true },
@@ -84,23 +84,25 @@ onMounted(async () => {
           v-if="total > 10"
           class="flex items-center gap-2"
         >
-          <n-button
-            quaternary
+          <my-button
+            hide-label
+            icon="arrow-left"
+            :bg="false"
             :disabled="page <= 1"
+            :label="t('previousPage')"
             @click="page--"
-          >
-            <my-icon icon="arrow-left" />
-          </n-button>
+          />
           <span class="text-sm whitespace-nowrap text-slate-600 tabular-nums dark:text-slate-300">
             {{ page }} / {{ pages }}
           </span>
-          <n-button
-            quaternary
+          <my-button
+            hide-label
+            icon="arrow-right"
+            :bg="false"
             :disabled="page >= pages"
+            :label="t('nextPage')"
             @click="page++"
-          >
-            <my-icon icon="arrow-right" />
-          </n-button>
+          />
           <n-select
             v-model:value="tablePageSize"
             class="w-24"
@@ -127,6 +129,10 @@ onMounted(async () => {
 <i18n lang="yaml">
   en:
     pageSize: '{n} / page'
+    previousPage: Previous Page
+    nextPage: Next Page
   et:
     pageSize: '{n} / lk'
+    previousPage: Eelmine lehekülg
+    nextPage: Järgmine lehekülg
 </i18n>

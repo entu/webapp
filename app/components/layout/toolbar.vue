@@ -185,11 +185,15 @@ onUnmounted(() => {
             </template>
 
             <template #suffix>
-              <span
+              <my-tooltip
                 v-if="!isMobile"
-                class="cursor-pointer text-xs font-medium whitespace-nowrap text-slate-600 dark:text-slate-300"
-                @click="paletteStore.open(searchText)"
-              >{{ paletteKeyHint }}</span>
+                :text="t('commandPalette')"
+              >
+                <span
+                  class="cursor-pointer text-xs font-medium whitespace-nowrap text-slate-600 dark:text-slate-300"
+                  @click="paletteStore.open(searchText)"
+                >{{ paletteKeyHint }}</span>
+              </my-tooltip>
             </template>
           </n-input>
         </n-input-group>
@@ -219,7 +223,7 @@ onUnmounted(() => {
           v-if="!isMobile && userId && isQuery && !route.params.entityId"
           circle
           :icon="showTable ? 'list' : 'table'"
-          :title="showTable ? t('listView') : t('tableView')"
+          :label="showTable ? t('listView') : t('tableView')"
           @click="toggleView()"
         />
 
@@ -227,7 +231,7 @@ onUnmounted(() => {
           v-if="userId"
           circle
           icon="sparkles"
-          :tooltip="t('entuAi')"
+          :label="t('entuAi')"
           @click="toggleChat()"
         />
       </template>
@@ -247,9 +251,11 @@ onUnmounted(() => {
     listView: List view
     tableView: Table view
     entuAi: Entu AI
+    commandPalette: Command Palette
   et:
     search: Otsi objekti
     listView: Loendivaade
     tableView: Tabelivaade
     entuAi: Entu AI
+    commandPalette: Käsupalett
 </i18n>

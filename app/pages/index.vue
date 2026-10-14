@@ -155,6 +155,7 @@ onMounted(async () => {
               <my-button
                 circle
                 icon="arrow-right"
+                :label="t('openDatabase')"
                 @click="navigateTo(`/${account._id}`)"
               />
             </div>
@@ -204,6 +205,7 @@ onMounted(async () => {
     selectTitle: Select a database
     selectDescription: You have access to multiple databases. Choose one to continue.
     loadError: Could not load stats
+    openDatabase: Open Database
   et:
     language: English
     signOut: Välju
@@ -213,4 +215,5 @@ onMounted(async () => {
     selectTitle: Vali andmebaas
     selectDescription: Sul on ligipääs mitmele andmebaasile. Vali üks jätkamiseks.
     loadError: Statistika laadimine ebaõnnestus
+    openDatabase: Ava andmebaas
 </i18n>

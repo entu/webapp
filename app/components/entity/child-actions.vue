@@ -73,33 +73,37 @@ function onDropdownSelect (key) {
         <n-button-group>
           <my-button
             v-if="isEditor"
+            hide-label
             icon="edit"
             size="small"
-            :title="t('edit')"
+            :label="t('edit')"
             @click.stop="showEditDrawer = true"
           />
 
           <my-button
             v-if="isOwner"
+            hide-label
             icon="copy"
             size="small"
-            :title="t('duplicate')"
+            :label="t('duplicate')"
             @click.stop="showDuplicateDrawer = true"
           />
 
           <my-button
             v-if="isEditor"
+            hide-label
             icon="folder-parent"
             size="small"
-            :title="t('parents')"
+            :label="t('parents')"
             @click.stop="showParentsDrawer = true"
           />
 
           <my-button
             v-if="isOwner"
+            hide-label
             icon="sharing-private"
             size="small"
-            :title="t('rights')"
+            :label="t('rights')"
             @click.stop="showRightsDrawer = true"
           />
         </n-button-group>
@@ -115,6 +119,7 @@ function onDropdownSelect (key) {
           circle
           icon="more"
           size="small"
+          :label="t('more')"
           @click.stop
         />
       </n-dropdown>
@@ -153,9 +158,11 @@ function onDropdownSelect (key) {
     duplicate: Duplicate
     parents: Parents
     rights: Rights
+    more: More
   et:
     edit: Muuda
     duplicate: Dubleeri
     parents: Kuuluvus
     rights: Õigused
+    more: Veel
 </i18n>

@@ -32,9 +32,9 @@ const label = computed(() => {
 <template>
   <my-button
     v-if="userId && options.length === 1"
+    :hide-label="!showLabel"
     :icon="icon"
-    :label="showLabel ? label : undefined"
-    :tooltip="showLabel ? undefined : label"
+    :label="label"
     @click="navigateTo({ path: route.path, query: route.query, hash: `#${isChild ? 'child' : 'add'}-${options.at(0).value}` }, { replace: true })"
   />
 
@@ -46,9 +46,9 @@ const label = computed(() => {
   >
     <template #trigger>
       <my-button
+        :hide-label="!showLabel"
         :icon="icon"
-        :label="showLabel ? label : undefined"
-        :title="showLabel ? undefined : label"
+        :label="label"
       />
     </template>
 

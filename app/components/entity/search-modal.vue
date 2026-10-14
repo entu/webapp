@@ -347,23 +347,25 @@ onMounted(async () => {
             >
               <n-radio-button
                 class="flex items-center justify-center px-2!"
-                :title="t('ascending')"
                 :value="''"
               >
-                <my-icon
-                  class="text-xs"
-                  icon="arrow-down"
-                />
+                <my-tooltip :text="t('ascending')">
+                  <my-icon
+                    class="text-xs"
+                    icon="arrow-down"
+                  />
+                </my-tooltip>
               </n-radio-button>
               <n-radio-button
                 class="flex items-center justify-center px-2!"
-                :title="t('descending')"
                 :value="'-'"
               >
-                <my-icon
-                  class="text-xs"
-                  icon="arrow-up"
-                />
+                <my-tooltip :text="t('descending')">
+                  <my-icon
+                    class="text-xs"
+                    icon="arrow-up"
+                  />
+                </my-tooltip>
               </n-radio-button>
             </n-radio-group>
           </div>
@@ -460,10 +462,9 @@ onMounted(async () => {
               icon="delete"
               type="error"
               :bg="false"
+              :label="t('removeFilter')"
               @click="removeCustomFilter(index)"
-            >
-              <my-icon icon="delete" />
-            </my-button>
+            />
           </n-form-item>
         </div>
 
@@ -521,6 +522,7 @@ onMounted(async () => {
     valuePlaceholder: Enter value
 
     addFilter: Add Filter
+    removeFilter: Remove Filter
 
     search: Search
     reset: Reset
@@ -559,6 +561,7 @@ onMounted(async () => {
     valuePlaceholder: Filtri väärtus
 
     addFilter: Lisa filter
+    removeFilter: Eemalda filter
 
     search: Otsi
     reset: Lähtesta
