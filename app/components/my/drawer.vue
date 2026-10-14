@@ -20,9 +20,6 @@ defineProps({
   headerStyle: { type: Object, default: undefined }
 })
 
-const closeRef = useTemplateRef('closeRef')
-useFocus(closeRef, { initialValue: true })
-
 useModalDepth(show)
 
 function close () {
@@ -85,7 +82,6 @@ onKeyStroke('Escape', close)
           <div class="grow" />
 
           <my-button
-            ref="closeRef"
             :label="t('close')"
             @click="close"
           />
