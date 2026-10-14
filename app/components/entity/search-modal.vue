@@ -114,7 +114,8 @@ watch(() => searchForm.value.types, async (newTypes) => {
 
   if (currentRequest !== requestId) return
 
-  const propOptions = response.entities?.map((x) => ({
+  // Definitions without a type have no search field, so they are left out.
+  const propOptions = response.entities?.filter((x) => getValue(x.type)?.trim()).map((x) => ({
     value: `${getValue(x.name)?.trim()}.${propertySearchField(getValue(x.type).trim())}`,
     label: getValue(x.label)?.trim() || getValue(x.name)?.trim(),
     parent: getValue(x._parent)?.trim(),

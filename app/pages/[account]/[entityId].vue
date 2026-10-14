@@ -237,6 +237,11 @@ watch(() => entity?.value?.name, (value) => {
 async function loadEntity () {
   if (!entityId.value) return
 
+  // Paths like /db/passkey are not entity ids, so they get a 404 without asking the API.
+  if (!/^[\da-f]{24}$/i.test(entityId.value)) {
+    return showError({ statusCode: 404, statusMessage: t('error404') })
+  }
+
   isLoading.value = true
 
   rawEntity.value = await apiGetEntity(entityId.value)

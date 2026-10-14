@@ -44,12 +44,17 @@ const label = computed(() => {
     footer-style="padding:0;border:none"
     trigger="click"
   >
+    <!-- A real element as trigger, since an icon-only button's tooltip root is a fragment the popover can't bind to -->
     <template #trigger>
-      <my-button
-        :hide-label="!showLabel"
-        :icon="icon"
-        :label="label"
-      />
+      <span class="inline-flex">
+        <my-button
+          aria-haspopup="true"
+          :aria-expanded="isMenuOpen"
+          :hide-label="!showLabel"
+          :icon="icon"
+          :label="label"
+        />
+      </span>
     </template>
 
     <div class="flex w-full flex-col">
