@@ -94,42 +94,43 @@ export async function apiRequest (pathname, params = {}, headers = {}, method = 
 
   requests.value++
 
-  await ensureFreshToken()
+  try {
+    await ensureFreshToken()
 
-  if (token.value) {
-    headers = { Authorization: `Bearer ${token.value}`, ...headers }
-  }
-
-  const url = new URL(runtimeConfig.public.apiUrl)
-  const base = url.pathname.replace(/\/$/, '')
-
-  if (accountId.value) {
-    url.pathname = `${base}/${accountId.value}/${pathname || ''}`
-  }
-  else if (pathname) {
-    url.pathname = `${base}/${pathname}`
-  }
-
-  const query = method === 'GET'
-    ? Object.fromEntries(Object.entries(params).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v]))
-    : undefined
-
-  const result = await $fetch(url.toString(), {
-    method,
-    headers,
-    ...(query
-      ? { query }
-      : { body: params }),
-    onResponseError ({ response }) {
-      if (response.status === 401) {
-        logOut()
-      }
+    if (token.value) {
+      headers = { Authorization: `Bearer ${token.value}`, ...headers }
     }
-  })
 
-  requests.value--
+    const url = new URL(runtimeConfig.public.apiUrl)
+    const base = url.pathname.replace(/\/$/, '')
 
-  return result
+    if (accountId.value) {
+      url.pathname = `${base}/${accountId.value}/${pathname || ''}`
+    }
+    else if (pathname) {
+      url.pathname = `${base}/${pathname}`
+    }
+
+    const query = method === 'GET'
+      ? Object.fromEntries(Object.entries(params).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v]))
+      : undefined
+
+    return await $fetch(url.toString(), {
+      method,
+      headers,
+      ...(query
+        ? { query }
+        : { body: params }),
+      onResponseError ({ response }) {
+        if (response.status === 401) {
+          logOut()
+        }
+      }
+    })
+  }
+  finally {
+    requests.value--
+  }
 }
 
 function resolveDate (defaultStr) {

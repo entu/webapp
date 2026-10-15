@@ -53,8 +53,13 @@ async function loadStats () {
   if (!userId.value || isQuery.value) return
 
   isLoading.value = true
-  stats.value = await apiRequest()
-  isLoading.value = false
+
+  try {
+    stats.value = await apiRequest()
+  }
+  finally {
+    isLoading.value = false
+  }
 }
 
 onMounted(async () => {
