@@ -1,5 +1,5 @@
 <script setup>
-import { NPagination, NSpin, NPopover } from 'naive-ui'
+import { NPagination, NPopover } from 'naive-ui'
 
 const { t, d, n, locale } = useI18n()
 const { accountId } = useAccount()
@@ -206,7 +206,7 @@ function formatValue (val, decimals) {
           v-if="isLoading"
           class="absolute inset-0 z-10 flex items-center justify-center bg-surface/60"
         >
-          <n-spin />
+          <my-spinner />
         </div>
 
         <div

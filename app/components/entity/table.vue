@@ -1,5 +1,5 @@
 <script setup>
-import { NEmpty, NSpin, NPopover } from 'naive-ui'
+import { NEmpty, NPopover } from 'naive-ui'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -138,9 +138,14 @@ function handleSort (column) {
               v-for="column in tableColumnsWithTypes"
               :key="column.name"
               class="cursor-pointer border-r border-slate-200 px-3 py-2 text-sm font-medium text-slate-900 select-none last:border-r-0 hover:bg-slate-100 dark:border-slate-800 dark:text-slate-100 dark:hover:bg-slate-800"
+              :aria-sort="sortField === column.name ? (sortDirection === 'desc' ? 'descending' : 'ascending') : 'none'"
               @click="handleSort(column.name)"
             >
-              <div class="flex items-center justify-between">
+              <button
+                class="flex w-full cursor-pointer items-center justify-between font-medium"
+                type="button"
+                @click.stop="handleSort(column.name)"
+              >
                 {{ column.name }}
 
                 <my-icon
@@ -153,9 +158,11 @@ function handleSort (column) {
                   class="ml-2 size-3 text-slate-400 opacity-0 group-hover:opacity-30 dark:text-slate-500"
                   icon="sort-ascending"
                 />
-              </div>
+              </button>
             </th>
-            <th class="w-1" />
+            <th class="w-1">
+              <span class="sr-only">{{ t('sharing') }}</span>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -188,16 +195,19 @@ function handleSort (column) {
                     v-if="getValue(entity._sharing) === 'public'"
                     class="mt-1.5 text-slate-600 hover:text-orange-600 dark:text-slate-300 dark:hover:text-orange-400"
                     icon="sharing-public"
+                    :label="t('sharingPublic')"
                   />
                   <my-icon
                     v-else-if="getValue(entity._sharing) === 'domain'"
                     class="mt-1.5 text-slate-600 hover:text-yellow-600 dark:text-slate-300 dark:hover:text-yellow-400"
                     icon="sharing-domain"
+                    :label="t('sharingDomain')"
                   />
                   <my-icon
                     v-else
                     class="mt-1.5 text-slate-600 hover:text-green-600 dark:text-slate-300 dark:hover:text-green-400"
                     icon="sharing-private"
+                    :label="t('sharingPrivate')"
                   />
                 </template>
 
@@ -224,7 +234,7 @@ function handleSort (column) {
       v-if="isLoading && !isLoadingOnScroll"
       class="flex size-full items-center justify-center"
     >
-      <n-spin />
+      <my-spinner />
     </div>
 
     <entity-list-loading
@@ -238,6 +248,7 @@ function handleSort (column) {
     <div
       v-if="entitiesCount === 0"
       class="flex size-full items-center justify-center"
+      role="status"
     >
       <n-empty :description="t('noResults')" />
     </div>
@@ -247,11 +258,13 @@ function handleSort (column) {
 <i18n lang="yaml">
   en:
     noResults: No entities found
+    sharing: Sharing
     sharingPrivate: Private entity
     sharingDomain: Anyone with account can see
     sharingPublic: Public entity
   et:
     noResults: Objekte ei leitud
+    sharing: Jagamine
     sharingPrivate: Privaatne objekt
     sharingDomain: Kõik kasutajad näevad seda objekti
     sharingPublic: Avalik objekt

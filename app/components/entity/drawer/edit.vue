@@ -249,6 +249,7 @@ async function onClose () {
           class="size-full"
           frameborder="0"
           :src="plugin.url"
+          :title="plugin.name"
         />
       </n-tab-pane>
     </n-tabs>
@@ -268,7 +269,6 @@ async function onClose () {
             type="error"
             :bg="false"
             :disabled="isUpdating"
-            :focusable="false"
             :label="t('deleteEntity')"
           />
         </template>

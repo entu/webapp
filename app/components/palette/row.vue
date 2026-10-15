@@ -77,6 +77,7 @@ const segments = computed(() => {
       :has-photo="hasPhoto"
     >
       <div
+        aria-hidden="true"
         class="flex size-6 shrink-0 items-center justify-center rounded-md text-xs font-bold text-white"
         :style="{ backgroundColor: avatarColor }"
       >

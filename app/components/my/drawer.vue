@@ -41,6 +41,7 @@ onKeyStroke('Escape', close)
   <n-drawer
     v-model:show="show"
     placement="right"
+    :aria-label="title || undefined"
     :close-on-esc="false"
     :default-width="drawerDefaultWidth"
     :mask-closable="false"
@@ -70,7 +71,10 @@ onKeyStroke('Escape', close)
         content-class="size-full"
         :show="isLoading"
       >
-        <div class="size-full">
+        <div
+          class="size-full"
+          :aria-busy="isLoading"
+        >
           <slot />
         </div>
       </n-spin>

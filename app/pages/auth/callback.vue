@@ -34,12 +34,21 @@ onMounted(async () => {
     />
   </my-auth-layout>
 
-  <n-spin
+  <div
     v-else
     class="size-full"
-    show
-    :delay="200"
-  />
+  >
+    <n-spin
+      aria-hidden="true"
+      class="size-full"
+      show
+      :delay="200"
+    />
+    <span
+      class="sr-only"
+      role="status"
+    >{{ t('signingIn') }}</span>
+  </div>
 </template>
 
 <i18n lang="yaml">
@@ -50,6 +59,7 @@ onMounted(async () => {
     error-invite: This invitation is invalid, has expired or has already been used. Ask for a new invitation.
     error-conflict: You signed in with a login method that already belongs to another person in this database, so the invitation could not be accepted. Use a different login method.
     continue: Continue
+    signingIn: Signing in…
   et:
     title: Sisene
     errorTitle: Sisselogimine ebaõnnestus
@@ -57,4 +67,5 @@ onMounted(async () => {
     error-invite: See kutse on vigane, aegunud või juba kasutatud. Küsi uus kutse.
     error-conflict: Sa logisid sisse viisiga, mis kuulub selles andmebaasis juba teisele isikule, seega ei saanud kutset vastu võtta. Kasuta teist sisselogimisviisi.
     continue: Jätka
+    signingIn: Sisselogimine…
 </i18n>

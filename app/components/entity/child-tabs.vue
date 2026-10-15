@@ -106,6 +106,8 @@ onMounted(async () => {
           <n-select
             v-model:value="tablePageSize"
             class="w-24"
+            role="group"
+            :aria-label="t('pageSizeLabel')"
             :consistent-menu-width="false"
             :options="pageSizeOptions"
           />
@@ -129,10 +131,12 @@ onMounted(async () => {
 <i18n lang="yaml">
   en:
     pageSize: '{n} / page'
+    pageSizeLabel: Rows per Page
     previousPage: Previous Page
     nextPage: Next Page
   et:
     pageSize: '{n} / lk'
+    pageSizeLabel: Ridu lehel
     previousPage: Eelmine lehekülg
     nextPage: Järgmine lehekülg
 </i18n>

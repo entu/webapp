@@ -1,5 +1,5 @@
 <script setup>
-import { NPopover, NSpin } from 'naive-ui'
+import { NPopover } from 'naive-ui'
 
 const props = defineProps({
   value: { type: Object, required: true }
@@ -37,8 +37,8 @@ watch(() => isPreviewableFile(props.value), (previewable) => {
       >
         <template #trigger>
           <img
+            alt=""
             class="size-5 rounded-full object-cover ring-1 ring-slate-900/10 dark:ring-white/10"
-            :alt="value.filename || value._id"
             :src="iconUrl"
           >
         </template>
@@ -53,7 +53,7 @@ watch(() => isPreviewableFile(props.value), (previewable) => {
           v-else
           class="flex size-24 items-center justify-center"
         >
-          <n-spin size="small" />
+          <my-spinner size="small" />
         </div>
       </n-popover>
     </template>

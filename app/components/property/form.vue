@@ -43,6 +43,7 @@ defineProps({
         :disabled="isUpdating"
         :is-list="property.list"
         :is-multilingual="property.multilingual"
+        :label="property.label || property.name"
         :property="property.name"
         :reference-query="property.referenceQuery"
         :set="property.set?.map(x => x.string)"

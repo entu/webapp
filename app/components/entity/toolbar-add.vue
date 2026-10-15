@@ -13,6 +13,8 @@ const props = defineProps({
 const route = useRoute()
 const { t } = useI18n()
 
+const isMenuOpen = ref(false)
+
 const label = computed(() => {
   if (props.isChild && props.options.length === 1) {
     return t('addOneChild', { type: props.options.at(0).label?.toLowerCase() })
@@ -43,6 +45,7 @@ const label = computed(() => {
     content-style="padding:0;border:none"
     footer-style="padding:0;border:none"
     trigger="click"
+    @update:show="isMenuOpen = $event"
   >
     <!-- A real element as trigger, since an icon-only button's tooltip root is a fragment the popover can't bind to -->
     <template #trigger>
@@ -57,18 +60,26 @@ const label = computed(() => {
       </span>
     </template>
 
-    <div class="flex w-full flex-col">
-      <div class="px-4 pt-3 pb-1 text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-slate-500">
+    <div
+      class="flex w-full flex-col"
+      role="group"
+      :aria-labelledby="`${isChild ? 'child' : 'add'}-menu-title`"
+    >
+      <div
+        :id="`${isChild ? 'child' : 'add'}-menu-title`"
+        class="px-4 pt-3 pb-1 text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-slate-500"
+      >
         {{ isChild ? t('addChildTitle') : t('addTitle') }}
       </div>
-      <div
+      <button
         v-for="o in options"
         :key="o.value"
-        class="cursor-pointer px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-900"
+        class="cursor-pointer px-4 py-2 text-left hover:bg-slate-50 focus-visible:bg-slate-50 dark:hover:bg-slate-900 dark:focus-visible:bg-slate-900"
+        type="button"
         @click="navigateTo({ path: route.path, query: route.query, hash: `#${isChild ? 'child' : 'add'}-${o.value}` }, { replace: true })"
       >
         {{ o.label.toLowerCase() }}
-      </div>
+      </button>
     </div>
 
     <template #footer>

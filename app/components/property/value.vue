@@ -1,5 +1,5 @@
 <script setup>
-import { NPopover, NSpin } from 'naive-ui'
+import { NPopover } from 'naive-ui'
 
 const props = defineProps({
   entityId: { type: String, default: null },
@@ -85,8 +85,8 @@ watch(() => !props.isTag && isPreviewableFile(props.value), (previewable) => {
       >
         <template #trigger>
           <img
+            alt=""
             class="size-5 shrink-0 rounded border border-slate-200 bg-slate-50 object-cover dark:border-slate-800 dark:bg-slate-900"
-            :alt="value.filename || value._id"
             :src="thumbnailIconUrl"
           >
         </template>
@@ -101,7 +101,7 @@ watch(() => !props.isTag && isPreviewableFile(props.value), (previewable) => {
           v-else
           class="flex size-24 items-center justify-center"
         >
-          <n-spin size="small" />
+          <my-spinner size="small" />
         </div>
       </n-popover>
 
@@ -123,7 +123,10 @@ watch(() => !props.isTag && isPreviewableFile(props.value), (previewable) => {
   </template>
 
   <template v-else-if="value.boolean !== undefined && value.boolean === true">
-    <my-icon icon="checkmark" />
+    <my-icon
+      icon="checkmark"
+      :label="t('yes')"
+    />
   </template>
 
   <template v-else-if="value.boolean !== undefined && value.boolean === false">
@@ -177,6 +180,8 @@ watch(() => !props.isTag && isPreviewableFile(props.value), (previewable) => {
 <i18n lang="yaml">
   en:
     invitePending: 'Invite sent to {email}'
+    yes: 'Yes'
   et:
     invitePending: 'Kutse saadetud aadressile {email}'
+    yes: Jah
 </i18n>

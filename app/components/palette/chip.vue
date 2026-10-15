@@ -35,6 +35,7 @@ const tintClass = computed(() => ({
       v-if="kind === 'sort'"
       class="cursor-pointer"
       type="button"
+      :aria-label="descending ? t('paletteSortDescending') : t('paletteSortAscending')"
       @click="emit('flip')"
     >
       <my-icon
@@ -62,6 +63,7 @@ const tintClass = computed(() => ({
     <button
       class="cursor-pointer opacity-65"
       type="button"
+      :aria-label="t('paletteRemove', { name: label })"
       @click="emit('remove')"
     >
       <my-icon
@@ -79,10 +81,16 @@ const tintClass = computed(() => ({
     paletteCondContains: contains
     paletteCondBefore: before
     paletteCondAfter: after
+    paletteSortAscending: Sorted ascending, switch to descending
+    paletteSortDescending: Sorted descending, switch to ascending
+    paletteRemove: Remove {name}
   et:
     paletteCondIs: on
     paletteCondIsNot: ei ole
     paletteCondContains: sisaldab
     paletteCondBefore: enne
     paletteCondAfter: pärast
+    paletteSortAscending: Kasvav järjestus, vaheta kahanevaks
+    paletteSortDescending: Kahanev järjestus, vaheta kasvavaks
+    paletteRemove: Eemalda {name}
 </i18n>

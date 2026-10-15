@@ -160,6 +160,7 @@ onMounted(() => {
             class="mb-4"
             round
             size="large"
+            :input-props="{ 'aria-label': t('databaseName'), 'aria-describedby': statusMessage ? 'database-name-status' : undefined, 'aria-invalid': inputStatus === 'error' }"
             :placeholder="t('databaseName')"
             :status="inputStatus"
             @input="validateName()"
@@ -167,6 +168,8 @@ onMounted(() => {
 
           <p
             v-if="statusMessage"
+            id="database-name-status"
+            aria-live="polite"
             class="text-sm"
             :class="{ 'text-red-600 dark:text-red-400': inputStatus === 'error', 'text-slate-600 dark:text-slate-300': isChecking }"
           >

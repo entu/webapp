@@ -118,6 +118,7 @@ function opStatus (index) {
           <div
             v-if="opStatus(index) === 'applied'"
             class="flex shrink-0 items-center gap-1 text-sm text-green-600 dark:text-green-400"
+            role="status"
           >
             <my-icon icon="checkmark" />
 
@@ -127,6 +128,7 @@ function opStatus (index) {
           <div
             v-else-if="opStatus(index) === 'failed'"
             class="flex shrink-0 items-center gap-1 text-sm text-red-600 dark:text-red-400"
+            role="status"
           >
             <my-icon icon="close" />
 
@@ -136,6 +138,7 @@ function opStatus (index) {
           <div
             v-else-if="opStatus(index) === 'skipped'"
             class="shrink-0 text-sm text-slate-400 dark:text-slate-500"
+            role="status"
           >
             {{ t('skipped') }}
           </div>
@@ -144,6 +147,7 @@ function opStatus (index) {
         <div
           v-if="opStatus(index) === 'failed' && results?.error?.statusMessage"
           class="mt-1 text-sm text-red-600 dark:text-red-400"
+          role="alert"
         >
           {{ results.error.statusMessage }}
         </div>

@@ -1,6 +1,4 @@
 <script setup>
-import { NSpin } from 'naive-ui'
-
 const route = useRoute()
 const { t } = useI18n()
 
@@ -100,7 +98,7 @@ onMounted(async () => {
       v-if="isLoading"
       class="flex size-full items-center justify-center"
     >
-      <n-spin />
+      <my-spinner />
     </div>
 
     <transition>

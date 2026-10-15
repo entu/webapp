@@ -160,6 +160,7 @@ async function onClose () {
         v-model="newParent"
         class="my-6"
         :exclude="[...parents.map(x => x.reference), entityId]"
+        :label="t('selectNewParent')"
         :placeholder="t('selectNewParent')"
         :query="parentQuery"
         @update:value="onAddParent($event)"

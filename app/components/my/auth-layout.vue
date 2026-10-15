@@ -22,17 +22,20 @@ function setLanguage () {
 <template>
   <div class="flex min-h-full flex-col">
     <div class="flex w-full justify-end px-4 pt-4">
-      <span
+      <button
         class="cursor-pointer text-xs font-bold text-slate-600 uppercase dark:text-slate-300"
+        type="button"
+        :lang="locale === 'en' ? 'et' : 'en'"
         @click="setLanguage()"
       >
         {{ t('language') }}
-      </span>
+      </button>
     </div>
 
     <div class="flex justify-center py-4">
       <a href="/">
         <img
+          alt="Entu"
           class="size-24"
           src="/logo.png"
         >

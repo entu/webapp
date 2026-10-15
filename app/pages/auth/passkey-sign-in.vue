@@ -1,6 +1,4 @@
 <script setup>
-import { NSpin } from 'naive-ui'
-
 definePageMeta({ layout: 'blank' })
 
 const route = useRoute()
@@ -37,7 +35,7 @@ onMounted(async () => {
       v-if="isWorking"
       class="flex justify-center py-4"
     >
-      <n-spin />
+      <my-spinner />
     </div>
 
     <p

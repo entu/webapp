@@ -910,6 +910,7 @@ onKeyStroke('Escape', (event) => {
                   ref="inputRef"
                   v-model="query"
                   class="w-full bg-transparent py-0.5 text-base outline-none"
+                  :aria-label="t('paletteSearchPlaceholder')"
                   :placeholder="stateEmpty ? t('paletteSearchPlaceholder') : ''"
                   @keydown="onKeydown"
                 >
@@ -961,6 +962,7 @@ onKeyStroke('Escape', (event) => {
             <div
               v-if="flatRows.length === 0"
               class="py-4 text-center text-sm text-slate-400 dark:text-slate-500"
+              role="status"
             >
               {{ isEmptyState ? t('paletteNoRecents') : t('noResults') }}
             </div>

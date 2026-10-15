@@ -148,6 +148,7 @@ async function onClose () {
             v-model:value="duplicateCount"
             class="w-full"
             :disabled="isUpdating"
+            :input-props="{ 'aria-label': t('numberOfCopies') }"
             :max="50"
             :min="1"
           />

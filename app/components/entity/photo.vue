@@ -1,10 +1,12 @@
 <script setup>
-import { NImage, NImageGroup, NSpin } from 'naive-ui'
+import { NImage, NImageGroup } from 'naive-ui'
 
 const props = defineProps({
   photos: { type: Array, default: undefined },
   thumbnail: { type: String, required: true }
 })
+
+const { t } = useI18n()
 
 const imageRef = useTemplateRef('imageRef')
 const isLoading = ref(false)
@@ -45,13 +47,19 @@ async function loadImages () {
 </script>
 
 <template>
+  <!-- The photo is a CSS background that opens the gallery, so it is a named button -->
   <div
     class="flex cursor-pointer items-center justify-center bg-cover bg-center"
+    role="button"
+    tabindex="0"
+    :aria-label="t('showPhotos')"
     :style="`background-image:url(${thumbnail})`"
     v-bind="$attrs"
     @click="loadImages()"
+    @keydown.enter.prevent="loadImages()"
+    @keydown.space.prevent="loadImages()"
   >
-    <n-spin
+    <my-spinner
       v-if="isLoading"
       size="medium"
     />
@@ -62,6 +70,7 @@ async function loadImages () {
       v-for="url in urls"
       :key="url"
       class="hidden!"
+      :alt="t('photo')"
       :src="url"
     />
   </n-image-group>
@@ -69,6 +78,16 @@ async function loadImages () {
     v-else
     ref="imageRef"
     class="hidden!"
+    :alt="t('photo')"
     :src="urls.at(0)"
   />
 </template>
+
+<i18n lang="yaml">
+  en:
+    photo: Photo
+    showPhotos: Show Photos
+  et:
+    photo: Foto
+    showPhotos: Näita fotosid
+</i18n>

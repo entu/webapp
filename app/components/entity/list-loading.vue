@@ -21,7 +21,9 @@ const progressPercentage = computed(() => {
   <div class="sticky bottom-0 mx-auto w-full space-y-1 bg-linear-to-t from-surface to-transparent px-2 py-2.5 text-center">
     <div
       v-if="totalCount !== null"
+      aria-live="polite"
       class="flex justify-between text-sm"
+      role="status"
     >
       <span
         v-if="totalCount === loadedCount"
@@ -39,6 +41,7 @@ const progressPercentage = computed(() => {
       color="#62748E"
       status="info"
       type="line"
+      :aria-label="t('loadedCount', { loaded: loadedCount })"
       :height="6"
       :percentage="progressPercentage"
       :processing="isLoading"

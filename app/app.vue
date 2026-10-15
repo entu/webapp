@@ -47,7 +47,9 @@ watch(locale, (newLocale) => {
   updateNaiveUILocale(newLocale)
 }, { immediate: true })
 
+// Screen readers pick their voice from <html lang>, so it follows the UI language.
 useHead({
+  htmlAttrs: { lang: locale },
   titleTemplate: (title) => {
     return (!title || title === runtimeConfig.public.title) ? runtimeConfig.public.title : `${title} · ${runtimeConfig.public.title}`
   }

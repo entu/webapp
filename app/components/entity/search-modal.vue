@@ -294,6 +294,7 @@ onMounted(async () => {
     draggable
     preset="card"
     size="small"
+    :aria-label="t('title')"
     :segmented="{ content: true }"
     :title="t('title')"
   >
@@ -310,6 +311,7 @@ onMounted(async () => {
           <n-input
             v-model:value="searchForm.q"
             clearable
+            :input-props="{ 'aria-label': t('searchQuery') }"
             :placeholder="t('searchQueryPlaceholder')"
             :show-feedback="false"
           />
@@ -326,6 +328,7 @@ onMounted(async () => {
             filterable
             max-tag-count="responsive"
             multiple
+            :input-props="{ 'aria-label': t('entityTypes') }"
             :options="entityTypeOptions"
             :placeholder="t('entityTypesPlaceholder')"
           />
@@ -339,12 +342,16 @@ onMounted(async () => {
             <n-select
               v-model:value="searchForm.sort"
               class="w-28"
+              role="group"
+              :aria-label="t('sortBy')"
               :options="sortOptions"
             />
 
             <n-radio-group
               v-model:value="searchForm.sortDirection"
               name="sortDirection"
+              role="radiogroup"
+              :aria-label="t('sortDirection')"
             >
               <n-radio-button
                 class="flex items-center justify-center px-2!"
@@ -356,6 +363,7 @@ onMounted(async () => {
                     icon="arrow-down"
                   />
                 </my-tooltip>
+                <span class="sr-only">{{ t('ascending') }}</span>
               </n-radio-button>
               <n-radio-button
                 class="flex items-center justify-center px-2!"
@@ -367,6 +375,7 @@ onMounted(async () => {
                     icon="arrow-up"
                   />
                 </my-tooltip>
+                <span class="sr-only">{{ t('descending') }}</span>
               </n-radio-button>
             </n-radio-group>
           </div>
@@ -390,12 +399,14 @@ onMounted(async () => {
               v-if="!searchForm?.types?.length"
               v-model:value="filter.field"
               clearable
+              :input-props="{ 'aria-label': t('fieldName') }"
               :placeholder="t('fieldNamePlaceholderText')"
             />
             <n-select
               v-else
               v-model:value="filter.field"
               filterable
+              :input-props="{ 'aria-label': t('fieldName') }"
               :loading="loading"
               :options="properties"
               :placeholder="t('fieldNamePlaceholder')"
@@ -409,6 +420,8 @@ onMounted(async () => {
           >
             <n-select
               v-model:value="filter.operator"
+              role="group"
+              :aria-label="t('operator')"
               :options="getOperatorOptions(filter.field)"
             />
           </n-form-item>
@@ -422,6 +435,7 @@ onMounted(async () => {
             <n-switch
               v-if="getPropertyType(filter.field) === 'boolean' || filter.operator === 'exists'"
               v-model:value="filter.value"
+              :aria-label="t('value')"
               :checked-value="true"
               :unchecked-value="false"
             />
@@ -431,25 +445,31 @@ onMounted(async () => {
               v-model:value="filter.value"
               class="w-full"
               clearable
+              :input-props="{ 'aria-label': t('value') }"
             />
             <n-date-picker
               v-else-if="getPropertyType(filter.field) === 'date'"
               v-model:value="filter.value"
               class="w-full"
               clearable
+              role="group"
               type="date"
+              :aria-label="t('value')"
             />
             <n-date-picker
               v-else-if="getPropertyType(filter.field) === 'datetime'"
               v-model:value="filter.value"
               class="w-full"
               clearable
+              role="group"
               type="datetime"
+              :aria-label="t('value')"
             />
             <n-input
               v-else
               v-model:value="filter.value"
               show-feedback="false"
+              :input-props="{ 'aria-label': t('value') }"
               :placeholder="t('valuePlaceholder')"
             />
           </n-form-item>
@@ -506,6 +526,7 @@ onMounted(async () => {
     entityTypes: Entity Type
     entityTypesPlaceholder: Select entity types
     sortBy: Sort By
+    sortDirection: Sort Direction
     ascending: Ascending
     descending: Descending
     id: ID
@@ -545,6 +566,7 @@ onMounted(async () => {
     entityTypes: Objekti tüüp
     entityTypesPlaceholder: Vali objekti tüüp
     sortBy: Järjesta
+    sortDirection: Järjestuse suund
     ascending: Kasvav
     descending: Kahanev
     id: ID

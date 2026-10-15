@@ -69,7 +69,7 @@ function onDropdownSelect (key) {
 <template>
   <div class="flex items-center gap-1">
     <template v-if="!isMobile">
-      <div class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+      <div class="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100 focus-within:opacity-100">
         <n-button-group>
           <my-button
             v-if="isEditor"

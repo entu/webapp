@@ -1,6 +1,4 @@
 <script setup>
-import { NSpin } from 'naive-ui'
-
 definePageMeta({ layout: 'blank' })
 
 const { t } = useI18n()
@@ -81,17 +79,20 @@ onMounted(async () => {
         {{ t('signOut') }}
       </nuxt-link>
 
-      <span
+      <button
         class="cursor-pointer text-xs font-bold text-slate-600 uppercase dark:text-slate-300"
+        type="button"
+        :lang="locale === 'en' ? 'et' : 'en'"
         @click="setLanguage()"
       >
         {{ t('language') }}
-      </span>
+      </button>
     </div>
 
     <div class="flex justify-center py-4">
       <a href="/">
         <img
+          alt="Entu"
           class="size-24"
           src="/logo.png"
         >
@@ -102,7 +103,7 @@ onMounted(async () => {
       v-if="isRedirecting"
       class="flex flex-1 items-center justify-center"
     >
-      <n-spin />
+      <my-spinner />
     </div>
 
     <div
@@ -139,7 +140,7 @@ onMounted(async () => {
               v-else-if="loading"
               class="flex min-h-72 flex-1 items-center justify-center"
             >
-              <n-spin
+              <my-spinner
                 stroke="#90A1B9"
                 :size="14"
               />

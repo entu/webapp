@@ -1,6 +1,4 @@
 <script setup>
-import { NSpin } from 'naive-ui'
-
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
@@ -346,7 +344,7 @@ onUnmounted(() => {
       v-if="isLoading"
       class="flex size-full items-center justify-center"
     >
-      <n-spin />
+      <my-spinner />
     </div>
 
     <entity-drawer-edit

@@ -219,8 +219,8 @@ const userMenu = computed(() => {
           props: { style: { margin: '.5rem' } }
         }, {
           key: `language-${locale.value}`,
-          label: () => h('a',
-            { onClick: () => setLanguage() },
+          label: () => h('button',
+            { class: 'cursor-pointer', type: 'button', lang: otherLocale.value, onClick: () => setLanguage() },
             { default: () => t('language') }
           )
         }]
@@ -246,6 +246,9 @@ const userMenu = computed(() => {
 
   return menu
 })
+
+// The language the switch offers, so screen readers pronounce its label in that language.
+const otherLocale = computed(() => locale.value === 'en' ? 'et' : 'en')
 
 function setLanguage () {
   setLocale(locale.value === 'en' ? 'et' : 'en')
@@ -282,17 +285,22 @@ function menuSorter (a, b) {
 </script>
 
 <template>
-  <div class="flex min-h-full w-full flex-col justify-between py-1">
+  <nav
+    class="flex min-h-full w-full flex-col justify-between py-1"
+    :aria-label="t('mainMenu')"
+  >
     <div
       v-if="showLang && !menuCollapsed"
       class="mt-1 mr-3 mb-6 ml-2 flex items-center justify-end"
     >
-      <div
+      <button
         class="cursor-pointer text-sm font-semibold text-slate-600 uppercase dark:text-slate-300"
+        type="button"
+        :lang="otherLocale"
         @click="setLanguage()"
       >
         {{ t('language') }}
-      </div>
+      </button>
     </div>
 
     <a
@@ -303,6 +311,7 @@ function menuSorter (a, b) {
       @click="useAnalytics('click_logo')"
     >
       <img
+        alt="Entu"
         class="mx-auto size-14 md:size-24"
         src="/logo.svg"
       >
@@ -345,7 +354,7 @@ function menuSorter (a, b) {
       :options="authMenu"
       :root-indent="18"
     />
-  </div>
+  </nav>
 </template>
 
 <i18n lang="yaml">
@@ -354,9 +363,11 @@ function menuSorter (a, b) {
     signIn: Sign In
     signOut: Sign Out
     userEntity: User
+    mainMenu: Main Menu
   et:
     language: English
     signIn: Sisene
     signOut: Välju
     userEntity: Kasutaja
+    mainMenu: Peamenüü
 </i18n>

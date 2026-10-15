@@ -11,8 +11,10 @@ const { url } = useEntityThumbnail(() => props.hasPhoto ? props.entityId : undef
 </script>
 
 <template>
+  <!-- Decorative: the entity's name is always shown next to it -->
   <img
     v-if="url"
+    alt=""
     v-bind="$attrs"
     :src="url"
   >

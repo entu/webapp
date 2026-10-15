@@ -13,7 +13,10 @@ const emit = defineEmits(['sort'])
   <div class="flex flex-col gap-3">
     <div
       :class="{ 'cursor-pointer': interactive }"
+      :role="interactive ? 'button' : undefined"
+      :tabindex="interactive ? 0 : undefined"
       @click="interactive && emit('sort', 'entities')"
+      @keydown.enter.space.prevent="interactive && emit('sort', 'entities')"
     >
       <my-stats-bar
         :color="statColors.entities.color"
@@ -27,7 +30,10 @@ const emit = defineEmits(['sort'])
 
     <div
       :class="{ 'cursor-pointer': interactive }"
+      :role="interactive ? 'button' : undefined"
+      :tabindex="interactive ? 0 : undefined"
       @click="interactive && emit('sort', 'properties')"
+      @keydown.enter.space.prevent="interactive && emit('sort', 'properties')"
     >
       <my-stats-bar
         :color="statColors.properties.color"
@@ -40,7 +46,10 @@ const emit = defineEmits(['sort'])
 
     <div
       :class="{ 'cursor-pointer': interactive }"
+      :role="interactive ? 'button' : undefined"
+      :tabindex="interactive ? 0 : undefined"
       @click="interactive && emit('sort', 'files')"
+      @keydown.enter.space.prevent="interactive && emit('sort', 'files')"
     >
       <my-stats-bar
         is-bytes
@@ -55,7 +64,10 @@ const emit = defineEmits(['sort'])
 
     <div
       :class="{ 'cursor-pointer': interactive }"
+      :role="interactive ? 'button' : undefined"
+      :tabindex="interactive ? 0 : undefined"
       @click="interactive && emit('sort', 'tokens')"
+      @keydown.enter.space.prevent="interactive && emit('sort', 'tokens')"
     >
       <my-stats-bar
         show-total

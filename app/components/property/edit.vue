@@ -11,6 +11,7 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
   isList: { type: Boolean, default: false },
   isMultilingual: { type: Boolean, default: false },
+  label: { type: String, default: undefined },
   property: { type: String, default: undefined },
   referenceQuery: { type: String, default: undefined },
   set: { type: Array, default: () => [] },
@@ -36,6 +37,9 @@ const languageOptions = [
 const setOptions = computed(() => [...props.set].sort().map((x) => ({ value: x, label: x })))
 const referenceOptions = computed(() => props.values.filter((x) => x._id !== undefined).map((x) => ({ value: x.reference, label: x.string })))
 const isOwnEntity = computed(() => userId.value === entityId.value)
+
+// The property label names every field, as the visible label sits outside this component and naive-ui fields can't point at it.
+const inputProps = computed(() => ({ 'aria-label': props.label }))
 
 const fileList = computed(() => props.type === 'file'
   ? newValues.value.filter((x) => x._id !== undefined).map((x) => ({
@@ -438,6 +442,8 @@ const { copy } = useClipboard()
         v-model:value="value.language"
         class="w-20! self-start"
         placeholder=""
+        role="group"
+        :aria-label="t('language')"
         :loading="loadingInputs.includes(value._id)"
         :options="languageOptions"
         :readonly="disabled"
@@ -458,6 +464,7 @@ const { copy } = useClipboard()
           v-model:value="value.string"
           placeholder=""
           readonly
+          :input-props="inputProps"
           :loading="loadingInputs.includes(value._id)"
         />
         <my-button
@@ -530,6 +537,7 @@ const { copy } = useClipboard()
         v-else-if="type === 'string' && set.length === 0"
         v-model:value="value.string"
         placeholder=""
+        :input-props="inputProps"
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @blur="updateValue(value)"
@@ -541,6 +549,8 @@ const { copy } = useClipboard()
         v-model:value="value.string"
         clearable
         placeholder=""
+        role="group"
+        :aria-label="label"
         :loading="loadingInputs.includes(value._id)"
         :options="setOptions"
         :readonly="disabled"
@@ -551,7 +561,9 @@ const { copy } = useClipboard()
         v-else-if="type === 'text'"
         v-model:value="value.string"
         placeholder=""
+        role="group"
         type="textarea"
+        :aria-label="label"
         :autosize="{
           minRows: 3,
           maxRows: 15,
@@ -569,6 +581,7 @@ const { copy } = useClipboard()
         clearable
         placeholder=""
         :format="value => value?.toLocaleString(locale, { minimumFractionDigits: decimals, maximumFractionDigits: decimals })"
+        :input-props="inputProps"
         :loading="loadingInputs.includes(value._id)"
         :parse="value => parseFloat(value?.replace(/,/g, '.'))"
         :precision="decimals"
@@ -583,6 +596,7 @@ const { copy } = useClipboard()
       >
         <n-switch
           v-model:value="value.boolean"
+          :aria-label="label"
           :loading="loadingInputs.includes(value._id)"
           :readonly="disabled"
           :unchecked-value="null"
@@ -595,7 +609,9 @@ const { copy } = useClipboard()
         v-model:value="value.date"
         class="w-full"
         placeholder=""
+        role="group"
         type="date"
+        :aria-label="label"
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @update:value="updateValue(value)"
@@ -606,7 +622,9 @@ const { copy } = useClipboard()
         v-model:value="value.datetime"
         class="w-full"
         placeholder=""
+        role="group"
         type="datetime"
+        :aria-label="label"
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @update:value="updateValue(value)"
@@ -616,6 +634,7 @@ const { copy } = useClipboard()
         v-else-if="type === 'reference'"
         v-model="value.reference"
         placeholder=""
+        :label="label"
         :loading="loadingInputs.includes(value._id)"
         :options="referenceOptions"
         :query="referenceQuery"
@@ -627,6 +646,7 @@ const { copy } = useClipboard()
         v-else-if="type === 'counter' && value._id"
         v-model:value="value.string"
         placeholder=""
+        :input-props="inputProps"
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @blur="updateValue(value)"
@@ -656,6 +676,7 @@ const { copy } = useClipboard()
     addLoginMethod: Add Login Method
     copyApiKey: Copy API Key
     removeLoginMethod: Remove Login Method
+    language: Language
   et:
     upload: Laadi üles
     counter: Genereeri
@@ -667,4 +688,5 @@ const { copy } = useClipboard()
     addLoginMethod: Lisa sisselogimisviis
     copyApiKey: Kopeeri API võti
     removeLoginMethod: Eemalda sisselogimisviis
+    language: Keel
 </i18n>

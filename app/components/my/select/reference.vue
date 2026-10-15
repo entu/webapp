@@ -8,6 +8,7 @@ const value = defineModel({ type: String, default: undefined })
 const props = defineProps({
   query: { type: String, default: undefined },
   exclude: { type: Array, default: () => [] },
+  label: { type: String, default: undefined },
   options: { type: Array, default: () => [] }
 })
 
@@ -88,6 +89,7 @@ function renderReferenceOption (option) {
     clearable
     filterable
     remote
+    :input-props="{ 'aria-label': label }"
     :loading="searchingReferences"
     :options="referenceOptions"
     :render-label="renderReferenceOption"

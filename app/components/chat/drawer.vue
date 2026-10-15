@@ -105,7 +105,10 @@ watch(isLoading, (value) => {
 
         <div
           v-else
+          aria-live="polite"
           class="flex flex-col gap-4"
+          role="log"
+          :aria-label="t('title')"
         >
           <chat-message
             v-for="(message, index) in visibleMessages"
@@ -116,6 +119,7 @@ watch(isLoading, (value) => {
           <div
             v-if="isLoading"
             class="flex items-center gap-2 text-slate-600 dark:text-slate-300"
+            role="status"
           >
             <my-icon
               class="animate-pulse"
@@ -134,25 +138,26 @@ watch(isLoading, (value) => {
             v-model:value="inputText"
             round
             :disabled="isLoading"
+            :input-props="{ 'aria-label': t('placeholder') }"
             :placeholder="t('placeholder')"
             @keydown="onKeydown"
           >
             <template #suffix>
-              <n-popover>
-                <template #trigger>
-                  <my-icon
-                    icon="arrow-up"
-                    :class="{
-                      'cursor-pointer': canSend,
-                      'text-slate-400 dark:text-slate-500': !canSend,
-                    }"
-                    @click="send()"
-                  />
-                </template>
-                <div class="text-sm">
-                  {{ t('send') }}
-                </div>
-              </n-popover>
+              <my-tooltip :text="t('send')">
+                <button
+                  class="flex"
+                  type="button"
+                  :aria-label="t('send')"
+                  :class="{
+                    'cursor-pointer': canSend,
+                    'text-slate-400 dark:text-slate-500': !canSend,
+                  }"
+                  :disabled="!canSend"
+                  @click="send()"
+                >
+                  <my-icon icon="arrow-up" />
+                </button>
+              </my-tooltip>
             </template>
           </n-input>
         </n-input-group>

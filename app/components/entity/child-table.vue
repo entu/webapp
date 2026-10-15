@@ -201,14 +201,17 @@ onMounted(async () => {
             v-for="column in visibleColumns"
             :key="column.name"
             class="cursor-pointer p-3 text-left hover:bg-slate-50 dark:hover:bg-slate-900"
+            :aria-sort="sorter?.column === column.name ? sorter.order : 'none'"
             @click="onSort(column.name)"
           >
-            <div
-              class="flex items-center gap-2"
+            <button
+              class="flex w-full cursor-pointer items-center gap-2 font-bold"
+              type="button"
               :class="{
                 'justify-center': columnType(column) === 'boolean',
                 'justify-end': columnType(column) === 'number',
               }"
+              @click.stop="onSort(column.name)"
             >
               {{ column.label }}
 
@@ -216,9 +219,11 @@ onMounted(async () => {
                 v-if="sorter && sorter.column === column.name"
                 :icon="`sort-${sorter.order}`"
               />
-            </div>
+            </button>
           </th>
-          <th class="w-1" />
+          <th class="w-1">
+            <span class="sr-only">{{ t('sharing') }}</span>
+          </th>
         </tr>
       </thead>
 
@@ -230,13 +235,19 @@ onMounted(async () => {
         >
           <td>
             <div class="relative ml-1 size-7">
-              <nuxt-link :to="{ path: `/${accountId}/${row._id}`, query: route.query }">
+              <!-- Same target as the name link in this row, so it stays out of the tab order and the screen reader -->
+              <nuxt-link
+                aria-hidden="true"
+                tabindex="-1"
+                :to="{ path: `/${accountId}/${row._id}`, query: route.query }"
+              >
                 <entity-avatar
                   class="print-as-is size-7 rounded-full object-cover"
                   :entity-id="row._id"
                   :has-photo="!!row.photo?.length"
                 >
                   <div
+                    aria-hidden="true"
                     class="print-as-is flex size-7 items-center justify-center rounded-full text-xs font-bold text-white uppercase"
                     :style="{ backgroundColor: derivedColor(row._id) }"
                   >
@@ -269,6 +280,7 @@ onMounted(async () => {
               <my-icon
                 v-if="valueType(row[column.name], column.type) === 'boolean' && getValue(row[column.name], 'boolean')"
                 icon="checkmark"
+                :label="t('yes')"
               />
             </nuxt-link>
           </td>
@@ -285,16 +297,19 @@ onMounted(async () => {
                     v-if="renderColumn(row._sharing, 'string') === 'public'"
                     class="text-slate-600 group-hover:text-orange-600 dark:text-slate-300 dark:group-hover:text-orange-400"
                     icon="sharing-public"
+                    :label="t('sharingPublic')"
                   />
                   <my-icon
                     v-else-if="renderColumn(row._sharing, 'string') === 'domain'"
                     class="text-slate-600 group-hover:text-yellow-600 dark:text-slate-300 dark:group-hover:text-yellow-400"
                     icon="sharing-domain"
+                    :label="t('sharingDomain')"
                   />
                   <my-icon
                     v-else
                     class="text-slate-600 group-hover:text-green-600 dark:text-slate-300 dark:group-hover:text-green-400"
                     icon="sharing-private"
+                    :label="t('sharingPrivate')"
                   />
                 </template>
 
@@ -334,8 +349,12 @@ onMounted(async () => {
     sharingPrivate: Private entity
     sharingDomain: Anyone with account can see
     sharingPublic: Public entity
+    sharing: Sharing
+    yes: 'Yes'
   et:
     sharingPrivate: Privaatne objekt
     sharingDomain: Kõik kasutajad näevad seda objekti
     sharingPublic: Avalik objekt
+    sharing: Jagamine
+    yes: Jah
 </i18n>

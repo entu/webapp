@@ -27,13 +27,36 @@ watch(() => route.fullPath, () => {
 
 const siderRef = useTemplateRef('siderRef')
 const isHovered = useElementHover(siderRef, { delayEnter: 200, delayLeave: 600 })
+const { focused: isMenuFocused } = useFocusWithin(siderRef)
+
+// naive-ui renders the collapse arrow as a bare div with no way to pass attributes, so it gets its button role, name and keys here.
+function labelMenuToggle () {
+  const toggle = unrefElement(siderRef)?.querySelector('.n-layout-toggle-button')
+  if (!toggle) return
+
+  toggle.setAttribute('role', 'button')
+  toggle.setAttribute('tabindex', '0')
+  toggle.setAttribute('aria-label', menuCollapsed.value ? t('expandMenu') : t('collapseMenu'))
+  toggle.setAttribute('aria-expanded', String(!menuCollapsed.value))
+  toggle.onkeydown = onMenuToggleKeydown
+}
+
+function onMenuToggleKeydown (event) {
+  if (event.key !== 'Enter' && event.key !== ' ') return
+
+  event.preventDefault()
+  event.currentTarget.click()
+}
+
+onMounted(labelMenuToggle)
+watch([menuCollapsed, isHovered, isMenuFocused, locale], labelMenuToggle, { flush: 'post' })
 
 const entityDrawerWidth = ref(Math.round(window.innerWidth * 0.6))
 
 const isQuery = computed(() => Object.keys(route.query).length > 0)
 
 // The open entity's header color continues behind the toolbar, except in table view where the entity opens in a drawer.
-const { headerGradient, headerTint } = useEntity()
+const { headerGradient, headerTint, rawEntity } = useEntity()
 
 const toolbarGradient = computed(() => route.params.entityId && (!(isQuery.value && showTable.value) || isMobile.value) ? headerGradient.value : undefined)
 
@@ -78,9 +101,14 @@ const menuStripStyle = computed(() => {
   }
 })
 
+// Text for the always-present live region, so screen readers hear the update notice that naive-ui's notification doesn't announce.
+const announcement = ref('')
+
 let updateNotification
 nuxtApp.hooks.hook('app:manifest:update', (a) => {
   if (updateNotification) return
+
+  announcement.value = t('updateContent')
 
   updateNotification = notification.info({
     content: t('updateContent'),
@@ -135,7 +163,7 @@ useEventListener(window, 'keydown', onPaletteKey)
         ref="siderRef"
         class="relative z-10 shadow-[0_1px_24px_rgb(15_23_42/0.10)] ring-[0.5px] ring-slate-300/50 backdrop-blur-2xl dark:ring-slate-700/50 print:hidden!"
         collapse-mode="width"
-        collapsed-trigger-class="top-7.5! border-0! bg-slate-900/5! text-slate-600! shadow-none! hover:bg-slate-900/10! dark:bg-white/5! dark:text-slate-300! dark:hover:bg-white/10!"
+        collapsed-trigger-class="border-0! bg-slate-900/5! text-slate-600! shadow-none! hover:bg-slate-900/10! dark:bg-white/5! dark:text-slate-300! dark:hover:bg-white/10!"
         trigger-class="top-5! -left-1! border-0! bg-slate-900/5! text-slate-600! shadow-none! hover:bg-slate-900/10! dark:bg-white/5! dark:text-slate-300! dark:hover:bg-white/10!"
         :class="{
           'm-2 mr-0 rounded-2xl': !menuCollapsed,
@@ -143,14 +171,14 @@ useEventListener(window, 'keydown', onPaletteKey)
         }"
         :collapsed="menuCollapsed"
         :collapsed-width="MENU_COLLAPSED_WIDTH"
-        :show-trigger="!menuCollapsed || isHovered ? 'arrow-circle' : undefined"
+        :show-trigger="!menuCollapsed || isHovered || isMenuFocused ? 'arrow-circle' : undefined"
         @collapse="changeMenu(true)"
         @expand="changeMenu(false)"
       >
         <layout-side-menu :collapsed="menuCollapsed" />
       </n-layout-sider>
 
-      <div
+      <main
         v-if="accountId"
         class="flex grow flex-col overflow-hidden"
       >
@@ -171,6 +199,7 @@ useEventListener(window, 'keydown', onPaletteKey)
             v-model:width="entityDrawerWidth"
             show
             :header-style="headerGradient ? { backgroundImage: headerGradient, backgroundAttachment: 'fixed', borderBottom: 0 } : undefined"
+            :title="getValue(rawEntity?.name) || route.params.entityId"
             @close="onDrawerClose"
           >
             <template #header>
@@ -248,52 +277,68 @@ useEventListener(window, 'keydown', onPaletteKey)
         >
           <slot />
         </div>
-      </div>
+      </main>
 
-      <div
+      <main
         v-else
         class="grow overflow-y-auto py-2"
       >
         <slot />
-      </div>
+      </main>
     </n-layout>
 
     <!-- Mobile layout (< 768px): single-column stack navigation -->
     <template v-else>
       <div class="flex h-full flex-col">
         <!-- Mobile top bar -->
-        <div
+        <header
           class="relative flex items-center border-b border-slate-300/50 bg-slate-100 px-3 pb-4 text-slate-900 dark:border-slate-700/50 dark:bg-slate-800 dark:text-slate-100 print:hidden"
           style="padding-top: calc(env(safe-area-inset-top) + 1rem)"
         >
-          <my-icon
+          <button
             v-if="route.params.entityId && isQuery"
-            class="cursor-pointer text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
-            icon="arrow-left"
-            style="font-size: 1.5rem"
+            class="flex cursor-pointer text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+            type="button"
+            :aria-label="t('back')"
             @click="navigateTo({ path: `/${accountId}`, query: route.query })"
-          />
-          <img
-            v-else
-            class="h-6 w-auto cursor-pointer"
-            src="/logo.svg"
-            @click="navigateTo('/')"
           >
+            <my-icon
+              icon="arrow-left"
+              style="font-size: 1.5rem"
+            />
+          </button>
+          <nuxt-link
+            v-else
+            class="flex"
+            to="/"
+          >
+            <img
+              alt="Entu"
+              class="h-6 w-auto"
+              src="/logo.svg"
+            >
+          </nuxt-link>
 
           <span class="pointer-events-none absolute inset-x-0 text-center font-medium">
             {{ account?.name || 'Entu' }}
           </span>
 
-          <my-icon
-            class="ml-auto cursor-pointer text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
-            icon="menu"
-            style="font-size: 1.5rem"
+          <button
+            class="ml-auto flex cursor-pointer text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+            type="button"
+            :aria-expanded="showMobileMenu"
+            :aria-label="t('openMenu')"
             @click="showMobileMenu = true"
-          />
-        </div>
+          >
+            <my-icon
+              icon="menu"
+              style="font-size: 1.5rem"
+            />
+          </button>
+        </header>
 
         <!-- Content: show list OR detail, never both -->
-        <div
+        <main
           class="grow overflow-hidden"
           style="padding-bottom: env(safe-area-inset-bottom)"
         >
@@ -339,7 +384,7 @@ useEventListener(window, 'keydown', onPaletteKey)
           >
             <slot />
           </div>
-        </div>
+        </main>
       </div>
 
       <!-- Left-side nav overlay -->
@@ -347,24 +392,32 @@ useEventListener(window, 'keydown', onPaletteKey)
         v-model:show="showMobileMenu"
         class="print:hidden"
         placement="right"
+        :aria-label="t('menu')"
         :width="windowWidth"
       >
         <n-drawer-content body-content-class="p-0!">
           <div class="flex h-full flex-col bg-menu">
             <div class="flex items-center justify-between px-3 py-4">
-              <div
+              <button
                 class="cursor-pointer text-sm font-semibold text-slate-600 uppercase hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+                type="button"
+                :lang="locale === 'en' ? 'et' : 'en'"
                 @click="setMobileLanguage"
               >
                 {{ langLabel }}
-              </div>
+              </button>
 
-              <my-icon
-                class="cursor-pointer text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
-                icon="menu"
-                style="font-size: 1.5rem"
+              <button
+                class="flex cursor-pointer text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100"
+                type="button"
+                :aria-label="t('closeMenu')"
                 @click="showMobileMenu = false"
-              />
+              >
+                <my-icon
+                  icon="menu"
+                  style="font-size: 1.5rem"
+                />
+              </button>
             </div>
 
             <div class="grow overflow-y-auto">
@@ -381,6 +434,14 @@ useEventListener(window, 'keydown', onPaletteKey)
     <chat-drawer />
 
     <palette-command-palette />
+
+    <div
+      aria-live="polite"
+      class="sr-only"
+      role="status"
+    >
+      {{ announcement }}
+    </div>
   </div>
 </template>
 
@@ -388,7 +449,19 @@ useEventListener(window, 'keydown', onPaletteKey)
   en:
     updateContent: A new version of the Entu is available.
     updateBtn: Refresh
+    back: Back
+    menu: Menu
+    openMenu: Open Menu
+    closeMenu: Close Menu
+    collapseMenu: Collapse Menu
+    expandMenu: Expand Menu
   et:
     updateContent: Uus versioon Entust on saadaval.
     updateBtn: Värskenda
+    back: Tagasi
+    menu: Menüü
+    openMenu: Ava menüü
+    closeMenu: Sulge menüü
+    collapseMenu: Ahenda menüü
+    expandMenu: Laienda menüü
 </i18n>

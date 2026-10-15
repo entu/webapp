@@ -1,5 +1,5 @@
 <script setup>
-import { NEmpty, NSpin } from 'naive-ui'
+import { NEmpty } from 'naive-ui'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -40,6 +40,7 @@ const {
           :has-photo="!!entity.photo?.length"
         >
           <div
+            aria-hidden="true"
             class="list-item-img"
             :style="{ backgroundColor: derivedColor(entity._id) }"
           >
@@ -57,7 +58,7 @@ const {
       v-if="isLoading && !isLoadingOnScroll"
       class="flex size-full items-center justify-center"
     >
-      <n-spin />
+      <my-spinner />
     </div>
 
     <entity-list-loading
@@ -70,6 +71,7 @@ const {
     <div
       v-if="entitiesCount === 0"
       class="flex size-full items-center justify-center"
+      role="status"
     >
       <n-empty :description="t('noResults')" />
     </div>
@@ -84,7 +86,7 @@ const {
   @apply flex items-center gap-3;
   @apply hover:bg-slate-900/5 dark:hover:bg-white/5;
   @apply hover:border-y border-transparent;
-  @apply focus:outline-none focus-visible:outline-none;
+  @apply focus:outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-blue-900 dark:focus-visible:outline-blue-300;
   touch-action: manipulation;
 }
 

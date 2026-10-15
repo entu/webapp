@@ -175,6 +175,7 @@ onUnmounted(() => {
           <n-input
             v-model:value="searchText"
             round
+            :input-props="{ 'aria-label': t('search'), 'type': 'search' }"
             :placeholder="t('search')"
           >
             <template #prefix>
@@ -189,10 +190,15 @@ onUnmounted(() => {
                 v-if="!isMobile"
                 :text="t('commandPalette')"
               >
-                <span
+                <button
+                  aria-keyshortcuts="Meta+K Control+K"
                   class="cursor-pointer text-xs font-medium whitespace-nowrap text-slate-600 dark:text-slate-300"
+                  type="button"
+                  :aria-label="t('commandPalette')"
                   @click="paletteStore.open(searchText)"
-                >{{ paletteKeyHint }}</span>
+                >
+                  {{ paletteKeyHint }}
+                </button>
               </my-tooltip>
             </template>
           </n-input>
