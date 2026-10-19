@@ -1,10 +1,10 @@
 ## 2026-10-15
 - **Accessibility**: Buttons, fields, icons and images are now named for screen readers, controls work with the keyboard, and loading, results and chat replies are announced.
+- **Better thumbnails**: WebP, AVIF and HEIC (iPhone) images now get thumbnails, and transparent images show on white instead of black.
 
 ## 2026-10-14
 - **Created and changed**: Hover the entity type tag to see when and by whom the entity was created and last changed.
 - **Tooltips**: Every icon-only button now shows a tooltip.
-- **Better thumbnails**: WebP images now get thumbnails, and transparent images show on white instead of black.
 
 ## 2026-10-13
 - **Dark mode**: Entu now follows your system's dark mode, with a dark slate look and a glassy side menu.
