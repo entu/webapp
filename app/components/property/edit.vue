@@ -54,13 +54,6 @@ const fileList = computed(() => props.type === 'file'
 // Controlled upload list, so saving a file's metadata doesn't remount n-upload and drop the progress of uploads in flight.
 const uploadFileList = ref([])
 
-watch([fileList, newFiles], ([files]) => {
-  const sessionFiles = uploadFileList.value.filter((x) => x.status !== 'finished' || newFiles.value[x.id])
-  const sessionIds = new Set(Object.values(newFiles.value))
-
-  uploadFileList.value = [...files.filter((x) => !sessionIds.has(x.id)), ...sessionFiles]
-}, { immediate: true, deep: true })
-
 watch(() => props.values, () => {
   oldValues.value = cloneData(props.values.map((x) => {
     if (x.date) {
@@ -76,6 +69,14 @@ watch(() => props.values, () => {
   newValues.value = cloneData(oldValues.value)
 
   manageEmptyFields()
+}, { immediate: true, deep: true })
+
+// Runs after the values watcher above, as fileList needs newValues to be set.
+watch([fileList, newFiles], ([files]) => {
+  const sessionFiles = uploadFileList.value.filter((x) => x.status !== 'finished' || newFiles.value[x.id])
+  const sessionIds = new Set(Object.values(newFiles.value))
+
+  uploadFileList.value = [...files.filter((x) => !sessionIds.has(x.id)), ...sessionFiles]
 }, { immediate: true, deep: true })
 
 function isEmptyValue (value) {
