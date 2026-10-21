@@ -1,5 +1,8 @@
 ## 2026-10-21
 - **Files**: Uploads show a progress bar again, and long file names end in "…" instead of running off the page, keeping the file size visible.
+- **Entity type changes reach existing entities**: Changing an entity type's or property's sharing, search or formula now updates every existing entity of that type in the background, instead of only those saved afterwards.
+- **Update from source**: Import plugins like Ester, Open Library or Discogs can now update an existing entity — they show current and source values side by side, and you choose for each property what to keep, overwrite, add or delete.
+- **CSV updates**: Map a CSV column to `_id` to update existing entities instead of creating new ones, and optionally delete the values of properties not mapped to any column.
 
 ## 2026-10-15
 - **Accessibility**: Buttons, fields, icons and images are now named for screen readers, controls work with the keyboard, and loading, results and chat replies are announced.
