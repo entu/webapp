@@ -20,9 +20,9 @@ const NuxtLink = resolveComponent('NuxtLink')
     :to="to"
   >
     <n-tag
-      class="max-w-full [&_.n-tag\_\_content]:min-w-0 [&_.n-tag\_\_content]:truncate"
+      class="max-w-full"
       round
-      :class="[tagClass, { 'cursor-pointer! **:cursor-pointer!': to }]"
+      :class="tagClass"
       :size="small ? 'small' : 'medium'"
     >
       <template
@@ -49,3 +49,18 @@ const NuxtLink = resolveComponent('NuxtLink')
     </n-tag>
   </component>
 </template>
+
+<style scoped>
+@reference "tailwindcss";
+
+/* Long tag text ends in an ellipsis instead of overflowing the tag. */
+.n-tag :deep(.n-tag__content) {
+  @apply min-w-0 truncate;
+}
+
+/* Linked tags show a pointer over every part, as naive-ui gives the tag a default cursor. */
+a > .n-tag,
+a > .n-tag :deep(*) {
+  @apply cursor-pointer!;
+}
+</style>

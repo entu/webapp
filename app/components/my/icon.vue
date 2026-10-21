@@ -17,11 +17,3 @@ const iconName = computed(() => props.icon.includes(':') ? props.icon : `local:$
     :role="label ? 'img' : undefined"
   />
 </template>
-
-<style>
-@reference "tailwindcss";
-
-:deep(svg) {
-  @apply m-0;
-}
-</style>

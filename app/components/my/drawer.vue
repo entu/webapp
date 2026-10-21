@@ -53,6 +53,7 @@ onKeyStroke('Escape', close)
   >
     <n-drawer-content
       body-content-class="p-0!"
+      footer-class="max-md:px-3!"
       header-class="w-full p-2!"
       :header-style="headerStyle"
     >
@@ -94,25 +95,6 @@ onKeyStroke('Escape', close)
     </n-drawer-content>
   </n-drawer>
 </template>
-
-<style>
-@reference "tailwindcss";
-
-.n-drawer-header__main {
-  @apply w-full;
-}
-
-@media (max-width: 767px) {
-  .n-drawer-header {
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-  }
-  .n-drawer-footer {
-    padding-left: 12px !important;
-    padding-right: 12px !important;
-  }
-}
-</style>
 
 <i18n lang="yaml">
   en:

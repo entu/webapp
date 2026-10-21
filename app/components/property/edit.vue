@@ -568,6 +568,7 @@ const { copy } = useClipboard()
       <n-input
         v-else-if="type === 'text'"
         v-model:value="value.string"
+        class="w-full"
         placeholder=""
         role="group"
         type="textarea"

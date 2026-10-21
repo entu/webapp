@@ -63,9 +63,9 @@ onMounted(async () => {
 <template>
   <div v-if="selected">
     <n-tabs
-      class="mb-2 [&_.n-tabs-nav]:flex-wrap [&_.n-tabs-nav]:justify-between [&_.n-tabs-nav]:gap-y-2 [&_.n-tabs-nav\_\_suffix]:ml-auto [&_.n-tabs-rail]:max-w-full [&_.n-tabs-rail]:overflow-x-auto [&_.n-tabs-tab]:px-4!"
+      class="mb-2"
       type="segment"
-      :class="{ '[&_.n-tabs-rail]:w-fit! [&_.n-tabs-tab-wrapper]:flex-none!': !narrow }"
+      :data-narrow="narrow || undefined"
       :theme-overrides="{ tabBorderRadius: '9999px' }"
       :value="selected.key"
       @update:value="onTabChange($event)"
@@ -127,6 +127,35 @@ onMounted(async () => {
     />
   </div>
 </template>
+
+<style scoped>
+@reference "tailwindcss";
+
+.n-tabs :deep(.n-tabs-nav) {
+  @apply flex-wrap justify-between gap-y-2;
+}
+
+.n-tabs :deep(.n-tabs-nav__suffix) {
+  @apply ml-auto;
+}
+
+.n-tabs :deep(.n-tabs-rail) {
+  @apply max-w-full overflow-x-auto;
+}
+
+.n-tabs :deep(.n-tabs-tab) {
+  @apply px-4!;
+}
+
+/* Wide panels keep the tabs at their own width instead of stretching them across the rail. */
+.n-tabs:not([data-narrow]) :deep(.n-tabs-rail) {
+  @apply w-fit!;
+}
+
+.n-tabs:not([data-narrow]) :deep(.n-tabs-tab-wrapper) {
+  @apply flex-none!;
+}
+</style>
 
 <i18n lang="yaml">
   en:

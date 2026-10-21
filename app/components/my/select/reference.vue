@@ -91,6 +91,7 @@ function renderReferenceOption (option) {
     remote
     :input-props="{ 'aria-label': label }"
     :loading="searchingReferences"
+    :menu-props="{ class: 'reference-select-menu' }"
     :options="referenceOptions"
     :render-label="renderReferenceOption"
     @search="searchReferences"
@@ -130,7 +131,8 @@ function renderReferenceOption (option) {
 <style>
 @reference "tailwindcss";
 
-.n-base-select-option__content {
+/* The menu is teleported out of this component, so scoped styles can't reach it; the menu class keeps this rule to reference selects. */
+.reference-select-menu .n-base-select-option__content {
   @apply w-full;
 }
 </style>
