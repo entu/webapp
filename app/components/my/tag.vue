@@ -20,7 +20,7 @@ const NuxtLink = resolveComponent('NuxtLink')
     :to="to"
   >
     <n-tag
-      class="max-w-full"
+      class="max-w-full [&_.n-tag\_\_content]:min-w-0 [&_.n-tag\_\_content]:truncate"
       round
       :class="[tagClass, { 'cursor-pointer! **:cursor-pointer!': to }]"
       :size="small ? 'small' : 'medium'"

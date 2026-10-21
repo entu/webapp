@@ -1,3 +1,6 @@
+## 2026-10-21
+- **Files**: Uploads show a progress bar again, and long file names end in "…" instead of running off the page, keeping the file size visible.
+
 ## 2026-10-15
 - **Accessibility**: Buttons, fields, icons and images are now named for screen readers, controls work with the keyboard, and loading, results and chat replies are announced.
 - **Better thumbnails**: WebP, AVIF and HEIC (iPhone) images now get thumbnails, and transparent images show on white instead of black.

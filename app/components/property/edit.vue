@@ -51,7 +51,15 @@ const fileList = computed(() => props.type === 'file'
   : []
 )
 
-const uploadKey = computed(() => fileList.value.map((x) => x.id).join('|') || '0')
+// Controlled upload list, so saving a file's metadata doesn't remount n-upload and drop the progress of uploads in flight.
+const uploadFileList = ref([])
+
+watch([fileList, newFiles], ([files]) => {
+  const sessionFiles = uploadFileList.value.filter((x) => x.status !== 'finished' || newFiles.value[x.id])
+  const sessionIds = new Set(Object.values(newFiles.value))
+
+  uploadFileList.value = [...files.filter((x) => !sessionIds.has(x.id)), ...sessionFiles]
+}, { immediate: true, deep: true })
 
 watch(() => props.values, () => {
   oldValues.value = cloneData(props.values.map((x) => {
@@ -358,13 +366,13 @@ async function uploadFile ({ file, onProgress, onFinish, onError }) {
     return
   }
 
+  newFiles.value[file.id] = property._id
+
   try {
     await uploadBlob(file.file, property.upload, onProgress)
 
     file._id = property._id
     file.url = `/${accountId.value}/file/${property._id}`
-
-    newFiles.value[file.id] = property._id
 
     onFinish()
   }
@@ -404,16 +412,15 @@ const { copy } = useClipboard()
       class="w-full"
     >
       <n-upload
-        :key="uploadKey"
+        v-model:file-list="uploadFileList"
         abstract
         :custom-request="uploadFile"
-        :default-file-list="fileList"
         :multiple="isList"
         :show-cancel-button="false"
         @remove="({ file }) => deleteFile(file)"
       >
         <n-upload-file-list
-          v-if="fileList.length > 0"
+          v-if="uploadFileList.length > 0"
           class="w-full text-sm"
         />
 

@@ -12,7 +12,7 @@ const visibleProperties = computed(() => props.properties.filter((x) => x.mandat
     <div
       v-for="property in visibleProperties"
       :key="property.name"
-      class="grid grid-cols-1 border-t border-slate-200 py-1 first-of-type:border-t-0 md:grid-cols-[140px_1fr] md:gap-4 dark:border-slate-800"
+      class="grid grid-cols-1 border-t border-slate-200 py-1 first-of-type:border-t-0 md:grid-cols-[140px_minmax(0,1fr)] md:gap-4 dark:border-slate-800"
     >
       <property-label
         class="pt-1 md:justify-end md:pt-0.5 md:text-right"

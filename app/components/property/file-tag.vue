@@ -58,8 +58,16 @@ watch(() => isPreviewableFile(props.value), (previewable) => {
       </n-popover>
     </template>
 
-    {{ value.filename || value._id }}<template v-if="value.filesize">
-      · {{ humanFileSize(n, value.filesize) }}
-    </template>
+    <!-- Long names truncate while the file size stays visible. -->
+    <span class="flex min-w-0">
+      <span
+        class="truncate"
+        :title="value.filename"
+      >{{ value.filename || value._id }}</span>
+      <span
+        v-if="value.filesize"
+        class="shrink-0 whitespace-pre"
+      > · {{ humanFileSize(n, value.filesize) }}</span>
+    </span>
   </my-tag>
 </template>
