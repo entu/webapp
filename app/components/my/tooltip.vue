@@ -2,7 +2,9 @@
 import { NPopover } from 'naive-ui'
 import { cloneVNode } from 'vue'
 
-defineProps({
+// Disabled keeps the popover mounted without showing it, so toggling it doesn't remount the slotted element.
+const props = defineProps({
+  disabled: { type: Boolean, default: false },
   text: { type: String, default: undefined }
 })
 
@@ -12,7 +14,7 @@ const { isMobile } = useIsMobile()
 const isHovered = ref(false)
 const isFocused = ref(false)
 
-const isShown = computed(() => !isMobile.value && (isHovered.value || isFocused.value))
+const isShown = computed(() => !props.disabled && !isMobile.value && (isHovered.value || isFocused.value))
 
 function onMouseenter () {
   isHovered.value = true

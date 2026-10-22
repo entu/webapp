@@ -68,69 +68,33 @@ function handleAdvancedSearch (advancedQuery) {
 }
 
 const toolbarRef = useTemplateRef('toolbarRef')
-const { width: windowWidth } = useWindowSize()
 const { isMobile } = useIsMobile()
 
 const isOverflowing = ref(true)
-const minWidthForLabels = ref(0)
-const isMeasuring = ref(true)
+const isAnimated = ref(false)
 
 let resizeObserver = null
 
-const checkOverflow = useDebounceFn(() => {
-  if (!toolbarRef.value) return
-
-  isMeasuring.value = true
-
+// Labels fit when the items, with every label at full width, fit in the toolbar; a collapsed label still reports its full width as scrollWidth.
+function updateOverflow () {
   const element = toolbarRef.value
 
-  if (isOverflowing.value) {
-    isOverflowing.value = false
+  if (!element) return
 
-    nextTick(() => {
-      if (!toolbarRef.value) return
+  const items = [...element.children]
+  const gap = Number.parseFloat(getComputedStyle(element).columnGap) || 0
+  const itemsWidth = items.reduce((sum, item) => sum + item.getBoundingClientRect().width, 0) + gap * Math.max(items.length - 1, 0)
+  const hiddenWidth = [...element.querySelectorAll('[data-button-label]')].reduce((sum, label) => sum + label.scrollWidth - label.clientWidth, 0)
 
-      const fitsWithLabels = toolbarRef.value.scrollWidth <= toolbarRef.value.clientWidth
+  isOverflowing.value = itemsWidth + hiddenWidth > element.clientWidth
+}
 
-      if (fitsWithLabels) {
-        // Labels fit! Store this width as minimum needed
-        minWidthForLabels.value = windowWidth.value
-      }
-      else {
-        // Labels don't fit - go back to small buttons
-        isOverflowing.value = true
-        minWidthForLabels.value = windowWidth.value + 100
-      }
-    })
-  }
-  else {
-    // Currently showing labels - check if they still fit
-    const stillFits = element.scrollWidth <= element.clientWidth
-
-    if (stillFits) {
-      // Labels still fit - update our minimum width requirement
-      minWidthForLabels.value = Math.min(minWidthForLabels.value, windowWidth.value)
-    }
-    else {
-      // Labels no longer fit - switch to small buttons
-      isOverflowing.value = true
-      minWidthForLabels.value = windowWidth.value + 50
-    }
-  }
-
-  isMeasuring.value = false
-}, 200)
+const checkOverflow = useDebounceFn(updateOverflow, 100)
 
 const menuStore = useMenuStore()
 const { activeMenu } = storeToRefs(menuStore)
 
 const addByActiveMenuOptions = computed(() => activeMenu.value?.addFrom || [])
-
-watch(windowWidth, (newWidth) => {
-  if (isOverflowing.value && newWidth <= minWidthForLabels.value) return
-
-  checkOverflow()
-})
 
 watch(right, () => {
   checkOverflow()
@@ -139,10 +103,15 @@ watch(right, () => {
 onMounted(() => {
   if (!toolbarRef.value) return
 
+  updateOverflow()
+
+  // The first measured state shows without animation; transitions start once that frame is painted.
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    isAnimated.value = true
+  }))
+
   resizeObserver = new ResizeObserver(checkOverflow)
   resizeObserver.observe(toolbarRef.value)
-
-  nextTick(checkOverflow)
 })
 
 onUnmounted(() => {
@@ -159,7 +128,7 @@ onUnmounted(() => {
       ref="toolbarRef"
       class="flex items-center gap-2"
       :class="{
-        'opacity-0': isMeasuring,
+        '**:transition-none!': !isAnimated,
         'on-color': gradient || onColor,
       }"
     >
@@ -213,7 +182,8 @@ onUnmounted(() => {
       </div>
 
       <template v-if="part !== 'search'">
-        <div class="grow">
+        <!-- An auto margin instead of grow keeps this item at its content width, so the overflow check can sum the items. -->
+        <div class="mr-auto">
           <entity-toolbar-add
             :options="addByActiveMenuOptions"
             :show-label="!isOverflowing"

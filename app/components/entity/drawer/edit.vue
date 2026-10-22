@@ -264,13 +264,16 @@ async function onClose () {
         :positive-text="t('delete')"
         @positive-click="onDelete()"
       >
+        <!-- A real element as trigger, since the button's tooltip root is a popover the popconfirm can't bind to -->
         <template #trigger>
-          <my-button
-            type="error"
-            :bg="false"
-            :disabled="isUpdating"
-            :label="t('deleteEntity')"
-          />
+          <span class="inline-flex">
+            <my-button
+              type="error"
+              :bg="false"
+              :disabled="isUpdating"
+              :label="t('deleteEntity')"
+            />
+          </span>
         </template>
 
         <template #icon>
