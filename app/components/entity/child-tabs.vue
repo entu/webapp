@@ -75,8 +75,25 @@ onMounted(async () => {
         :key="group.key"
         :name="group.key"
       >
-        {{ group.label }}
-        <span class="ml-1.5 text-slate-400 dark:text-slate-500">{{ group.count }}</span>
+        <span class="flex items-center gap-1.5">
+          <my-icon
+            class="text-slate-400 dark:text-slate-500"
+            :icon="group.type === 'child' ? 'folder-tree' : 'link'"
+            :label="t(group.type === 'child' ? 'childEntities' : 'referringEntities')"
+          />
+
+          <!-- An invisible bold copy reserves the active width, so the rail keeps its size and the pill can slide -->
+          <span class="grid">
+            <span class="invisible col-start-1 row-start-1 font-(--n-font-weight-strong)">
+              {{ group.label }}
+              <span class="ml-1.5">{{ group.count }}</span>
+            </span>
+            <span class="col-start-1 row-start-1">
+              {{ group.label }}
+              <span class="ml-1.5 text-slate-400 dark:text-slate-500">{{ group.count }}</span>
+            </span>
+          </span>
+        </span>
       </n-tab>
 
       <template #suffix>
@@ -163,9 +180,13 @@ onMounted(async () => {
     pageSizeLabel: Rows per Page
     previousPage: Previous Page
     nextPage: Next Page
+    childEntities: Child entities
+    referringEntities: Entities referring to this one
   et:
     pageSize: '{n} / lk'
     pageSizeLabel: Ridu lehel
     previousPage: Eelmine lehekülg
     nextPage: Järgmine lehekülg
+    childEntities: Alam-objektid
+    referringEntities: Sellele objektile viitavad objektid
 </i18n>
