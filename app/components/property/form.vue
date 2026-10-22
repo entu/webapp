@@ -1,6 +1,6 @@
 <script setup>
 const entityId = defineModel('entityId', { type: String, default: undefined })
-const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
+const entityParentIds = defineModel('entityParentIds', { type: Array, default: () => [] })
 const entityTypeId = defineModel('entityTypeId', { type: String, default: undefined })
 const isUpdating = defineModel('isUpdating', { type: Boolean, default: false })
 
@@ -35,7 +35,7 @@ defineProps({
 
       <property-edit
         v-model:entity-id="entityId"
-        v-model:entity-parent-id="entityParentId"
+        v-model:entity-parent-ids="entityParentIds"
         v-model:entity-type-id="entityTypeId"
         v-model:is-updating="isUpdating"
         class="col-span-2 min-w-0 pt-0 pb-1 md:col-span-1 md:py-1"

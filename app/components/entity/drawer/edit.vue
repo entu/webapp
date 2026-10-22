@@ -9,11 +9,12 @@ const emit = defineEmits(['close', 'delete'])
 
 const show = defineModel('show', { type: Boolean, default: false })
 const entityId = defineModel('entityId', { type: String, default: undefined })
-const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
+const entityParentIds = defineModel('entityParentIds', { type: Array, default: () => [] })
 const entityTypeId = defineModel('entityTypeId', { type: String, default: undefined })
 
-defineProps({
-  canDelete: { type: Boolean, default: false }
+const props = defineProps({
+  canDelete: { type: Boolean, default: false },
+  isChild: { type: Boolean, default: false }
 })
 
 const entityTypeStore = useEntityTypeStore()
@@ -30,13 +31,13 @@ let requestId = 0
 const typeId = computed(() => entityTypeId.value || getValue(rawEntity.value?._type, 'reference'))
 
 const title = computed(() => {
-  if (entityParentId.value) {
+  if (props.isChild) {
     return t('titleChild', { name: entity.value.type?.label?.toLowerCase() })
   }
-  if (!entityParentId.value && entityTypeId.value) {
+  if (entityTypeId.value) {
     return t('titleAdd', { name: entity.value.type?.label?.toLowerCase() })
   }
-  if (!entityParentId.value && entityId.value) {
+  if (entityId.value) {
     return t('titleEdit', { name: entity.value.type?.label?.toLowerCase() })
   }
 
@@ -53,8 +54,8 @@ const plugins = computed(() => entityType.value?.plugins?.filter((x) => x.type =
   if (entityId.value) {
     url.searchParams.append('entity', entityId.value)
   }
-  if (entityParentId.value) {
-    url.searchParams.append('parent', entityParentId.value)
+  if (entityParentIds.value?.length) {
+    url.searchParams.append('parent', entityParentIds.value.join(','))
   }
   if (entityTypeId.value) {
     url.searchParams.append('type', entityTypeId.value)
@@ -227,7 +228,7 @@ async function onClose () {
 
           <property-form
             v-model:entity-id="entityId"
-            v-model:entity-parent-id="entityParentId"
+            v-model:entity-parent-ids="entityParentIds"
             v-model:entity-type-id="entityTypeId"
             v-model:is-updating="isUpdating"
             :entity-sharing="entity._sharing"

@@ -1,3 +1,7 @@
+## 2026-10-22
+- **Menus decide what to create**: A menu's "New …" button now lists the entity types set in the menu's `add_entity`, and entities created from it are added under the parents set in its `add_parent`.
+- **Child and referring entities**: The tabs below an entity now mark child entities with a folder tree icon and entities referring to it with a link icon, and the selected tab slides smoothly between them.
+
 ## 2026-10-21
 - **Update from source**: Import plugins like Ester, Open Library or Discogs can now update an existing entity — they show current and source values side by side, and you choose for each property what to keep, overwrite, add or delete.
 - **CSV updates**: Map a CSV column to `_id` to update existing entities instead of creating new ones, and optionally delete the values of properties not mapped to any column.

@@ -102,7 +102,7 @@ const createRows = computed(() => {
     return []
   }
 
-  const options = activeMenu.value?.addFrom || []
+  const options = activeMenu.value?.addEntities || []
 
   return options.map((option) => withFoldedTitle({
     id: `new-${option.value}`,

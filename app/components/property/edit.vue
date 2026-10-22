@@ -2,7 +2,7 @@
 import { NDatePicker, NInput, NInputNumber, NSelect, NSwitch, NUpload, NUploadTrigger, NUploadFileList } from 'naive-ui'
 
 const entityId = defineModel('entityId', { type: String, default: undefined })
-const entityParentId = defineModel('entityParentId', { type: String, default: undefined })
+const entityParentIds = defineModel('entityParentIds', { type: Array, default: () => [] })
 const entityTypeId = defineModel('entityTypeId', { type: String, default: undefined })
 const isUpdating = defineModel('isUpdating', { type: Boolean, default: false })
 
@@ -267,10 +267,10 @@ async function updateValue (newValue) {
 }
 
 async function addEntity (properties) {
-  if (entityParentId.value) {
+  for (const parentId of entityParentIds.value ?? []) {
     properties.push({
       type: '_parent',
-      reference: entityParentId.value
+      reference: parentId
     })
   }
 

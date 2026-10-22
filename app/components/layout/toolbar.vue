@@ -94,7 +94,7 @@ const checkOverflow = useDebounceFn(updateOverflow, 100)
 const menuStore = useMenuStore()
 const { activeMenu } = storeToRefs(menuStore)
 
-const addByActiveMenuOptions = computed(() => activeMenu.value?.addFrom || [])
+const addByActiveMenuOptions = computed(() => activeMenu.value?.addEntities || [])
 
 watch(right, () => {
   checkOverflow()

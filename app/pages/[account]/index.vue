@@ -5,6 +5,9 @@ const { t } = useI18n()
 const { accountId, showMobileMenu } = useAccount()
 const { userId } = useUser()
 
+const menuStore = useMenuStore()
+const { activeMenu } = storeToRefs(menuStore)
+
 const stats = ref()
 const isLoading = ref(false)
 const newEntityId = ref()
@@ -118,6 +121,7 @@ onMounted(async () => {
     <entity-drawer-edit
       v-model:entity-id="newEntityId"
       v-model:show="showAddDrawer"
+      :entity-parent-ids="activeMenu?.addParents"
       :entity-type-id="addTypeId"
     />
   </div>

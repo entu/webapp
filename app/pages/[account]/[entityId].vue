@@ -9,6 +9,9 @@ const { userId } = useUser()
 const entityTypeStore = useEntityTypeStore()
 const { entityTypes } = storeToRefs(entityTypeStore)
 
+const menuStore = useMenuStore()
+const { activeMenu } = storeToRefs(menuStore)
+
 const contentRef = useTemplateRef('contentRef')
 const { width: contentWidth } = useElementSize(contentRef)
 const isNarrow = computed(() => contentWidth.value < 500)
@@ -350,12 +353,14 @@ onUnmounted(() => {
     <entity-drawer-edit
       v-model:entity-id="newEntityId"
       v-model:show="showAddDrawer"
+      :entity-parent-ids="activeMenu?.addParents"
       :entity-type-id="addTypeId"
     />
     <entity-drawer-edit
       v-model:entity-id="newEntityId"
       v-model:show="showChildDrawer"
-      :entity-parent-id="entityId"
+      is-child
+      :entity-parent-ids="[entityId]"
       :entity-type-id="addTypeId"
     />
     <entity-drawer-edit

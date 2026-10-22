@@ -28,7 +28,9 @@ export const useMenuStore = defineStore('menu', () => {
         'ordinal.number',
         'group',
         'name',
-        'query.string'
+        'query.string',
+        'add_entity.reference',
+        'add_parent.reference'
       ].join(',')
     })
 
@@ -42,9 +44,32 @@ export const useMenuStore = defineStore('menu', () => {
       ].join(',')
     })
 
-    for (const entity of menuResult.value.entities ?? []) {
-      entity.addFrom = addFromEntities.value?.filter((x) => x.addFrom?.includes(entity._id))
+    const typeLabels = await getTypeLabels(menuEntities.value)
+
+    for (const entity of menuEntities.value) {
+      entity.addEntities = getUniqueReferences(entity.add_entity)
+        .filter((x) => typeLabels[x])
+        .map((x) => ({ value: x, label: typeLabels[x] }))
+        .sort((a, b) => a.label.localeCompare(b.label))
+
+      entity.addParents = getUniqueReferences(entity.add_parent)
     }
+  }
+
+  // Labels for every menu's add_entity types, reusing add_from types and fetching the rest by id.
+  async function getTypeLabels (menus) {
+    const labels = Object.fromEntries(addFromEntities.value.map((x) => [x.value, x.label]))
+    const missingIds = [...new Set(menus?.flatMap((x) => getUniqueReferences(x.add_entity)) ?? [])].filter((x) => !labels[x])
+
+    const types = await Promise.all(missingIds.map((x) => apiGetEntity(x, ['name', 'label']).catch(() => {})))
+
+    for (const type of types) {
+      if (!type?._id) continue
+
+      labels[type._id] = getValue(type.label) || getValue(type.name)
+    }
+
+    return labels
   }
 
   watch(accountId, get, { immediate: true })
@@ -62,3 +87,8 @@ export const useMenuStore = defineStore('menu', () => {
     get
   }
 })
+
+// Distinct reference ids of a reference property's values.
+function getUniqueReferences (values) {
+  return [...new Set(values?.map((x) => x.reference).filter(Boolean) ?? [])]
+}
