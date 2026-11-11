@@ -145,8 +145,8 @@ async function decide (accounts) {
 <i18n lang="yaml">
   en:
     title: Share Databases
-    description: '{host} wants access to the databases you pick, with your rights.'
-    descriptionNamed: '{host}, calling itself {client}, wants access to the databases you pick, with your rights.'
+    description: '{host} wants to read and change the databases you pick, with your rights.'
+    descriptionNamed: '{host}, calling itself {client}, wants to read and change the databases you pick, with your rights.'
     noDatabases: You are not a user in any database, so there is nothing to share.
     allow: Allow
     deny: Deny
@@ -155,8 +155,8 @@ async function decide (accounts) {
     home: Go to Entu
   et:
     title: Jaga andmebaase
-    description: '{host} soovib ligipääsu sinu valitud andmebaasidele sinu õigustega.'
-    descriptionNamed: '{host}, mis nimetab end {client}, soovib ligipääsu sinu valitud andmebaasidele sinu õigustega.'
+    description: '{host} soovib sinu õigustega lugeda ja muuta sinu valitud andmebaase.'
+    descriptionNamed: '{host}, mis nimetab end {client}, soovib sinu õigustega lugeda ja muuta sinu valitud andmebaase.'
     noDatabases: Sa ei ole üheski andmebaasis kasutaja, seega pole midagi jagada.
     allow: Luba
     deny: Keela

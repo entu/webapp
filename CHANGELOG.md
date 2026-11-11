@@ -1,4 +1,5 @@
 ## 2026-11-11
+- **AI connectors can change data**: Claude, ChatGPT and other MCP clients can now create entity types, property definitions and entities, change values, and delete values and entities, with your own rights; the client asks you before each change. The AI assistant can now delete entities too. Both refuse to delete an entity that still has child entities, or an entity type that entities still use. Connectors you have already connected get these tools too.
 - **One AI connector for several databases**: Connect Claude, ChatGPT or another MCP client to `https://mcp.entu.app` and pick on Entu which of your databases it may read. Signing in for a connector or any other app now shows Entu's own sign-in choices, passkey included, and always asks you to confirm which databases the app gets. Databases you can open only through Entu support access are never offered.
 
 ## 2026-11-09
