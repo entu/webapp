@@ -12,11 +12,12 @@ defineProps({
 </script>
 
 <template>
-  <div>
+  <!-- Rows share one grid via subgrid, so a row with more hint icons doesn't shift its label and field columns -->
+  <div class="grid grid-cols-[1fr_auto] gap-x-2 md:grid-cols-[1fr_2fr_auto] md:gap-x-4">
     <div
       v-for="property in properties"
       :key="property.name"
-      class="grid grid-cols-[1fr_auto] items-start gap-x-2 pt-3 first-of-type:pt-0 md:grid-cols-[1fr_2fr_auto] md:gap-x-4 md:border-t md:border-slate-200 md:pt-0 md:first-of-type:border-t-0 md:dark:border-slate-800"
+      class="col-span-full grid grid-cols-subgrid items-start pt-3 first-of-type:pt-0 md:border-t md:border-slate-200 md:pt-0 md:first-of-type:border-t-0 md:dark:border-slate-800"
     >
       <property-label
         class="pt-1 pb-0 font-medium md:justify-end md:py-2 md:text-right"
@@ -29,7 +30,7 @@ defineProps({
 
       <!-- On the label's line on mobile, after the field from md up -->
       <property-hints
-        class="gap-1 pt-2 opacity-60 hover:opacity-100 md:order-last md:pt-3.5"
+        class="justify-end gap-1 pt-2 opacity-60 hover:opacity-100 md:order-last md:pt-3.5"
         :entity-sharing="entitySharing"
         :property="property"
       />
