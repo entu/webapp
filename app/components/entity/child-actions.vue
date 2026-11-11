@@ -12,10 +12,11 @@ const emit = defineEmits(['refresh'])
 
 const { t } = useI18n()
 const { userId } = useUser()
+const { isSupport } = useAccount()
 const { isMobile } = useIsMobile()
 
-const isOwner = computed(() => props.owner?.some((x) => x.reference === userId.value) || false)
-const isEditor = computed(() => props.owner?.some((x) => x.reference === userId.value) || props.editor?.some((x) => x.reference === userId.value) || false)
+const isOwner = computed(() => isSupport.value || props.owner?.some((x) => x.reference === userId.value) || false)
+const isEditor = computed(() => isOwner.value || props.editor?.some((x) => x.reference === userId.value) || false)
 
 const showEditDrawer = ref(false)
 const showDuplicateDrawer = ref(false)

@@ -5,9 +5,9 @@ const nuxtApp = useNuxtApp()
 const notification = useNotification()
 
 const route = useRoute()
-const { t } = useI18n()
+const { d, t } = useI18n()
 
-const { account, accountId, showMobileMenu } = useAccount()
+const { account, accountId, isSupport, showMobileMenu } = useAccount()
 const { menuCollapsed, listWidth, showTable } = useUser()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 const langLabel = computed(() => locale.value === 'en' ? 'Eesti keel' : 'English')
@@ -431,6 +431,17 @@ useEventListener(window, 'keydown', onPaletteKey)
       </n-drawer>
     </template>
 
+    <!-- Entu support works in someone else's database: an orange edge around the page and when its access ends -->
+    <template v-if="isSupport">
+      <div class="pointer-events-none fixed inset-0 z-50 ring-4 ring-orange-500 ring-inset dark:ring-orange-400 print:hidden" />
+      <div
+        class="pointer-events-none fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-orange-500 px-4 py-1 text-sm font-medium whitespace-nowrap text-white shadow-lg dark:bg-orange-400 dark:text-slate-950 print:hidden"
+        role="status"
+      >
+        {{ t('supportUntil', { date: d(new Date(account.until), 'datetime') }) }}
+      </div>
+    </template>
+
     <chat-drawer />
 
     <palette-command-palette />
@@ -455,6 +466,7 @@ useEventListener(window, 'keydown', onPaletteKey)
     closeMenu: Close Menu
     collapseMenu: Collapse Menu
     expandMenu: Expand Menu
+    supportUntil: "Support access until {date}"
   et:
     updateContent: Uus versioon Entust on saadaval.
     updateBtn: Värskenda
@@ -464,4 +476,5 @@ useEventListener(window, 'keydown', onPaletteKey)
     closeMenu: Sulge menüü
     collapseMenu: Ahenda menüü
     expandMenu: Laienda menüü
+    supportUntil: "Kasutajatoe ligipääs kuni {date}"
 </i18n>

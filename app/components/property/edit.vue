@@ -11,6 +11,7 @@ const props = defineProps({
   disabled: { type: Boolean, default: false },
   isList: { type: Boolean, default: false },
   isMultilingual: { type: Boolean, default: false },
+  isOwner: { type: Boolean, default: false },
   label: { type: String, default: undefined },
   property: { type: String, default: undefined },
   referenceQuery: { type: String, default: undefined },
@@ -20,7 +21,7 @@ const props = defineProps({
 })
 
 const { locale, t } = useI18n()
-const { accountId } = useAccount()
+const { accountId, isSupport } = useAccount()
 const { userId } = useUser()
 
 const newFiles = ref({})
@@ -37,6 +38,10 @@ const languageOptions = [
 const setOptions = computed(() => [...props.set].sort().map((x) => ({ value: x, label: x })))
 const referenceOptions = computed(() => props.values.filter((x) => x._id !== undefined).map((x) => ({ value: x.reference, label: x.string })))
 const isOwnEntity = computed(() => userId.value === entityId.value)
+const isCredential = computed(() => ['entu_user', 'entu_api_key'].includes(props.property))
+
+// Logins and API keys grant sign-in as the entity, so only its _owner or the person themselves may add or remove them - never Entu support
+const canEditCredentials = computed(() => !isSupport.value && (props.isOwner || isOwnEntity.value))
 
 // The property label names every field, as the visible label sits outside this component and naive-ui fields can't point at it.
 const inputProps = computed(() => ({ 'aria-label': props.label }))
@@ -459,7 +464,7 @@ const { copy } = useClipboard()
       />
 
       <my-button
-        v-if="type === 'string' && props.property === 'entu_api_key' && value._id && value.string === '***'"
+        v-if="type === 'string' && props.property === 'entu_api_key' && value._id && value.string === '***' && canEditCredentials"
         icon="delete"
         :label="t('deleteApiKey')"
         :loading="loadingInputs.includes(value._id)"
@@ -484,7 +489,7 @@ const { copy } = useClipboard()
       </template>
 
       <my-button
-        v-else-if="type === 'string' && props.property === 'entu_api_key' && !value._id"
+        v-else-if="type === 'string' && props.property === 'entu_api_key' && !value._id && canEditCredentials"
         icon="add"
         :label="t('generateApiKey')"
         :loading="loadingInputs.includes(value._id)"
@@ -497,6 +502,7 @@ const { copy } = useClipboard()
           {{ t('invitePending', { email: value.string }) }}
         </span>
         <my-button
+          v-if="canEditCredentials"
           icon="delete"
           :label="t('cancelInvite')"
           :loading="loadingInputs.includes(value._id)"
@@ -514,6 +520,7 @@ const { copy } = useClipboard()
           <span class="truncate text-sm">{{ value.string }}</span>
         </div>
         <my-button
+          v-if="canEditCredentials"
           hide-label
           icon="delete"
           :label="t('removeLoginMethod')"
@@ -524,7 +531,7 @@ const { copy } = useClipboard()
       </template>
 
       <my-button
-        v-else-if="type === 'string' && props.property === 'entu_user' && !value._id && !isOwnEntity"
+        v-else-if="type === 'string' && props.property === 'entu_user' && !value._id && !isOwnEntity && canEditCredentials"
         icon="e-mail"
         :label="t('sendInvite')"
         :loading="loadingInputs.includes(value._id)"
@@ -533,13 +540,21 @@ const { copy } = useClipboard()
       />
 
       <my-button
-        v-else-if="type === 'string' && props.property === 'entu_user' && !value._id && isOwnEntity"
+        v-else-if="type === 'string' && props.property === 'entu_user' && !value._id && isOwnEntity && canEditCredentials"
         icon="e-mail"
         :label="t('addLoginMethod')"
         :loading="loadingInputs.includes(value._id)"
         :readonly="disabled"
         @click="updateValue({ ...value, string: 'self-invite' })"
       />
+
+      <!-- A non-owner sees an API key only as masked, and gets no field to add one -->
+      <span
+        v-else-if="isCredential"
+        class="py-1 text-sm text-slate-400 dark:text-slate-500"
+      >
+        {{ value.string }}
+      </span>
 
       <n-input
         v-else-if="type === 'string' && set.length === 0"

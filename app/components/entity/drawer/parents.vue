@@ -3,7 +3,7 @@ import { NEmpty } from 'naive-ui'
 
 const route = useRoute()
 const { t } = useI18n()
-const { accountId } = useAccount()
+const { accountId, isSupport } = useAccount()
 const { userId } = useUser()
 
 const emit = defineEmits(['close'])
@@ -26,8 +26,9 @@ let requestId = 0
 
 const entityName = computed(() => getValue(rawEntity.value?.name))
 const entityTypeId = computed(() => rawEntity.value?._type?.at(0)?.reference)
+// Entu support may expand every entity, so its picker isn't limited to entities naming it as _expander
 const parentQuery = computed(() => {
-  const base = `_expander.reference=${userId.value}`
+  const base = isSupport.value ? '' : `_expander.reference=${userId.value}`
   if (!entityTypeId.value) {
     return base
   }
@@ -36,10 +37,10 @@ const parentQuery = computed(() => {
   if (!typeEntry?.addFrom?.length) {
     return base
   }
-  if (typeEntry.addFrom.length === 1) {
-    return `${base}&_type.reference=${typeEntry.addFrom.at(0)}`
-  }
-  return `${base}&_type.reference.in=${typeEntry.addFrom.join(',')}`
+
+  const typeFilter = typeEntry.addFrom.length === 1 ? `_type.reference=${typeEntry.addFrom.at(0)}` : `_type.reference.in=${typeEntry.addFrom.join(',')}`
+
+  return [base, typeFilter].filter(Boolean).join('&')
 })
 const parents = computed(() => {
   const parentList = rawEntity.value?._parent || []
@@ -75,7 +76,7 @@ async function loadEntity () {
 
     if (currentRequest !== requestId) return
 
-    if (parentEntity?._expander?.some((x) => x.reference === userId.value)) {
+    if (isSupport.value || parentEntity?._expander?.some((x) => x.reference === userId.value)) {
       removable.push(parentId)
     }
   }

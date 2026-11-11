@@ -3,7 +3,7 @@ const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 
-const { accountId } = useAccount()
+const { accountId, isSupport } = useAccount()
 const { userId } = useUser()
 
 const entityTypeStore = useEntityTypeStore()
@@ -16,7 +16,10 @@ const contentRef = useTemplateRef('contentRef')
 const { width: contentWidth } = useElementSize(contentRef)
 const isNarrow = computed(() => contentWidth.value < 500)
 
-const { headerGradient, rawEntity, right, typeId } = useEntity()
+const { headerGradient, rawEntity, right, typeId, typeName } = useEntity()
+
+// The database entity's owners grant Entu support access there; support itself never sees the control
+const showSupportAccess = computed(() => typeName.value === 'database' && right.value.owner && !isSupport.value)
 
 const entityId = ref(route.params.entityId)
 const newEntityId = ref()
@@ -66,6 +69,7 @@ const properties = computed(() => {
   for (const property of entity.value.props) {
     if (property.name?.startsWith('_') && property.label === undefined) continue
     if (property.name === 'name') continue
+    if (property.name === 'support_until' && showSupportAccess.value) continue
     if (property.hidden) continue
 
     const group = property.group || ''
@@ -334,6 +338,13 @@ onUnmounted(() => {
             :properties="pg.children"
           />
         </template>
+
+        <entity-support-access
+          v-if="showSupportAccess"
+          :entity-id="entityId"
+          :values="rawEntity.support_until"
+          @refresh="loadEntity()"
+        />
 
         <entity-child-tabs
           class="mt-10"

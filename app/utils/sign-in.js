@@ -70,7 +70,7 @@ export async function completeSignIn (key, invite) {
     return { to: { path: next.path, query: next.query } }
   }
 
-  return { to: authResponse.accounts?.length > 0 ? '/' : '/new' }
+  return { to: authResponse.accounts?.length > 0 || authResponse.support?.length > 0 ? '/' : '/new' }
 }
 
 // Creates the database chosen on the signup page; a failure returns there with the name and error to show

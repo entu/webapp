@@ -6,6 +6,7 @@ const isUpdating = defineModel('isUpdating', { type: Boolean, default: false })
 
 defineProps({
   entitySharing: { type: String, default: undefined },
+  isOwner: { type: Boolean, default: false },
   properties: { type: Array, required: true }
 })
 </script>
@@ -43,6 +44,7 @@ defineProps({
         :disabled="isUpdating"
         :is-list="property.list"
         :is-multilingual="property.multilingual"
+        :is-owner="isOwner"
         :label="property.label || property.name"
         :property="property.name"
         :reference-query="property.referenceQuery"

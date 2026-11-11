@@ -2,7 +2,7 @@
 import { NPopconfirm, NTabs, NTabPane } from 'naive-ui'
 
 const { locale, t } = useI18n()
-const { token } = useUser()
+const { token, userId } = useUser()
 const { accountId } = useAccount()
 
 const emit = defineEmits(['close', 'delete'])
@@ -29,6 +29,9 @@ const isUpdating = ref(false)
 let requestId = 0
 
 const typeId = computed(() => entityTypeId.value || getValue(rawEntity.value?._type, 'reference'))
+
+// A new entity is owned by its creator; logins and API keys need _owner, as the API requires
+const isOwner = computed(() => !entityId.value || rawEntity.value?._owner?.some((x) => x.reference === userId.value) || false)
 
 const title = computed(() => {
   if (props.isChild) {
@@ -232,6 +235,7 @@ async function onClose () {
             v-model:entity-type-id="entityTypeId"
             v-model:is-updating="isUpdating"
             :entity-sharing="entity._sharing"
+            :is-owner="isOwner"
             :properties="pg.children"
           />
         </div>

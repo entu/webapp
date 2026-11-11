@@ -36,6 +36,7 @@ export function useEntityGradient (entityId, coverColor) {
 
 export function useEntity () {
   const { userId } = useUser()
+  const { isSupport } = useAccount()
 
   const rawEntity = useState('entity.raw', () => null)
 
@@ -48,12 +49,19 @@ export function useEntity () {
   const typeId = computed(() => getValue(rawEntity.value?._type, 'reference'))
   const typeName = computed(() => getValue(rawEntity.value?._type, 'string'))
 
-  const right = computed(() => ({
-    owner: rawEntity.value?._owner?.some((x) => x.reference === userId.value) || false,
-    editor: rawEntity.value?._editor?.some((x) => x.reference === userId.value) || false,
-    expander: rawEntity.value?._expander?.some((x) => x.reference === userId.value) || false,
-    viewer: rawEntity.value?._viewer?.some((x) => x.reference === userId.value) || false
-  }))
+  // Entu support holds every right while the database owner's grant runs, as the API decides per request
+  const right = computed(() => {
+    if (isSupport.value) {
+      return { owner: true, editor: true, expander: true, viewer: true }
+    }
+
+    return {
+      owner: rawEntity.value?._owner?.some((x) => x.reference === userId.value) || false,
+      editor: rawEntity.value?._editor?.some((x) => x.reference === userId.value) || false,
+      expander: rawEntity.value?._expander?.some((x) => x.reference === userId.value) || false,
+      viewer: rawEntity.value?._viewer?.some((x) => x.reference === userId.value) || false
+    }
+  })
 
   return {
     entityId,

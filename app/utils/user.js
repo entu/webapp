@@ -1,5 +1,5 @@
 export function useUser () {
-  const { account, accounts } = useAccount()
+  const { account, accounts, supportAccounts } = useAccount()
   const token = useLocalStorage('token')
   const tokenExpiry = useLocalStorage('token-expiry', '')
   const menuCollapsed = useLocalStorage('menu-collapsed', false)
@@ -15,6 +15,7 @@ export function useUser () {
     token.value = authResponse?.token
     tokenExpiry.value = authResponse?.expires || ''
     accounts.value = authResponse?.accounts || []
+    supportAccounts.value = authResponse?.support || []
   }
 
   function logOut () {

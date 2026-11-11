@@ -1,3 +1,7 @@
+## 2026-11-09
+- **Entu support access**: A database's owners can let Entu support see and change all its data for 1, 7 or 30 days, and end it at any time, on the database entity; every change support makes is recorded. Support sees these databases in their own orange-edged group, with an orange page edge and the end time while one is open.
+- **Removing logins**: Only an entity's owner, or the person themselves, can now remove a login method or API key, the same as adding one; editors no longer can, and no longer see the buttons for it.
+
 ## 2026-10-22
 - **Menus decide what to create**: A menu's "New …" button now lists the entity types set in the menu's `add_entity`, and entities created from it are added under the parents set in its `add_parent`.
 - **Child and referring entities**: The tabs below an entity now mark child entities with a folder tree icon and entities referring to it with a link icon, and the selected tab slides smoothly between them.

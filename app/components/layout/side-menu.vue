@@ -2,14 +2,14 @@
 import { NMenu } from 'naive-ui'
 import { MyIcon, NuxtLink } from '#components'
 
-const { t } = useI18n()
+const { d, t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 
 defineProps({
   showLang: { type: Boolean, default: true }
 })
 
-const { account, accounts } = useAccount()
+const { account, accounts, isSupport, supportAccounts } = useAccount()
 const { menuCollapsed, token, userId, userName } = useUser()
 
 const menuStore = useMenuStore()
@@ -17,6 +17,27 @@ const { menuEntities } = storeToRefs(menuStore)
 
 const route = useRoute()
 const activeMenu = ref(new URLSearchParams(route.query).toString() || route.path)
+
+const activeSupportAccounts = computed(() => supportAccounts.value.filter((x) => new Date(x.until).getTime() > Date.now()))
+
+// The databases to switch to besides the open one - own ones first, then those open to Entu support, marked with an orange edge and their end time
+const otherDatabases = computed(() => {
+  const own = accounts.value.filter((x) => x._id !== account.value?._id).map((x) => ({
+    key: `account-${x._id}`,
+    name: x.name,
+    label: () => h(NuxtLink, { to: { path: `/${x._id}` } }, { default: () => x.name })
+  }))
+
+  const support = activeSupportAccounts.value.filter((x) => x._id !== account.value?._id).map((x) => ({
+    key: `account-${x._id}`,
+    name: x.name,
+    label: () => supportDatabaseLink(x)
+  }))
+
+  return support.length > 0 && own.length > 0
+    ? [...own, { key: 'support-divider', type: 'divider' }, ...support]
+    : [...own, ...support]
+})
 
 const accountMenu = computed(() => {
   const menu = []
@@ -69,7 +90,7 @@ const accountMenu = computed(() => {
     children: m.children.sort(menuSorter)
   })).sort(menuSorter)
 
-  if (accounts.value.length > 1) {
+  if (accounts.value.length + activeSupportAccounts.value.length > 1) {
     menu.push({
       key: 'account',
       icon: () => h(MyIcon, { icon: 'home' }),
@@ -86,23 +107,9 @@ const accountMenu = computed(() => {
           name: '            2',
           type: 'divider'
         },
-        ...accounts.value.filter((x) => x._id !== account.value?._id).map((x) => ({
-          key: `account-${account.value?._id}-${x._id}`,
-          name: x.name,
-          label: () => h(NuxtLink,
-            { to: { path: `/${x._id}` } },
-            { default: () => x.name }
-          )
-        }))
+        ...otherDatabases.value
         ]
-        : accounts.value.filter((x) => x._id !== account.value?._id).map((x) => ({
-          key: `account-${x._id}`,
-          name: x.name,
-          label: () => h(NuxtLink,
-            { to: { path: `/${x._id}` } },
-            { default: () => x.name }
-          )
-        }))
+        : otherDatabases.value
     })
 
     menu.push({
@@ -198,7 +205,8 @@ const authMenu = computed(() => {
 const userMenu = computed(() => {
   const menu = []
 
-  if (account.value?._id && userId.value) {
+  // Support acts as the database entity, which is no person of its own to open
+  if (account.value?._id && userId.value && !isSupport.value) {
     menu.push({
       key: `/${account.value?._id}/${userId.value}`,
       icon: () => h(MyIcon, { icon: 'user' }),
@@ -256,6 +264,17 @@ function setLanguage () {
   useAnalytics('click_language', { language: locale.value })
 
   reloadNuxtApp()
+}
+
+// A support database's menu link - its name with an orange edge, and when access ends
+function supportDatabaseLink (database) {
+  return h(NuxtLink, {
+    class: 'flex items-center justify-between gap-2 border-l-2 border-orange-500 pl-2 dark:border-orange-400',
+    to: { path: `/${database._id}` }
+  }, () => [
+    h('span', { class: 'truncate' }, database.name),
+    h('span', { class: 'shrink-0 text-xs text-orange-600 dark:text-orange-400' }, d(new Date(database.until), 'datetime'))
+  ])
 }
 
 function menuSorter (a, b) {
