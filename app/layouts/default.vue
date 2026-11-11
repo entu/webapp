@@ -151,11 +151,20 @@ useEventListener(window, 'keydown', onPaletteKey)
 </script>
 
 <template>
-  <div class="h-full">
+  <div class="flex h-full flex-col">
+    <!-- Entu support works in someone else's database: a banner above the page with when its access ends -->
+    <div
+      v-if="isSupport"
+      class="shrink-0 bg-orange-500 px-4 py-1 text-center text-sm font-medium text-white dark:bg-orange-400 dark:text-slate-950 print:hidden"
+      role="status"
+    >
+      {{ t('supportUntil', { date: d(new Date(account.until), 'datetime') }) }}
+    </div>
+
     <!-- Desktop layout (≥ 768px) -->
     <n-layout
       v-if="!isMobile"
-      class="size-full"
+      class="min-h-0 w-full grow"
       has-sider
       :style="menuStripStyle"
     >
@@ -289,7 +298,7 @@ useEventListener(window, 'keydown', onPaletteKey)
 
     <!-- Mobile layout (< 768px): single-column stack navigation -->
     <template v-else>
-      <div class="flex h-full flex-col">
+      <div class="flex min-h-0 grow flex-col">
         <!-- Mobile top bar -->
         <header
           class="relative flex items-center border-b border-slate-300/50 bg-slate-100 px-3 pb-4 text-slate-900 dark:border-slate-700/50 dark:bg-slate-800 dark:text-slate-100 print:hidden"
@@ -429,17 +438,6 @@ useEventListener(window, 'keydown', onPaletteKey)
           </div>
         </n-drawer-content>
       </n-drawer>
-    </template>
-
-    <!-- Entu support works in someone else's database: an orange edge around the page and when its access ends -->
-    <template v-if="isSupport">
-      <div class="pointer-events-none fixed inset-0 z-50 ring-4 ring-orange-500 ring-inset dark:ring-orange-400 print:hidden" />
-      <div
-        class="pointer-events-none fixed bottom-4 left-1/2 z-50 -translate-x-1/2 rounded-full bg-orange-500 px-4 py-1 text-sm font-medium whitespace-nowrap text-white shadow-lg dark:bg-orange-400 dark:text-slate-950 print:hidden"
-        role="status"
-      >
-        {{ t('supportUntil', { date: d(new Date(account.until), 'datetime') }) }}
-      </div>
     </template>
 
     <chat-drawer />

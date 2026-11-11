@@ -2,7 +2,7 @@
 import { NMenu } from 'naive-ui'
 import { MyIcon, NuxtLink } from '#components'
 
-const { d, t } = useI18n()
+const { t } = useI18n()
 const { locale, setLocale } = useI18n({ useScope: 'global' })
 
 defineProps({
@@ -266,15 +266,12 @@ function setLanguage () {
   reloadNuxtApp()
 }
 
-// A support database's menu link - its name with an orange edge, and when access ends
+// A support database's menu link - its name in orange, forced past the menu's own item text color
 function supportDatabaseLink (database) {
   return h(NuxtLink, {
-    class: 'flex items-center justify-between gap-2 border-l-2 border-orange-500 pl-2 dark:border-orange-400',
+    class: 'text-orange-600! dark:text-orange-400!',
     to: { path: `/${database._id}` }
-  }, () => [
-    h('span', { class: 'truncate' }, database.name),
-    h('span', { class: 'shrink-0 text-xs text-orange-600 dark:text-orange-400' }, d(new Date(database.until), 'datetime'))
-  ])
+  }, { default: () => database.name })
 }
 
 function menuSorter (a, b) {

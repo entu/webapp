@@ -1,5 +1,5 @@
 ## 2026-11-09
-- **Entu support access**: A database's owners can let Entu support see and change all its data for 1, 7 or 30 days, and end it at any time, on the database entity; every change support makes is recorded. Support sees these databases in their own orange-edged group, with an orange page edge and the end time while one is open.
+- **Entu support access**: A database's owners can let Entu support see and change all its data for 1, 7 or 30 days, and end it at any time, on the database entity; every change support makes is recorded. Support sees these databases in their own group in the database menu, with the name in orange, and an orange banner at the top showing the end time while one is open.
 - **Removing logins**: Only an entity's owner, or the person themselves, can now remove a login method or API key, the same as adding one; editors no longer can, and no longer see the buttons for it.
 
 ## 2026-10-22
