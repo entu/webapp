@@ -1,3 +1,6 @@
+## 2026-11-11
+- **One AI connector for several databases**: Connect Claude, ChatGPT or another MCP client to `https://mcp.entu.app` and pick on Entu which of your databases it may read. Signing in for a connector or any other app now shows Entu's own sign-in choices, passkey included, and always asks you to confirm which databases the app gets. Databases you can open only through Entu support access are never offered.
+
 ## 2026-11-09
 - **Entu support access**: A database's owners can let Entu support see and change all its data for 1, 7 or 30 days, and end it at any time, on the database entity; every change support makes is recorded. Support sees these databases in their own group in the database menu, with the name in orange, and an orange banner at the top showing the end time while one is open.
 - **Removing logins**: Only an entity's owner, or the person themselves, can now remove a login method or API key, the same as adding one; editors no longer can, and no longer see the buttons for it.
