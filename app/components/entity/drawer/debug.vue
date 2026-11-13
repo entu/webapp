@@ -1,10 +1,4 @@
 <script setup>
-import DOMPurify from 'dompurify'
-import { stringify } from 'yaml'
-import hljs from 'highlight.js/lib/core'
-import yaml from 'highlight.js/lib/languages/yaml'
-import 'highlight.js/styles/github.css'
-
 import { NCollapse, NCollapseItem } from 'naive-ui'
 
 const { t } = useI18n()
@@ -18,11 +12,6 @@ defineProps({
   properties: { type: Array, default: () => ([]) },
   rawEntity: { type: Object, default: () => ({}) }
 })
-
-hljs.registerLanguage('yaml', yaml)
-function showYaml (value) {
-  return DOMPurify.sanitize(hljs.highlight(stringify(value), { language: 'yaml' }).value)
-}
 </script>
 
 <template>
@@ -37,7 +26,7 @@ function showYaml (value) {
         :title="t('entity')"
       >
         <div
-          v-html="showYaml(entity)"
+          v-html="highlightYaml(entity)"
           class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre dark:bg-slate-900"
         />
       </n-collapse-item>
@@ -47,7 +36,7 @@ function showYaml (value) {
         :title="t('properties')"
       >
         <div
-          v-html="showYaml(properties)"
+          v-html="highlightYaml(properties)"
           class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre dark:bg-slate-900"
         />
       </n-collapse-item>
@@ -57,7 +46,7 @@ function showYaml (value) {
         :title="t('rawEntity')"
       >
         <div
-          v-html="showYaml(rawEntity)"
+          v-html="highlightYaml(rawEntity)"
           class="rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre dark:bg-slate-900"
         />
       </n-collapse-item>

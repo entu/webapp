@@ -144,6 +144,21 @@ const properties = computed(() => {
   return result
 })
 
+// Values of properties the entity type has no definition for - the form can't show them, so they are listed raw to be deleted; system and credential values are left out, as the API won't delete them here
+const undefinedValues = computed(() => {
+  if (!entityId.value || !rawEntity.value || !entityType.value?.props) {
+    return []
+  }
+
+  const definedNames = new Set(entityType.value.props.map((x) => x.name))
+
+  return Object.entries(rawEntity.value)
+    .filter(([name, values]) => Array.isArray(values) && !name.startsWith('_') && !name.startsWith('entu_') && !definedNames.has(name))
+    .map(([name, values]) => ({ name, values: values.filter((x) => x._id) }))
+    .filter((x) => x.values.length > 0)
+    .sort((a, b) => a.name.localeCompare(b.name))
+})
+
 watch([show, entityId, entityTypeId], loadEntity, { immediate: true })
 
 async function loadEntity () {
@@ -161,8 +176,11 @@ async function loadEntity () {
     rawEntity.value = entity
   }
 
+  // The drawer spins until the definitions are in, as without them every value would look undefined
   if (typeId.value && !entityTypes.value[typeId.value]) {
-    entityTypeStore.get(typeId.value)
+    await entityTypeStore.get(typeId.value)
+
+    if (currentRequest !== requestId) return
   }
 
   isLoading.value = false
@@ -178,6 +196,20 @@ async function onDelete () {
   isUpdating.value = false
 
   emit('delete')
+}
+
+// Deletes one value of an undefined property and drops it from the loaded entity, so the list updates without waiting for aggregation
+async function onDeleteUndefinedValue (name, value) {
+  isUpdating.value = true
+
+  try {
+    await apiDeleteProperty(value._id)
+
+    rawEntity.value = { ...rawEntity.value, [name]: rawEntity.value[name].filter((x) => x._id !== value._id) }
+  }
+  finally {
+    isUpdating.value = false
+  }
 }
 
 async function onClose () {
@@ -238,6 +270,74 @@ async function onClose () {
             :is-owner="isOwner"
             :properties="pg.children"
           />
+        </div>
+
+        <div
+          v-if="undefinedValues.length > 0"
+          class="px-3 py-4 md:px-6"
+        >
+          <h2 class="px-1 pt-6 text-center font-bold text-slate-600 uppercase dark:text-slate-300">
+            {{ t('undefinedProperties') }}
+          </h2>
+
+          <p class="px-1 pt-2 pb-4 text-center text-sm text-slate-600 dark:text-slate-300">
+            {{ t('undefinedPropertiesInfo') }}
+          </p>
+
+          <!-- Same label and field columns as the property form above -->
+          <div class="grid grid-cols-1 gap-x-2 md:grid-cols-[1fr_2fr_auto] md:gap-x-4">
+            <div
+              v-for="property in undefinedValues"
+              :key="property.name"
+              class="col-span-full grid grid-cols-subgrid items-start pt-3 first-of-type:pt-0 md:border-t md:border-slate-200 md:pt-0 md:first-of-type:border-t-0 md:dark:border-slate-800"
+            >
+              <div class="pt-1 pb-0 font-medium break-all text-slate-600 md:py-2 md:text-right dark:text-slate-300">
+                {{ property.name }}
+              </div>
+
+              <div class="flex w-full min-w-0 flex-col gap-1 pt-0 pb-1 md:col-span-2 md:py-1">
+                <div
+                  v-for="value in property.values"
+                  :key="value._id"
+                  class="flex w-full items-start gap-2"
+                >
+                  <div
+                    v-html="highlightYaml(value)"
+                    class="min-w-0 flex-1 overflow-x-auto rounded-md bg-slate-50 p-2 font-mono text-xs whitespace-pre dark:bg-slate-900"
+                  />
+
+                  <n-popconfirm
+                    :negative-text="t('cancel')"
+                    :positive-button-props="{ type: 'error', loading: isUpdating }"
+                    :positive-text="t('delete')"
+                    @positive-click="onDeleteUndefinedValue(property.name, value)"
+                  >
+                    <template #trigger>
+                      <span class="ml-auto inline-flex shrink-0">
+                        <my-button
+                          circle
+                          icon="delete"
+                          type="error"
+                          :bg="false"
+                          :disabled="isUpdating"
+                          :label="t('deleteValue')"
+                        />
+                      </span>
+                    </template>
+
+                    <template #icon>
+                      <my-icon
+                        class="text-red-600 dark:text-red-400"
+                        icon="delete"
+                      />
+                    </template>
+
+                    {{ t('confirmDeleteValue') }}
+                  </n-popconfirm>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </n-tab-pane>
 
@@ -304,6 +404,10 @@ async function onClose () {
     confirmDelete: Are you sure you want to delete this entity?
     delete: Delete
     cancel: Cancel
+    undefinedProperties: Undefined properties
+    undefinedPropertiesInfo: This entity type has no definition for these properties, so they can't be edited. Delete the values you don't need.
+    deleteValue: Delete value
+    confirmDeleteValue: Are you sure you want to delete this value?
   et:
     titleAdd: Lisa uus {name}
     titleChild: Lisa {name} uue alamobjektina
@@ -313,4 +417,8 @@ async function onClose () {
     confirmDelete: Kas oled kindel, et soovid selle objekti kustutada?
     delete: Kustuta
     cancel: Loobu
+    undefinedProperties: Defineerimata parameetrid
+    undefinedPropertiesInfo: Selle objektitüübi juures pole nende parameetrite definitsiooni, seega neid muuta ei saa. Kustuta väärtused, mida pole vaja.
+    deleteValue: Kustuta väärtus
+    confirmDeleteValue: Kas oled kindel, et soovid selle väärtuse kustutada?
 </i18n>
