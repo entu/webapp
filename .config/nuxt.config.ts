@@ -28,7 +28,7 @@ export default defineNuxtConfig({
         { name: 'apple-mobile-web-app-status-bar-style', content: 'default' }
       ],
       link: [
-        { rel: 'icon', type: 'image/png', href: '/logo.png' }
+        { rel: 'icon', type: 'image/x-icon', sizes: '48x48', href: '/favicon.ico' }
       ],
       script: [
         { src: 'https://analytics.entu.dev/ea.min.js', 'data-site': 'entu.app', crossorigin: 'anonymous', defer: true }
