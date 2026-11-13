@@ -32,6 +32,13 @@ watch([show, entityId], () => {
   loadHistory()
 }, { immediate: true })
 
+// System writes are stamped with a non-ObjectId author such as 'entu'; those have no person entity to look up and show as system changes.
+function editorId (by) {
+  const id = by ? String(by) : ''
+
+  return /^[\da-f]{24}$/i.test(id) ? id : ''
+}
+
 async function loadHistory () {
   if (!show.value) return
   if (!entityId.value) return
@@ -71,7 +78,7 @@ async function loadHistory () {
   }
 
   // Fetch names for all unique editors in parallel
-  const userIds = [...new Set(raw.map((x) => x.by).filter(Boolean).map(String))]
+  const userIds = [...new Set(raw.map((x) => editorId(x.by)).filter(Boolean))]
   const userNames = {}
 
   await Promise.all(userIds.map(async (id) => {
@@ -85,7 +92,7 @@ async function loadHistory () {
   const buckets = {}
 
   for (const item of raw) {
-    const byStr = item.by ? String(item.by) : ''
+    const byStr = editorId(item.by)
     const bucket = item.at ? minuteBucket(item.at) : 'unknown'
     const key = `${byStr}::${bucket}`
 
