@@ -365,7 +365,6 @@ function menuSorter (a, b) {
       collapse-mode="width"
       :collapsed="menuCollapsed"
       :collapsed-width="60"
-      :default-expanded-keys="['auth-group']"
       :indent="0"
       :options="authMenu"
       :root-indent="18"
