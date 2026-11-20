@@ -1,3 +1,6 @@
+## 2026-11-18
+- **AI counters and files**: The AI assistant and connectors now fill counter properties with Entu's next number. Connectors can also create an entity together with its files in one change.
+
 ## 2026-11-11
 - **AI connectors**: Connect Claude, ChatGPT or another MCP client to `https://mcp.entu.app`, sign in any way Entu offers, passkey included, and pick which of your databases it gets. A connector can now also create, change and delete entities with your rights, asking you before each change, and Claude shows every change as a card with the old and new values.
 - **AI assistant**: Can now delete entities. Neither the assistant nor a connector deletes an entity that still has child entities, or an entity type still in use.
