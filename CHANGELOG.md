@@ -1,6 +1,16 @@
 ## 2026-11-18
 - **AI counters and files**: The AI assistant and connectors now fill counter properties with Entu's next number. Connectors can also create an entity together with its files in one change.
+- **Sign-in menu**: The sign-in options in the side menu now start collapsed; open them from Sign In.
 - **Renaming properties**: Renaming a property now moves its existing values, files included, to the new name on every entity of that type, and the change shows in each entity's history. Formulas and menus that use the old name still need updating by hand.
+
+## 2026-11-17
+- **AI connectors**: A connector can now add files to an entity, or replace them, asking you before each one. It needs a client that can send the file itself, such as Claude Code; others link you to the entity to upload it in Entu.
+- **Parents from AI**: The AI assistant and connectors now add, change and remove an entity's parents like any other value — more than one, also after creating it; removing one needs owner rights, as in Entu.
+
+## 2026-11-13
+- **Undefined properties**: The edit drawer lists values of properties the entity type has no definition for, shown as YAML, each with a button to delete it.
+- **History**: The history drawer opens again for entities that Entu itself has changed, such as by formulas or background updates, and shows those changes as system changes.
+- **Public entities**: Signed-in users of a database now see a public entity's domain-shared properties too, not only its public ones.
 
 ## 2026-11-11
 - **AI connectors**: Connect Claude, ChatGPT or another MCP client to `https://mcp.entu.app`, sign in any way Entu offers, passkey included, and pick which of your databases it gets. A connector can now also create, change and delete entities with your rights, asking you before each change, and Claude shows every change as a card with the old and new values.
