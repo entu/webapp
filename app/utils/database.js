@@ -1,19 +1,17 @@
-// Creates a database owned by the token's sign-in, then refreshes the token so it includes the new database
-export async function setupNewDatabase (token, database) {
+// Creates a database owned by the signed-in user, then refreshes the token so it includes the new database
+export async function setupNewDatabase (database) {
   const runtimeConfig = useRuntimeConfig()
-  const { setToken } = useUser()
+  const { token } = useUser()
+
+  await refreshSession()
 
   const { db } = await $fetch(`${runtimeConfig.public.apiUrl}/new`, {
     method: 'PUT',
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${token.value}` },
     body: { database }
   })
 
-  const authResponse = await $fetch(`${runtimeConfig.public.apiUrl}/auth/refresh`, {
-    headers: { Authorization: `Bearer ${token}` }
-  })
-
-  setToken(authResponse)
+  await refreshSession({ force: true })
 
   return db
 }

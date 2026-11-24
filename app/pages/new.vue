@@ -7,7 +7,7 @@ const runtimeConfig = useRuntimeConfig()
 const { t } = useI18n()
 const themeVars = useThemeVars()
 const { isMobile } = useIsMobile()
-const { token, tokenExpiry } = useUser()
+const { isSignedIn } = useUser()
 
 // A new user usually has no passkey yet, so signup goes to the passkey page that creates one first
 const buttonGroups = computed(() => authProviderGroups('create').map((group) => group.map((provider) => ({
@@ -26,7 +26,6 @@ const error = ref()
 let checkTimeout = null
 let checkCounter = 0
 
-const isSignedIn = computed(() => !!token.value && !!tokenExpiry.value && new Date(tokenExpiry.value).getTime() > Date.now())
 const isValidFormat = computed(() => /^[a-z][a-z0-9_]{3,11}$/.test(databaseName.value))
 const isAvailable = computed(() => isValidFormat.value && availability.value === 'available')
 
@@ -90,7 +89,7 @@ async function createDatabase () {
   error.value = undefined
 
   try {
-    const db = await setupNewDatabase(token.value, databaseName.value)
+    const db = await setupNewDatabase(databaseName.value)
 
     await navigateTo(`/${db}`)
   }

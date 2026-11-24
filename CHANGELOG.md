@@ -1,3 +1,7 @@
+## 2026-11-24
+- **AI connectors stay signed in**: Claude, ChatGPT and other connectors now renew their sign-in on their own instead of asking you to sign in again every 12 hours — for up to 30 days, as long as they are used at least every 7 days.
+- **Staying signed in**: Changing networks, such as moving from Wi-Fi to mobile data, no longer signs you out — Entu renews your sign-in and carries on. A sign-in lasts up to 30 days, and ends after 7 days without use. Signing out now also ends the sign-in on the server. Everyone signs in once more after this update.
+
 ## 2026-11-18
 - **AI counters and files**: The AI assistant and connectors now fill counter properties with Entu's next number. Connectors can also create an entity together with its files in one change.
 - **Sign-in menu**: The sign-in options in the side menu now start collapsed; open them from Sign In.

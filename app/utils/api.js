@@ -1,37 +1,71 @@
 // Refresh the token when less than this many milliseconds remain before expiry
 const TOKEN_REFRESH_THRESHOLD = 1000 * 60 * 60
 
-// Module-level in-flight refresh so a burst of requests triggers a single refresh
-let refreshPromise = null
+// Refreshes run one after another in this tab; a Web Lock does the same across tabs
+let refreshQueue = Promise.resolve()
 
 export function useRequestCounter () {
   return useState('requests', () => 0)
 }
 
-async function ensureFreshToken () {
-  const { token, tokenExpiry, setToken, logOut } = useUser()
+// Renews the access token with the refresh token - when it is about to expire, after a 401 to `staleToken`, or always with `force`. Refreshes never overlap, even across tabs, as a refresh token presented twice ends the sign-in
+export async function refreshSession ({ force = false, staleToken } = {}) {
+  if (!force && !staleToken && !isExpiring()) return
 
-  if (!token.value || !tokenExpiry.value) return
+  const run = () => runRefresh(force, staleToken)
+  const queued = refreshQueue.then(() => navigator.locks ? navigator.locks.request('entu-token-refresh', run) : run())
 
-  const remaining = new Date(tokenExpiry.value).getTime() - Date.now()
-  if (remaining > TOKEN_REFRESH_THRESHOLD) return
+  refreshQueue = queued.catch(() => {})
 
-  if (!refreshPromise) {
-    const runtimeConfig = useRuntimeConfig()
-    const url = new URL(runtimeConfig.public.apiUrl)
-    const base = url.pathname.replace(/\/$/, '')
-    url.pathname = `${base}/auth/refresh`
+  await queued
+}
 
-    // setToken stores the refreshed databases too, so a database gained or lost since sign-in shows up
-    refreshPromise = $fetch(url.toString(), { headers: { Authorization: `Bearer ${token.value}` } })
-      .then((result) => setToken(result))
-      .catch(() => logOut())
-      .finally(() => {
-        refreshPromise = null
-      })
+// The tokens as localStorage holds them right now - another tab's refresh shows here at once, before this tab's refs catch up
+function storedTokens () {
+  return {
+    token: localStorage.getItem('token'),
+    expiry: localStorage.getItem('token-expiry'),
+    refreshToken: localStorage.getItem('refresh-token')
+  }
+}
+
+// True when the stored access token is about to expire
+function isExpiring () {
+  const { token, expiry } = storedTokens()
+
+  return !!token && !!expiry && new Date(expiry).getTime() - Date.now() < TOKEN_REFRESH_THRESHOLD
+}
+
+// One refresh, once it is this one's turn - it checks again first, as a refresh that ran before it may already have done the job
+async function runRefresh (force, staleToken) {
+  const runtimeConfig = useRuntimeConfig()
+  const { setToken, logOut } = useUser()
+  const { token, refreshToken } = storedTokens()
+
+  if (!token) return
+  if (staleToken && token !== staleToken) return
+  if (!force && !staleToken && !isExpiring()) return
+
+  if (!refreshToken) {
+    logOut()
+
+    return
   }
 
-  await refreshPromise
+  try {
+    const authResponse = await $fetch(`${runtimeConfig.public.apiUrl.replace(/\/$/, '')}/auth/refresh`, {
+      headers: { Authorization: `Bearer ${refreshToken}` }
+    })
+
+    // The databases come along too, so one gained or lost since sign-in shows up
+    setToken(authResponse)
+  }
+  catch (error) {
+    // Only a refused refresh token ends the sign-in; after a network failure the next request tries again
+    if (error?.statusCode === 401) {
+      logOut()
+    }
+  }
 }
 
 export async function apiGetEntities (params) {
@@ -86,51 +120,74 @@ export async function apiUpsertEntity (entityId, properties) {
 }
 
 export async function apiRequest (pathname, params = {}, headers = {}, method = 'GET') {
-  const runtimeConfig = useRuntimeConfig()
   const requests = useRequestCounter()
-
-  const { accountId } = useAccount()
   const { token, logOut } = useUser()
 
   requests.value++
 
   try {
-    await ensureFreshToken()
+    await refreshSession()
 
-    if (token.value) {
-      headers = { Authorization: `Bearer ${token.value}`, ...headers }
+    const sentToken = token.value
+
+    try {
+      return await sendRequest(pathname, params, headers, method, sentToken)
     }
+    catch (error) {
+      if (error?.statusCode !== 401 || !sentToken) {
+        throw error
+      }
 
-    const url = new URL(runtimeConfig.public.apiUrl)
-    const base = url.pathname.replace(/\/$/, '')
+      // An IP-bound token stops working when the network changes, so a 401 gets one refresh and retry before signing out
+      await refreshSession({ staleToken: sentToken })
 
-    if (accountId.value) {
-      url.pathname = `${base}/${accountId.value}/${pathname || ''}`
-    }
-    else if (pathname) {
-      url.pathname = `${base}/${pathname}`
-    }
+      // No new token means the refresh failed - a refused one has signed out already, a network failure keeps the sign-in
+      const freshToken = storedTokens().token
 
-    const query = method === 'GET'
-      ? Object.fromEntries(Object.entries(params).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v]))
-      : undefined
+      if (!freshToken || freshToken === sentToken) {
+        throw error
+      }
 
-    return await $fetch(url.toString(), {
-      method,
-      headers,
-      ...(query
-        ? { query }
-        : { body: params }),
-      onResponseError ({ response }) {
-        if (response.status === 401) {
+      return await sendRequest(pathname, params, headers, method, freshToken).catch((retryError) => {
+        if (retryError?.statusCode === 401) {
           logOut()
         }
-      }
-    })
+
+        throw retryError
+      })
+    }
   }
   finally {
     requests.value--
   }
+}
+
+// Sends one API request in the active database with the given access token
+async function sendRequest (pathname, params, headers, method, accessToken) {
+  const runtimeConfig = useRuntimeConfig()
+  const { accountId } = useAccount()
+
+  const url = new URL(runtimeConfig.public.apiUrl)
+  const base = url.pathname.replace(/\/$/, '')
+
+  if (accountId.value) {
+    url.pathname = `${base}/${accountId.value}/${pathname || ''}`
+  }
+  else if (pathname) {
+    url.pathname = `${base}/${pathname}`
+  }
+
+  const query = method === 'GET'
+    ? Object.fromEntries(Object.entries(params).map(([k, v]) => [k, Array.isArray(v) ? v.join(',') : v]))
+    : undefined
+
+  return await $fetch(url.toString(), {
+    method,
+    headers: accessToken ? { Authorization: `Bearer ${accessToken}`, ...headers } : headers,
+    ...(query
+      ? { query }
+      : { body: params })
+  })
 }
 
 function resolveDate (defaultStr) {

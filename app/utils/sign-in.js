@@ -2,7 +2,7 @@
 export async function completeSignIn (key, invite) {
   const runtimeConfig = useRuntimeConfig()
   const { accounts } = useAccount()
-  const { setToken, token, tokenExpiry } = useUser()
+  const { isSignedIn, refreshToken, setToken } = useUser()
 
   const nextPage = useLocalStorage('next', {})
   const next = nextPage.value || {}
@@ -22,8 +22,7 @@ export async function completeSignIn (key, invite) {
   const authAccount = pendingInvite?.db || next.path?.split('/').filter((x) => x !== 'new').at(1)
 
   // Adding a login method to yourself must not replace the session you started it from
-  const isSignedIn = !!token.value && new Date(tokenExpiry.value).getTime() > Date.now()
-  const keepSession = isSignedIn && !!pendingInvite && accounts.value.find((x) => x._id === pendingInvite.db)?.user?._id === pendingInvite.entityId
+  const keepSession = isSignedIn.value && !!pendingInvite && accounts.value.find((x) => x._id === pendingInvite.db)?.user?._id === pendingInvite.entityId
 
   let authResponse
 
@@ -43,8 +42,14 @@ export async function completeSignIn (key, invite) {
   if (keepSession) {
     const to = `/${pendingInvite.db}/${pendingInvite.entityId}`
 
+    // The new sign-in is not used, so it is ended at once instead of lingering until it expires
+    revokeRefreshToken(authResponse.refreshToken)
+
     return authResponse.conflict ? { error: 'conflict', to } : { to }
   }
+
+  // The new sign-in replaces the stored one, which is ended rather than left usable until it expires
+  revokeRefreshToken(refreshToken.value)
 
   setToken(authResponse)
 
@@ -53,7 +58,7 @@ export async function completeSignIn (key, invite) {
   }
 
   if (newDatabase) {
-    return await createNewDatabase(authResponse.token, newDatabase)
+    return await createNewDatabase(newDatabase)
   }
 
   const newUser = authResponse.accounts?.find((x) => x._id === authAccount)?.user
@@ -74,9 +79,9 @@ export async function completeSignIn (key, invite) {
 }
 
 // Creates the database chosen on the signup page; a failure returns there with the name and error to show
-async function createNewDatabase (sessionToken, database) {
+async function createNewDatabase (database) {
   try {
-    const db = await setupNewDatabase(sessionToken, database)
+    const db = await setupNewDatabase(database)
 
     return { to: `/${db}` }
   }
