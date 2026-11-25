@@ -90,21 +90,23 @@ async function decide (accounts) {
   >
     <div
       v-if="consent.accounts.length > 0"
-      class="flex flex-col gap-3"
+      class="flex flex-col gap-2"
     >
-      <n-checkbox
-        v-for="account in consent.accounts"
-        :key="account._id"
-        :checked="picked.includes(account._id)"
-        :disabled="isWorking"
-        @update:checked="() => toggle(account._id)"
-      >
-        <span class="font-medium">{{ account._id }}</span>
-        <span
-          v-if="account.user"
-          class="text-slate-600 dark:text-slate-300"
-        > · {{ account.user.name }}</span>
-      </n-checkbox>
+      <div class="text-xs font-bold text-slate-600 uppercase dark:text-slate-300">
+        {{ t('pick') }}
+      </div>
+      <div class="divide-y divide-slate-200 overflow-hidden rounded-lg border border-slate-200 dark:divide-slate-800 dark:border-slate-800">
+        <n-checkbox
+          v-for="account in consent.accounts"
+          :key="account._id"
+          class="w-full px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-900"
+          :checked="picked.includes(account._id)"
+          :disabled="isWorking"
+          @update:checked="() => toggle(account._id)"
+        >
+          <span class="font-medium">{{ account._id }}</span>
+        </n-checkbox>
+      </div>
     </div>
 
     <p
@@ -144,9 +146,10 @@ async function decide (accounts) {
 
 <i18n lang="yaml">
   en:
-    title: Share Databases
-    description: '{host} wants to read and change the databases you pick, with your rights.'
-    descriptionNamed: '{host}, calling itself {client}, wants to read and change the databases you pick, with your rights.'
+    title: Allow Access
+    description: '{host} can read and change the chosen databases with your rights.'
+    descriptionNamed: '{client} ({host}) can read and change the chosen databases with your rights.'
+    pick: Databases
     noDatabases: You are not a user in any database, so there is nothing to share.
     allow: Allow
     deny: Deny
@@ -154,9 +157,10 @@ async function decide (accounts) {
     errorDescription: This request is invalid or has expired. Start connecting again from the app.
     home: Go to Entu
   et:
-    title: Jaga andmebaase
-    description: '{host} soovib sinu õigustega lugeda ja muuta sinu valitud andmebaase.'
-    descriptionNamed: '{host}, mis nimetab end {client}, soovib sinu õigustega lugeda ja muuta sinu valitud andmebaase.'
+    title: Luba juurdepääs
+    description: '{host} saab sinu õigustega lugeda ja muuta valitud andmebaase.'
+    descriptionNamed: '{client} ({host}) saab sinu õigustega lugeda ja muuta valitud andmebaase.'
+    pick: Andmebaasid
     noDatabases: Sa ei ole üheski andmebaasis kasutaja, seega pole midagi jagada.
     allow: Luba
     deny: Keela
