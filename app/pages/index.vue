@@ -130,7 +130,7 @@ onMounted(async () => {
       <div class="w-full px-4">
         <div
           v-if="dbStats.length"
-          class="mx-auto grid max-w-7xl grid-cols-[repeat(auto-fit,18rem)] justify-center gap-3"
+          class="mx-auto grid max-w-7xl grid-cols-1 justify-center gap-3 sm:grid-cols-[repeat(auto-fit,18rem)]"
         >
           <div
             v-for="{ account, stats, loading } in sortedDbStats"
@@ -187,7 +187,7 @@ onMounted(async () => {
             </div>
           </div>
 
-          <div class="mx-auto grid max-w-7xl grid-cols-[repeat(auto-fit,18rem)] justify-center gap-3">
+          <div class="mx-auto grid max-w-7xl grid-cols-1 justify-center gap-3 sm:grid-cols-[repeat(auto-fit,18rem)]">
             <div
               v-for="{ account, stats, loading } in supportStats"
               :key="account._id"

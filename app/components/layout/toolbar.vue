@@ -124,9 +124,10 @@ onUnmounted(() => {
     class="bg-fixed p-2 print:hidden"
     :style="{ backgroundImage: gradient }"
   >
+    <!-- Items never shrink, so their summed widths exceed the toolbar when the labels don't fit instead of the items squeezing over each other. -->
     <div
       ref="toolbarRef"
-      class="flex items-center gap-2"
+      class="flex items-center gap-2 *:shrink-0"
       :class="{
         '**:transition-none!': !isAnimated,
         'on-color': gradient || onColor,

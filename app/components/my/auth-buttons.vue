@@ -19,7 +19,7 @@ defineProps({
       <my-button
         v-for="button in group"
         :key="button.id"
-        class="w-full justify-start! px-6!"
+        class="h-12! w-full justify-start! px-6! sm:h-10!"
         size="large"
         :disabled="disabled"
         :icon="button.icon"
@@ -31,18 +31,28 @@ defineProps({
 </template>
 
 <style scoped>
-/* Group corners match a standalone button's visible radius (half of the 2.5rem button height) */
+/* Group corners are half the button height, which is taller on phones for an easier tap target */
+.n-button-group {
+  --group-radius: 1.5rem;
+}
+
+@media (min-width: 40rem) {
+  .n-button-group {
+    --group-radius: 1.25rem;
+  }
+}
+
 .n-button-group :deep(.n-button) {
   border-radius: 0;
 }
 
 .n-button-group :deep(.n-button:first-child) {
-  border-top-left-radius: 1.25rem;
-  border-top-right-radius: 1.25rem;
+  border-top-left-radius: var(--group-radius);
+  border-top-right-radius: var(--group-radius);
 }
 
 .n-button-group :deep(.n-button:last-child) {
-  border-bottom-left-radius: 1.25rem;
-  border-bottom-right-radius: 1.25rem;
+  border-bottom-left-radius: var(--group-radius);
+  border-bottom-right-radius: var(--group-radius);
 }
 </style>
